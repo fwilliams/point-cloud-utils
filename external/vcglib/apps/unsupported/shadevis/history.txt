@@ -1,0 +1,14 @@
+
+   VCGLib  http://vcg.sf.net                                         o o     
+   Visual and Computer Graphics Library                            o     o   
+                                                                  _   O  _   
+   Copyright(C) 2005-2006                                           \/)\/    
+   Visual Computing Lab  http://vcg.isti.cnr.it                    /\/|      
+   ISTI - Italian National Research Council                           |      
+                                                                      \      
+   ShadeVis 1.00 2005/11/11
+   All rights reserved.                                                      
+   
+   
+2005/11/11 Release 1.00
+Initial Release

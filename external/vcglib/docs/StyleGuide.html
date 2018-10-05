@@ -1,0 +1,130 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"> 
+<HTML> <HEAD>   
+<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=windows-1252">
+<TITLE></TITLE>     
+    
+<STYLE>     <!--        
+        @page { size: 21.59cm 27.94cm; margin: 2cm }    
+        body { background-color: #FFFFFF }
+        body { margin-left:8%; margin-right:8%; }
+        pre { font-family: monospace; }
+        P { text-indent: 0em; margin-bottom: 0.21cm }       
+        H1.old { margin-bottom: 0.21cm }        
+        H1.old { font-family: "Arial", sans-serif; font-size: 16pt }
+
+    H2.old { margin-bottom: 0.21cm }        
+    H2.old { font-family: "Arial", sans-serif; font-size: 14pt; font-style: italic } 
+    P.old { text-indent: 1.01cm; margin-bottom: 0cm; }      
+-->     </STYLE> 
+</HEAD> 
+<BODY LANG="en-US" DIR="LTR"> 
+<H1 >VCG Library Coding Guide</H1>
+<H2 >Naming Rules</H2> 
+<P><B><I>Class names</I></B> with first letter Uppercase and internal
+uppercase to separate compound words.</P>  
+
+<P><B><I>Function members</I></B> of classes follow the same rule.</P> 
+
+<P>Example:</P> 
+
+<pre>
+   Point3f
+   {
+   public: 
+   ScalarType &amp;V(const int i);
+   }
+</pre>
+
+<P><B><I>Public Variable members</I></B> has the first letter
+lowercase and internal uppercase to separate compound words.</P> 
+
+<P>Example:</P> 
+
+<pre></pre>
+
+<P><B><I>Private Variable members</I></B> has an underscore as first char and
+the first letter lowercase and internal uppercase to separate compound
+words.</P> 
+
+<P>Example:</P> 
+
+<pre>
+   Point3f
+   {
+   private:
+   ScalarType _v[3];
+   }
+</pre>
+
+<P><B><I>Class Template Arguments</I></B> all capitalized and with names
+remembering where they have been defined.<br>
+Class TypeDefs used for templated Class arguments or for shortness are just like Class Names,
+but ending with &ldquo;Type&rdquo;, &ldquo;Iterator&rdquo;,  &ldquo;Pointer&rdquo;, or &ldquo;Container&rdquo;.</P> 
+
+<P>Example:</P>
+<pre>
+   typedef typename VertexType::CoordType CoordType;
+   typedef typename VertContainer::iterator VertexIterator;
+ 
+</pre>
+
+<H2 >Header Files</H2> 
+<P>Header filenames and folders always fully lower case. Compound names
+are separated by '_'.</P> 
+
+<P>Example:</P> 
+
+<pre>
+   #include&lt;vcg/space/point3.h&gt;
+</pre>
+
+<P>Each include file must begin with the standard legal
+disclamier/license intestation and report in the first line of history
+the $LOG$ cvs string.</P> 
+
+<P>The following automatically generated history can be, from time to
+time, compressed and shortened to save space.</P> 
+
+<P>Each file of the library has to include all the files that it
+requires. A include file should rely on the files included by its own
+include files. Example: in vcg/space/box3.h:</P>
+
+<pre>
+   #include&lt;vcg/math/base.h&gt; // not necessary because included by point3.h
+
+   #include&lt;vcg/space/point3.h&gt;  
+</pre>
+
+<P>In Class definitions place all the prototypes all together before
+the inline or templated implementations.</P> 
+
+<H2 >Editing Rules</H2> 
+
+<P>Tabs are equivalent to two spaces.</P> 
+
+<P>There are no strict rules for the placement of '{' or indenting.</P> 
+
+<H2 >Constructors and casting</H2> 
+
+<P>All basic classes (point3, box3 ecc) must have null
+constructors. Non null constructors can be added in debug
+versions.</P> 
+
+<P>Implicit casting is disallowed. Write a member Import function for
+casting from different integral types and a static.<br>
+Construct to build an object from different a integral type.</P>
+
+<P>Example:</P> 
+
+<pre>
+   Point3f pf(1.0f,0.0f,0.0f);
+   Point3d pd=Point3f::Construct(pf);
+   pf.Import(pd);
+</pre>
+
+<H2 >Comment and documenting</H2> 
+<P>All the classes, algorithms and functions <B>MUST</B> be documented using Doxygen. Please add a short intro before each class explaining design choices and for non trivial classes give some short usage example. For complex classes try to group  similar members under categories. Non trivial algorithms should refer the paper/book where they are explained.</p> 
+<P> Namespaces and files should be also documented trying to explain how the file/namespace partitioning works.
+</P>
+</BODY>
+</HTML> 

@@ -1,0 +1,6 @@
+mesh=bunny.ply
+field=bunny.ffield
+scalegradient=1
+gradient=60
+directround=0
+out=bunny_quad.obj

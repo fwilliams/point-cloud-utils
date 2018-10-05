@@ -1,0 +1,78 @@
+/** \page allocation Allocating and Deleting mesh elements
+Creating elements
+=================
+To create a simple single triangle mesh or to add elements to an existing mesh you should use the AddVertices and AddFaces functions, elements are added at the end of the mesh. These functions returns a pointer to the first allocated element.
+
+Adding element to a vector can cause reallocation, and therefore invalidation of any pointer that points to the mesh elements. These fucntion manage safely re-allocation and updating of pointers for all the pointers stored internally in the mesh (e.g. if you add some vertices and that causes a reallocation of the vertex vector, the pointers from faces to vertices will be automatically updated by the Allocator functions.
+You should never directly reallocate or resize the vertex or face vectors.
+
+\dontinclude trimesh_allocate.cpp
+\skip MyMesh
+\until fi->V(2)=ivp[2];
+
+look to platonic.h for more examples.
+
+Alternatively you can add single vertex and faces in a more compact way as follows:
+
+\dontinclude trimesh_allocate.cpp
+\skip Alternative
+\until AddFace(
+
+
+If you keep internally some pointers to the mesh elements adding elements can invalidate them. In that case you should pass to the vcg::tri::Allocator functions a PointerUpdater to be used to update your private pointers.
+
+\dontinclude trimesh_allocate.cpp
+\skip dangerous
+\until NeedUpdate
+
+Destroying Elements
+-------------------
+
+The library adopts a <em>Lazy Deletion Strategy</em> i.e. the elements in the vector that are deleted are only \b flagged as deleted, but they are still there.
+
+Note that the basic deletion functions are very low level ones. They simply mark as deleted the corresponding entries without affecting the rest of the structures. So for example if you delete a vertex with these structures without checking that all the faces incident on it have been removed you could create a non consistent situation.
+Similarly, but less dangerously, when you delete a face its vertices are left around so at the end you can have unreferenced floating vertices.
+Again you should never, ever try to delete vertexes by yourself by directly flagging deleted, but you must call the Allocator utility function.
+The following snippet of code shows how to delete a few faces from an icosahedron.
+\dontinclude trimesh_allocate.cpp
+\skip Icosahedron
+\until face[3]
+After such a deletion the vector of the faces still contains 20 elements (number of faces of an icosahedron) but the \c m.FN() function correctly reports 18 faces.
+Therefore if your algorithm performs deletions it happens that the size of a container could be different from the number of valid element of your meshes:
+\code
+m.vert.size() != m.VN()
+m.face.size() != m.FN()
+\endcode
+
+Therefore when you scan the containers of vertices and faces you could encounter deleted elements so you should take care with a simple !IsD() check:
+\dontinclude trimesh_allocate.cpp
+\skip loop
+\until  }
+\until }
+In some situations, particularly when you have to loop many many times over the element of the mesh without deleting/creating anything, it can be practical and convenient to get rid of deleted elements by explicitly calling the two garbage collecting functions:
+\dontinclude trimesh_allocate.cpp
+\skip CompactFaceVector
+\until  CompactVertexVector
+After calling these function it is safe to not check the IsD() state of every element and always holds that:
+\code
+m.vert.size() == m.VN()
+m.face.size() == m.FN()
+\endcode
+\note If there are no deleted elements in your mesh, the compactor functions returns immediately (it just test that the container size match the number of the elements) so it is safe to call it before lenghty operations.
+\note If you are messing around with deleted elements it is rather dangerous to loop over mesh elements using \c FN() or \c VN() as end guards in the for; the following code snipped is \b WRONG:
+\dontinclude trimesh_allocate.cpp
+\skip WRONG
+\until  }
+\until }
+
+
+How to copy a mesh
+------------
+Given the intricate nature of the mesh itself it is severely forbidden any attempt of copying meshes as simple object. To copy a mesh you have to use the Append utility class:
+\dontinclude trimesh_allocate.cpp
+\skip m2
+\until Append
+
+In the vcg::tri::Append utility class there are also functions for copying only a subset of the second mesh (the selected one) or to append the second mesh to the first one.
+
+*/

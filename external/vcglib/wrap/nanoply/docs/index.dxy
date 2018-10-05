@@ -1,0 +1,20 @@
+
+/** \mainpage The NanoPLY Library
+The NanoPLY is a C++ header-only library to read and write PLY file. It allow to load and save polygonal meshes and point clouds.
+
+NanoPLY does not require compiling or installing, just an #include <nanoply.hpp> in your code.
+
+
+Examples
+----------------
+The following code shows how to open and save a Ply file using a custom definition of mesh.
+
+\include nanoply_demo/main.cpp
+
+
+The following code shows how to open and save a Ply file using a VCGLib mesh. 
+
+\include nanoply_vcg/main.cpp
+
+
+*/

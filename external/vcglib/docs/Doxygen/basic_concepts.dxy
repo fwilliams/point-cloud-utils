@@ -1,0 +1,125 @@
+/** \page basic_concepts Basic Concepts
+How to define the type of a mesh
+=========================
+The VCG Lib may encode a mesh in several ways, the most common of which is a vector of vertices and vector of triangles (i.e. triangles for triangle meshes, tetrahedra for tetrahedral meshes). The following line is an example of the definition of a VCG type of mesh:
+
+\dontinclude trimesh_base.cpp
+\skip MyMesh
+\until MyMesh
+
+
+where vcg::tri::TriMesh is the base type for a triangle mesh and it is templated on:
+- the type of container containing the vertices (usually a std::vector
+ - which in turn is templated on your vertex type
+- the type of STL random access container containing the faces
+ - which in turn is templated on your face type
+
+In other words, to define a type of mesh you need only to derive from vcg::tri::TriMesh and to provide the type of containers of the elements you want to use to encode the mesh. In this second example we also passed a std::vector of type MyEdge, which, as we will see shortly, is the type of our edge. Note that there is no predefined order to follow for passing the template parameters to TriMesh.
+\dontinclude trimesh_base.cpp
+\skip complex.h
+\until complex.h
+\skip class
+\until MyMesh
+
+The face, the edge and the vertex type are the crucial bits to understand in order to be able to take the best from VCG Lib. A vertex, an edge, a face and a tetrahedron are just an user defined (possibly empty) collection of attributes. For example you will probably expect MyVertex to contain the (x,y,z) position of the vertex, but what about the surface normal at the vertex?.. and the color? VCG Lib gives you a pretty elegant way to define whichever attributes you want to store in each vertex, face, or edge. For example, the following example shows three valid definitions of MyVertex of increasing complexity :
+
+\dontinclude trimesh_base.cpp
+\skip MyVertex0
+\until Qualityf
+
+\c vcg::Vertex is the VCG base class for a vertex.
+\c vcg::UsedTypes declares which are the types invoved in the definition of the mesh. It is a mapping between the names of your entity types (MyVertex,MyEdge,MyFace... and the role they play in the mesh definition). The mapping is established passing the template parameters with the syntax
+It can be annoying when you see it but it is useful that every entity involved knows the type of the others and this is the way VCG Lib does it. As you can see the three definitions of MyVertex0,1,2 differ for the remaining template parameters (the components). These specify which values will be stored with the vertex type:
+- MyVertex0 is a type storing coordinates as a triple of doubles and normal as a triple of floats,
+- MyVertex1 also store a color value specified as 4 bytes
+- MyVertex2 store a long list of different components.
+
+Many other compenents are implemented in the library for the simplexes, the complete list can be found
+in the \ref VertexComponentGroup, \ref EdgeComponentGroup and \ref FaceComponentGroup pages. You can place any combination of them as
+a template parameters of your vertex/edge/face type (note that order is rather unimportant).
+Now we have all it takes for a working definition of MyMesh type:
+
+\dontinclude trimesh_base.cpp
+\skip complex.h
+\until complex.h
+\skip class
+\until MyMesh
+\skip main
+\until }
+\until }
+\until }
+
+
+One more comment: \c vcg::face::VertexRef is an attribute that stores 3 pointers to the type of vertex, so implementing the Indexed Data structure. This is an example of why the type MyFace needs to know the type MyVertex
+
+How to create a mesh
+--------------------
+Once you declared your mesh type, you may want to instance an object and to fill it with vertices and triangles. The typical approach is just to open some file like in the above example. It may cross your mind that you could just make some push_back on the vertexes and faces container (data member vert and face of class vcg::tri::Trimesh). In fact this is the wrong way since there can be side effects by adding element to a container. We describe this issue and the correct way of adding mesh element in the \ref allocation page.
+
+The flags of the mesh elements
+-----------
+Usually to each element of the mesh we associate a small bit vector containing useful single-bit information about vertices and faces. For example the deletion of vertex simply mark a the Deletion bit in thsi vector (more details on the various deletion/allocation issues in the \ref allocation page. More details on the various kind of flags that can be associated are in the \ref flags page.
+
+How to process a mesh
+-------------
+The algorithms that do something on a mesh are generally written as static member functions of a class templated on the mesh type. For example the code snipped below is part of the class UpdateNormals, which contains the several algorithms to compute the value of the normal
+
+\code
+...
+template <class ComputeMeshType>
+class UpdateNormals{
+...
+// Calculates the face normal (if stored in the current face type)
+static void PerFace(ComputeMeshType &m)
+
+// Calculates the vertex normal. Without exploiting or touching face normals
+// The normal of a vertex v is the weigthed average of the normals of the faces incident on v.
+static void PerVertex(ComputeMeshType &m)
+
+// Calculates both vertex and face normals.
+// The normal of a vertex v is the weigthed average of the normals of the faces incident on v.
+static void PerVertexPerFace(ComputeMeshType &m)
+...
+};
+\endcode
+This class is part of a kernel of classes with name UpdateValue that compute the value of the vertex or face attributes and that can be found altogether in the folder vcg/complex/trimesh/update. For example, the following example show how to compute the value of the normal and the mean and gaussian curvature per vertex:
+\code
+
+#include <vector>
+
+#include <vcg/simplex/vertex/base.h>
+#include <vcg/simplex/vertex/component.h>
+#include <vcg/simplex/face/base.h>
+#include <vcg/simplex/face/component.h>
+
+#include <vcg/complex/trimesh/base.h>
+#include <vcg/complex/trimesh/update/normals.h>     //class UpdateNormals
+#include <vcg/complex/trimesh/update/curvature.h>   //class UpdateCurvature
+
+class MyVertex;
+class MyFace;
+class MyUsedTypes: public vcg::UsedTypes< vcg::Use<MyVertex>::AsVertexType>,
+                                          vcg::Use<MyFace>::AsFaceType>
+
+class MyVertex: public vcg::Vertex<MyUsedTypes, vcg::vertex::BitFlags,vcg::vertex::Coord3d, vcg::vertex::Normal3f,vcg::vertex::Curvaturef>{};
+class MyFace: public vcg::Face<MyUsedTypes, vcg::face::BitFlags,vcg::face::VertexRef>{};
+class MyMesh: public vcg::tri::TriMesh< std::vector<MyVertex>, std::vector<MyFace> > {};
+
+int main()
+{
+  MyMesh m;
+  // fill the mesh
+  ...
+  // compute the normal per-vertex -> update the value of v.N() for all v (vcg::vertex::Normal3f)
+  vcg::tri::UpdateNormals<MyMesh>::PerVertexPerFace(m);
+
+  // compute the curvature per-vertex -> update the value of v.H() and v.K() (vcg::vertex::Curvaturef)
+  vcg::tri::UpdateCurvature<MyMesh>::MeanAndGaussian(m);
+
+  return 0;
+}
+\endcode
+
+Other than algorithms that update values of the mesh attributes, VCG Lib provides algorithms to create a mesh from another source, for example from point sets (by means of the Ball Pivoting approach) or as isosurfaces from a volumetric dataset (by means of Marching Cubes algorithm). Those algorithm can be found in vcg/complex/trimesh/create/.
+Finally, you can find algorithms for refinement (midpoint, Loop, Butterfly...), for smoothing, for closing holes and other that are not currently classified under any specific heading and that you can find under /vcg/complex/trimesh.*/
+

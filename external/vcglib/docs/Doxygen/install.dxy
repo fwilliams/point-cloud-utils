@@ -1,0 +1,30 @@
+/** \page install
+
+Installation and folder structure
+================
+
+VCG Lib uses a git repository hosted by github. 
+The main project page of the library is http://github.com/cnr-isti-vclab/vcglib/
+
+The stable version of the library are available under the release page 
+https://github.com/cnr-isti-vclab/vcglib/releases
+
+To get the development version of library clone the 'devel' branch of the library :
+
+     git clone -b devel https://github.com/cnr-isti-vclab/vcglib.git   
+
+
+Folder Structure
+================
+VCGLib is mostly made of header files (and its core part it's only header files) with no external dependencies.
+Just download the tarball from here and uncompress it in a folder, e.g. named vcg, inside you compiler "include" directory.
+Afterwards, you have to just include the files you need as shown in the apps/sample examples.
+
+Inside vcg folder you will find 5 sub-folders:
+
+- `vcg`: this is the core of the library, where all the algorithms and data structures are defined. This part is pure, quite heavily templated, C++ code with STL support for common data structures and algorithms. You will not find a single include from here to anything else than standard libraries. Note that core part is made of header files (.h files) only.
+- `wrap`: here you will find the wrapping of VCG concepts towards specific needs/contexts/libraries. For example you will find all the code to import/export meshes from the hard disk in many formats, or the routines for rendering triangle meshes with OpenGL, supports for common GUI tools like a trackball, and so on..
+- `apps`: this folder contains the command line applications developed with the VCG Lib. Many (much more) examples can be found in MeshLab. The apps/sample directory contains a sub-collection of very basic apps. A good starting point for beginners!
+- `docs`: documentation lives here (including this tutorial)
+- `eigenlib` a copy of the latest stable version of the eigen library for linear algebra ( http://http://eigen.tuxfamily.org/ ). VCGlib relies on eigen for all the advanced matrix  processing.
+*/

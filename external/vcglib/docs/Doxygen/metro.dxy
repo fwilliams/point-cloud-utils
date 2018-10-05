@@ -1,0 +1,29 @@
+/** \page metro
+Metro: Measuring error on simplified surfaces
+=============================================
+Metro is a tool designed to evaluate the difference between two triangular meshes. Metro adopts an approximated approach based on surface sampling and point-to-surface distance computation. The tool has been widely used in the surface simplification research community (more than 800 citations according to google scholar ).
+Three different surface sampling methods are implemented:
+- _Montecarlo sampling_ (pick k random samples in the interior of each face)
+- _Subdivision sampling_ (recursively subdivide each face along the longest edge and choose the sample in the center of each cell)
+- _Similar Triangles sampling_ (subdivide each face t in k polygons similar to t and sample the face in correspondence with the vertices of these polygons, internal to t)
+
+For efficiently finding the closest point over a mesh from a sample point three different spatial indexing structures sampling methods were implemented:
+- Static Uniform Grid
+- Hashed Uniform Grid
+- Axis Aligned Bounding Box Hierarchy
+
+In most cases, given the sampling pattern of Metro, that makes a very large number of spatially coherent queries very near to the indexed surface, Uniform Grids are faster than hierarchies. Hierarchical structures perform better when the query points are far from the indexed surface; in this case UG would require a larger traversal overhead (many cells would be traversed to find a non-empty cell).
+The tool support the following file formats: off, ply and stl.
+
+Papers
+------
+_P. Cignoni, C. Rocchini and R. Scopigno_<BR>
+__Metro: measuring error on simplified surfaces__<br>
+Computer Graphics Forum, Blackwell Publishers, vol. 17(2), June 1998, pp 167-174<br> 
+<a href="http://vcg.isti.cnr.it/publications/papers/metro.pdf">PDF</a>
+
+__Abstract__
+
+This paper presents a new tool, Metro, designed to compensate for a deficiency in many simplification methods proposed in literature. Metro allows to compare the difference between a pair of surfaces (e.g. a triangulated mesh and its simplified representation) by adopting a surface sampling approach. It has been designed as a highly general tool, and it does no assumption on the particular approach used to build the simplified representation. It returns both numerical results (meshes areas and volumes, maximum and mean error, etc.) and visual results, by coloring the input surface according to the approximation error.
+
+*/

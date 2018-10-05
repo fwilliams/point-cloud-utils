@@ -1,0 +1,131 @@
+
+   VCGLib  http://vcg.sf.net                                         o o
+   Visual and Computer Graphics Library                            o     o
+                                                                  _   O  _
+   Copyright(C) 2004                                                \/)\/
+   Visual Computing Lab  http://vcg.isti.cnr.it                    /\/|
+   ISTI - Italian National Research Council                           |
+                                                                      \
+   ShadeVis, All rights reserved.
+
+
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+for more details.
+
+--- Synopsis ---
+
+'shadevis' is a tool designed to compute a per vertex, ambient occlusion term; 
+This term can be used for a shading effect, commonly known as ambient occlusion 
+shading, that is aimed to provide more faithful simple realtime rendering of rather complex meshes.
+
+In practice rather than considering the ambient lighting to exist uniformally throughout a scene,
+this approach determines the ambient brightness of each part of a surface to be proportional to the extent
+to which the surface has "its outward view of its environment" free i.e. occluded, by other surfaces of the object. For example, the upper part of the David forehead is less exposed to its local environment than the nose and as a consequence it will be proportionally darker.
+
+The most common techniques to compute ambient occlusion is based on shooting rays from each surface element to evaluate the quantity of light that reach it. Shadevis tools use OpenGL to accellerate this process by simply rendering the scene ortographically from a set of uniformely distributed directions and checking against the zbuffer if each vertex is occluded or not. Usually the result is stored in a texture map.
+
+The Shadevis tool is oriented to handle rather large meshes, we have successfully used on a 8M triangle mesh of the David on a 512Mb machine. 
+
+
+We have used this tool also for computing the exposition of falling agents over the Michelangelo's David.
+
+Please, when using this tool cite the following references:
+
+R. Borgo, P. Cignoni, R. Scopigno
+An easy to use visualization system for huge cultural heritage meshes
+VAST’01 Conference, Greece, Nov. 28-30, 2001. 
+
+
+
+
+
+
+For any question about this software please contact:
+Paolo Cignoni ( p.cignoni@isti.cnr.it )
+
+
+---- Notes on the Color mapping ----
+
+This value is mapped into a gray shade according to this formula
+
+v=clamp(v,LowPass,HighPass)
+v=(v-LowPass)/(HighPass-LowPass)  /// Normalized 0..1
+graylevel=GammaCorrection(v,GammaLev) 
+
+This graylevel is used in the Opengl lighting equation as follow.
+Let assume that there is just a single directional light and no emissive and no specular component in the material, the OpenGL lighting equation is:
+
+C = Acm *Acs + Acm*Acli + (n*L)*Dcm*Dcli
+
+where
+  Acm    ambient color of the material  (glMaterial or glColor if glColorMaterial is enabled)
+  Acs    ambient color of the scene     (glLightModel)
+  Acli   ambient intensity of the light (glLight) 
+  Dcm    diffuse color of the material  (we assume constant over the object).
+
+We simply substitute the constant ambient that is usually constant, with a per vertex color, using a constant diffuse color.
+
+
+
+Simple one line tutorial:
+-- load a ply mesh, press 'enter', wait, press preset keys from 1 to 4.
+
+Another tutorial:
+-- load a ply mesh, 
+-- press 'enter', wait taking care to not overlap existing window with other ones, ambient occlusion will be computed and stored per vertex
+
+Press preset keys from 1 to 4.
+Now you can play with diffuse and ambient percentages, pressing d/D and a/A you increase/decrease 
+the percentage of the diffuse/ambient component of OpenGL lighting, 
+these percentages are shown at the bottom of the screen; when ambient==0 you have pure diffuse lighting.
+when diffuse==0 and ambient=100 you have a pure ambient occlusion lighting. 
+To simultaneously increase ambient and decrease diffuse use e/E keys.
+Note that neither these values nor their sum are clamped to 100%.
+The above keys do not change stored visibility values but just their mapping to opengl ambient.
+Smoothing and Enhancing on the other hand really changes these values.
+
+
+---- Reference ----
+ Keys
+'esc' quit
+'enter' compute the sampling (sample are added so pressing the key twice is the same of using 2n sampling directions)
+' ' add the current view to the sampling direction
+'S' save a ply with the currently computed color.
+'s' smooth (average) the computed visibility among adjacent vertices
+'t' enhance the computed visibility among adjacent vertices (enhancement is done by (val + (val-avg)) )
+'v' toggle the rendering of directions used for the sampling.
+'V' Save a Snapshot of the current View.
+
+'tab' switch between object trackball light trackball
+
+'l'-'L' Increase/Decrease  LowPass
+'h'-'H' Increase/Decrease  HighPass
+'p'-'p' Increase/Decrease  GammaLev
+
+'r'-'R' Increase/Decrease  red   component of diffuse color
+'g'-'G' Increase/Decrease  green component of diffuse color
+'b'-'B' Increase/Decrease  blue  component of diffuse color
+
+'C' Toggle Lighting
+'c' Toggle per vertex coloring
+'f' Toggle false color visualization 
+
+'a'-'A' Increase/Decrease  Ambient Coefficient
+'d'-'D' Increase/Decrease  Diffuse Coefficient
+'e'-'E' Increase/Decrease  Balance between Diffuse and Ambient coefficient
+'1'..'4' Some preset values for the ambient/diffuse terms ranging from standard constant ambient to a strongly shaded coloring;
+
+---- Command Line Options ----
+
+-n <number> set the number of sampling direction (default 64, but 100~500 should be better)
+-f flip normal of the surface
+-z <float> specify the z tolerance used to decide if a vertex is visible against the zbuffer or not (default 1e-3, useful range 1e-3 .. 1e-6)

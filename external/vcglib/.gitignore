@@ -1,0 +1,12 @@
+# QTCreator user prefs
+*.user
+
+# Directories to ignore
+debug/
+release/
+*-debug/
+*-release/
+/docs/Doxygen/html/
+
+# Intermediate Files
+*.bc

@@ -1,0 +1,175 @@
+<html>
+<head>
+ <link rel="stylesheet" href="css/prettify.css" type="text/css" media="all"/>
+ <script type="text/javascript" src="js/prettify.js"></script>
+ 
+<style>
+body { background-color:#fff; color: #555; font-family:Verdana; font-size:14px; }
+h1, h2, h3 { color:#333; font-family:Trebuchet MS}
+a:link, a:visited { text-decoration:none; color:#a00; }
+a:hover { text-decoration:none; color:#e00; }
+
+.container { width:700px; margin:auto; font-size:90%;}
+.comment { color:#070; }
+pre.prettyprint { border:1px solid #ddd;}
+</style>
+
+</head>
+<body onload="prettyPrint()">
+<div class="container" id="page">
+<h1>Generic cache system</h1>
+<h2>Overview</h2>
+<p>
+GCache is a generic multilevel priority based cache system which is useful for allocating resources 
+across RAM, GPU, disk, network etc.</p>
+
+<p><a href="html/index.html">Class documentation</a> created using Doxyigen is available in the <em>docs/html/</em> directory</p>
+<p>A quick example might better explain the concept; see <a href="#example">a more detailed example</a> 
+for source code and in depth comments. we want to implement a priority cache for our
+database of 10000 images. We will use 2 levels of caching, RAM and GPU while the images will be stored on disk.</p>
+
+<ul>
+<li>Each image is managed through a <em>token</em> which holds the pointer to the data and is used to assign a priority
+to the image.</li>
+<li>We subclass <em>Cache</em> to our RamCache and GpuCache and define function for loading from disk and 
+uploading the texture to the GPU</li>
+<li>We can set priorities for the images according to our strategy.</li>
+<li>Before rendering the image we lock the token and unlock it when done</li>
+</ul>
+
+
+
+<h2>Design</h2>
+<p>GCache is designed for very frequent priority updates where the majority of
+resurces are involved. All the system is designed to minimize the computations
+required to change priorities and sorting them.</p>
+
+<div style="text-align:center; margin-bottom:20px;">
+<img src="img/architecture.png">
+</div>
+
+<h3>Token</h3>
+<p>Each resource is managed through a pointer to a subclass of <code>Token&lt;Priority&gt;</code>. 
+Token pointers are transferred between caches but never created or deleted by the cache system. 
+The user is responsible for storage of the tokens. </p>
+<p>
+Adding tokens to the cache is done using the function <code>Controller::addToken(Token *)</code>; 
+the tokens can be scheduled for removal using the function <code>Token::remove()</code> or be dropped 
+when the max number of tokens in the controller is reached
+as set by <code>Controller::setMaxTokens(int)</code>. Use <code>Token::isInCache()</code> to check 
+for actual removal.</p>
+
+
+<h3>Priority</h3>
+<p>The <code>Token</code> class is templated over a <code>typename Priority</code> which usually 
+it is a floating point number, but it can be anything sortable through <code>Priority::operator<(const Priority &)</code>.
+The goal of the cache system is to juggle resources around so to have the highest priority tokens in the higher cache.</p>
+
+<p>Use function <code>Token::setPriority(Priority)</code> to set tokens priority; it does not require mutexing and it is
+therefore vert fast. The change will take effect only upon a call to <code>Controller::updatePriorities()</code>.</p>
+
+<p>Each cache holds a double heap of Tokens (see architecture picture), 'sorted' accordingly to priority. A double heap is a data structure with similar
+properties to a heap but which allows quick extraction of both min and max element.</p>
+
+<p>Priorities are sorted with a lazy approach, only when needed (usually when checking if a transfer should be performed. This
+results in the higher, smaller caches being sorted more frequently than the larger lower caches.</p>
+
+
+<h3>Caches</h3>
+
+<p>The user needs to subclass the <code>Cache</code> class and override the virtual functions <code>get(Token *), 
+drop(Token *) and size(Token *)</code>. Each cache runs its own thread. Resource transfers (reading a file content, uploading a texture, etc)
+ are performed in that thread using blocking calls.</p>
+
+<p>Cache are added to the controller using the function <code>Controller::addCache(Cache *)</code></p>
+
+
+<p>The GCache employs a nested cache model: if a resource is present in a cache is also present in all the lower ones,
+ and thus each cache should have more capacity than the lower one. For sake of simplicity and performances each cache
+is allowed to overflow its capacity by at most one resource. (see picture)</p>
+
+<div style="text-align:center; margin-bottom:20px;">
+<img src="img/overflow.png">
+</div>
+
+<h3>Locking</h3>
+<p>Resources must be locked before use, to prevent cache threads to unload them while in use. An object can be locked
+only if already loaded in the highest cache, otherwise the <code>lock()</code> function will return false.</p>
+<p>Unlock allows the resource to be eventually dropped from the cache. Locks are recursive which means Tokens keep track
+of how many time <code>lock()</code> have been called and release the resource only after <code>unlock()</code>
+is called that many times.</p>
+<p>Loking and unlocking costs basically zero (we are using <code>QAtomicInt</code>).</p>
+
+
+<h2><a name="example"></a>Minimal example</h2>
+<p>This is a minimal pseudo-code example, just to quickly cover the basis. For a real example, involving
+also sending resources to the GPU using a share context check the <em>example/my_widget.h</em> file.
+</p>
+
+<pre class="prettyprint">
+class MyToken: public Token&lt;float&gt; {
+ public:
+  MyData *data;
+  GLUint texture;
+};
+
+class RamCache: public Cache&lt;MyToken&gt; {
+ public:
+  //return size of object. return -1 on error
+  int get(MyToken *token)  { fread(someting into something); return 1; } 
+ //return size of objecy, cannot fail
+  int drop(MyToken *token) { delete memory; return 1; }
+  int size(MyToken *token) { return 1; }
+};
+
+class GpuCache: public Cache&lt;MyToken&gt; {
+ public:
+  int get(MyToken *token) { glCreate + glTexture;return 1; }
+  int drop(MyToken *token) { glDelete; return 1; }
+  int size(MyToken *token) { return 1; }
+};
+
+//generate tokens
+vector&lt;MyToken&gt; tokens;
+for(int i = 0; i &lt; 10000; i++)
+tokens.push_back(MyToken(i));
+
+//create ram and gpu caches
+RamCache ram;
+ram.setCapacity(5000);
+GpuCache gpu;
+gpu.setCapacity(1000);
+
+//create controller and add caches
+Controller&lt;MyToken&gt; controller;
+controller.addCache(&ram);
+controller.addCache(&gpu);
+
+//tell controller about tokens and start
+for(int i = 0; i &lt; tokens.size(); i++) {
+  tokens[i].setPriority(rand()/((double)RAND_MAX));
+  controller.addToken(&tokens[i]);
+}
+
+
+controller.start();
+
+//change priorities
+for(int i = 0; i &lt; tokens.size(); i++)
+  tokens[i].setPriority(rand());
+controller.updatePriorities();
+
+//lock and use the tokens
+for(int i = 0; i &lt; tokens.size(); i++) {
+  bool success = tokens[i].lock();
+  if(success) {
+  //use the token as you see fit
+    tokens[i].unlock();
+  }
+}
+</pre>
+
+
+</div>
+</body>
+</html>

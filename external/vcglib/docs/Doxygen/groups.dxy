@@ -1,0 +1,36 @@
+
+
+/** \defgroup space Space
+This module contains all the basic types for representing spatial entities like points (vcg::Point3) box3, line planes etc.
+This module contains the documentation for the types and the functions used for...
+*/
+
+/** \defgroup math Math
+This module contains the documentation for the types and the functions used for representing and managing mathematical entities.
+*/
+
+/** \defgroup VertexComponentGroup Vertex Components
+\brief Components that you can use to compose your Vertex type
+*/
+
+/** \defgroup EdgeComponentGroup Edge Components
+\brief Components that you can use to compose your Edge type
+*/
+
+/** \defgroup FaceComponentGroup Face Components
+\brief Components that you can use to compose your Face type
+*/
+
+/** \defgroup trimesh Triangular Meshes
+This module contains the documentation for the types and the functions used for representing and managing generic \b triangular \b meshes.
+*/
+
+/** \defgroup code_sample Code Examples
+\brief This module contains a number of small examples to explain the library features
+
+All the examples here listed are located in the folder `vcglib/apps/sample`. 
+To compile each sample, please use the corresponding `qmake`  `*.pro` project files. 
+
+
+*/
+

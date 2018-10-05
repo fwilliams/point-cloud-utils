@@ -1,0 +1,311 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="744.09448819"
+   height="1052.3622047"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.48.1 r9760"
+   sodipodi:docname="vcglogo.svg">
+  <defs
+     id="defs4" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.6448421"
+     inkscape:cx="995.39411"
+     inkscape:cy="396.26054"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="true"
+     inkscape:window-width="1870"
+     inkscape:window-height="1156"
+     inkscape:window-x="50"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1">
+    <inkscape:grid
+       type="xygrid"
+       id="grid2987" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <rect
+       style="fill:none;stroke:none;stroke-width:1.99999975999999990;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+       id="rect3853"
+       width="460"
+       height="265"
+       x="90"
+       y="587.36218"
+       inkscape:export-filename="/Users/cignoni/devel/vcglib/docs/Doxygen/img/text3830.png"
+       inkscape:export-xdpi="200.35001"
+       inkscape:export-ydpi="200.35001" />
+    <text
+       sodipodi:linespacing="125%"
+       id="text3040"
+       y="839.36218"
+       x="100"
+       style="font-size:61.15526199000001384px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#006080;fill-opacity:1;stroke:#003040;font-family:Century Gothic;-inkscape-font-specification:Century Gothic;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       xml:space="preserve"
+       inkscape:export-filename="/Users/cignoni/devel/vcglib/docs/Doxygen/img/text3830.png"
+       inkscape:export-xdpi="200.35001"
+       inkscape:export-ydpi="200.35001"><tspan
+         y="839.36218"
+         x="100"
+         id="tspan3042"
+         sodipodi:role="line">L  I  B  R  A  R  Y </tspan></text>
+    <path
+       style="fill:#006080;stroke:#003040;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:none;fill-opacity:1;stroke-opacity:1"
+       inkscape:transform-center-x="-1.0790028"
+       inkscape:transform-center-y="-5.3460821"
+       d="m 210,607.36218 -105,180.00001 210,0 z"
+       id="path3044"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cccc"
+       inkscape:export-filename="/Users/cignoni/devel/vcglib/docs/Doxygen/img/text3830.png"
+       inkscape:export-xdpi="200.35001"
+       inkscape:export-ydpi="200.35001" />
+    <path
+       sodipodi:nodetypes="cccc"
+       inkscape:connector-curvature="0"
+       id="path3046"
+       d="m 430,607.36218 -105,180 210,0 z"
+       inkscape:transform-center-y="-5.3460821"
+       inkscape:transform-center-x="-1.0790028"
+       style="fill:#006080;stroke:#003040;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:none;fill-opacity:1;stroke-opacity:1"
+       inkscape:export-filename="/Users/cignoni/devel/vcglib/docs/Doxygen/img/text3830.png"
+       inkscape:export-xdpi="200.35001"
+       inkscape:export-ydpi="200.35001" />
+    <path
+       style="fill:#006080;stroke:#003040;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:none;fill-opacity:1;stroke-opacity:1"
+       inkscape:transform-center-x="-1.0790028"
+       inkscape:transform-center-y="5.3460821"
+       d="m 320,781.36218 -105,-180 210,0 z"
+       id="path3048"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cccc"
+       inkscape:export-filename="/Users/cignoni/devel/vcglib/docs/Doxygen/img/text3830.png"
+       inkscape:export-xdpi="200.35001"
+       inkscape:export-ydpi="200.35001" />
+    <text
+       xml:space="preserve"
+       style="font-size:108px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:#003040;font-family:Century Gothic;-inkscape-font-specification:Century Gothic;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       x="172.11035"
+       y="769.17273"
+       id="text3050"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/Users/cignoni/devel/vcglib/docs/Doxygen/img/text3830.png"
+       inkscape:export-xdpi="200.35001"
+       inkscape:export-ydpi="200.35001"><tspan
+         sodipodi:role="line"
+         id="tspan3052"
+         x="172.11035"
+         y="769.17273">V</tspan></text>
+    <text
+       sodipodi:linespacing="125%"
+       id="text3054"
+       y="769.17273"
+       x="379.77051"
+       style="font-size:108px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:#003040;font-family:Century Gothic;-inkscape-font-specification:Century Gothic;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       xml:space="preserve"
+       inkscape:export-filename="/Users/cignoni/devel/vcglib/docs/Doxygen/img/text3830.png"
+       inkscape:export-xdpi="200.35001"
+       inkscape:export-ydpi="200.35001"><tspan
+         y="769.17273"
+         x="379.77051"
+         id="tspan3056"
+         sodipodi:role="line">G </tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:108px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:#003040;font-family:Century Gothic;-inkscape-font-specification:Century Gothic;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       x="273.19824"
+       y="700.36218"
+       id="text3058"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/Users/cignoni/devel/vcglib/docs/Doxygen/img/text3830.png"
+       inkscape:export-xdpi="200.35001"
+       inkscape:export-ydpi="200.35001"><tspan
+         sodipodi:role="line"
+         id="tspan3060"
+         x="273.19824"
+         y="700.36218">C </tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:18px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+       x="367.91953"
+       y="778.65179"
+       id="text3830"
+       sodipodi:linespacing="125%"
+       inkscape:export-xdpi="200.35001"
+       inkscape:export-ydpi="200.35001"><tspan
+         sodipodi:role="line"
+         id="tspan3832"
+         x="367.91953"
+         y="778.65179"> </tspan></text>
+    <rect
+       inkscape:export-ydpi="200.35001"
+       inkscape:export-xdpi="200.35001"
+       inkscape:export-filename="/Users/cignoni/devel/vcglib/docs/Doxygen/img/text3830.png"
+       y="147.72942"
+       x="121.37207"
+       height="265"
+       width="460"
+       id="rect3858"
+       style="fill:none;stroke:none" />
+    <path
+       inkscape:connector-curvature="0"
+       id="path3887"
+       style="font-size:61.15526199px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#006080;fill-opacity:1;stroke:#003040;stroke-width:2;stroke-miterlimit:4;stroke-opacity:1;font-family:Century Gothic;-inkscape-font-specification:Century Gothic"
+       d="m 136.71719,355.80398 4.41942,0 0,39.6852 16.87145,0 0,4.2402 -21.29087,0 0,-43.9254" />
+    <path
+       inkscape:connector-curvature="0"
+       id="path3889"
+       style="font-size:61.15526199px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#006080;fill-opacity:1;stroke:#003040;stroke-width:2;stroke-miterlimit:4;stroke-opacity:1;font-family:Century Gothic;-inkscape-font-specification:Century Gothic"
+       d="m 198.32036,355.80398 4.38956,0 0,43.9254 -4.38956,0 0,-43.9254" />
+    <path
+       inkscape:connector-curvature="0"
+       id="path3891"
+       style="font-size:61.15526199px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#006080;fill-opacity:1;stroke:#003040;stroke-width:2;stroke-miterlimit:4;stroke-opacity:1;font-family:Century Gothic;-inkscape-font-specification:Century Gothic"
+       d="m 246.96387,355.80398 8.65968,0 c 3.48376,0 6.1613,0.418 8.0326,1.2541 1.87127,0.8163 3.34441,2.0804 4.41943,3.7924 1.09487,1.712 1.64232,3.6132 1.64235,5.7034 -3e-5,1.9509 -0.4778,3.7327 -1.43333,5.3451 -0.95557,1.5926 -2.35904,2.8866 -4.21039,3.8819 2.28931,0.7764 4.05111,1.6922 5.28539,2.7472 1.23422,1.0352 2.18977,2.2994 2.86665,3.7924 0.69673,1.4731 1.0451,3.0757 1.04513,4.8076 -3e-5,3.5236 -1.294,6.5097 -3.88192,8.9583 -2.56807,2.4287 -6.02198,3.643 -10.36176,3.643 l -12.06383,0 0,-43.9254 m 4.29998,4.2999 0,14.0645 2.50832,0 c 3.04581,10e-5 5.28538,-0.2786 6.71872,-0.8361 1.43331,-0.5772 2.56802,-1.4731 3.40415,-2.6874 0.83608,-1.2343 1.25414,-2.5979 1.25416,-4.091 -2e-5,-2.0106 -0.70673,-3.5833 -2.12013,-4.718 -1.39353,-1.1546 -3.62315,-1.7319 -6.68885,-1.732 l -5.07637,0 m 0,18.484 0,16.8416 5.4347,0 c 3.20506,0 5.55412,-0.3086 7.04719,-0.9257 1.49302,-0.6371 2.68746,-1.6225 3.58331,-2.9563 0.91571,-1.3337 1.37358,-2.777 1.37361,-4.3298 -3e-5,-1.9509 -0.63706,-3.653 -1.91111,-5.1062 -1.27409,-1.4532 -3.02593,-2.4486 -5.25553,-2.9861 -1.49306,-0.3583 -4.09096,-0.5375 -7.79371,-0.5375 l -2.47846,0" />
+    <path
+       inkscape:connector-curvature="0"
+       id="path3893"
+       style="font-size:61.15526199px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#006080;fill-opacity:1;stroke:#003040;stroke-width:2;stroke-miterlimit:4;stroke-opacity:1;font-family:Century Gothic;-inkscape-font-specification:Century Gothic"
+       d="m 316.12188,355.80398 8.74926,0 c 4.87727,0 8.18188,0.1991 9.91384,0.5972 2.60783,0.5972 4.72796,1.8813 6.36039,3.852 1.63236,1.951 2.44856,4.3598 2.4486,7.2264 -4e-5,2.3889 -0.5674,4.4891 -1.70208,6.3007 -1.11484,1.8115 -2.71738,3.1851 -4.80762,4.1208 -2.09029,0.9157 -4.97684,1.3835 -8.65968,1.4034 l 15.79646,20.4249 -5.4347,0 -15.76659,-20.4249 -2.50832,0 0,20.4249 -4.38956,0 0,-43.9254 m 4.38956,4.2999 0,14.9305 7.55482,0.06 c 2.92636,10e-5 5.0863,-0.2786 6.47983,-0.8361 1.4134,-0.5573 2.5083,-1.4432 3.28471,-2.6576 0.79626,-1.2342 1.19441,-2.6078 1.19444,-4.1208 -3e-5,-1.4731 -0.39818,-2.8069 -1.19444,-4.0014 -0.79632,-1.2143 -1.84145,-2.0803 -3.1354,-2.5979 -1.294,-0.5175 -3.44399,-0.7763 -6.44997,-0.7764 l -7.73399,0" />
+    <path
+       inkscape:connector-curvature="0"
+       id="path3895"
+       style="font-size:61.15526199px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#006080;fill-opacity:1;stroke:#003040;stroke-width:2;stroke-miterlimit:4;stroke-opacity:1;font-family:Century Gothic;-inkscape-font-specification:Century Gothic"
+       d="m 404.89854,355.80398 20.48462,43.9254 -4.71803,0 -6.89789,-14.4527 -18.93185,0 -6.86802,14.4527 -4.8972,0 20.75337,-43.9254 1.075,0 m -0.5375,9.3166 -7.55483,15.9159 15.02007,0 -7.46524,-15.9159" />
+    <path
+       inkscape:connector-curvature="0"
+       id="path3897"
+       style="font-size:61.15526199px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#006080;fill-opacity:1;stroke:#003040;stroke-width:2;stroke-miterlimit:4;stroke-opacity:1;font-family:Century Gothic;-inkscape-font-specification:Century Gothic"
+       d="m 466.38225,355.80398 8.74926,0 c 4.87728,0 8.18189,0.1991 9.91385,0.5972 2.60783,0.5972 4.72795,1.8813 6.36038,3.852 1.63237,1.951 2.44857,4.3598 2.4486,7.2264 -3e-5,2.3889 -0.56739,4.4891 -1.70207,6.3007 -1.11484,1.8115 -2.71738,3.1851 -4.80762,4.1208 -2.09029,0.9157 -4.97685,1.3835 -8.65968,1.4034 l 15.79645,20.4249 -5.43469,0 -15.7666,-20.4249 -2.50832,0 0,20.4249 -4.38956,0 0,-43.9254 m 4.38956,4.2999 0,14.9305 7.55483,0.06 c 2.92635,10e-5 5.08629,-0.2786 6.47983,-0.8361 1.41339,-0.5573 2.50829,-1.4432 3.2847,-2.6576 0.79627,-1.2342 1.19441,-2.6078 1.19444,-4.1208 -3e-5,-1.4731 -0.39817,-2.8069 -1.19444,-4.0014 -0.79631,-1.2143 -1.84145,-2.0803 -3.1354,-2.5979 -1.294,-0.5175 -3.44398,-0.7763 -6.44997,-0.7764 l -7.73399,0" />
+    <path
+       inkscape:connector-curvature="0"
+       id="path3899"
+       style="font-size:61.15526199px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#006080;fill-opacity:1;stroke:#003040;stroke-width:2;stroke-miterlimit:4;stroke-opacity:1;font-family:Century Gothic;-inkscape-font-specification:Century Gothic"
+       d="m 533.74861,355.80398 5.07637,0 11.22772,18.0957 11.04856,-18.0957 5.07636,0 -13.91521,22.9332 0,20.9922 -4.32984,0 0,-20.9922 -14.18396,-22.9332" />
+    <path
+       inkscape:export-ydpi="200.35001"
+       inkscape:export-xdpi="200.35001"
+       inkscape:export-filename="/Users/cignoni/devel/vcglib/docs/Doxygen/img/text3830.png"
+       sodipodi:nodetypes="cccc"
+       inkscape:connector-curvature="0"
+       id="path3864"
+       d="m 241.37207,167.72938 -105,180 210,0 z"
+       inkscape:transform-center-y="-5.3460821"
+       inkscape:transform-center-x="-1.0790028"
+       style="fill:#006080;fill-opacity:1;stroke:#003040;stroke-width:2;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+    <path
+       inkscape:export-ydpi="200.35001"
+       inkscape:export-xdpi="200.35001"
+       inkscape:export-filename="/Users/cignoni/devel/vcglib/docs/Doxygen/img/text3830.png"
+       style="fill:#006080;fill-opacity:1;stroke:#003040;stroke-width:2;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       inkscape:transform-center-x="-1.0790028"
+       inkscape:transform-center-y="-5.3460821"
+       d="m 461.37207,167.72938 -105,180 210,0 z"
+       id="path3866"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cccc" />
+    <path
+       inkscape:export-ydpi="200.35001"
+       inkscape:export-xdpi="200.35001"
+       inkscape:export-filename="/Users/cignoni/devel/vcglib/docs/Doxygen/img/text3830.png"
+       sodipodi:nodetypes="cccc"
+       inkscape:connector-curvature="0"
+       id="path3868"
+       d="m 351.37207,341.72938 -105,-180 210,0 z"
+       inkscape:transform-center-y="5.3460821"
+       inkscape:transform-center-x="-1.0790028"
+       style="fill:#006080;fill-opacity:1;stroke:#003040;stroke-width:2;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+    <g
+       style="font-size:108px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:#003040;stroke-width:2;stroke-miterlimit:4;stroke-opacity:1;font-family:Century Gothic;-inkscape-font-specification:Century Gothic"
+       id="text3870"
+       transform="translate(-28.85742,-922.82222)">
+      <path
+         d="m 235.87305,1174.7899 8.4375,0 25.68164,59.959 26.15625,-59.959 8.4375,0 -33.75,77.5723 -1.6875,0 -33.27539,-77.5723"
+         id="path3915"
+         inkscape:connector-curvature="0" />
+    </g>
+    <g
+       style="font-size:108px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:#003040;stroke-width:2;stroke-miterlimit:4;stroke-opacity:1;font-family:Century Gothic;-inkscape-font-specification:Century Gothic"
+       id="text3874"
+       transform="translate(-28.85742,-922.82222)">
+      <path
+         d="m 524.26953,1187.8153 -6.01172,5.6953 c -4.32429,-4.2538 -9.07038,-7.4706 -14.23828,-9.6504 -5.13287,-2.2147 -10.14263,-3.3222 -15.0293,-3.3222 -6.08207,0 -11.88285,1.4942 -17.40234,4.4824 -5.4844,2.9883 -9.7383,7.0489 -12.76172,12.1816 -3.02345,5.0977 -4.53517,10.4942 -4.53515,16.1895 -2e-5,5.836 1.56443,11.3906 4.69335,16.664 3.12889,5.2383 7.4531,9.3692 12.97266,12.3926 5.5195,2.9883 11.56636,4.4824 18.14063,4.4824 7.98041,0 14.7304,-2.25 20.25,-6.75 5.51945,-4.4999 8.78898,-10.3359 9.80859,-17.5078 l -24.73242,0 0,-7.4883 33.43359,0 c -0.0704,11.9884 -3.63876,21.5157 -10.70508,28.5821 -7.03132,7.0312 -16.45318,10.5469 -28.26562,10.5469 -14.34379,0 -25.69924,-4.8868 -34.06641,-14.6602 -6.4336,-7.5234 -9.65039,-16.2246 -9.65039,-26.1035 0,-7.3476 1.8457,-14.1855 5.53711,-20.5137 3.69139,-6.328 8.75389,-11.2675 15.1875,-14.8183 6.43356,-3.5859 13.7109,-5.3789 21.83203,-5.379 6.57417,10e-5 12.76166,1.1954 18.5625,3.586 5.80071,2.3555 11.46086,6.1524 16.98047,11.3906"
+         id="path3909"
+         inkscape:connector-curvature="0" />
+    </g>
+    <g
+       style="font-size:108px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:#003040;stroke-width:2;stroke-miterlimit:4;stroke-opacity:1;font-family:Century Gothic;-inkscape-font-specification:Century Gothic"
+       id="text3878"
+       transform="translate(-28.85742,-922.82222)">
+      <path
+         d="m 415.11328,1120.3759 -6.11719,4.6933 c -3.37507,-4.3945 -7.43561,-7.7167 -12.18164,-9.9668 -4.71099,-2.2851 -9.89653,-3.4276 -15.55664,-3.4277 -6.18754,10e-5 -11.918,1.4942 -17.1914,4.4824 -5.27347,2.9532 -9.36917,6.9434 -12.28711,11.9707 -2.88283,4.9922 -4.32424,10.6172 -4.32422,16.875 -2e-5,9.4571 3.23436,17.3496 9.70312,23.6777 6.50388,6.3282 14.69528,9.4922 24.57422,9.4922 10.86322,0 19.95111,-4.2539 27.26367,-12.7617 l 6.11719,4.6406 c -3.86726,4.9219 -8.70124,8.7364 -14.50195,11.4434 -5.76569,2.6719 -12.21685,4.0078 -19.35352,4.0078 -13.57034,0 -24.27541,-4.5176 -32.11523,-13.5527 -6.57423,-7.6289 -9.86134,-16.8398 -9.86133,-27.6328 -10e-6,-11.3555 3.97265,-20.9004 11.91797,-28.6348 7.98044,-7.7695 17.96481,-11.6542 29.95312,-11.6543 7.24214,10e-5 13.78119,1.4415 19.61719,4.3242 5.83587,2.8477 10.61711,6.8556 14.34375,12.0235"
+         id="path3912"
+         inkscape:connector-curvature="0" />
+    </g>
+    <text
+       inkscape:export-ydpi="200.35001"
+       inkscape:export-xdpi="200.35001"
+       sodipodi:linespacing="125%"
+       id="text3882"
+       y="339.0191"
+       x="399.2916"
+       style="font-size:18px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+       xml:space="preserve"><tspan
+         y="339.0191"
+         x="399.2916"
+         id="tspan3884"
+         sodipodi:role="line"> </tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:18px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+       x="780"
+       y="252.36218"
+       id="text3917"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan3919"
+         x="780"
+         y="252.36218">&lt;--This is as path (no font!)</tspan></text>
+    <text
+       sodipodi:linespacing="125%"
+       id="text3921"
+       y="712.36218"
+       x="760"
+       style="font-size:18px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+       xml:space="preserve"><tspan
+         y="712.36218"
+         x="760"
+         id="tspan3923"
+         sodipodi:role="line">&lt;--This is as text (need the Century Gothic font!)</tspan></text>
+  </g>
+</svg>

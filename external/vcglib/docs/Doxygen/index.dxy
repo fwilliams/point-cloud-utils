@@ -1,0 +1,60 @@
+/** \mainpage The VCG Library
+The Visualization and Computer Graphics Library (VCG for short) is
+a open source portable C++ templated library for manipulation, processing
+and displaying with OpenGL of triangle and tetrahedral meshes.
+
+VCG Lib uses a git repository hosted by github at http://github.com/cnr-isti-vclab/vcglib/
+
+The library, composed by more than 100k lines of code,
+is released under the GPL license, and it is the base of most of the
+software tools of the <b>Visual Computing Lab</b> of the Italian National Research Council Institute ISTI
+(http://vcg.isti.cnr.it), like metro and MeshLab.
+
+
+The VCG library is tailored to mostly manage triangular meshes:
+The library is fairly large and offers many state of the art functionalities for processing meshes, like:
+- high quality quadric-error edge-collapse based simplification,
+- efficient spatial query structures (uniform grids, hashed grids, kdtree, ...) ,
+- advanced smoothing and fairing algorithms,
+- computation of curvature,
+- optimization of texture coordinates,
+- Hausdorff distance computation,
+- Geodesic paths,
+- mesh repairing capabilities,
+- isosurface extraction and advancing front meshing algorithms,
+- Poisson Disk sampling and other tools to sample point distributions over meshes,
+- subdivision surfaces,
+
+Documentation
+-------
+
+Start from the following pages for basic concepts and examples.
+- \subpage install "Installing the VCG Library"
+- \subpage basic_concepts "Basic Concepts"
+- \subpage optional_component "Optional Component"
+- \subpage flags "Bit Flags on mesh elements"
+- \subpage adjacency "Adjacency and Topology"
+- \subpage allocation "Creating and destroying elements"
+- \subpage attributes "Adding user defined attributes to mesh elements"
+- \subpage fileformat "Loading and saving meshes"
+- \subpage shot "Camera and shot abstraction for managing views"
+- \ref code_sample "Short Examples showing various features of the library"
+
+Notable Applications
+-------
+A number of applications have been developed using the vcglib:
+- <a href="http://www.meshlab.net">MeshLab</a>: the renowned open source mesh processing is based on this library.
+- \subpage metro "Metro, the tool for measuring differences between meshes"
+- The first high quality  <a href="http://dl.acm.org/citation.cfm?id=940008"> out-of-core mesh simplifier </a> that was used by the Stanford Digital Michelangelo project to process their huge 3D scanned models.
+
+Contacts
+-------
+
+For any info about licensing (portion of) the library please contact us:<br>
+<b> Paolo Cignoni (p.cignoni@isti.cnr.it) </b><br>
+<b> Fabio Ganovelli (f.ganovelli@isti.cnr.it) </b><br>
+<a href="http://vcg.isti.cnr.it">Visual Computing Lab</a> of the Italian National Research Council - ISTI
+
+In case of \b bugs please report them <a href="https://github.com/cnr-isti-vclab/vcglib/issues"> here</a>.
+
+*/

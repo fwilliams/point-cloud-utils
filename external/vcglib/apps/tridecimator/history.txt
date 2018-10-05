@@ -1,0 +1,28 @@
+
+   VCGLib  http://vcg.sf.net                                         o o     
+   Visual and Computer Graphics Library                            o     o   
+                                                                  _   O  _   
+   Copyright(C) 2005-2006                                           \/)\/    
+   Visual Computing Lab  http://vcg.isti.cnr.it                    /\/|      
+   ISTI - Italian National Research Council                           |      
+                                                                      \      
+   Metro 4.04 25/01/2005
+   All rights reserved.                                                      
+   
+
+
+2005/04/04 Release 4.05
+Added saving of Error Histogram
+
+2005/01/26 Release 4.04
+Gcc compiling issues
+Moved to the library core the code for computing min distance froma a point to a mesh using a uniform grid.
+Slightly faster.
+
+2005/01/03 Release 4.03
+Better ply compatibility, and improved error reporting
+
+2004/11/29 Release 4.02
+removed bug in printing Hausdorf distance,
+removed bug in command line parsing,
+upgraded import mesh library to support off format

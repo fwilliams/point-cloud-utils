@@ -1,0 +1,205 @@
+/** \page adjacency
+Adjacency
+=========
+VCG Lib does not have a hard-coded way to encode the adjacencies among simplices. It all depends on which attributes are stored with the simplices and how they are used. I the previous examples the definition of face has always included the attribute vcg::face::VertexRef , which stores 3 pointers to MyVertex accessible with the member function V() (the well known Indexed Data Structure). The reason is that almost all of the algorithms currently implemented in VCG Lib assume its presence. So, if your type MyFace does not include the attribute vcg::face::VertexRef, the definition will be correct but almost no algorithm will work..
+
+There are other adjacency relations that can be useful to navigate a mesh, for example to collect the one-ring neighborhood of a vertex. VCG Lib uses two mechanisms which are explained in the following, along with the attributes they use.
+
+
+FF Adjacency
+============
+The face-to-face adjacency, stored in the attribute for the faces vcg::face::FFAdj ( vcg::face::TTAdj for tetrahedra), encodes the adjacency of faces (tetrahedra) through edges (faces). The image below shows two triangle faces with the convention adopted for indexing vertexes and edges.
+
+The vertexes are numbered from 0 to 2 in CCW sense and the edge i = 0..2 is the edge whose extremes are i and (i+1) mod 3 . Therefore the common edge between faces f1 and f2 is the edge 1 of the face f1 and the edge 0 of the face f0.
+
+vcg::face::FFAdj stores, for each edge e of the face f:
+
+FFp(e): a pointer to a face f' sharing e. If e is a border than points to the face f itself
+FFi(e):the index of e in the pointed face
+
+\image html "FF_Adj.png" "Indexing of vertexes and edges"
+
+    f1->FFp(1) == f0
+    f1->FFi(1) == 0
+
+    f0->FFp(0) == f1
+    f0->FFi(0) == 1
+
+Note that we specified that FFp(e) point to a adjacent face, not to the adjacent face. The reason is that there could be more than two faces on the same edge, and this is seamlessly supported by VCG Lib. In the picture below is shown an example with 4 faces incident to the same edge
+
+
+\image html "FF_nonmanifold.png" "Non manifold edge"
+
+In this case the adjacencies are set to form a circular list (not necessarily sorted with the angle around the edge). This is done by the VCG Lib function that update these values (UpdateTopology<MeshType>::FFTopology(MeshType & m)).
+In this way VCG Lib provides a way to check if a mesh is manifold on a specific edge because the FF adjacency relation is mutual, i.e. the face f0 points to the face f1 which points to the face f0, if and only if the mesh is manifold over the corresponding edge.
+
+bool IsManifold(MyFace *f,int e) { return (f0 == f0->FFp(0)->FFp(f0->FFi(0)))}
+
+Referring to the picture:
+
+(f0 == f0->FFp(0)->FFp(f0->FFi(0))} equals
+
+(f0 == f1->FFp(0)} equals
+
+(f0 == f0} Ok! It is manifold
+
+
+Pos
+---
+The Pos is the VCG Lib implementation of the Cell-Tuple{ref}. Here we give a as short as possible definition, trading formalisms for space. A Pos in a triangle mesh is a triple made of a vertex: pos = (v,e,f) , such that v is an extreme of e and e belong to the face f . The figure shows few pos in a triangle mesh as small triangles "pointing" to a vertex, "leaning" against an edge and inside a face. For example c0=(v,e0,f).
+
+A very nice property is that given a pos c, there is only another neighbor pos c' that can be obtained from c changing only one of the elements of the triple.
+
+We call the operation of passing from a pos to one of its neighbors Flip and write FlipV, FlipE and FlipF to indicate that the flipped element is the vertex, the edge or the face respectively.
+
+For example consider c1: there is only another pos which is the same as c0 except for the vertex component of the triple, and it is c2. For brevity, we write c2 = FlipV(c1).
+
+In the left of the table some other examples are shown just to make this point clear.
+
+\image html "pos_example.png" "Pos Example"
+
+    c2 = FlipV(c1)
+    c0 = FlipE(c1)
+    c3 = FlipF(c0)
+
+    CCW around v
+    c4 = FlipE(FlipF(c0))
+    c5 = FlipE(FlipF(c4))
+    Bounce
+    c6 = FlipE(FlipF(c5))
+    CW around v
+    c3 = FlipE(FlipF(c6))
+    c1 = FlipE(FlipF(c3))
+    Bounce
+    c0 = FlipE(FlipF(c1))
+
+Note that concatenating two flips: FlipF and FlipE we obtain a transition from a pos to the next in counterclockwise or in clockwise sense, depending if the starting pos is on the CCW edge of the face with respect to the vertex or not. Also note that, thanks to how FF adjacency is defined, when a pos is on the border, it bounces back. This pair of flip are widely used in the VCG Lib to run over the one ring neighborhood of manifold vertices.
+
+The following code snippet shows how to use the pos to iterate around a vertex:
+
+    sf/apps/sample/trimesh_pos_demo/trimesh_pos_demo.cpp
+
+    #include <vcg/simplex/face/pos.h> // include the definition of pos
+
+    ...includes to define your mesh type
+
+    class MyVertex: ...
+    class MyFace: public vcg::FaceSimp2<MyVertex,MyEdge,MyFace, vcg::face::VertexRef, vcg::face::FFAdj>{};
+
+    void OneRingNeighborhood( MyFace * f)
+    {
+      MyVertex * v = f->V(0);
+      MyFace* start = f;
+      vcg::face::Pos<MyFace> p(f,0,v);// constructor that takes face, edge and vertex
+      do
+      {
+        p.FlipF();
+        p.FlipE();
+      }while(p.f!=start);
+    }
+
+Two important notes:
+
+We arbitrarily picked f->V(0) as pivot vertex. In general one may want to start knowing the vertex. This is done by including the attribute vcg::vertex::VFAdj which basically associates to each vertex pointer to one of the faces incident on it. See the VF Adjacency for details.
+This implementation does not work if the vertex is on the border. Just try with the example: from the pos c4 it would find c5,c6,c3 which is in the same face as c4. Of course this does not happen if you use the pos itself as a guard and not just the face. However, even in this case, you would obtain the sequence of pos: c5,c6,c3,c1,c0,c4 corresponding to the faces f2,f2,f1,f0,f0,f1 which probably is not what you want. VCG Lib provides a variation of pos that solves this problem
+
+Jumping Pos
+-----------
+The Jumping Pos works exactly like the Pos, only it does not bounce when it encounters the border. Instead, it jump around the vertex as if the to border faces sharing the vertex (faces f0 and f2 in the image) were adjacent.
+\code
+sf/apps/sample/trimesh_pos_demo/trimesh_pos_demo.cpp
+
+    #include <vcg/simplex/face/jumping_pos.h> // include the definition of jumping pos
+
+    //...includes to define your mesh type
+
+    //class MyVertex: ...
+    class MyFace: public vcg::FaceSimp2<MyVertex,MyEdge,MyFace, vcg::face::VertexRef,vcg::face::FFAdj>{};
+
+    void OneRingNeighborhoodJP( MyFace * f)
+    {
+      MyVertex * v = f->V(0);
+      MyFace* start = f;
+      vcg::face::JumpingPos<MyFace> p(f,0,v);// constructor that takes face, edge and vertex
+      do
+      {
+        p.NextFE();
+      }while(p.f!=start);
+    }
+\endcode
+VF Adjacency
+------------
+
+VCG Lib implements vertex-to-face adjacency, i.e. given a vertex v we can retrieve all the faces incident to v.
+Let v_star =(f0,f1,f2,...,fk) be the set faces incident to v arranged in a sequence (with no preferred criteria).
+VCG Lib allows to retrieve v_star in optimal time ( O( star_v) ) by using the following attibutes:
+
+vcg::vertex::VFAdj which is a vertex attribute containing a pointer to f0
+vcg::face::VFAdj which is a face attribute containing a pointer to the next face in the list v_star for each of its 3 vertices (4 in the case of tetrahedra)
+These two attributes are not only a pointers, they also contain an index referring the index of the vertex in the pointed face in the same style as the vcg::face::FFAdj does. The picture below shows a complete example:
+
+\image html "VertexStar.png" "Example of vertex-face adjacency"
+
+    v.VFp() == f2
+    v.VFi() == 0
+
+    f2->VFp(0) == f3
+    f2->VFi(0) == 1
+    f3->VFp(1) == f1
+    f3->VFi(1) == 2
+    f1->VFp(2) == f0
+    f1->VFi(2) == 2
+    f0->VFp(2) == NULL
+    f0->VFi(2) == -1
+
+VFIterator
+----------
+
+VFIterator is a simple iterator to run over the faces in the one-ring neighborhood of a vertex using the VF Adjacency (it is just like Pos for the FF Adjacency) The following code snippet shows how to use the VFIterator:
+\code
+sf/apps/sample/trimesh_pos_demo/trimesh_vfiter_demo.cpp
+
+#include <vcg/simplex/face/pos.h> // include the definition of  VFIterator
+
+//...includes to define your mesh type
+
+class MyVertex: public vcg::VertexSimp2<MyVertex,MyEdge,MyFace, vcg::vertex::VFAdj /*,... other attributes*/ >{};
+class MyFace: public vcg::FaceSimp2<MyVertex,MyEdge,MyFace, vcg::face::VertexRef,vcg::face::VFAd>{};
+
+void OneRingNeighborhoodVF( MyVertex * v)
+{
+  vcg::face::VFIterator<MyFace> vfi(v); //initialize the iterator tohe first face
+  for(;!vfi.End();++vfi)
+  {
+    MyFace* f = vfi.F();
+    // ...do something with face f
+  }
+}
+\endcode
+Stars and Rings
+---------------
+We have a few handy functions to recover the set of faces/vertices incident on vertex:
+
+- \ref vcg::face::VFOrderedStarFF
+- \ref vcg::face::VVStarVF
+- \ref vcg::face::VFStarVF
+- \ref vcg::face::VFExtendedStarVF
+- \ref vcg::face::EFStarFF
+
+Few facts on FF adjacency and VF adjacency
+------------------------------------------
+
+Here we make a series of simple statements just to avoid confusion and try to help up choosing the adjacencies the best fit your needs.
+
+If the mesh is manifold, the one-ring neighborhood of a vertex computed by using Pos ( needs FF adjacency) is the same as the one computed by using VFIterator (needs VF adjacency). The order in which the faces are visited can be CW or CCW if using Pos, unspecified by using VIterator
+If the mesh is non-manifold, Pos may not find all the faces of the one-ring neighborhood of he vertex, VFIterator always does
+
+Boundary relations and adjacency
+--------------------------------
+In many algorithms you need to simply the boundary/border condition of a face, e.g. to know if a given face f has one or more adjacent faces on a specified edge e. Using FF adjacency this can be done simply by using the face::IsBorder(f,e) static function that simply checks if the pointer stored in face f on the edge e points to f itself. If you are navigating the mesh using a Pos, you have a Pos member function IsBorder() that reports the boundary condition of the current pos. Similarly, for testing manifoldness of specific places over a mesh, there is a face::IsManifold(f,e) static function and a IsManifold(e) function member of the pos class.
+
+If you are not using FF adjacency evaluating the boundary conditions could be not very efficient, so vcg library provides a technique to cook the current boundary conditions of the mesh into vertex and face flags. Use the members of the UpdateFlags static class to compute flags that reflects the current mesh status and the access these flags using the IsB(e) member function of the face class. Remember that flags based boundary information can become invalid if you change the mesh topology. On the other hand consider that many non-mesh-modifying algorithms do not require explicit FF adjacency but just boundary information (typical examples: most mesh smoothing and curvature computation algorithms).
+
+Please note that the boundary flags are set true also for non manifold conditions.
+
+*/

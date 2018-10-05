@@ -1,0 +1,53 @@
+
+   VCGLib  http://vcg.sf.net                                         o o     
+   Visual and Computer Graphics Library                            o     o   
+                                                                  _   O  _   
+   Copyright(C) 2005-2006                                           \/)\/    
+   Visual Computing Lab  http://vcg.isti.cnr.it                    /\/|      
+   ISTI - Italian National Research Council                           |      
+                                                                      \      
+   TriMeshInfo 1.22 2006/10/30
+   All rights reserved.                                                      
+   
+
+2006/10/30 Release 1.22
+
+Better support of off and obj files. 
+Now it can parse also slightly incorrect 
+files reporting warnings without blocking.
+
+
+2006/03/27 Release 1.21
+
+Now trimeshinfo support OFF,STL,OBJ and PLY format
+Added normal, color and texture information
+Fix mesh info data initialization
+
+
+2005/12/21 Release 1.2
+
+Fix orientability and genus computation.
+Re-design output (add HTML info support).
+
+
+2005/09/28 Release 1.02
+
+Added possibility of saving File in OFF format
+Changed main file name from main.cpp intp trimeshinfo.cpp to uniform with other projects.
+Fixed some errors in counting edges and holes routines.
+
+
+2005/2/16 Release 1.01
+
+Added new functionality to the application:
+  - Volume (Computed only for Closed Manifold Datasets)
+  - Color  (Computed only if the information is embedded in the model)
+  - Genus (Computed only for Manifold Datasets) 
+  - Number of Duplicated Vertices
+  - Self-Intersection (Currently computed only for Datasets with less than 3M faces) 
+Modified output layout.
+
+
+2005/01/19 Release 1.0
+
+First working version. 

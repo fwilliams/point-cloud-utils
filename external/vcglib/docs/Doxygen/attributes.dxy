@@ -1,0 +1,39 @@
+/** \page attributes
+User-Defined Attributes
+=======================
+VCG Lib also provides a simple mechanism to associate user-defined typed 'attributes' to the simplicies and to the mesh.
+
+Note that both 'attributes' and 'components' are basically accessory data that are bound to a simplex. In short, components are statically defined member data, while attributes are run-time defined, handle accessed, data.
+
+Conceptually the difference is that with the term component VCGLib indicates those basic values that are considered to 'define' the simplex (its position, its normal, its connectivity information), while an user defined attribute is an accessory data that is useful for some specific algorithms, like "the average direction from which a vertex is visible".
+
+Practically the difference is that every optional component has its non optional counterpart and is accessed through a member function of the simplex, so that when you write your algorithm you use vi->N() to access the normal both it is has been declared as optional or not, while the attributes are accessed by a handle which is returned at the creation of the attribute.
+
+The following code snippet shows how to add an attribute:
+ \snippet trimesh_attribute.cpp Adding an attribute
+
+Once you have the handle retrieving and using the attributes is rather simple by mean of the [] operator:
+
+\snippet trimesh_attribute.cpp Using an attribute
+
+You also have functions to check if a given attribute exists, to retrieve an handle for it and for, eventually, deleting it (using the handle or by name).
+Remember that the scope of a handle does not interfere with the memory allocation of the attribute. If you do not delete an attribute explicitly, it will stay allocated until the mesh itself is destroyed, even if you do not have any more handles to it.
+
+\snippet trimesh_attribute.cpp Deleting an attribute
+
+The same can be done for edges, faces and for the mesh itself, just replace the occurences of PerVertex with PerFace, PerEdge and PerMesh.
+Note that if you call add an attribute without specifying a name and you lose the handle, you will not be able to get your handle back.
+For attributes specified as per-mesh the access is done in a slightly different way. 
+\snippet trimesh_attribute.cpp Per Mesh attribute
+
+
+
+C++ type of a mesh and reflection
+---------------------------------
+
+VCG Lib provides a set of functions to implement reflection, i.e. to investigate the type of a mesh at runtime. These functions follow the format Has[attribute](mesh) and return a boolean stating if that particular attribute is present or not.
+
+
+You may wonder why those functions are not statically typed and why they needs the mesh object, i.e. why can't you just write ComputeMeshType::HasPerVertexNormal()? The reason is that VCG Lib reflection takes into account optional components, therefore HasPerVertexNormal(m) will return true if the type of the vertex contains the attribute as permanent (e.g. vcg::vertex::Normal3f) OR if it contains the attribute as optional (e.g. vcg::vertex::Normal3fOcf) AND it is enabled, i.e. the relative Enable function has been called.
+
+*/

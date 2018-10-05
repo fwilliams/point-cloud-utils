@@ -1,0 +1,111 @@
+/**
+\page "VCG Library Coding Guide"
+VCG Library Coding Guide
+=========================
+
+Naming Rules
+------------
+
+<B><I>Class names </I></B> with first letter Uppercase and internal
+uppercase to separate compound words.\n
+
+<B><I>Function members</I></B> of classes follow the same rule.
+
+Example:
+
+\code
+   Point3f
+   {
+   public:
+   ScalarType &amp;V(const int i);
+   }
+\endcode
+
+<B><I>Public Variable members</I></B> has the first letter
+lowercase and internal uppercase to separate compound words.
+
+Example:
+
+<pre></pre>
+
+<B><I>Private Variable members</I></B> has an underscore as first char and
+the first letter lowercase and internal uppercase to separate compound
+words.
+
+Example:
+
+<pre>
+   Point3f
+   {
+   private:
+   ScalarType _v[3];
+   }
+</pre>
+
+<B><I>Class Template Arguments</I></B> all capitalized and with names
+remembering where they have been defined.<br>
+Class TypeDefs used for templated Class arguments or for shortness are just like Class Names,
+but ending with &ldquo;Type&rdquo;, &ldquo;Iterator&rdquo;,  &ldquo;Pointer&rdquo;, or &ldquo;Container&rdquo;.
+
+Example:
+<pre>
+   typedef typename VertexType::CoordType CoordType;
+   typedef typename VertContainer::iterator VertexIterator;
+
+</pre>
+
+<H2 >Header Files</H2>
+Header filenames and folders always fully lower case. Compound names
+are separated by '_'.
+
+Example:
+
+    #include<vcg/space/point3.h>;
+
+Each include file must begin with the standard legal
+disclamier/license intestation and report in the first line of history
+the $LOG$ cvs string.
+
+The following automatically generated history can be, from time to
+time, compressed and shortened to save space.
+
+Each file of the library has to include all the files that it
+requires. A include file should rely on the files included by its own
+include files. Example: in vcg/space/box3.h:
+
+
+     #include<vcg/math/base.h>; // not necessary because included by point3.h
+     #include<vcg/space/point3.h>;
+
+
+In Class definitions place all the prototypes all together before
+the inline or templated implementations.
+
+<H2 >Editing Rules</H2>
+
+Tabs are equivalent to two spaces.
+
+There are no strict rules for the placement of '{' or indenting.
+
+<H2 >Constructors and casting</H2>
+
+All basic classes (point3, box3 ecc) must have null
+constructors. Non null constructors can be added in debug
+versions.
+
+Implicit casting is disallowed. Write a member Import function for
+casting from different integral types and a static.<br>
+Construct to build an object from different a integral type.
+
+Example:
+
+<pre>
+   Point3f pf(1.0f,0.0f,0.0f);
+   Point3d pd=Point3f::Construct(pf);
+   pf.Import(pd);
+</pre>
+
+<H2 >Comment and documenting</H2>
+All the classes, algorithms and functions <B>MUST</B> be documented using Doxygen. Please add a short intro before each class explaining design choices and for non trivial classes give some short usage example. For complex classes try to group  similar members under categories. Non trivial algorithms should refer the paper/book where they are explained.
+ Namespaces and files should be also documented trying to explain how the file/namespace partitioning works.
+*/

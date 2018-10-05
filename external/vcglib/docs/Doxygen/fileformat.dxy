@@ -1,0 +1,45 @@
+/** \page fileformat File Formats
+File Formats
+============
+VCGLib provides importer and exporter for several file formats
+- import: PLY, STL, OFF, OBJ, 3DS, COLLADA, PTX, V3D, PTS, APTS, XYZ, GTS, TRI, ASC, X3D, X3DV, VRML, ALN
+- export: PLY, STL, OFF, OBJ, 3DS, COLLADA, VRML, DXF, GTS, U3D, IDTF, X3D
+
+The following code snippet show how to use the PLY importer and exporter:
+\code
+#include <wrap/io_trimesh/import.h>
+// definition of type MyMesh
+MyMesh m;
+
+vcg::tri::io::ImporterPLY<MyMesh>::Open(m,"namefile_to_open.ply");
+// ....
+vcg::tri::io::ExporterPLY<MyMesh>::Save(m,"namefile_to_save.ply");
+\endcode
+
+The previous one is the minimal required interface for all the importers and exporters. Additionally two other parameters can be specified: *mask* and *callback*. The callback is used for providing a feedback during the usually length importing/exporting process. The mask is used to better specify/understand what is loaded/saved.
+
+Saving Mask and Reading Mask
+----------------------------
+Generally all file formats save at least vertex positions and basic connectivity information, but beyond that you may want to choose which other data are stored with the file. To this aim, VCGLib provides a class `vcg::tri::io::Mask` which is essentially a collection of bit names that are used to specify which components you want to write to the file (e.g. stuff like `vcg::tri::io::Mask::IOM_VERTCOLOR`).
+
+When __saving__ this mask is used in a READ ONLY mode (they are just constants) to specify what component you want to save. For example, if you have stored in your mesh normals per vertex (for rendering purposes) but you consider saving them in ply format just a waste of space, you should specify an appropriate mask with the `Mask::IOM_VERTNORMAL` bit cleared. Obviously not all the formats are able to save all the possible data. For example STL format cannot save texture coords or per vertex color. So to know what you are able to save in a given XXX format there is the function `ExporterXXX::GetExportMaskCapability()` that gives you a bitmask with all the capability of that file format.
+
+When __loading__ this mask is used in a WRITE ONLY mode to report to the user what fields have been loaded from the file into the mesh (e.g. the initial value of the mask is ignored). In many cases it could be useful to know what data is present into a file to prepare the mesh (e.g. to enable optional components), for this purpose all the importer have also a `ImporterXXX::LoadMask(filename,mask)` that fill the mask only without effectively loading a mesh. Note that for some mesh formats understanding what is contained into a file means parsing the whole file.
+
+Error Reporting
+---------------
+The mesh I/O functions returns ZERO on success and an error code different from zero in case of failure or critical conditions. Use the `static const char *ErrorMsg(int error)` function to get a human understandable description of the error code and static bool `ErrorCritical(int err)` to know if a given error is a critical one or just a warning. For example in the OBJ format the absence of the accompanying material description file, is considered non critical (you are able to get the correct geometry even if you miss material info).
+
+VMI dump file
+-------------
+VMI is an acronym for Vcglib Mesh Image and it is not a proper file format but a simple dump of the `vcg::TriMesh` on a file. Not being a file format means that:
+there is no specification
+it is bound to the current version of the VCGLib with no backward compatibility
+a VMI can be very useful for debug purpose, because it saves:
+* all the components
+* all the temporary components (currently only of Optional Component Fast type)
+* all the vertex, face or mesh attributes you have in your mesh file
+So if, for example, your algorithm crashes at the n-th step, you can save intermediate results of your computation with VMI and reload it.
+Note that in order to load a VMI the mesh passed as template to `vcg::tri::ImporterVMI<MeshType>(..)` must be of the same type as the mesh passed to `vcg::tri::ExporterVMI<MeshType>(..)` otherwise the loader returns FALSE.
+
+*/

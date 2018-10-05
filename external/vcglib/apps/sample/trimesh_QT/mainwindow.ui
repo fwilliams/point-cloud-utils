@@ -1,0 +1,197 @@
+<ui version="4.0" >
+ <class>mainWindow</class>
+ <widget class="QMainWindow" name="mainWindow" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>715</width>
+    <height>579</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Trimesh QT</string>
+  </property>
+  <widget class="QWidget" name="centralwidget" >
+   <layout class="QVBoxLayout" >
+    <property name="margin" >
+     <number>9</number>
+    </property>
+    <property name="spacing" >
+     <number>6</number>
+    </property>
+    <item>
+     <widget class="QFrame" name="toolsFrame" >
+      <property name="sizePolicy" >
+       <sizepolicy>
+        <hsizetype>0</hsizetype>
+        <vsizetype>0</vsizetype>
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="frameShape" >
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow" >
+       <enum>QFrame::Raised</enum>
+      </property>
+      <layout class="QHBoxLayout" >
+       <property name="margin" >
+        <number>9</number>
+       </property>
+       <property name="spacing" >
+        <number>6</number>
+       </property>
+       <item>
+        <widget class="QLabel" name="drawModeLabel" >
+         <property name="text" >
+          <string>Draw &amp;Mode :</string>
+         </property>
+         <property name="buddy" >
+          <cstring>drawModeComboBox</cstring>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="drawModeComboBox" >
+         <item>
+          <property name="text" >
+           <string>Smooth</string>
+          </property>
+         </item>
+         <item>
+          <property name="text" >
+           <string>Points</string>
+          </property>
+         </item>
+         <item>
+          <property name="text" >
+           <string>Wire</string>
+          </property>
+         </item>
+         <item>
+          <property name="text" >
+           <string>Flat Wire</string>
+          </property>
+         </item>
+         <item>
+          <property name="text" >
+           <string>Hidden</string>
+          </property>
+         </item>
+         <item>
+          <property name="text" >
+           <string>Flat</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item>
+        <spacer>
+         <property name="orientation" >
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" >
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <widget class="QPushButton" name="loadMeshPushButton" >
+         <property name="text" >
+          <string>Load &amp;Mesh</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="loadTetrahedronPushButton" >
+         <property name="text" >
+          <string>Load &amp;Tetrahedron</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="loadDodecahedronPushButton" >
+         <property name="text" >
+          <string>Load &amp;Dodecahedron</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer>
+         <property name="orientation" >
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" >
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item>
+     <widget class="QFrame" name="glFrame" >
+      <property name="frameShape" >
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow" >
+       <enum>QFrame::Raised</enum>
+      </property>
+      <layout class="QVBoxLayout" >
+       <property name="margin" >
+        <number>9</number>
+       </property>
+       <property name="spacing" >
+        <number>6</number>
+       </property>
+       <item>
+        <widget class="GLArea" native="1" name="glArea" >
+         <property name="minimumSize" >
+          <size>
+           <width>320</width>
+           <height>240</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar" >
+   <property name="geometry" >
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>715</width>
+     <height>21</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QStatusBar" name="statusbar" />
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>GLArea</class>
+   <extends>QWidget</extends>
+   <header>glarea.h</header>
+  </customwidget>
+ </customwidgets>
+ <tabstops>
+  <tabstop>drawModeComboBox</tabstop>
+  <tabstop>loadMeshPushButton</tabstop>
+  <tabstop>loadTetrahedronPushButton</tabstop>
+  <tabstop>loadDodecahedronPushButton</tabstop>
+ </tabstops>
+ <resources/>
+ <connections/>
+</ui>
