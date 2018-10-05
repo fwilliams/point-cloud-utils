@@ -2,10 +2,10 @@
 A Python Library for Generating Point Samples on Meshes
 
 py-sample mesh is a very simple library to add random samples to a triangle mesh. It provides the following operations:
- - A tiny obj loader for testing
  - Poisson-Disk-Sampling based on "[Parallel Poisson Disk Sampling with Spectrum Analysis on Surface](http://graphics.cs.umass.edu/pubs/sa_2010.pdf)".
  - Clustering point-cloud vertices into bins
  - Uniform random sampling on meshes
+ - A tiny Wavefront obj mesh loader for testing
  
 # Example Usage
 ```python
