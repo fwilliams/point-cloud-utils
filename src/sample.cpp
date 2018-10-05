@@ -85,12 +85,34 @@ static void vcg_mesh_to_v(
 }
 
 
+
+const char* poisson_disk_sample_doc = R"Qu8mg5v7(
+Downsample a point set (possibly on a mesh) so that samples are approximately evenly spaced.
+This function uses the method in "Parallel Poisson Disk Sampling with Spectrum Analysis on Surface"
+(http://graphics.cs.umass.edu/pubs/sa_2010.pdf)
+
+Parameters
+----------
+v : #v by 3 list of mesh vertex positions
+f : #f by 3 list of mesh face indices
+radius : desired separation between points
+use_geodesic_distance : Use geodesic distance on the mesh downsampling, False by default
+best_choice_sampling : When downsampling, always keep the sample that will remove the
+                       fewest number of samples, False by default
+
+Returns
+-------
+A #pv x 3 matrix of points which are approximately evenly spaced and are a subset of the input v
+
+)Qu8mg5v7";
+
 npe_function(poisson_disk_sample)
 npe_arg(v, dense_f32, dense_f64)
 npe_arg(f, dense_i32, dense_i64)
 npe_arg(radius, double)
-npe_default_arg(approximate_geodesic_distance, bool, false)
+npe_default_arg(use_geodesic_distance, bool, false)
 npe_default_arg(best_choice_sampling, bool, false)
+npe_doc(poisson_disk_sample_doc)
 npe_begin_code()
   MyMesh m;
   vcg_mesh_from_vf(v, f, m);
@@ -102,7 +124,7 @@ npe_begin_code()
   tri::SurfaceSampling<MyMesh,tri::MeshSampler<MyMesh> >::PoissonDiskParam::Stat pds;
   pp.pds = pds;
   pp.bestSampleChoiceFlag = best_choice_sampling;
-  pp.geodesicDistanceFlag = approximate_geodesic_distance;
+  pp.geodesicDistanceFlag = use_geodesic_distance;
   tri::SurfaceSampling<MyMesh,tri::MeshSampler<MyMesh> >::PoissonDiskPruning(mps, m, radius, pp);
 
   npe_Matrix_v ret;
@@ -112,11 +134,27 @@ npe_begin_code()
 npe_end_code()
 
 
+
+
+const char* cluster_vertices_doc = R"Qu8mg5v7(
+Divide the bounding box of a point cloud into cells and cluster vertices which lie in the samee cell
+
+Parameters
+----------
+v : #v by 3 list of mesh vertex positions
+f : #f by 3 list of mesh face indices
+cell_size : Dimension along one axis of the cells
+
+Returns
+-------
+A #pv x 3 matrix of clustered points
+
+)Qu8mg5v7";
+
 npe_function(cluster_vertices)
 npe_arg(v, dense_f32, dense_f64)
 npe_arg(cell_size, double)
-npe_default_arg(approximate_geodesic_distance, bool, false)
-npe_default_arg(best_choice_sampling, bool, false)
+npe_doc(cluster_vertices_doc)
 npe_begin_code()
   MyMesh m;
   vcg_mesh_from_v(v, m);
@@ -135,10 +173,26 @@ npe_begin_code()
 npe_end_code()
 
 
+const char* random_sample_doc = R"Qu8mg5v7(
+Generate uniformly distributed random point samples on a mesh
+
+Parameters
+----------
+v : #v by 3 list of mesh vertex positions
+f : #f by 3 list of mesh face indices
+num_samples : The number of samples to generate
+
+Returns
+-------
+A #pv x 3 matrix of samples
+
+)Qu8mg5v7";
+
 npe_function(random_sample)
 npe_arg(v, dense_f32, dense_f64)
 npe_arg(f, dense_i32, dense_i64)
 npe_arg(num_samples, int)
+npe_doc(random_sample_doc)
 npe_begin_code()
   MyMesh m;
   vcg_mesh_from_vf(v, f, m);
