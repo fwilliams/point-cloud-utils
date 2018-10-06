@@ -6,3 +6,4 @@ build
 *.obj
 *.off
 __pycache__
+*.creator.user
