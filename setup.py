@@ -90,7 +90,8 @@ setuptools.setup(
         "Programming Language :: Python :: 2.7",
         "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
         ],
-    ext_modules=[CMakeExtension('python_cpp_example')],
+    ext_modules=[CMakeExtension('sample_mesh')],
     cmdclass=dict(build_ext=CMakeBuild),
+    zip_safe=False
 )
     
