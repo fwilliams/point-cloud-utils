@@ -6,7 +6,7 @@ py-sample mesh is a very simple library to add random samples to a triangle mesh
  - Clustering point-cloud vertices into bins
  - Uniform random sampling on meshes
 
-![Example of Poisson Disk Sampling](https://github.com/fwilliams/py-sample-mesh/edit/master/img/blue_noise.png)
+![Example of Poisson Disk Sampling](/img/blue_noise.png?raw=true "Blue Noise Example")
 
 # Installation Instructions
 Simply run:
