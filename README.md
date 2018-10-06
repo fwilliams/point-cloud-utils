@@ -11,7 +11,7 @@ Simply run:
 ```
 pip install git+git://github.com/fwilliams/py-sample-mesh
 ```
-The only dependency required is a valid python installation and a C++ compiler supporting C++14 or later.
+The only dependency required is a valid Python installation with Scipy and a C++ compiler supporting C++14 or later.
 
 # Example Usage
 ```python
