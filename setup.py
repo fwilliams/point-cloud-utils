@@ -94,7 +94,7 @@ setuptools.setup(
         "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
         ],
     cmdclass={'install': CMakeBuild,
-              'develop': CMakeBuild,}
+              'develop': CMakeBuild,},
     zip_safe=False
 )
     
