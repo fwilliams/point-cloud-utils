@@ -1,7 +1,4 @@
 import setuptools
-
-
-
 import os
 import re
 import sys
@@ -93,7 +90,7 @@ setuptools.setup(
         "Programming Language :: Python :: 2.7",
         "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
         ],
-    cmdclass={'install': CMakeBuild,
-              'develop': CMakeBuild,},
+    ext_modules=[CMakeExtension('python_cpp_example')],
+    cmdclass=dict(build_ext=CMakeBuild),
 )
     
