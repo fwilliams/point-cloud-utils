@@ -3,6 +3,8 @@
 #include <vcg/complex/algorithms/point_sampling.h>
 #include <vcg/complex/algorithms/clustering.h>
 
+#include <fstream>
+
 using namespace vcg;
 
 class MyEdge;
@@ -207,3 +209,40 @@ npe_begin_code()
 
   return npe::move(ret);
 npe_end_code()
+
+// TODO: An OBJ Loader to make it easy to test
+//const char* read_obj_doc = R"Qu8mg5v7(
+//Generate uniformly distributed random point samples on a mesh
+
+//Parameters
+//----------
+//v : #v by 3 list of mesh vertex positions
+//f : #f by 3 list of mesh face indices
+//num_samples : The number of samples to generate
+
+//Returns
+//-------
+//A #pv x 3 matrix of samples
+
+//)Qu8mg5v7";
+
+//npe_function(read_obj)
+//npe_arg(filename, std::string)
+//npe_default_arg(dtype, npe::dtype, "float64")
+//npe_doc(read_obj_doc)
+//npe_begin_code()
+
+//  std::vector<std::double_t> v;
+//  std::vector<std::int64_t> f;
+
+//  std::ifstream infile(filename);
+//  if (!infile.is_open()) {
+//    throw std::invalid_argument(std::string("Could not open file ") + filename);
+//  }
+
+//  std::string line;
+//  while (std::getline(infile, line)) {
+
+//  }
+//  return npe::move(ret);
+//npe_end_code()
