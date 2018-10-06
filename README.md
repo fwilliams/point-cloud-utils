@@ -5,15 +5,13 @@ py-sample mesh is a very simple library to add random samples to a triangle mesh
  - Poisson-Disk-Sampling based on "[Parallel Poisson Disk Sampling with Spectrum Analysis on Surface](http://graphics.cs.umass.edu/pubs/sa_2010.pdf)".
  - Clustering point-cloud vertices into bins
  - Uniform random sampling on meshes
- - A tiny Wavefront obj mesh loader for testing
  
 # Example Usage
 ```python
 import sample_mesh as sm
 
-# v is a nv by 3 Numpy array of vertices
-# f is an nf by 3 Numpy array of face indexes into v
-v, f = sm.read_obj("myobjfile.obj") 
+# Assume v is a nv by 3 Numpy array of vertices
+# Assum f is an nf by 3 Numpy array of face indexes into v 
 bbox = np.max(v, axis=0) - np.min(v, axis=0)
 bbox_diag = np.linalg.norm(bbox)
 
