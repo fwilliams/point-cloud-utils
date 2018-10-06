@@ -93,7 +93,9 @@ setuptools.setup(
         "Programming Language :: Python :: 2.7",
         "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
         ],
-    cmdclass={'compile': CMakeBuild},
+    cmdclass={'install': CMakeBuild,
+              'develop': CMakeBuild,
+              'egg_info': CMakeBuild},
     zip_safe=False
 )
     
