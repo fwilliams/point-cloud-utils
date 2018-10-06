@@ -22,9 +22,9 @@ class CMakeExtension(Extension):
 
 class CMakeBuild(build_ext):
     def run(self):
-        if path.exists('.git'):
+        if os.path.exists('.git'):
             #check_call(['git', 'submodule', 'init'])
-            subprocess.check_call(['git', 'submodule', 'update', '--init' '--recursive'])
+            subprocess.check_call(['git', 'submodule', 'update', '--init', '--recursive'])
 
         try:
             out = subprocess.check_output(['cmake', '--version'])
@@ -95,6 +95,5 @@ setuptools.setup(
         ],
     cmdclass={'install': CMakeBuild,
               'develop': CMakeBuild,},
-    zip_safe=False
 )
     
