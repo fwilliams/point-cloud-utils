@@ -22,6 +22,10 @@ class CMakeExtension(Extension):
 
 class CMakeBuild(build_ext):
     def run(self):
+        if path.exists('.git'):
+            #check_call(['git', 'submodule', 'init'])
+            subprocess.check_call(['git', 'submodule', 'update', '--init' '--recursive'])
+
         try:
             out = subprocess.check_output(['cmake', '--version'])
         except OSError:
@@ -70,7 +74,6 @@ class CMakeBuild(build_ext):
                               cwd=self.build_temp)
         print()  # Add an empty line for cleaner output
 
-        
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
@@ -90,7 +93,7 @@ setuptools.setup(
         "Programming Language :: Python :: 2.7",
         "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
         ],
-    cmdclass=dict(build_ext=CMakeBuild),
+    cmdclass={'compile': CMakeBuild},
     zip_safe=False
 )
     
