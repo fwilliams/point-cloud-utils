@@ -92,6 +92,10 @@ setuptools.setup(
         ],
     ext_modules=[CMakeExtension('sample_mesh')],
     cmdclass=dict(build_ext=CMakeBuild),
-    zip_safe=False
+    zip_safe=False,
+    install_requires=[
+        'numpy',
+        'scipy'
+    ]
 )
     
