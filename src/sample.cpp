@@ -117,7 +117,7 @@ npe_default_arg(best_choice_sampling, bool, false)
 npe_doc(poisson_disk_sample_doc)
 npe_begin_code()
 
-  if (v.rows() == 0 || v.cols != 3) {
+  if (v.rows() == 0 || v.cols() != 3) {
     std::stringstream ss;
     ss << "Invalid matrix size. Expected n by 3 (n > 0) but got shape =(" << v.rows() << ", " << v.cols() << ")";
     throw pybind11::value_error(ss.str());
@@ -168,7 +168,7 @@ npe_arg(cell_size, double)
 npe_doc(cluster_vertices_doc)
 npe_begin_code()
 
-  if (v.rows() == 0 || v.cols != 3) {
+  if (v.rows() == 0 || v.cols() != 3) {
     std::stringstream ss;
     ss << "Invalid matrix size. Expected n by 3 (n > 0) but got shape =(" << v.rows() << ", " << v.cols() << ")";
     throw pybind11::value_error(ss.str());
@@ -217,7 +217,7 @@ npe_arg(num_samples, int)
 npe_doc(random_sample_doc)
 npe_begin_code()
 
-  if (v.rows() == 0 || v.cols != 3) {
+  if (v.rows() == 0 || v.cols() != 3) {
     std::stringstream ss;
     ss << "Invalid matrix size. Expected n by 3 (n > 0) but got shape =(" << v.rows() << ", " << v.cols() << ")";
     throw pybind11::value_error(ss.str());
