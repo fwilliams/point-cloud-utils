@@ -116,6 +116,13 @@ npe_default_arg(use_geodesic_distance, bool, false)
 npe_default_arg(best_choice_sampling, bool, false)
 npe_doc(poisson_disk_sample_doc)
 npe_begin_code()
+
+  if (v.rows() == 0 || v.cols != 3) {
+    std::stringstream ss;
+    ss << "Invalid matrix size. Expected n by 3 (n > 0) but got shape =(" << v.rows() << ", " << v.cols() << ")";
+    throw pybind11::value_error(ss.str());
+  }
+
   MyMesh m;
   vcg_mesh_from_vf(v, f, m);
 
@@ -132,6 +139,8 @@ npe_begin_code()
   npe_Matrix_v ret;
   vcg_mesh_to_v(subM, ret);
 
+  m.Clear();
+  subM.Clear();
   return npe::move(ret);
 npe_end_code()
 
@@ -158,6 +167,13 @@ npe_arg(v, dense_f32, dense_f64)
 npe_arg(cell_size, double)
 npe_doc(cluster_vertices_doc)
 npe_begin_code()
+
+  if (v.rows() == 0 || v.cols != 3) {
+    std::stringstream ss;
+    ss << "Invalid matrix size. Expected n by 3 (n > 0) but got shape =(" << v.rows() << ", " << v.cols() << ")";
+    throw pybind11::value_error(ss.str());
+  }
+
   MyMesh m;
   vcg_mesh_from_v(v, m);
 
@@ -170,6 +186,10 @@ npe_begin_code()
 
   npe_Matrix_v ret;
   vcg_mesh_to_v(cluM, ret);
+
+
+  m.Clear();
+  cluM.Clear();
 
   return npe::move(ret);
 npe_end_code()
@@ -196,6 +216,13 @@ npe_arg(f, dense_i32, dense_i64)
 npe_arg(num_samples, int)
 npe_doc(random_sample_doc)
 npe_begin_code()
+
+  if (v.rows() == 0 || v.cols != 3) {
+    std::stringstream ss;
+    ss << "Invalid matrix size. Expected n by 3 (n > 0) but got shape =(" << v.rows() << ", " << v.cols() << ")";
+    throw pybind11::value_error(ss.str());
+  }
+
   MyMesh m;
   vcg_mesh_from_vf(v, f, m);
 
@@ -207,42 +234,9 @@ npe_begin_code()
   npe_Matrix_v ret;
   vcg_mesh_to_v(rndM, ret);
 
+  m.Clear();
+  rndM.Clear();
+
   return npe::move(ret);
 npe_end_code()
 
-// TODO: An OBJ Loader to make it easy to test
-//const char* read_obj_doc = R"Qu8mg5v7(
-//Generate uniformly distributed random point samples on a mesh
-
-//Parameters
-//----------
-//v : #v by 3 list of mesh vertex positions
-//f : #f by 3 list of mesh face indices
-//num_samples : The number of samples to generate
-
-//Returns
-//-------
-//A #pv x 3 matrix of samples
-
-//)Qu8mg5v7";
-
-//npe_function(read_obj)
-//npe_arg(filename, std::string)
-//npe_default_arg(dtype, npe::dtype, "float64")
-//npe_doc(read_obj_doc)
-//npe_begin_code()
-
-//  std::vector<std::double_t> v;
-//  std::vector<std::int64_t> f;
-
-//  std::ifstream infile(filename);
-//  if (!infile.is_open()) {
-//    throw std::invalid_argument(std::string("Could not open file ") + filename);
-//  }
-
-//  std::string line;
-//  while (std::getline(infile, line)) {
-
-//  }
-//  return npe::move(ret);
-//npe_end_code()
