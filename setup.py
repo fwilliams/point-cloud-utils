@@ -76,7 +76,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="py-sample-mesh",
-    version="1.0",
+    version="1.1",
     author="Francis Williams",
     author_email="francis@fwilliams.info",
     description="A Python Library for Generating Point Samples on Meshes",
