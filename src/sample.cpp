@@ -114,6 +114,7 @@ Parameters
 ----------
 v : #v by 3 list of mesh vertex positions
 f : #f by 3 list of mesh face indices
+n : #v by 3 list of mesh vertex normals
 radius : desired separation between points
 use_geodesic_distance : Use geodesic distance on the mesh downsampling, False by default
 best_choice_sampling : When downsampling, always keep the sample that will remove the
@@ -174,7 +175,6 @@ Divide the bounding box of a point cloud into cells and cluster vertices which l
 Parameters
 ----------
 v : #v by 3 list of mesh vertex positions
-f : #f by 3 list of mesh face indices
 cell_size : Dimension along one axis of the cells
 
 Returns
@@ -225,6 +225,7 @@ Parameters
 ----------
 v : #v by 3 list of mesh vertex positions
 f : #f by 3 list of mesh face indices
+n : #v by 3 list of mesh vertex normals
 num_samples : The number of samples to generate
 
 Returns
