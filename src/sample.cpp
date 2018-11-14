@@ -64,7 +64,8 @@ template <typename DerivedV, typename DerivedN>
 static void vcg_mesh_to_vn(
     const MyMesh& m,
     Eigen::PlainObjectBase<DerivedV>& V,
-    Eigen::PlainObjectBase<DerivedN>& N) {
+    Eigen::PlainObjectBase<DerivedN>& N,
+    bool skip_normals=false) {
 
   V.resize(m.vn, 3);
   N.resize(m.vn, 3);
@@ -75,10 +76,11 @@ static void vcg_mesh_to_vn(
     V(vcount, 1) = vit->P()[1];
     V(vcount, 2) = vit->P()[2];
 
-    N(vcount, 0) = vit->N()[0];
-    N(vcount, 1) = vit->N()[1];
-    N(vcount, 2) = vit->N()[2];
-
+    if (!skip_normals) {
+      N(vcount, 0) = vit->N()[0];
+      N(vcount, 1) = vit->N()[1];
+      N(vcount, 2) = vit->N()[2];
+    }
     vcount += 1;
   }
 }
@@ -157,7 +159,7 @@ npe_begin_code()
 
   npe_Matrix_v ret_v;
   npe_Matrix_n ret_n;
-  vcg_mesh_to_vn(subM, ret_v, ret_n);
+  vcg_mesh_to_vn(subM, ret_v, ret_n, (n.rows() == 0) /*skip_normals*/);
 
   m.Clear();
   subM.Clear();
@@ -258,8 +260,7 @@ npe_begin_code()
 
   npe_Matrix_v ret_v;
   npe_Matrix_n ret_n;
-  vcg_mesh_to_vn(rndM, ret_v, ret_n);
-
+  vcg_mesh_to_vn(rndM, ret_v, ret_n, (n.rows() == 0) /*skip_normals*/);
 
   m.Clear();
   rndM.Clear();
