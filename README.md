@@ -1,5 +1,5 @@
 # Point Cloud Utilities (pcu)
-A Python Library for 3D Point Clouds
+A Python library for common task on 3D point clouds
 
 **pcu** is a utility library for common tasks on point clouds. It provides the following operations:
  - A series of algorithms for generating point samples on meshes:
