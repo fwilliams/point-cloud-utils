@@ -1,40 +1,38 @@
-# py-sample-mesh
-A Python Library for Generating Point Samples on Meshes
+# Point Cloud Utilities (pcu)
+A Python Library for 3D Point Clouds
 
-py-sample mesh is a very simple library to add random samples to a triangle mesh. It provides the following operations:
- - Poisson-Disk-Sampling based on "[Parallel Poisson Disk Sampling with Spectrum Analysis on Surface](http://graphics.cs.umass.edu/pubs/sa_2010.pdf)".
+**pcu** is a utility library for common tasks on point clouds. It provides the following operations:
+ - A series of algorithms for generating point samples on meshes:
+   - Poisson-Disk-Sampling of a mesh based on "[Parallel Poisson Disk Sampling with Spectrum Analysis on Surface (http://graphics.cs.umass.edu/pubs/sa_2010.pdf)".
+   - Sampling a mesh with [Lloyd's algorithm](https://en.wikipedia.org/wiki/Lloyd%27s_algorithm)
+   - Sampling a mesh uniformly
  - Clustering point-cloud vertices into bins
- - Uniform random sampling on meshes
+ - Very fast pairwise nearest neighbor between point clouds (based on [nanoflann](https://github.com/jlblancoc/nanoflann))
 
 ![Example of Poisson Disk Sampling](/img/blue_noise.png?raw=true "Example of Poisson Disk Sampling")
 
 # Installation Instructions
 Simply run:
 ```
-pip install git+git://github.com/fwilliams/py-sample-mesh
+pip install git+git://github.com/fwilliams/point-cloud-utils
 ```
 The only dependencies required are a valid Python installation with SciPy, a C++ compiler supporting C++14 or later, and CMake 3.2 or later.
 
-# Example Usage
+# Example Poisson Disk Sampling
 ```python
-import sample_mesh as sm
+import point_cloud_utils as pcu
 
 # Assume v is a nv by 3 Numpy array of vertices
-# Assum f is an nf by 3 Numpy array of face indexes into v 
+# Assume f is an nf by 3 Numpy array of face indexes into v 
 bbox = np.max(v, axis=0) - np.min(v, axis=0)
 bbox_diag = np.linalg.norm(bbox)
 
-# v_poisson is a downsampled version of v where points are separated
-# by approximately `radius` distance, use_geodesic_distance indicates
-# that the distance should be measured on the mesh.
-v_poisson = sm.poisson_disk_sample(v, f, radius=0.01*bbox_diag, use_geodesic_distance=True)
+# Generate very dense  random samples on the mesh (v, f)
+# v_dense is an array with shape (100*v.shape[0], 3) where each row is a point on the mesh (v, f)
+v_dense = pcu.sample_mesh_uniform(v, f, num_samples=v.shape[0]*100)
 
-# v_poisson is a downsampled version of v where points are separated
-# by approximately `radius` distance
-v_cluster = sm.cluster_vertices(v, cell_size=0.01*bbox_diag)
-
-# v_random_samples contains `num_samples` samples placed uniformly at random on
-# the mesh
-ns = 1024
-v_random_samples = sm.random_sample(v, f, num_samples=ns)
+# Downsample v_dense to be from a blue noise distribution 
+# v_poisson is a downsampled version of v where points are separated by approximately 
+# `radius` distance, use_geodesic_distance indicates that the distance should be measured on the mesh.
+v_poisson = sm.sample_mesh_poisson_disk(v, f, radius=0.01*bbox_diag, use_geodesic_distance=True)
 ```
