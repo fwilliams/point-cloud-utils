@@ -45,8 +45,20 @@ void compute_distance(
 }
 
 const char* point_cloud_distance_ds = R"Qu8mg5v7(
-    Compute the shortest distances from the source point cloud to the target point cloud.
+Compute the shortest distances from each point in the source point cloud to the target point cloud.
+
+Parameters
+----------
+source : n by d array of representing a set of n points (each row is a point of dimension d)
+target : m by d array of representing a set of m points (each row is a point of dimension d)
+
+Returns
+-------
+A pair `(dists, corrs)` where dists and corrs have shape (n,). `dists[i]` contains the shortest
+distance from the point `source[i, :]` to `target`. `corrs[i]` contains the index into `target`
+of the nearest point to `source[i, :]`.
 )Qu8mg5v7";
+
 
 npe_function(point_cloud_distance)
 npe_arg(source, dense_f32, dense_f64)
