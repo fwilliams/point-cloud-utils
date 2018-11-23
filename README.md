@@ -1,7 +1,5 @@
-# Point Cloud Utilities (pcu)
-A Python library for common task on 3D point clouds
+# Point Cloud Utilities (pcu) - A Python library for common task on 3D point clouds
 
-## Overview 
 **pcu** is a utility library for common tasks on point clouds. It provides the following operations:
  - A series of algorithms for generating point samples on meshes:
    - Poisson-Disk-Sampling of a mesh based on "[Parallel Poisson Disk Sampling with Spectrum Analysis on Surface](http://graphics.cs.umass.edu/pubs/sa_2010.pdf)".
@@ -13,14 +11,14 @@ A Python library for common task on 3D point clouds
  
 ![Example of Poisson Disk Sampling](/img/blue_noise.png?raw=true "Example of Poisson Disk Sampling")
 
-## Installation Instructions
+# Installation Instructions
 Simply run:
 ```
 pip install git+git://github.com/fwilliams/point-cloud-utils
 ```
 The only dependencies required are a valid Python installation with SciPy, a C++ compiler supporting C++14 or later, and CMake 3.2 or later.
 
-## Examples
+# Examples
 
 ### Poisson-Disk-Sampling
 ```python
