@@ -75,11 +75,11 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="py-sample-mesh",
-    version="1.2",
+    name="point-cloud-utils",
+    version="0.1",
     author="Francis Williams",
     author_email="francis@fwilliams.info",
-    description="A Python Library for Generating Point Samples on Meshes",
+    description="A Python Library of utilities for point clouds",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/fwilliams/py-sample-mesh",

@@ -6,16 +6,18 @@
 #include <fstream>
 #include <iostream>
 
+#include "common.h"
+
+
+namespace {
 
 using namespace vcg;
-
 class MyEdge;
 class MyFace;
 class MyVertex;
 struct MyUsedTypes : public UsedTypes<	Use<MyVertex>   ::AsVertexType,
                                         Use<MyEdge>     ::AsEdgeType,
                                         Use<MyFace>     ::AsFaceType>{};
-
 class MyVertex  : public Vertex<MyUsedTypes, vertex::Coord3f, vertex::Normal3f, vertex::BitFlags> {};
 class MyFace    : public Face<MyUsedTypes, face::FFAdj,  face::Normal3f, face::VertexRef, face::BitFlags> {};
 class MyEdge    : public Edge<MyUsedTypes>{};
@@ -105,9 +107,34 @@ static void vcg_mesh_to_v(
   }
 }
 
+/*
+ * Throw an exception for badly shaped inputs (i.e. vetex arrays whose shape isn't (n, 3) for n > 0)
+ */
+template <typename TV>
+void validate_mesh_vertices(const TV& v) {
+  if (v.rows() == 0) {
+    std::stringstream ss;
+    ss << "Invalid input with zero points: v must have shape (n, 3) (n > 0). Got v.shape =("
+       << v.rows() << ", " << v.cols() << ").";
+    throw pybind11::value_error(ss.str());
+  }
+
+  if (v.cols() != 3) {
+    std::stringstream ss;
+    ss << "Only 3D inputs are supported: v must have shape (n, 3) (n > 0). Got v.shape =("
+       << v.rows() << ", " << v.cols() << ").";
+    throw pybind11::value_error(ss.str());
+  }
+}
+
+} // namespace
 
 
-const char* poisson_disk_sample_doc = R"Qu8mg5v7(
+
+
+
+
+const char* sample_mesh_poisson_disk_doc = R"Qu8mg5v7(
 Downsample a point set (possibly on a mesh) so that samples are approximately evenly spaced.
 This function uses the method in "Parallel Poisson Disk Sampling with Spectrum Analysis on Surface"
 (http://graphics.cs.umass.edu/pubs/sa_2010.pdf)
@@ -128,21 +155,17 @@ A #pv x 3 matrix of points which are approximately evenly spaced and are a subse
 
 )Qu8mg5v7";
 
-npe_function(poisson_disk_sample)
+npe_function(sample_mesh_poisson_disk)
 npe_arg(v, dense_f32, dense_f64)
 npe_arg(f, dense_i32, dense_i64)
 npe_arg(n, dense_f32, dense_f64)
 npe_arg(radius, double)
 npe_default_arg(use_geodesic_distance, bool, false)
 npe_default_arg(best_choice_sampling, bool, false)
-npe_doc(poisson_disk_sample_doc)
+npe_doc(sample_mesh_poisson_disk_doc)
 npe_begin_code()
 
-  if (v.rows() == 0 || v.cols() != 3) {
-    std::stringstream ss;
-    ss << "Invalid matrix size. Expected n by 3 (n > 0) but got shape =(" << v.rows() << ", " << v.cols() << ")";
-    throw pybind11::value_error(ss.str());
-  }
+  validate_mesh(v, f);
 
   MyMesh m;
   vcg_mesh_from_vfn(v, f, n, m);
@@ -172,7 +195,7 @@ npe_end_code()
 
 
 const char* cluster_vertices_doc = R"Qu8mg5v7(
-Divide the bounding box of a point cloud into cells and cluster vertices which lie in the samee cell
+Divide the bounding box of a point cloud into cells and cluster vertices which lie in the same cell
 
 Parameters
 ----------
@@ -191,11 +214,7 @@ npe_arg(cell_size, double)
 npe_doc(cluster_vertices_doc)
 npe_begin_code()
 
-  if (v.rows() == 0 || v.cols() != 3) {
-    std::stringstream ss;
-    ss << "Invalid matrix size. Expected n by 3 (n > 0) but got shape =(" << v.rows() << ", " << v.cols() << ")";
-    throw pybind11::value_error(ss.str());
-  }
+  validate_mesh_vertices(v);
 
   MyMesh m;
   npe_Matrix_v n(0, 0);
@@ -220,7 +239,9 @@ npe_begin_code()
 npe_end_code()
 
 
-const char* random_sample_doc = R"Qu8mg5v7(
+
+
+const char* sample_mesh_random_doc = R"Qu8mg5v7(
 Generate uniformly distributed random point samples on a mesh
 
 Parameters
@@ -236,19 +257,15 @@ A #pv x 3 matrix of samples
 
 )Qu8mg5v7";
 
-npe_function(random_sample)
+npe_function(sample_mesh_random)
 npe_arg(v, dense_f32, dense_f64)
 npe_arg(f, dense_i32, dense_i64)
 npe_arg(n, dense_f32, dense_f64)
 npe_arg(num_samples, int)
-npe_doc(random_sample_doc)
+npe_doc(sample_mesh_random_doc)
 npe_begin_code()
 
-  if (v.rows() == 0 || v.cols() != 3) {
-    std::stringstream ss;
-    ss << "Invalid matrix size. Expected n by 3 (n > 0) but got shape =(" << v.rows() << ", " << v.cols() << ")";
-    throw pybind11::value_error(ss.str());
-  }
+  validate_mesh(v, f);
 
   MyMesh m;
   vcg_mesh_from_vfn(v, f, n, m);

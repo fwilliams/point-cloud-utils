@@ -1,0 +1,45 @@
+glup_compat.h: * [Bruno Levy 11/26/2017]
+imconfig.h:// [Bruno] I'm now using c++11...
+imconfig.h:// [Bruno] export ImGUI symbols.
+imgui.cpp:	g.FrameCountEnded == -1 || // [Ben Li & Bruno Levy], avoids an FPE because PlatformImeLastPos is not initialized	
+imgui_draw.cpp:#pragma clang diagnostic ignored "-Wunknown-pragmas"        // [Bruno Levy] 05/23/2016: so that it does not complain on older compilers
+imgui_draw.cpp:    // [Bruno Levy]: replaced "={}" with memset() (={} generates a warning on MSVC).
+imgui.h:#pragma clang diagnostic ignored "-Wc++98-compat-pedantic" // [Bruno Levy]
+imgui.h:#pragma clang diagnostic ignored "-Wc++11-long-long"       // [Bruno Levy]
+imgui.h:#pragma GCC diagnostic ignored "-Wunknown-pragmas" // [Bruno Levy]
+imgui.h:#pragma GCC diagnostic ignored "-Wclass-memaccess" // [Bruno Levy]
+imgui.h:        void           SetBit(int n)        { UsedChars[n >> 3] |= (unsigned char) (1 << (n & 7)); }  // Set bit 'c' in the array [Bruno Levy] added cast to silent warning
+imgui_impl_android.cpp:// [Bruno Levy] Sun Aug 19 08:01:39 CEST 2018
+imgui_impl_android.h: * Author: Bruno Levy   Sun Aug 19 08:01:39 CEST 2018
+imgui_impl_glfw.cpp:#ifndef __ANDROID__ /* [Bruno] */
+imgui_impl_glfw.cpp:// [Bruno] adapted to geogram glfw compile
+imgui_impl_glfw.cpp:// [Bruno] adapted to geogram glfw compile
+imgui_impl_glfw.cpp:// [Bruno Levy] 01/06/2017 Do not use GLFW3 clipboard under emscripten, use built-in
+imgui_impl_glfw.cpp:    // [Bruno Levy] 01/06/2017 
+imgui_impl_glfw.cpp:// [Bruno Levy] 01/06/2017 Do not use GLFW3 clipboard under emscripten, use built-in
+imgui_impl_glfw.cpp:    //[Bruno Levy] 05/16/2016 Under emscripten, it seems that the window is never focused (so I bypass the test).
+imgui_impl_glfw.cpp:#endif /* __ANDROID__ [Bruno] */
+imgui_impl_glfw.h:/* [Bruno] C-style comment */
+imgui_impl_glfw.h:#ifndef __ANDROID__ /* [Bruno] */
+imgui_impl_glfw.h:/* [Bruno] */
+imgui_impl_glfw.h:/* [Bruno] */    
+imgui_impl_glfw.h:#endif /* __ANDROID__ [Bruno] */
+imgui_impl_opengl2.cpp:// [Bruno 05/16/2016] conditional compilation
+imgui_impl_opengl2.cpp:    // [Bruno Levy] 05/18/2016  Added these missing state variables.
+imgui_impl_opengl2.cpp:    glMatrixMode(GL_TEXTURE); // [Bruno Levy] 05/18/2016  Restore texture matrix.
+imgui_impl_opengl2.cpp:#endif // [Bruno Levy] conditional compile.
+imgui_impl_opengl2.h:/* [Bruno] C-style comment */
+imgui_impl_opengl2.h:// [Bruno 05/16/2016] conditional compilation
+imgui_impl_opengl2.h:/* [Bruno] */
+imgui_impl_opengl2.h:/* [Bruno] */    
+imgui_impl_opengl3.cpp:#if defined(USE_GL_ES3) && !defined(IMGUI_IMPL_OPENGL_LOADER_CUSTOM) // [Bruno] else glBindSampler() undefined with Emscripten
+imgui_impl_opengl3.cpp:#ifdef GL_UNPACK_ROW_LENGTH // [Bruno]
+imgui_impl_opengl3.h:/* [Bruno] C-style comment */
+imgui_impl_opengl3.h:/* [Bruno] */
+imgui_impl_opengl3.h:/* [Bruno] */    
+imgui_impl_win32.cpp:#ifdef _WIN32 /* [Bruno] */
+imgui_impl_win32.cpp:#endif /* [Bruno] */
+imgui_impl_win32.h:/* [Bruno] C-style comment */
+imgui_impl_win32.h:/* [Bruno] */
+imgui_impl_win32.h:/* [Bruno] */    
+README.txt:My patches/changes indicated by [Bruno Levy] tags
