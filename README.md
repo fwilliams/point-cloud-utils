@@ -1,6 +1,7 @@
 # Point Cloud Utilities (pcu)
 A Python library for common task on 3D point clouds
 
+## Overview 
 **pcu** is a utility library for common tasks on point clouds. It provides the following operations:
  - A series of algorithms for generating point samples on meshes:
    - Poisson-Disk-Sampling of a mesh based on "[Parallel Poisson Disk Sampling with Spectrum Analysis on Surface](http://graphics.cs.umass.edu/pubs/sa_2010.pdf)".
@@ -12,16 +13,16 @@ A Python library for common task on 3D point clouds
  
 ![Example of Poisson Disk Sampling](/img/blue_noise.png?raw=true "Example of Poisson Disk Sampling")
 
-# Installation Instructions
+## Installation Instructions
 Simply run:
 ```
 pip install git+git://github.com/fwilliams/point-cloud-utils
 ```
 The only dependencies required are a valid Python installation with SciPy, a C++ compiler supporting C++14 or later, and CMake 3.2 or later.
 
-# Examples
+## Examples
 
-## Poisson-Disk-Sampling
+### Poisson-Disk-Sampling
 ```python
 import point_cloud_utils as pcu
 
@@ -40,7 +41,7 @@ v_dense = pcu.sample_mesh_uniform(v, f, num_samples=v.shape[0]*100)
 v_poisson = sm.sample_mesh_poisson_disk(v, f, radius=0.01*bbox_diag, use_geodesic_distance=True)
 ```
 
-## Lloyd Relaxation
+### Lloyd Relaxation
 ```python
 import point_cloud_utils as pcu
 
@@ -54,7 +55,7 @@ samples = pcu.sample_mesh_lloyd(v, f, 1000)
 samples_2d = pcu.lloyd_2d(100)
 ```
 
-## Nearest-Neighbors and Hausdorff Distances Between Point-Clouds
+### Nearest-Neighbors and Hausdorff Distances Between Point-Clouds
 ```python
 import point_cloud_utils as pcu
 import numpy as np
