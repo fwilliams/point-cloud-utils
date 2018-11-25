@@ -31,12 +31,6 @@ npe_add_module(point_cloud_utils
 target_include_directories(point_cloud_utils PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/external/vcglib ${CMAKE_CURRENT_SOURCE_DIR}/src/)
 target_include_directories(point_cloud_utils PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/external/nanoflann)
 target_link_libraries(point_cloud_utils PRIVATE geogram Eigen3::Eigen -fopenmp)
-set_target_properties(point_cloud_utils PROPERTIES COMPILE_FLAGS "-fvisibility=hidden -march=native")
+set_target_properties(point_cloud_utils PROPERTIES COMPILE_FLAGS "-fvisibility=hidden -msse3")
 
-if (${INSTALL_OUTPUT_PREFIX})
-  set_target_properties(point_cloud_utils PROPERTIES
-                        RUNTIME_OUTPUT_DIRECTORY_DEBUG ${INSTALL_OUTPUT_PREFIX}
-                        RUNTIME_OUTPUT_DIRECTORY_RELEASE ${INSTALL_OUTPUT_PREFIX}
-  )
-endif(${INSTALL_OUTPUT_PREFIX})
 

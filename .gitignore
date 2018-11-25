@@ -7,3 +7,5 @@ build
 *.off
 __pycache__
 *.creator.user
+*.egg-info
+dist
