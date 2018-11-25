@@ -11,9 +11,10 @@ from setuptools.command.build_ext import build_ext
 
 
 class CMakeExtension(setuptools.Extension):
-    def __init__(self, name, sourcedir=''):
+    def __init__(self, name, sourcedir='', cmake_args=''):
         setuptools.Extension.__init__(self, name, sources=[])
         self.sourcedir = os.path.abspath(sourcedir)
+        self.cmake_args = cmake_args
 
 
 class CMakeBuild(build_ext):
@@ -39,6 +40,7 @@ class CMakeBuild(build_ext):
     def build_extension(self, ext):
         extdir = os.path.abspath(os.path.dirname(self.get_ext_fullpath(ext.name)))
         cmake_args = ['-DCMAKE_LIBRARY_OUTPUT_DIRECTORY=' + extdir, '-DPYTHON_EXECUTABLE=' + sys.executable]
+        cmake_args.extend(ext.cmake_args)
 
         cfg = 'Debug' if self.debug else 'Release'
         build_args = ['--config', cfg]
@@ -59,7 +61,7 @@ class CMakeBuild(build_ext):
         env['CXXFLAGS'] = '{} -DVERSION_INFO=\\"{}\\"'.format(env.get('CXXFLAGS', ''), self.distribution.get_version())
         if not os.path.exists(self.build_temp):
             os.makedirs(self.build_temp)
-        subprocess.check_call(['cmake', ext.sourcedir] + cmake_args, cwd=self.build_temp, env=env)
+        subprocess.check_call(['cmake'] + cmake_args + [ext.sourcedir], cwd=self.build_temp, env=env)
         subprocess.check_call(['cmake', '--build', '.'] + build_args, cwd=self.build_temp)
         print()  # Add an empty line for cleaner output
 
@@ -83,7 +85,7 @@ setuptools.setup(
         "Programming Language :: Python :: 2.7",
         "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
     ],
-    ext_modules=[CMakeExtension('point_cloud_utils')],
+    ext_modules=[CMakeExtension('point_cloud_utils', cmake_args=['-DEIGEN_WITH_MKL=ON'])],
     cmdclass=dict(build_ext=CMakeBuild),
     zip_safe=False,
     install_requires=[
@@ -91,3 +93,4 @@ setuptools.setup(
         'scipy'
     ]
 )
+

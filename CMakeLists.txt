@@ -11,15 +11,15 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/external/numpyeigen/cmake)
 set(THIRD_PARTY_DIR ${CMAKE_CURRENT_SOURCE_DIR}/external)
 
-# This will define Eigen3::Eigen if we enalbe NPE_WITH_EIGEN
+# This will define Eigen3::Eigen if we enabled NPE_WITH_EIGEN
 include(numpyeigen)
 
-if (${BUILD_WITH_MKL})
+if (${EIGEN_WITH_MKL})
   find_package(MKL)
   target_link_libraries(Eigen3::Eigen INTERFACE ${MKL_LIBRARIES} -fopenmp)
   target_include_directories(Eigen3::Eigen INTERFACE ${MKL_INCLUDE_DIRS})
   target_compile_definitions(Eigen3::Eigen INTERFACE EIGEN_USE_MKL_ALL)
-endif(${BUILD_WITH_MKL})
+endif(${EIGEN_WITH_MKL})
 
 include(geogram)
 
