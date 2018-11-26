@@ -19,7 +19,7 @@ download_dep(numpyeigen
 list(APPEND CMAKE_MODULE_PATH ${EXTERNAL_DEP_DIR}/numpyeigen/cmake)
 include(numpyeigen) # This will define Eigen3::Eigen if we enabled NPE_WITH_EIGEN
 if (${EIGEN_WITH_MKL})
-  find_package(MKL)
+  find_package(MKL REQUIRED)
   target_link_libraries(Eigen3::Eigen INTERFACE ${MKL_LIBRARIES} -fopenmp)
   target_include_directories(Eigen3::Eigen INTERFACE ${MKL_INCLUDE_DIRS})
   target_compile_definitions(Eigen3::Eigen INTERFACE EIGEN_USE_MKL_ALL)
