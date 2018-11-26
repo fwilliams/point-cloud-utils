@@ -1,3 +1,0 @@
-[submodule "external/numpyeigen"]
-	path = external/numpyeigen
-	url = https://github.com/fwilliams/numpyeigen

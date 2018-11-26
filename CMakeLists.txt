@@ -8,12 +8,16 @@ option(NPE_WITH_EIGEN      "Whether to use the bundled version of Eigen"       O
 option(EIGEN_WITH_MKL      "Whether to build Eigen with intel MKL or not"      OFF)
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/external/numpyeigen/cmake)
-set(THIRD_PARTY_DIR ${CMAKE_CURRENT_SOURCE_DIR}/external)
 
-# This will define Eigen3::Eigen if we enabled NPE_WITH_EIGEN
-include(numpyeigen)
-
+# Download NumpyEigen if we haven't already
+set(EXTERNAL_DEP_DIR ${CMAKE_CURRENT_SOURCE_DIR}/external)
+include(DownloadExternalDeps)
+download_dep(numpyeigen
+  GIT_REPOSITORY https://github.com/fwilliams/numpyeigen.git
+  GIT_TAG 25ff7119d3698a3aa16894aed54c9c8e9027f9bf
+)
+list(APPEND CMAKE_MODULE_PATH ${EXTERNAL_DEP_DIR}/numpyeigen/cmake)
+include(numpyeigen) # This will define Eigen3::Eigen if we enabled NPE_WITH_EIGEN
 if (${EIGEN_WITH_MKL})
   find_package(MKL)
   target_link_libraries(Eigen3::Eigen INTERFACE ${MKL_LIBRARIES} -fopenmp)
@@ -21,8 +25,11 @@ if (${EIGEN_WITH_MKL})
   target_compile_definitions(Eigen3::Eigen INTERFACE EIGEN_USE_MKL_ALL)
 endif(${EIGEN_WITH_MKL})
 
+# Build geogram
+set(THIRD_PARTY_DIR ${EXTERNAL_DEP_DIR})
 include(geogram)
 
+# Create the python module
 npe_add_module(point_cloud_utils
   BINDING_SOURCES
   ${CMAKE_CURRENT_SOURCE_DIR}/src/sample.cpp
