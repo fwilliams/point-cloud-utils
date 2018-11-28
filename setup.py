@@ -69,6 +69,11 @@ class CMakeBuild(build_ext):
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
+cmake_args = []
+if 'USE_MKL' in os.environ or '--use-mkl' in sys.argv:
+    cmake_args.append('-DEIGEN_WITH_MKL=ON')
+    sys.argv.remove('--use-mkl')
+    
 setuptools.setup(
     name="point-cloud-utils",
     version="0.2.0",
@@ -85,7 +90,7 @@ setuptools.setup(
         "Programming Language :: Python :: 2.7",
         "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
     ],
-    ext_modules=[CMakeExtension('point_cloud_utils', cmake_args=['-DEIGEN_WITH_MKL=ON'])],
+    ext_modules=[CMakeExtension('point_cloud_utils', cmake_args=cmake_args)],
     cmdclass=dict(build_ext=CMakeBuild),
     zip_safe=False,
     install_requires=[
