@@ -12,11 +12,20 @@
 ![Example of Poisson Disk Sampling](/img/blue_noise.png?raw=true "Example of Poisson Disk Sampling")
 
 # Installation Instructions
+### With `conda` on 64-bit Linux (recommended):
 Simply run:
+```
+conda install -c fwilliams point_cloud_utils
+```
+
+### With `pip`
 ```
 pip install git+git://github.com/fwilliams/point-cloud-utils
 ```
-The only dependencies required are a valid Python installation with SciPy, a C++ compiler supporting C++14 or later, and CMake 3.2 or later.
+The following dependencies are required to install with `pip`:
+* A C++ compiler supporting C++14 or later
+* CMake 3.2 or later.
+* git
 
 # Examples
 
