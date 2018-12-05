@@ -63,7 +63,7 @@ IGL_INLINE bool igl::writeOFF(
   int rgbScale = (C.maxCoeff() <= 1.0)?255:1;
   // Use RGB_Array instead of RGB because of clash with mingw macro 
   // (https://github.com/libigl/libigl/pull/679)
-  Eigen::MatrixXd RGB_Array = rgbScale * C;
+  Eigen::Matrix<typename DerivedC::Scalar, Eigen::Dynamic, Eigen::Dynamic> RGB_Array = rgbScale * C;
 
   s<< "COFF\n"<<V.rows()<<" "<<F.rows()<<" 0\n";
   for (unsigned i=0; i< V.rows(); i++)

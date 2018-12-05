@@ -2,6 +2,8 @@
 #include <igl/readPLY.h>
 #include <igl/readOFF.h>
 #include <igl/writeOBJ.h>
+//#include <igl/writePLY.h>
+#include <igl/writeOFF.h>
 
 #include <npe.h>
 #include <npe_typedefs.h>
@@ -240,7 +242,7 @@ npe_begin_code()
     bool ret = igl::readPLY(filename, v, f, n, uv);
 
     if (!ret) {
-      throw std::invalid_argument("Failed to read file '" + filename + "'");
+      throw std::runtime_error("Failed to read file '" + filename + "'");
     }
 
     return std::make_tuple(npe::move(v), npe::move(f), npe::move(n), npe::move(uv));
@@ -250,12 +252,109 @@ npe_begin_code()
     bool ret = igl::readPLY(filename, v, f, n, uv);
 
     if (!ret) {
-      throw std::invalid_argument("Failed to read file '" + filename + "'");
+      throw std::runtime_error("Failed to read file '" + filename + "'");
     }
 
     return std::make_tuple(npe::move(v), npe::move(f), npe::move(n), npe::move(uv));
   } else {
     throw pybind11::type_error("Only float32 and float64 dtypes are supported.");
+  }
+
+npe_end_code()
+
+
+
+// FIXME: Compile errors that I'm too lazy to deal with right now
+//const char* ds_write_ply = R"igl_Qu8mg5v7(
+//Write a mesh to a .ply file.
+
+//Parameters
+//----------
+//filename : string, path to .off file
+//v : #v by 3 list of vertex positions
+//f : #f by 3 list of vertex positions
+//n : #v by 3 list of vertex normals (or empty for no normals)
+//uv : #v by 2 list of vertex texture coordinates (or empty for no texture coordinates)
+//ascii: if True, write an ascii instead of a binary PLY file (False by default)
+
+//Returns
+//-------
+//None
+
+//See also
+//--------
+//write_obj, write_off
+
+//Notes
+//-----
+//None
+
+//Examples
+//--------
+//>>> write_ply("my_model.ply", v, f, n, uv)
+//)igl_Qu8mg5v7";
+//npe_function(write_ply)
+//npe_doc(ds_write_ply)
+//npe_arg(filename, std::string)
+//npe_arg(v, dense_f32, dense_f64)
+//npe_arg(f, dense_i32, dense_i64)
+//npe_arg(n, npe_matches(v))
+//npe_arg(uv, npe_matches(v))
+//npe_default_arg(ascii, bool, false)
+//npe_begin_code()
+
+//  if (!igl::writePLY(filename, v, f, n, uv, ascii)) {
+//    throw std::runtime_error("Failed to write PLY file '" + filename + "'");
+//  }
+
+//npe_end_code()
+
+
+
+
+const char* ds_write_off = R"igl_Qu8mg5v7(
+Write a mesh to a .off file.
+
+Parameters
+----------
+filename : string, path to .off file
+v : #v by 3 list of vertex positions
+f : #f by 3 list of vertex positions
+c : #v  list of vertex colors (or empty for no normals)
+
+Returns
+-------
+None
+
+See also
+--------
+write_obj, write_ply
+
+Notes
+-----
+None
+
+Examples
+--------
+>>> write_off("my_model.off", v, f, c)
+)igl_Qu8mg5v7";
+npe_function(write_off)
+npe_doc(ds_write_off)
+npe_arg(filename, std::string)
+npe_arg(v, dense_f32, dense_f64)
+npe_arg(f, dense_i32, dense_i64)
+npe_arg(c, dense_f32, dense_f64)
+npe_begin_code()
+
+  bool ret;
+  if (c.rows() == 0 && c.cols() == 0) {
+    ret = igl::writeOFF(filename, v, f);
+  } else {
+    ret = igl::writeOFF(filename, v, f, c);
+  }
+
+  if (!ret) {
+    throw std::runtime_error("Failed to write OFF file '" + filename + "'");
   }
 
 npe_end_code()
