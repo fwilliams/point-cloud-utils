@@ -35,7 +35,8 @@ npe_add_module(point_cloud_utils
   ${CMAKE_CURRENT_SOURCE_DIR}/src/sample.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/point_cloud_distance.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/lloyd.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/meshio.cpp)
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/meshio.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/mesh_utils.cpp)
 target_include_directories(point_cloud_utils PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/external/vcglib)
 target_include_directories(point_cloud_utils PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
 target_include_directories(point_cloud_utils PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/external/nanoflann)
