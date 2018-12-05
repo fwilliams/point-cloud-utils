@@ -33,8 +33,9 @@ The following dependencies are required to install with `pip`:
 ```python
 import point_cloud_utils as pcu
 
-# Assume v is a nv by 3 NumPy array of vertices
-# Assume f is an nf by 3 NumPy array of face indexes into v 
+# v is a nv by 3 NumPy array of vertices
+# f is an nf by 3 NumPy array of face indexes into v 
+v, f, _, _ = pcu.read_ply("my_model.ply")
 bbox = np.max(v, axis=0) - np.min(v, axis=0)
 bbox_diag = np.linalg.norm(bbox)
 
@@ -52,8 +53,9 @@ v_poisson = sm.sample_mesh_poisson_disk(v, f, radius=0.01*bbox_diag, use_geodesi
 ```python
 import point_cloud_utils as pcu
 
-# Assume v is a nv by 3 NumPy array of vertices
-# Assume f is an nf by 3 NumPy array of face indexes into v 
+# v is a nv by 3 NumPy array of vertices
+# f is an nf by 3 NumPy array of face indexes into v 
+v, f, _, _ = pcu.read_ply("my_model.ply")
 
 # Generate 1000 points on the mesh with Lloyd's algorithm
 samples = pcu.sample_mesh_lloyd(v, f, 1000)
