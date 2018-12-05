@@ -1,0 +1,101 @@
+# Note: there are many handy hints in comments in this example -- remove them when you've finalized your recipe
+
+# Jinja variables help maintain the recipe as you'll update the version only here.
+# Using the name variable with the URL in line 13 is conviniet
+# when copying and pasting from another recipe, but not really needed.
+{% set name = "point_cloud_utils" %}
+{% set version = "0.3.3" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  # url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  # If getting the source from GitHub remove the line above
+  # uncomment the line below and modify as needed
+  url: https://github.com/fwilliams/point-cloud-utils/archive/{{ version }}.tar.gz
+  # sha256: 7040b1d433c6bb972ac2bb8cfa2a4352cd8e0b431d8b692f939ef0bd1422b5c0
+  # sha256 is the prefered checksum -- you can get it for a file with:
+  #  `openssl sha256 <file name>`.
+  # You may need the openssl package, available on conda-forge
+  #  `conda install openssl -c conda-forge``
+
+build:
+  # Uncomment the following line if the package is pure python and the recipe is exactly the same for all platforms.
+  # It is okay if the dependencies are not built for all platforms/versions, although selectors are still not allowed.
+  # See https://conda-forge.org/docs/meta.html#building-noarch-packages for more details.
+  # noarch: python
+  number: 0
+  # If the installation is complex, or different between Unix and Windows, use separate bld.bat and build.sh files instead of this key.
+  # By default, the package will be built for the Python versions supported by conda-forge and for all major OSs.
+  # Add the line "skip: True  # [py<35]" (for example) to limit to Python 3.5 and newer, or "skip: True  # [not win]" to limit to Windows.
+  # Note: --no-deps is currently required due to https://github.com/conda/conda-build/issues/3254
+  # Once resolved, it should be removed.
+  script: "{{ PYTHON }} -m pip install . --no-deps -vv --install-option='--use-mkl'"
+
+requirements:
+  build:
+    # if your project compiles code (such as a C extension) then add the required compilers as separate entries here.
+    # compilers are named 'c', 'cxx' and 'fortran'.
+    - {{ compiler('cxx') }}
+    - python
+    - pip
+    - setuptools
+    - git
+    - cmake
+    - numpy
+    - scipy
+    - mkl
+    - mkl-include
+    - intel-openmp
+    - patchelf
+    
+  host:
+    - {{ compiler('cxx') }}
+    - python
+    - pip
+    - setuptools
+    - git
+    - cmake
+    - numpy
+    - scipy
+    - mkl
+    - mkl-include
+    - intel-openmp
+    - patchelf
+
+  run:
+    - python
+    - numpy
+    - scipy
+    - mkl
+    - mkl-include
+    - intel-openmp
+
+test:
+  # Some package might need a `test/commands` key to check CLI.
+  # List all the packages/modules that `run_test.py` imports.
+  imports:
+    - point_cloud_utils
+
+about:
+  home: http://github.com/fwilliams/point-cloud-utils
+  # Remember to specify the license variants for BSD, Apache, GPL, and LGLP.
+  # Prefer the short version, e.g: GPL-2.0 instead of GNU General Public License version 2.0
+  # See https://opensource.org/licenses/alphabetical
+  license: GPL-2.0
+  # The license_family, i.e. "BSD" if license is "BSD-3-Clause". (optional)
+  license_family: GPL
+  # It is strongly encouraged to include a license file in the package,
+  # (even if the license doesn't require it) using the license_file entry.
+  # See http://conda.pydata.org/docs/building/meta-yaml.html#license-file
+  license_file: LICENSE
+  summary: 'A Python library for common tasks on 3D point clouds'
+
+
+extra:
+  recipe-maintainers:
+    # GitHub IDs for maintainers of the recipe.
+    # Always check with the people listed below if they are OK becoming maintainers of the recipe. (There will be spam!)
+    - fwilliams
