@@ -194,6 +194,65 @@ npe_end_code()
 
 
 
+const char* sample_point_cloud_poisson_disk_doc = R"Qu8mg5v7(
+Downsample a point set so that samples are approximately evenly spaced.
+This function uses the method in "Parallel Poisson Disk Sampling with Spectrum Analysis on Surface"
+(http://graphics.cs.umass.edu/pubs/sa_2010.pdf)
+
+Parameters
+----------
+v : #v by 3 list of mesh vertex positions
+n : #v by 3 list of mesh vertex normals
+radius : desired separation between points
+best_choice_sampling : When downsampling, always keep the sample that will remove the
+                       fewest number of samples, False by default
+
+Returns
+-------
+A #pv x 3 matrix of points which are approximately evenly spaced and are a subset of the input v
+
+)Qu8mg5v7";
+
+npe_function(sample_point_cloud_poisson_disk)
+npe_arg(v, dense_f32, dense_f64)
+npe_arg(n, dense_f32, dense_f64)
+npe_arg(radius, double)
+npe_default_arg(best_choice_sampling, bool, false)
+npe_doc(sample_mesh_poisson_disk_doc)
+npe_begin_code()
+
+  validate_mesh_vertices(v);
+  validate_mesh_vertices(n);
+
+  Eigen::MatrixXi f(0, 3);
+
+  MyMesh m;
+  vcg_mesh_from_vfn(v, f, n, m);
+
+  MyMesh subM;
+  tri::MeshSampler<MyMesh> mps(subM);
+
+  tri::SurfaceSampling<MyMesh,tri::MeshSampler<MyMesh> >::PoissonDiskParam pp;
+  tri::SurfaceSampling<MyMesh,tri::MeshSampler<MyMesh> >::PoissonDiskParam::Stat pds;
+  pp.pds = pds;
+  pp.bestSampleChoiceFlag = best_choice_sampling;
+  pp.geodesicDistanceFlag = false;
+  tri::SurfaceSampling<MyMesh,tri::MeshSampler<MyMesh> >::PoissonDiskPruning(mps, m, radius, pp);
+
+  npe_Matrix_v ret_v;
+  npe_Matrix_n ret_n;
+  vcg_mesh_to_vn(subM, ret_v, ret_n, (n.rows() == 0) /*skip_normals*/);
+
+  m.Clear();
+  subM.Clear();
+  mps.reset();
+  return std::make_tuple(npe::move(ret_v), npe::move(ret_n));
+
+npe_end_code()
+
+
+
+
 const char* cluster_vertices_doc = R"Qu8mg5v7(
 Divide the bounding box of a point cloud into cells and cluster vertices which lie in the same cell
 
