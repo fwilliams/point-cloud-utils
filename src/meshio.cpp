@@ -205,7 +205,6 @@ and texture coordinates. Mesh may have faces of any number of degree.
 Parameters
 ----------
 filename : string, path to .off file
-read_normals : bool, determines whether normals are read. If false, returns []
 dtype : data-type of the returned vertices, faces, and normals, optional. Default is `float64`.
         (returned faces always have type int32.)
 
@@ -213,11 +212,12 @@ Returns
 -------
 v : array of vertex positions #v by 3
 f : #f list of face indices into vertex positions
-n : list of vertex normals #v by 3
+n : #v by 3 or empt list of vertex normals
+uv : #v by 2 (or empty ) list of uv coordinates
 
 See also
 --------
-read_triangle_mesh, read_obj
+read_off, read_obj
 
 Notes
 -----
@@ -225,7 +225,7 @@ None
 
 Examples
 --------
->>> v, f, n = read_off("my_model.off")
+>>> v, f, n, uv = read_ply("my_model.ply")
 )igl_Qu8mg5v7";
 
 npe_function(read_ply)
