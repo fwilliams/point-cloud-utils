@@ -8,7 +8,7 @@
  - Clustering point-cloud vertices into bins
  - Very fast pairwise nearest neighbor between point clouds (based on [nanoflann](https://github.com/jlblancoc/nanoflann))
  - Hausdorff distances between point-clouds.
- - Loaders for common mesh formats (OBJ, OFF, PLY)
+ - Utility functions for reading and writing common mesh formats (OBJ, OFF, PLY)
  
 ![Example of Poisson Disk Sampling](/img/blue_noise.png?raw=true "Example of Poisson Disk Sampling")
 
