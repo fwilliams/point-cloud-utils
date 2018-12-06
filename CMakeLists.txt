@@ -43,5 +43,3 @@ target_include_directories(point_cloud_utils PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}
 target_include_directories(point_cloud_utils PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/external)
 target_link_libraries(point_cloud_utils PRIVATE geogram Eigen3::Eigen -fopenmp)
 set_target_properties(point_cloud_utils PROPERTIES COMPILE_FLAGS "-fvisibility=hidden -msse3")
-
-

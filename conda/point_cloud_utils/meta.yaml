@@ -32,7 +32,7 @@ build:
   # Add the line "skip: True  # [py<35]" (for example) to limit to Python 3.5 and newer, or "skip: True  # [not win]" to limit to Windows.
   # Note: --no-deps is currently required due to https://github.com/conda/conda-build/issues/3254
   # Once resolved, it should be removed.
-  script: "{{ PYTHON }} -m pip install . --no-deps -vv --install-option='--use-mkl'"
+  script: "{{ PYTHON }} -m pip install . --no-deps -vv"
 
 requirements:
   build:
@@ -50,6 +50,7 @@ requirements:
     - mkl-include
     - intel-openmp
     - patchelf
+    - blas=1.0=mkl
     
   host:
     - {{ compiler('cxx') }}
@@ -64,14 +65,17 @@ requirements:
     - mkl-include
     - intel-openmp
     - patchelf
-
+    - blas=1.0=mkl
+    
   run:
     - python
+    - blas=1.0=mkl
     - numpy
     - scipy
     - mkl
     - mkl-include
     - intel-openmp
+    - libopenblas
 
 test:
   # Some package might need a `test/commands` key to check CLI.
