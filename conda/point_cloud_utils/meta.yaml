@@ -4,7 +4,7 @@
 # Using the name variable with the URL in line 13 is conviniet
 # when copying and pasting from another recipe, but not really needed.
 {% set name = "point_cloud_utils" %}
-{% set version = "0.4.2" %}
+{% set version = "0.4.1" %}
 
 package:
   name: {{ name|lower }}
