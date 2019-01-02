@@ -14,7 +14,7 @@ set(EXTERNAL_DEP_DIR ${CMAKE_CURRENT_SOURCE_DIR}/external)
 include(DownloadExternalDeps)
 download_dep(numpyeigen
   GIT_REPOSITORY https://github.com/fwilliams/numpyeigen.git
-  GIT_TAG 93b95f2a99e4656f54d361f263b0e72a7fa67544
+  GIT_TAG 22d1f09973b22110f3d75a0e85b3407b8c6d8d8b
 )
 list(APPEND CMAKE_MODULE_PATH ${EXTERNAL_DEP_DIR}/numpyeigen/cmake)
 include(numpyeigen) # This will define Eigen3::Eigen if we enabled NPE_WITH_EIGEN
