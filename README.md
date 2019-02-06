@@ -36,18 +36,25 @@ import point_cloud_utils as pcu
 
 # v is a nv by 3 NumPy array of vertices
 # f is an nf by 3 NumPy array of face indexes into v 
-v, f, _, _ = pcu.read_ply("my_model.ply")
+# n is a nv by 3 NumPy array of vertex normals
+v, f, n, _ = pcu.read_ply("my_model.ply")
 bbox = np.max(v, axis=0) - np.min(v, axis=0)
 bbox_diag = np.linalg.norm(bbox)
 
-# Generate very dense  random samples on the mesh (v, f)
+# Generate very dense  random samples on the mesh (v, f, n)
+# Note that this function works with no normals, just pass in an empty array np.array([], dtype=v.dtype)
 # v_dense is an array with shape (100*v.shape[0], 3) where each row is a point on the mesh (v, f)
-v_dense = pcu.sample_mesh_uniform(v, f, num_samples=v.shape[0]*100)
+# n_dense is an array with shape (100*v.shape[0], 3) where each row is a the normal of a point in v_dense
+v_dense, n_dense = pcu.sample_mesh_random(v, f, n, num_samples=v.shape[0]*100)
 
-# Downsample v_dense to be from a blue noise distribution 
+# Downsample v_dense to be from a blue noise distribution: 
+#
 # v_poisson is a downsampled version of v where points are separated by approximately 
 # `radius` distance, use_geodesic_distance indicates that the distance should be measured on the mesh.
-v_poisson = sm.sample_mesh_poisson_disk(v, f, radius=0.01*bbox_diag, use_geodesic_distance=True)
+#
+# n_poisson are the corresponding normals of v_poisson
+v_poisson, n_poisson = pcu.sample_mesh_poisson_disk(
+    v_dense, f, n_dense, radius=0.01*bbox_diag, use_geodesic_distance=True)
 ```
 
 ### Lloyd Relaxation
