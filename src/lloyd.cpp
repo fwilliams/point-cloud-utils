@@ -1,16 +1,12 @@
 #include <Eigen/Core>
 
 #include <vector>
+#include <mutex>
 
 #include <geogram/basic/geometry.h>
 #include <geogram/voronoi/CVT.h>
 #include <geogram/basic/command_line.h>
 #include <geogram/basic/command_line_args.h>
-
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <pthread.h>
 
 #include <npe.h>
 #include <pybind11/stl.h>
@@ -81,44 +77,46 @@ void sample_mesh_lloyd(const Eigen::MatrixBase<DerivedV> &V,
     P.transposeInPlace();
 }
 
+// Put geogram log messages in the trash where they belong
+class GeoTrashCan: public GEO::LoggerClient {
+protected:
+    void div(const std::string&) override {}
+    void out(const std::string&) override {}
+    void warn(const std::string&) override {}
+    void err(const std::string&) override {}
+    void status(const std::string&) override {}
+};
+
+
 // Geogram is stateful and needs to be initialized.
 // These variables keep track of whether geogram is initialized in a thread-safe manner.
 // I'm using p-threads so none of this will work on Windows.
 bool geogram_is_initialized = false;
-pthread_mutex_t init_mutex= PTHREAD_MUTEX_INITIALIZER;
+std::mutex geogram_init_mutex;
 
 // Initialize geogram exactly once. I shameless use UNIX-only library calls here so
 // this will *NOT* work on Windows
 void init_geogram_only_once() {
-  pthread_mutex_lock(&init_mutex);
+  std::lock_guard<std::mutex> guard(geogram_init_mutex);
 
   if (!geogram_is_initialized) {
-    // Redirect stdout to /dev/null to avoid Geogram spam
-    int bak, nw;
-    fflush(stdout);
-    bak = dup(1);
-    nw = open("/dev/null", O_WRONLY);
-    dup2(nw, 1);
-    close(nw);
-
     GEO::initialize();
+
+    GEO::Logger *geo_logger = GEO::Logger::instance();
+    geo_logger->unregister_all_clients();
+    geo_logger->register_client(new GeoTrashCan());
+    geo_logger->set_pretty(false);
+
     GEO::CmdLine::import_arg_group("standard");
     GEO::CmdLine::import_arg_group("pre");
     GEO::CmdLine::import_arg_group("algo");
+
     geogram_is_initialized = true;
-
-    // Restore stdout so we can spam if we want to
-    fflush(stdout);
-    dup2(bak, 1);
-    close(bak);
   }
-
-  pthread_mutex_unlock(&init_mutex);
 }
 
+
 } // namespace
-
-
 
 
 
