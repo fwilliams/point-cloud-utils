@@ -94,8 +94,7 @@ protected:
 bool geogram_is_initialized = false;
 std::mutex geogram_init_mutex;
 
-// Initialize geogram exactly once. I shameless use UNIX-only library calls here so
-// this will *NOT* work on Windows
+// Initialize geogram exactly once.
 void init_geogram_only_once() {
   std::lock_guard<std::mutex> guard(geogram_init_mutex);
 
