@@ -924,10 +924,10 @@ public:
       f->FFp(2)->FFp(f->FFi(2)) = f2;
 
       //adiacenza ff
-      FaceType *  FF0,*FF1,*FF2;
-      FF0 = f->FFp(0);
-      FF1 = f->FFp(1);
-      FF2 = f->FFp(2);
+      FaceType *  _FF0,*_FF1,*_FF2;
+      _FF0 = f->FFp(0);
+      _FF1 = f->FFp(1);
+      _FF2 = f->FFp(2);
 
       //Indici di adiacenza ff
       char FFi0,FFi1,FFi2;
@@ -945,7 +945,7 @@ public:
       (*f1).FFp(0) = f;
       (*f1).FFi(0) = 1;
 
-      (*f1).FFp(1) = FF1;
+      (*f1).FFp(1) = _FF1;
       (*f1).FFi(1) = FFi1;
 
       (*f1).FFp(2) = &(*f2);
@@ -958,7 +958,7 @@ public:
       (*f2).FFp(1) = &(*f1);
       (*f2).FFi(1) = 2;
 
-      (*f2).FFp(2) = FF2;
+      (*f2).FFp(2) = _FF2;
       (*f2).FFi(2) = FFi2;
     }
   }
