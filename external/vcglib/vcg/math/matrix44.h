@@ -30,8 +30,8 @@
 #include <vcg/space/point4.h>
 #include <vector>
 #include <iostream>
-#include <eigenlib/Eigen/Core>
-#include <eigenlib/Eigen/LU>
+#include <Eigen//Core>
+#include <Eigen//LU>
 
 namespace vcg {
 

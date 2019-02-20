@@ -34,10 +34,10 @@
 #include <vcg/complex/algorithms/update/bounding.h>
 #include "vcg/complex/algorithms/update/curvature_fitting.h"
 
-#include <eigenlib/Eigen/Core>
-#include <eigenlib/Eigen/QR>
-#include <eigenlib/Eigen/LU>
-#include <eigenlib/Eigen/SVD>
+#include <Eigen//Core>
+#include <Eigen//QR>
+#include <Eigen//LU>
+#include <Eigen//SVD>
 
 #include <vcg/complex/algorithms/nring.h>
 

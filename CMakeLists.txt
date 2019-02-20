@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.2)
+cmake_minimum_required(VERSION 3.10)
 project(point-cloud-utils)
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_BUILD_TYPE "Release")
@@ -18,9 +18,11 @@ download_dep(numpyeigen
 )
 list(APPEND CMAKE_MODULE_PATH ${EXTERNAL_DEP_DIR}/numpyeigen/cmake)
 include(numpyeigen) # This will define Eigen3::Eigen if we enabled NPE_WITH_EIGEN
+
+# Optionally build Eigen with the MKL backend
 if (${EIGEN_WITH_MKL})
   find_package(MKL REQUIRED)
-  target_link_libraries(Eigen3::Eigen INTERFACE ${MKL_LIBRARIES} -fopenmp)
+  target_link_libraries(Eigen3::Eigen INTERFACE ${MKL_LIBRARIES})
   target_include_directories(Eigen3::Eigen INTERFACE ${MKL_INCLUDE_DIRS})
   target_compile_definitions(Eigen3::Eigen INTERFACE EIGEN_USE_MKL_ALL)
 endif(${EIGEN_WITH_MKL})
@@ -28,6 +30,21 @@ endif(${EIGEN_WITH_MKL})
 # Build geogram
 set(THIRD_PARTY_DIR ${EXTERNAL_DEP_DIR})
 include(geogram)
+if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+  SET_TARGET_PROPERTIES(geogram PROPERTIES COMPILE_FLAGS -fopenmp LINK_FLAGS -fopenmp)
+  target_compile_options(geogram PUBLIC    -fopenmp)
+  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fopenmp")
+
+  find_package(OpenMP REQUIRED)
+  if(NOT TARGET OpenMP::OpenMP_CXX)
+    add_library(OpenMP_TARGET INTERFACE)
+    add_library(OpenMP::OpenMP_CXX ALIAS OpenMP_TARGET)
+    target_compile_options(OpenMP_TARGET INTERFACE ${OpenMP_CXX_FLAGS})
+    find_package(Threads REQUIRED)
+    target_link_libraries(OpenMP_TARGET INTERFACE Threads::Threads)
+    target_link_libraries(OpenMP_TARGET INTERFACE ${OpenMP_CXX_FLAGS})
+  endif()
+endif()
 
 # Create the python module
 npe_add_module(point_cloud_utils
@@ -41,5 +58,10 @@ target_include_directories(point_cloud_utils PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}
 target_include_directories(point_cloud_utils PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
 target_include_directories(point_cloud_utils PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/external/nanoflann)
 target_include_directories(point_cloud_utils PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/external)
-target_link_libraries(point_cloud_utils PRIVATE geogram Eigen3::Eigen -fopenmp)
+target_link_libraries(point_cloud_utils PRIVATE geogram Eigen3::Eigen)
 set_target_properties(point_cloud_utils PROPERTIES COMPILE_FLAGS "-fvisibility=hidden -msse3")
+
+if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+  target_link_libraries(point_cloud_utils PUBLIC OpenMP::OpenMP_CXX)
+endif()
+

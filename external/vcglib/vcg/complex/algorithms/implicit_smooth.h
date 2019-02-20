@@ -23,7 +23,7 @@
 #ifndef __VCG_IMPLICIT_SMOOTHER
 #define __VCG_IMPLICIT_SMOOTHER
 
-#include <eigenlib/Eigen/Sparse>
+#include <Eigen//Sparse>
 #include <vcg/complex/algorithms/mesh_to_matrix.h>
 #include <vcg/complex/algorithms/update/quality.h>
 #include <vcg/complex/algorithms/smooth.h>

@@ -26,7 +26,7 @@
 #include <vcg/space/point3.h>
 #include <vcg/space/plane3.h>
 #include <vcg/math/matrix33.h>
-#include <eigenlib/Eigen/Core>
+#include <Eigen//Core>
 
 namespace vcg {
 namespace math {

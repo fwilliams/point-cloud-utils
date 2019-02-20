@@ -24,7 +24,7 @@
 #define __VCGLIB_HARMONIC_FIELD
 
 #include <vcg/complex/complex.h>
-#include <eigenlib/Eigen/Sparse>
+#include <Eigen//Sparse>
 
 namespace vcg {
 namespace tri {

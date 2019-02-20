@@ -36,7 +36,7 @@
 #include <vcg/space/index/kdtree/kdtree.h>
 #include <vcg/math/histogram.h>
 #include<vcg/space/distance3.h>
-#include<eigenlib/Eigen/Core>
+#include<Eigen//Core>
 #include <vcg/complex/algorithms/attribute_seam.h>
 #include <wrap/io_trimesh/export_ply.h>
 

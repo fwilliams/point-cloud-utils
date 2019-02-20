@@ -27,8 +27,8 @@
 #include <vcg/math/quaternion.h>
 #include <vcg/math/matrix44.h>
 
-#include <eigenlib/Eigen/Dense>
-#include <eigenlib/Eigen/Eigenvalues>
+#include <Eigen//Dense>
+#include <Eigen//Eigenvalues>
 #include  <iostream>
 
 namespace vcg

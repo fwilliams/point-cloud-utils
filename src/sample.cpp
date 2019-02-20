@@ -18,8 +18,8 @@ class MyVertex;
 struct MyUsedTypes : public UsedTypes<	Use<MyVertex>   ::AsVertexType,
                                         Use<MyEdge>     ::AsEdgeType,
                                         Use<MyFace>     ::AsFaceType>{};
-class MyVertex  : public Vertex<MyUsedTypes, vertex::Coord3f, vertex::Normal3f, vertex::BitFlags> {};
-class MyFace    : public Face<MyUsedTypes, face::FFAdj,  face::Normal3f, face::VertexRef, face::BitFlags> {};
+class MyVertex  : public Vertex<MyUsedTypes, vertex::Coord3d, vertex::Normal3d, vertex::BitFlags> {};
+class MyFace    : public Face<MyUsedTypes, face::FFAdj,  face::Normal3d, face::VertexRef, face::BitFlags> {};
 class MyEdge    : public Edge<MyUsedTypes>{};
 class MyMesh    : public tri::TriMesh<std::vector<MyVertex>, std::vector<MyFace>, std::vector<MyEdge>> {};
 

@@ -26,8 +26,8 @@
 
 #include <vcg/math/matrix33.h>
 #include <vcg/math/matrix44.h>
-#include <eigenlib/Eigen/Dense>
-#include <eigenlib/Eigen/SVD>
+#include <Eigen//Dense>
+#include <Eigen//SVD>
 
 namespace vcg{
 

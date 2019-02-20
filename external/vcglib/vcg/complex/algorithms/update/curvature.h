@@ -32,7 +32,7 @@
 #include <vcg/complex/algorithms/point_sampling.h>
 #include <vcg/complex/algorithms/intersection.h>
 #include <vcg/complex/algorithms/inertia.h>
-#include <eigenlib/Eigen/Core>
+#include <Eigen//Core>
 
 namespace vcg {
 namespace tri {
