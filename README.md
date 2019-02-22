@@ -13,10 +13,10 @@
 ![Example of Poisson Disk Sampling](/img/blue_noise.png?raw=true "Example of Poisson Disk Sampling")
 
 # Installation Instructions
-### With `conda` on 64-bit Linux (recommended):
+### With `conda` (recommended)
 Simply run:
 ```
-conda install -c fwilliams point_cloud_utils
+conda install -c conda-forge point_cloud_utils
 ```
 
 ### With `pip`
