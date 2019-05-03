@@ -107,9 +107,9 @@ Examples
 npe_function(write_obj)
 npe_doc(ds_write_obj)
 npe_arg(filename, std::string)
-npe_arg(v, dense_f64, dense_f32)
-npe_arg(f, dense_i32, dense_i64)
-npe_arg(n, dense_f64, dense_f32)
+npe_arg(v, dense_float, dense_double)
+npe_arg(f, dense_int, dense_longlong, dense_uint, dense_ulonglong)
+npe_arg(n, npe_matches(v))
 npe_begin_code()
 
   npe_Matrix_n fn;
@@ -296,8 +296,8 @@ Examples
 npe_function(write_ply)
 npe_doc(ds_write_ply)
 npe_arg(filename, std::string)
-npe_arg(v, dense_f32, dense_f64)
-npe_arg(f, dense_i32)
+npe_arg(v, dense_float, dense_double)
+npe_arg(f, dense_int, dense_uint)
 npe_arg(n, npe_matches(v))
 npe_arg(uv, npe_matches(v))
 npe_default_arg(ascii, bool, false)
@@ -341,9 +341,9 @@ Examples
 npe_function(write_off)
 npe_doc(ds_write_off)
 npe_arg(filename, std::string)
-npe_arg(v, dense_f32, dense_f64)
-npe_arg(f, dense_i32, dense_i64)
-npe_arg(c, dense_f32, dense_f64)
+npe_arg(v, dense_float, dense_double)
+npe_arg(f, dense_int, dense_longlong, dense_uint, dense_ulonglong)
+npe_arg(c, npe_matches(v))
 npe_begin_code()
 
   bool ret;

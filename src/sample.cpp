@@ -156,9 +156,9 @@ A #pv x 3 matrix of points which are approximately evenly spaced and are a subse
 )Qu8mg5v7";
 
 npe_function(sample_mesh_poisson_disk)
-npe_arg(v, dense_f32, dense_f64)
-npe_arg(f, dense_i32, dense_i64)
-npe_arg(n, dense_f32, dense_f64)
+npe_arg(v, dense_float, dense_double)
+npe_arg(f, dense_int, dense_longlong, dense_uint, dense_ulonglong)
+npe_arg(n, npe_matches(v))
 npe_arg(radius, double)
 npe_default_arg(use_geodesic_distance, bool, false)
 npe_default_arg(best_choice_sampling, bool, false)
@@ -214,8 +214,8 @@ A #pv x 3 matrix of points which are approximately evenly spaced and are a subse
 )Qu8mg5v7";
 
 npe_function(sample_point_cloud_poisson_disk)
-npe_arg(v, dense_f32, dense_f64)
-npe_arg(n, dense_f32, dense_f64)
+npe_arg(v, dense_float, dense_double)
+npe_arg(n, npe_matches(v))
 npe_arg(radius, double)
 npe_default_arg(best_choice_sampling, bool, false)
 npe_doc(sample_mesh_poisson_disk_doc)
@@ -268,7 +268,7 @@ A #pv x 3 matrix of clustered points
 )Qu8mg5v7";
 
 npe_function(cluster_vertices)
-npe_arg(v, dense_f32, dense_f64)
+npe_arg(v, dense_float, dense_double)
 npe_arg(cell_size, double)
 npe_doc(cluster_vertices_doc)
 npe_begin_code()
@@ -317,9 +317,9 @@ A #pv x 3 matrix of samples
 )Qu8mg5v7";
 
 npe_function(sample_mesh_random)
-npe_arg(v, dense_f32, dense_f64)
-npe_arg(f, dense_i32, dense_i64)
-npe_arg(n, dense_f32, dense_f64)
+npe_arg(v, dense_float, dense_double)
+npe_arg(f, dense_int, dense_longlong, dense_uint, dense_ulonglong)
+npe_arg(n, dense_float, dense_double)
 npe_arg(num_samples, int)
 npe_doc(sample_mesh_random_doc)
 npe_begin_code()

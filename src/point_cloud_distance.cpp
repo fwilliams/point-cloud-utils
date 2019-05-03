@@ -70,7 +70,7 @@ squared L2 distance from the point `source[i, :]` to `target`. `corrs[i]` contai
 )Qu8mg5v7";
 
 npe_function(point_cloud_distance)
-npe_arg(source, dense_f32, dense_f64)
+npe_arg(source, dense_float, dense_double)
 npe_arg(target, npe_matches(source))
 npe_doc(point_cloud_distance_ds)
 npe_begin_code()
@@ -124,7 +124,7 @@ distance.
 )Qu8mg5v7";
 
 npe_function(hausdorff)
-npe_arg(source, dense_f32, dense_f64)
+npe_arg(source, dense_float, dense_double)
 npe_arg(target, npe_matches(source))
 npe_default_arg(return_index, bool, false)
 npe_doc(hausdorff_ds)

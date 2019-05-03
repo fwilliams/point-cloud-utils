@@ -189,8 +189,8 @@ A n by 3 array of point samples on the input surface defined by (v, f)
 )Qu8mg5v7";
 
 npe_function(sample_mesh_lloyd)
-npe_arg(v, dense_f32, dense_f64)
-npe_arg(f, dense_i32, dense_i64)
+npe_arg(v, dense_float, dense_double)
+npe_arg(f, dense_int, dense_longlong, dense_uint, dense_ulonglong)
 npe_arg(n, int)
 npe_default_arg(num_lloyd, int, 10)
 npe_default_arg(num_newton, int, 10)
