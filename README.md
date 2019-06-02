@@ -92,7 +92,7 @@ hausdorff_a_to_b = pcu.hausdorff(a, b)
 hausdorff_b_to_a = pcu.hausdorff(b, a)
 
 # Take a max of the one sided squared  distances to get the two sided Hausdorff distance
-hausdorff_dist = max(hausdorff_a_to_b, hausdorff_b_to_a)
+hausdorff_dist = np.max(hausdorff_a_to_b, hausdorff_b_to_a)
 
 # Find the index pairs of the two points with maximum shortest distancce
 hausdorff_b_to_a, idx_a, idx_b = pcu.hausdorff(b, a, return_index=True)
