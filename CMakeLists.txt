@@ -14,7 +14,7 @@ set(EXTERNAL_DEP_DIR ${CMAKE_CURRENT_SOURCE_DIR}/external)
 include(DownloadExternalDeps)
 download_dep(numpyeigen
   GIT_REPOSITORY https://github.com/fwilliams/numpyeigen.git
-  GIT_TAG c937319f70fc50cc51757556be5e6587f218b05d
+  GIT_TAG 6db66f68b9f94ca8e8ddb569af33daa72bb6a810
 )
 list(APPEND CMAKE_MODULE_PATH ${EXTERNAL_DEP_DIR}/numpyeigen/cmake)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
