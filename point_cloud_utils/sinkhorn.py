@@ -1,19 +1,20 @@
 import numpy as np
 
-def pairwise_distances(a, b, p=2, squeeze=False):
+def pairwise_distances(a, b, p=2):
     """
     Compute the pairwise distance matrix between a and b which both have size [m, n, d] or [n, d]. The result is a tensor of
     size [m, n, n] (or [n, n]) whose entry [m, i, j] contains the distance_tensor between a[m, i, :] and b[m, j, :].
     :param a: A tensor containing m batches of n points of dimension d. i.e. of size [m, n, d]
     :param b: A tensor containing m batches of n points of dimension d. i.e. of size [m, n, d]
     :param p: Norm to use for the distance_tensor
-    :param squeeze: If set, any redundant dimensions will be squeezed in the output
     :return: A tensor containing the pairwise distance_tensor between each pair of inputs in a batch.
     """
-    
+
+    squeezed = False
     if len(a.shape) == 2 and len(b.shape) == 2:
        a = a[np.newaxis, :, :]
        b = b[np.newaxis, :, :]
+       squeezed = True
        
     if len(a.shape) != 3:
         raise ValueError("Invalid shape for a. Must be [m, n, d] or [n, d] but got", a.shape)
@@ -21,7 +22,7 @@ def pairwise_distances(a, b, p=2, squeeze=False):
         raise ValueError("Invalid shape for a. Must be [m, n, d] or [n, d] but got", b.shape)
 
     ret = np.power(a[:, :, np.newaxis, :] - b[:, np.newaxis, :, :], p).sum(3)
-    if squeeze:
+    if squeezed:
         ret = np.squeeze(ret)
 
     return ret
