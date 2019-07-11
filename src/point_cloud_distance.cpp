@@ -21,13 +21,14 @@ void compute_distance(
   assert(dataset_mat.cols() == 3);
 
   using namespace nanoflann;
-  typedef KDTreeEigenMatrixAdaptor<Source, 3, nanoflann::metric_L2> kd_tree;
+  using kd_tree = nanoflann::KDTreeEigenMatrixAdaptor<Source, 3, nanoflann::metric_L2>;
+  using IndexType = typename kd_tree::IndexType;
 
   kd_tree mat_index(3, std::cref(dataset_mat), 10 /* max leaf */);
   mat_index.index->buildIndex();
 
   std::array<typename Source::Scalar, 3> query_point;
-  std::array<long int, 1> out_indices;
+  std::array<IndexType, 1> out_indices;
   std::array<typename Source::Scalar, 1> out_dists_sqr;
 
   corrs.resize(query_mat.rows(), 1);
@@ -94,7 +95,10 @@ npe_begin_code()
   npe_Matrix_source src = source;
   npe_Matrix_target dst = target;
   npe_Matrix_source dists;
-  Eigen::Matrix<long int, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> corrs;
+
+  using kd_tree = nanoflann::KDTreeEigenMatrixAdaptor<npe_Matrix_source, 3, nanoflann::metric_L2>;
+  using IndexType = typename kd_tree::IndexType;
+  Eigen::Matrix<IndexType, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> corrs;
 
   compute_distance(src, dst, corrs, dists);
 
@@ -149,7 +153,10 @@ npe_begin_code()
   npe_Matrix_source src = source;
   npe_Matrix_target dst = target;
   npe_Matrix_source dists;
-  Eigen::Matrix<long int, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> corrs;
+
+  using kd_tree = nanoflann::KDTreeEigenMatrixAdaptor<npe_Matrix_source, 3, nanoflann::metric_L2>;
+  using IndexType = typename kd_tree::IndexType;
+  Eigen::Matrix<IndexType, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> corrs;
 
   compute_distance(src, dst, corrs, dists);
 
