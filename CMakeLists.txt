@@ -49,21 +49,21 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 endif()
 
 # Create the python module
-npe_add_module(point_cloud_utils
+npe_add_module(pcu_internal
   BINDING_SOURCES
   ${CMAKE_CURRENT_SOURCE_DIR}/src/sample.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/point_cloud_distance.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/lloyd.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/meshio.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/mesh_utils.cpp)
-target_include_directories(point_cloud_utils PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/external/vcglib)
-target_include_directories(point_cloud_utils PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
-target_include_directories(point_cloud_utils PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/external/nanoflann)
-target_include_directories(point_cloud_utils PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/external)
-target_link_libraries(point_cloud_utils PRIVATE geogram)
-set_target_properties(point_cloud_utils PROPERTIES COMPILE_FLAGS "-fvisibility=hidden -msse3")
+target_include_directories(pcu_internal PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/external/vcglib)
+target_include_directories(pcu_internal PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+target_include_directories(pcu_internal PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/external/nanoflann)
+target_include_directories(pcu_internal PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/external)
+target_link_libraries(pcu_internal PRIVATE geogram)
+set_target_properties(pcu_internal PROPERTIES COMPILE_FLAGS "-fvisibility=hidden -msse3")
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-  target_link_libraries(point_cloud_utils PUBLIC OpenMP::OpenMP_CXX)
+  target_link_libraries(pcu_internal PUBLIC OpenMP::OpenMP_CXX)
 endif()
 
