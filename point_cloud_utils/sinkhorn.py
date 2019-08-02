@@ -35,8 +35,9 @@ def chamfer(a, b):
     :param b: A m-sized minibatch of point sets in R^d. i.e. shape [m, n_b, d]
     :return: A [m] shaped tensor storing the Chamfer distance between each minibatch entry
     """
-    M = pairwise_distances(a, b, squeeze=False)
-    print(M.shape)
+    M = pairwise_distances(a, b)
+    if len(M.shape) == 2:
+        M = M[np.newaxis, :, :]
     return M.min(1).sum(1) + M.min(2).sum(1)
 
 
