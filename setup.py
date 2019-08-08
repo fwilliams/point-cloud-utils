@@ -52,9 +52,10 @@ class CMakeBuild(build_ext):
 
         if platform.system() == "Windows":
             cmake_args += ['-DCMAKE_LIBRARY_OUTPUT_DIRECTORY_{}={}'.format(cfg.upper(), extdir)]
-            if sys.maxsize > 2 ** 32 and not ext.exclude_arch:
-                cmake_args += ['-A', 'x64']
-            build_args += ['--', '/m']
+            if os.environ.get('CMAKE_GENERATOR') != "NMake Makefiles":
+                if sys.maxsize > 2 ** 32 and not ext.exclude_arch:
+                    cmake_args += ['-A', 'x64']
+                build_args += ['--', '/m']
         else:
             cmake_args += ['-DCMAKE_BUILD_TYPE=' + cfg]
             build_args += ['--', '-j2']
