@@ -11,10 +11,11 @@ from setuptools.command.build_ext import build_ext
 
 
 class CMakeExtension(setuptools.Extension):
-    def __init__(self, name, sourcedir='', cmake_args=''):
+    def __init__(self, name, sourcedir='', cmake_args='', exclude_arch=False):
         setuptools.Extension.__init__(self, name, sources=[])
         self.sourcedir = os.path.abspath(sourcedir)
         self.cmake_args = cmake_args
+        self.exclude_arch = exclude_arch
 
 
 class CMakeBuild(build_ext):
@@ -51,7 +52,7 @@ class CMakeBuild(build_ext):
 
         if platform.system() == "Windows":
             cmake_args += ['-DCMAKE_LIBRARY_OUTPUT_DIRECTORY_{}={}'.format(cfg.upper(), extdir)]
-            if sys.maxsize > 2 ** 32:
+            if sys.maxsize > 2 ** 32 and not ext.exclude_arch:
                 cmake_args += ['-A', 'x64']
             build_args += ['--', '/m']
         else:
@@ -71,9 +72,13 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 cmake_args = []
+exclude_arch = False
 if 'USE_MKL' in os.environ or '--use-mkl' in sys.argv:
     cmake_args.append('-DEIGEN_WITH_MKL=ON')
     sys.argv.remove('--use-mkl')
+if 'EXCLUDE_ARCH' in os.environ or '--exclude-arch' in sys.argv:
+    exclude_arch=True
+    sys.argv.remove('--exclude-arch')
     
 setuptools.setup(
     name="point-cloud-utils",
@@ -91,7 +96,7 @@ setuptools.setup(
         "Programming Language :: Python :: 2.7",
         "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
     ],
-    ext_modules=[CMakeExtension('point_cloud_utils', cmake_args=cmake_args)],
+    ext_modules=[CMakeExtension('point_cloud_utils', cmake_args=cmake_args, exclude_arch=exclude_arch)],
     cmdclass=dict(build_ext=CMakeBuild),
     zip_safe=False,
     install_requires=[
