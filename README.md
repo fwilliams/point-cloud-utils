@@ -181,8 +181,7 @@ hausdorff_b_to_a = pcu.hausdorff(b, a)
 hausdorff_dist = np.max(hausdorff_a_to_b, hausdorff_b_to_a)
 
 # Find the index pairs of the two points with maximum shortest distancce
-hausdorff_b_to_a, idx_a, idx_b = pcu.hausdorff(b, a, return_index=True)
-assert np.abs(np.linalg.norm(a[idx_a] - b[idx_b])**2 - hausdorff_b_to_a) < 1e-5, \
-       "These values should be close"
+hausdorff_b_to_a, idx_b, idx_a = pcu.hausdorff(b, a, return_index=True)
+assert np.abs(np.sum((a[idx_a] - b[idx_b])**2) - hausdorff_b_to_a) < 1e-5, "These values should be almost equal"
 ```
 
