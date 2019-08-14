@@ -104,7 +104,8 @@ def main():
         install_requires=[
             'numpy',
             'scipy'
-        ]
+        ],
+        test_suite="tests"
     )
 
 

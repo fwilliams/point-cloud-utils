@@ -154,7 +154,7 @@ npe_begin_code()
        1.0, 0.0, 0.0,
        1.0, 1.0, 0.0,
        0.0, 1.0, 0.0;
-  Eigen::MatrixXi F(2, 3);
+  Eigen::MatrixXd F(2, 3);
   F << 0, 1, 3,
        1, 2, 3;
 
@@ -190,7 +190,7 @@ A n by 3 array of point samples on the input surface defined by (v, f)
 
 npe_function(sample_mesh_lloyd)
 npe_arg(v, dense_float, dense_double)
-npe_arg(f, dense_int, dense_longlong, dense_uint, dense_ulonglong)
+npe_arg(f, dense_int, dense_long, dense_longlong, dense_uint, dense_ulong, dense_ulonglong)
 npe_arg(n, int)
 npe_default_arg(num_lloyd, int, 10)
 npe_default_arg(num_newton, int, 10)
@@ -201,7 +201,7 @@ npe_begin_code()
 
   init_geogram_only_once();
 
-  Eigen::MatrixXd P;
+  EigenDenseF64 P;
   sample_mesh_lloyd(v, f, n, num_lloyd, num_newton, P);
 
   return npe::move(P);

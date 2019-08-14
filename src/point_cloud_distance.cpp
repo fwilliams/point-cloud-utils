@@ -5,6 +5,8 @@
 #include <tuple>
 
 #include "nanoflann.hpp"
+#include "common.h"
+
 
 namespace {
 
@@ -92,11 +94,11 @@ npe_begin_code()
   }
 
   // FIXME: nanoflann does not work with Eigen::Maps so we have to do a copy here :(
-  npe_Matrix_source src = source;
-  npe_Matrix_target dst = target;
-  npe_Matrix_source dists;
+  EigenDenseLike<npe_Matrix_source> src = source;
+  EigenDenseLike<npe_Matrix_target> dst = target;
+  EigenDenseLike<npe_Matrix_source> dists;
 
-  using kd_tree = nanoflann::KDTreeEigenMatrixAdaptor<npe_Matrix_source, 3, nanoflann::metric_L2>;
+  using kd_tree = nanoflann::KDTreeEigenMatrixAdaptor<EigenDenseLike<npe_Matrix_source>, 3, nanoflann::metric_L2>;
   using IndexType = typename kd_tree::IndexType;
   Eigen::Matrix<IndexType, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> corrs;
 
@@ -150,11 +152,11 @@ npe_begin_code()
   }
 
   // FIXME: nanoflann does not work with Eigen::Maps so we have to do a copy here :(
-  npe_Matrix_source src = source;
-  npe_Matrix_target dst = target;
-  npe_Matrix_source dists;
+  EigenDenseLike<npe_Matrix_source> src = source;
+  EigenDenseLike<npe_Matrix_target> dst = target;
+  EigenDenseLike<npe_Matrix_source> dists;
 
-  using kd_tree = nanoflann::KDTreeEigenMatrixAdaptor<npe_Matrix_source, 3, nanoflann::metric_L2>;
+  using kd_tree = nanoflann::KDTreeEigenMatrixAdaptor<EigenDenseLike<npe_Matrix_source>, 3, nanoflann::metric_L2>;
   using IndexType = typename kd_tree::IndexType;
   Eigen::Matrix<IndexType, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> corrs;
 

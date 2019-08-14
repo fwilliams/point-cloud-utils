@@ -1,0 +1,39 @@
+
+version: 1.0.{build}
+os: Visual Studio 2017
+platform: x64
+clone_folder: C:\projects\point-cloud-utils
+shallow_clone: true
+branches:
+  only:
+    - master
+environment:
+  # APPVEYOR_RDP_PASSWORD: pypAss126.
+  matrix:
+  - config: Release
+    PYTHON: "C:\\Python36-x64"
+    PYTHON_VERSION: "3.6.x" # currently 3.6.8
+    PYTHON_ARCH: "64"
+install:
+  - "SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%"
+  - "python --version"
+  - "python -c \"import struct; print(struct.calcsize('P') * 8)\""
+  - "python -m pip install numpy"
+  - "python -m pip install scipy"
+  - "python -c \"import numpy as np;import sys;print(np.get_include())\""
+# init:
+  # - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
+# on_finish:
+#   - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
+build:
+  parallel: true
+build_script:
+  - "SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%"
+  - cd c:\projects\point-cloud-utils
+  - python --version
+  - "python setup.py build install"
+
+test_script:
+  - cd c:\projects\point-cloud-utils
+  - "SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%"
+  - python tests/test_examples.py

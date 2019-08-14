@@ -8,11 +8,8 @@
 #include <npe.h>
 #include <npe_typedefs.h>
 
-const int IglDefaultOptions = Eigen::RowMajor;
-typedef Eigen::Matrix<std::float_t, Eigen::Dynamic, Eigen::Dynamic, IglDefaultOptions, Eigen::Dynamic, Eigen::Dynamic> EigenDenseF32;
-typedef Eigen::Matrix<std::double_t, Eigen::Dynamic, Eigen::Dynamic, IglDefaultOptions, Eigen::Dynamic, Eigen::Dynamic> EigenDenseF64;
-typedef Eigen::Matrix<std::int32_t, Eigen::Dynamic, Eigen::Dynamic, IglDefaultOptions, Eigen::Dynamic, Eigen::Dynamic> EigenDenseI32;
-typedef Eigen::Matrix<std::int64_t, Eigen::Dynamic, Eigen::Dynamic, IglDefaultOptions, Eigen::Dynamic, Eigen::Dynamic> EigenDenseI64;
+#include "common.h"
+
 
 const char* ds_read_obj = R"igl_Qu8mg5v7(
 Read a mesh from an ascii obj file, filling in vertex positions, normals
@@ -61,7 +58,7 @@ npe_begin_code()
     return std::make_tuple(npe::move(v), npe::move(f), npe::move(n));
   } else if (dtype.type() == npe::type_f64) {
     EigenDenseF64 v, tc, n;
-    EigenDenseI32 f, ftc, fn;
+    EigenDenseI64 f, ftc, fn;
     bool ret = igl::readOBJ(filename, v, tc, n, f, ftc, fn);
     if (!ret) {
       throw std::invalid_argument("File '" + filename + "' not found.");
@@ -112,9 +109,9 @@ npe_arg(f, dense_int, dense_longlong, dense_uint, dense_ulonglong)
 npe_arg(n, npe_matches(v))
 npe_begin_code()
 
-  npe_Matrix_n fn;
-  npe_Matrix_n tc;
-  npe_Matrix_n ftc;
+  EigenDense<unsigned int> fn;
+  EigenDense<double> tc;
+  EigenDense<unsigned int> ftc;
   return igl::writeOBJ(filename, v, f, n, fn, tc, ftc);
 
 npe_end_code()
@@ -177,7 +174,7 @@ npe_begin_code()
     return std::make_tuple(npe::move(v), npe::move(f), npe::move(n));
   } else if (dtype.type() == npe::type_f64) {
     EigenDenseF64 v, n;
-    EigenDenseI32 f;
+    EigenDenseI64 f;
     bool ret;
     if (read_normals) {
       ret = igl::readOFF(filename, v, f, n);
@@ -248,7 +245,7 @@ npe_begin_code()
     return std::make_tuple(npe::move(v), npe::move(f), npe::move(n), npe::move(uv));
   } else if (dtype.type() == npe::type_f64) {
     EigenDenseF64 v, n, uv;
-    EigenDenseI32 f;
+    EigenDenseI64 f;
     bool ret = igl::readPLY(filename, v, f, n, uv);
 
     if (!ret) {

@@ -14,7 +14,7 @@ set(EXTERNAL_DEP_DIR ${CMAKE_CURRENT_SOURCE_DIR}/external)
 include(DownloadExternalDeps)
 download_dep(numpyeigen
   GIT_REPOSITORY https://github.com/fwilliams/numpyeigen.git
-  GIT_TAG 49bb31b9c00a8bb4c5aaa84ac7546dd864812903
+  GIT_TAG cdb47a921ec179f7ba8e5afbe614f713a96c36e0
 )
 list(APPEND CMAKE_MODULE_PATH ${EXTERNAL_DEP_DIR}/numpyeigen/cmake)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
@@ -66,4 +66,7 @@ set_target_properties(pcu_internal PROPERTIES COMPILE_FLAGS "-fvisibility=hidden
 if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
   target_link_libraries(pcu_internal PUBLIC OpenMP::OpenMP_CXX)
 endif()
+
+enable_testing()
+add_subdirectory(tests)
 

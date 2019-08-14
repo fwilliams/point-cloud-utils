@@ -180,8 +180,8 @@ npe_begin_code()
   pp.geodesicDistanceFlag = use_geodesic_distance;
   tri::SurfaceSampling<MyMesh,tri::MeshSampler<MyMesh> >::PoissonDiskPruning(mps, m, radius, pp);
 
-  npe_Matrix_v ret_v;
-  npe_Matrix_n ret_n;
+  EigenDenseLike<npe_Matrix_v> ret_v;
+  EigenDenseLike<npe_Matrix_n> ret_n;
   vcg_mesh_to_vn(subM, ret_v, ret_n, (n.rows() == 0) /*skip_normals*/);
 
   m.Clear();
@@ -239,8 +239,8 @@ npe_begin_code()
   pp.geodesicDistanceFlag = false;
   tri::SurfaceSampling<MyMesh,tri::MeshSampler<MyMesh> >::PoissonDiskPruning(mps, m, radius, pp);
 
-  npe_Matrix_v ret_v;
-  npe_Matrix_n ret_n;
+  EigenDenseLike<npe_Matrix_v> ret_v;
+  EigenDenseLike<npe_Matrix_n> ret_n;
   vcg_mesh_to_vn(subM, ret_v, ret_n, (n.rows() == 0) /*skip_normals*/);
 
   m.Clear();

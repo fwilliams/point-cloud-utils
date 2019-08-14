@@ -1,0 +1,27 @@
+  
+language: python
+python:
+  - "2.7"
+  - "3.5"
+  - "3.6"
+os:
+  - linux
+  # - osx
+addons:
+  apt:
+    sources:
+    - ubuntu-toolchain-r-test
+    packages:
+    # - libc++-dev
+    - gcc-7
+    - g++-7
+    - libsuitesparse-dev
+env:
+  - CC=gcc-7 && CXX=g++-7
+  # - CC=clang CXX=clang++ CXXFLAGS="-stdlib=libc++"
+install:
+  - pip install numpy
+  - pip install scipy
+script:
+  - python setup.py build --debug install
+  - python tests/test_examples.py

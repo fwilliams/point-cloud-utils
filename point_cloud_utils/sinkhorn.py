@@ -54,22 +54,35 @@ def sinkhorn(a, b, M, eps, max_iters=100, stop_thresh=1e-3):
     :param stop_thresh: Stop if the change in iterates is below this value
     :return:
     """
-    # a and b are tensors of size [m, n]
-    # M is a tensor of size [m, n, n]
+    # a and b are tensors of size [nb, m] and [nb, n]
+    # M is a tensor of size [nb, m, n]
 
     M = np.squeeze(M)
     a = np.squeeze(a)
     b = np.squeeze(b)
     squeezed = False
+
     if len(M.shape) == 2 and len(a.shape) == 1 and len(b.shape) == 1:
         M = M[np.newaxis, :, :]
         a = a[np.newaxis, :]
         b = b[np.newaxis, :]
         squeezed = True
-        
+    elif len(M.shape) == 2 and len(a.shape) != 1:
+        raise ValueError("Invalid shape for a %s, expected [m,] where m is the number of samples in a and "
+                         "M has shape [m, n]" % str(a.shape))
+    elif len(M.shape) == 2 and len(b.shape) != 1:
+        raise ValueError("Invalid shape for a %s, expected [m,] where n is the number of samples in a and "
+                         "M has shape [m, n]" % str(b.shape))
+
     if len(M.shape) != 3:
-        raise ValueError("Got unexpected shape for M (%s), should be [nb, m, n] where nb is batch size, and "
+        raise ValueError("Got unexpected shape for M %s, should be [nb, m, n] where nb is batch size, and "
                          "m and n are the number of samples in the two input measures." % str(M.shape))
+    elif len(M.shape) == 3 and len(a.shape) != 2:
+        raise ValueError("Invalid shape for a %s, expected [nb, m]  where nb is batch size, m is the number of samples "
+                         "in a and M has shape [nb, m, n]" % str(a.shape))
+    elif len(M.shape) == 3 and len(b.shape) != 2:
+        raise ValueError("Invalid shape for a %s, expected [nb, m]  where nb is batch size, m is the number of samples "
+                         "in a and M has shape [nb, m, n]" % str(b.shape))
 
     nb = M.shape[0]
     m = M.shape[1]
@@ -81,7 +94,6 @@ def sinkhorn(a, b, M, eps, max_iters=100, stop_thresh=1e-3):
     if a.shape != (nb, m):
         raise ValueError("Got unexpected shape for tensor a (%s). Expected [nb, m] where M has shape [nb, m, n]." %
                          str(a.shape))
-
     if b.shape != (nb, n):
         raise ValueError("Got unexpected shape for tensor b (%s). Expected [nb, n] where M has shape [nb, m, n]." %
                          str(b.shape))
