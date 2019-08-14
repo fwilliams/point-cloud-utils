@@ -90,8 +90,8 @@ b = np.random.rand(100, 3)
 M = pcu.pairwise_distances(a, b)
 
 # w_a and w_b are masses assigned to each point. In this case each point is weighted equally.
-w_a = np.ones_like(a)
-w_b = np.ones_like(b)
+w_a = np.ones(a.shape[0])
+w_b = np.ones(b.shape[0])
 
 # P is the transport matrix between a and b, eps is a regularization parameter, smaller epsilons lead to 
 # better approximation of the true Wasserstein distance at the expense of slower convergence
@@ -118,8 +118,8 @@ b = np.random.rand(10, 100, 3)
 M = pcu.pairwise_distances(a, b)
 
 # w_a and w_b are masses assigned to each point. In this case each point is weighted equally.
-w_a = np.ones_like(a)
-w_b = np.ones_like(b)
+w_a = np.ones(a.shape[:2])
+w_b = np.ones(b.shape[:2])
 
 # P is the transport matrix between a and b, eps is a regularization parameter, smaller epsilons lead to 
 # better approximation of the true Wasserstein distance at the expense of slower convergence
