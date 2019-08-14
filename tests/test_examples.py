@@ -1,5 +1,6 @@
 from __future__ import print_function
 import unittest
+import os
 
 
 class TestDenseBindings(unittest.TestCase):
@@ -11,7 +12,7 @@ class TestDenseBindings(unittest.TestCase):
         # v is a nv by 3 NumPy array of vertices
         # f is an nf by 3 NumPy array of face indexes into v
         # n is a nv by 3 NumPy array of vertex normals
-        v, f, n, _ = pcu.read_ply("../data/cube_twist.ply")
+        v, f, n, _ = pcu.read_ply(os.path.join(os.path.dirname(os.path.realpath(__file__)), "../data/cube_twist.ply"))
         bbox = np.max(v, axis=0) - np.min(v, axis=0)
         bbox_diag = np.linalg.norm(bbox)
 
@@ -35,7 +36,7 @@ class TestDenseBindings(unittest.TestCase):
 
         # v is a nv by 3 NumPy array of vertices
         # f is an nf by 3 NumPy array of face indexes into v
-        v, f, _, _ = pcu.read_ply("../data/cube_twist.ply")
+        v, f, _, _ = pcu.read_ply(os.path.join(os.path.dirname(os.path.realpath(__file__)), "../data/cube_twist.ply"))
 
         # Generate 1000 points on the mesh with Lloyd's algorithm
         samples = pcu.sample_mesh_lloyd(v, f, 1000)
