@@ -1,5 +1,7 @@
 # Point Cloud Utils (pcu) - A Python library for common tasks on 3D point clouds
 
+[![Build Status](https://travis-ci.org/fwilliams/point-cloud-utils.svg?branch=master)](https://travis-ci.org/fwilliams/point-cloud-utils)
+
 **Point Cloud Utils (pcu)** is a utility library providing the following functionality:
  - A series of algorithms for generating point samples on meshes:
    - Poisson-Disk-Sampling of a mesh based on "[Parallel Poisson Disk Sampling with Spectrum Analysis on Surface](http://graphics.cs.umass.edu/pubs/sa_2010.pdf)".
