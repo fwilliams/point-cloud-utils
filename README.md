@@ -95,7 +95,7 @@ w_b = np.ones_like(b)
 
 # P is the transport matrix between a and b, eps is a regularization parameter, smaller epsilons lead to 
 # better approximation of the true Wasserstein distance at the expense of slower convergence
-P = sinkhorn(w_a, w_b, M, eps=1e-3)
+P = pcu.sinkhorn(w_a, w_b, M, eps=1e-3)
 
 # To get the distance as a number just compute the frobenius inner product <M, P>
 sinkhorn_dist = (M*P).sum() 
@@ -123,7 +123,7 @@ w_b = np.ones_like(b)
 
 # P is the transport matrix between a and b, eps is a regularization parameter, smaller epsilons lead to 
 # better approximation of the true Wasserstein distance at the expense of slower convergence
-P = sinkhorn(w_a, w_b, M, eps=1e-3)
+P = pcu.sinkhorn(w_a, w_b, M, eps=1e-3)
 
 # To get the distance as a number just compute the frobenius inner product <M, P>
 sinkhorn_dist = (M*P).sum() 
@@ -182,7 +182,7 @@ hausdorff_dist = np.max(hausdorff_a_to_b, hausdorff_b_to_a)
 
 # Find the index pairs of the two points with maximum shortest distancce
 hausdorff_b_to_a, idx_a, idx_b = pcu.hausdorff(b, a, return_index=True)
-assert np.abs(np.linalg.norm(a[idx_a] - b[idx_b])**2 - hausdorff_b_to_a) < 1e-5, \
+assert np.abs(np.linalg.norm(a[idx_a] - b[idx_b])**2 - hausdorff_b_to_a) < 1e-5,
        "These values should be close"
 ```
 
