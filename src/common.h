@@ -6,11 +6,13 @@
 const int IglDefaultOptions = Eigen::RowMajor;
 
 constexpr int extract_options(int options) {
+    int ret = options;
     if (options == (Eigen::ColMajor | Eigen::DontAlign) || options == (Eigen::RowMajor | Eigen::DontAlign)) {
-        return Eigen::RowMajor;
+        ret = Eigen::RowMajor;
     } else {
-        return options;
+        ret = options;
     }
+    return ret;
 }
 
 template <typename LikeT>
