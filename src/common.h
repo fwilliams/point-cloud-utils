@@ -5,21 +5,37 @@
 
 const int IglDefaultOptions = Eigen::RowMajor;
 
-constexpr int extract_options(int options) {
-    int ret = options;
-    if (options == (Eigen::ColMajor | Eigen::DontAlign) || options == (Eigen::RowMajor | Eigen::DontAlign)) {
-        ret = Eigen::RowMajor;
-    } else {
-        ret = options;
-    }
-    return ret;
+//constexpr int extract_options(int options) {
+//    if (options == (Eigen::ColMajor | Eigen::DontAlign) || options == (Eigen::RowMajor | Eigen::DontAlign)) {
+//        return Eigen::RowMajor;
+//    } else {
+//        return options;
+//    }
+//}
+
+constexpr bool opts_dontalign(int options) {
+    return options == (Eigen::ColMajor | Eigen::DontAlign) || options == (Eigen::RowMajor | Eigen::DontAlign);
 }
+
+template <bool DontAlign, int Opts>
+struct OptExtractor {
+    enum {
+        Options = Opts
+    };
+};
+
+template <int Opts>
+struct OptExtractor<true, Opts> {
+    enum Options {
+        Options = Eigen::RowMajor
+    };
+};
 
 template <typename LikeT>
 using EigenSparseLike = Eigen::SparseMatrix<typename LikeT::Scalar, Eigen::ColMajor>; // FIXME: Maybe we should output CSR if LikeT is row major
 
 template <typename LikeT>
-using EigenDenseLike = Eigen::Matrix<typename LikeT::Scalar, Eigen::Dynamic, Eigen::Dynamic, extract_options(LikeT::Options), Eigen::Dynamic, Eigen::Dynamic>;
+using EigenDenseLike = Eigen::Matrix<typename LikeT::Scalar, Eigen::Dynamic, Eigen::Dynamic, OptExtractor<opts_dontalign(LikeT::Options), LikeT::Options>::Options, Eigen::Dynamic, Eigen::Dynamic>;
 
 template <typename Scalar>
 using EigenDense = Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic, IglDefaultOptions, Eigen::Dynamic, Eigen::Dynamic>;
