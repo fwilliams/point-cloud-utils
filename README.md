@@ -25,7 +25,7 @@ Simply run:
 conda install -c conda-forge point_cloud_utils
 ```
 
-### With `pip`
+### With `pip` (not recommended)
 ```
 pip install git+git://github.com/fwilliams/point-cloud-utils
 ```
