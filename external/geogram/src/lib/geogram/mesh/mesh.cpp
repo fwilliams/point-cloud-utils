@@ -1511,7 +1511,6 @@ namespace GEO {
     void MeshCells::connect(bool remove_trivial_slivers, bool verbose_if_OK) {
         // "Fast track" for simplicial mesh
         if(is_simplicial_) {
-            std::cout << "CONNECT TETS!!!" << std::endl;
             connect_tets();
             return;
         }
