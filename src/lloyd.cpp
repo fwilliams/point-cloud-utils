@@ -134,7 +134,6 @@ void sample_tet_mesh_lloyd(const Eigen::MatrixBase<DerivedV> &V,
                           Eigen::PlainObjectBase<DerivedP> &P) {
     assert(num_samples > 3);
     GEO::Mesh M;
-    pybind11::print("ABOUT TO MAKE GEOGRAM MESH!!!");
     vft_to_geogram_tet_mesh(V, F, T, M);
 
     GEO::CentroidalVoronoiTesselation CVT(&M);
