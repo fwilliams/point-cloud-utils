@@ -32,7 +32,10 @@ class TestDenseBindings(unittest.TestCase):
         #
         # n_poisson are the corresponding normals of v_poisson
         v_poisson, n_poisson = pcu.sample_mesh_poisson_disk(
-            v_dense, f, n_dense, radius=0.01 * bbox_diag, use_geodesic_distance=True)
+            v, f, n, num_samples=7777, use_geodesic_distance=True)
+
+        v_poisson, n_poisson = pcu.sample_mesh_poisson_disk(
+            v, f, n, num_samples=-1, radius=0.01*bbox_diag, use_geodesic_distance=True)
 
     def test_lloyd_relaxation(self):
         import point_cloud_utils as pcu
@@ -46,6 +49,9 @@ class TestDenseBindings(unittest.TestCase):
 
         # Generate 100 points on the unit square with Lloyd's algorithm
         samples_2d = pcu.lloyd_2d(100)
+
+        # Generate 100 points on the unit cube with Lloyd's algorithm
+        samples_3d = pcu.lloyd_3d(100)
 
     def test_sinkhorn(self):
         import point_cloud_utils as pcu
