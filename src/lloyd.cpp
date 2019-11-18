@@ -345,24 +345,44 @@ A n by 3 array of point samples on the input surface defined by (v, f)
 npe_function(sample_mesh_lloyd)
 npe_arg(v, dense_float, dense_double)
 npe_arg(f, dense_int, dense_long, dense_longlong, dense_uint, dense_ulong, dense_ulonglong)
-npe_arg(n, int)
+npe_arg(num_samples, int)
 npe_default_arg(num_lloyd, int, 10)
 npe_default_arg(num_newton, int, 10)
+npe_default_arg(return_mesh, bool, false)
 npe_doc(sample_mesh_lloyd_doc)
 npe_begin_code()
 
   validate_mesh(v, f);
+  if (num_samples <= 0) {
+    throw pybind11::value_error("num_samples must be > 0");
+  }
 
   init_geogram_only_once();
 
-  Eigen::MatrixXd vcopy = v.template cast<double>();
-  Eigen::MatrixXi fcopy = f.template cast<int>();
-  EigenDenseF64 P;
-  sample_tri_mesh_lloyd(vcopy, fcopy, n, num_lloyd, num_newton, P);
+  Eigen::MatrixXd V = v.template cast<double>();
+  Eigen::MatrixXi F = f.template cast<int>();
 
-  Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> P3d;
-  P3d = P;
-  return npe::move(P3d);
+  GEO::Mesh M;
+  vf_to_geogram_mesh(V, F, M);
+
+  GEO::CentroidalVoronoiTesselation CVT(&M);
+  bool was_quiet = GEO::Logger::instance()->is_quiet();
+  GEO::Logger::instance()->set_quiet(true);
+  CVT.compute_initial_sampling(num_samples);
+  GEO::Logger::instance()->set_quiet(was_quiet);
+
+  if (num_lloyd > 0) {
+      CVT.Lloyd_iterations(num_lloyd);
+  }
+
+  if (num_newton > 0) {
+      CVT.Newton_iterations(num_newton);
+  }
+
+  Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> P;
+  P.resize(num_samples, 3);
+  std::copy_n(CVT.embedding(0), 3*num_samples, P.data());
+  return npe::move(P);
 
 npe_end_code()
 
