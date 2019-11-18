@@ -314,58 +314,60 @@ npe_begin_code()
 npe_end_code()
 
 
-//const char* prune_point_cloud_poisson_disk_doc = R"Qu8mg5v7(
-//Downsample a point set so that samples are approximately evenly spaced.
-//This function uses the method in "Parallel Poisson Disk Sampling with Spectrum Analysis on Surface"
-//(http://graphics.cs.umass.edu/pubs/sa_2010.pdf)
+const char* prune_point_cloud_poisson_disk_doc = R"Qu8mg5v7(
+Downsample a point set so that samples are approximately evenly spaced.
+This function uses the method in "Parallel Poisson Disk Sampling with Spectrum Analysis on Surface"
+(http://graphics.cs.umass.edu/pubs/sa_2010.pdf)
 
-//Parameters
-//----------
-//v : #v by 3 list of mesh vertex positions
-//n : #v by 3 list of mesh vertex normals
-//radius : desired separation between points
-//best_choice_sampling : When downsampling, always keep the sample that will remove the
-//                       fewest number of samples, False by default
+Parameters
+----------
+v : #v by 3 list of mesh vertex positions
+n : #v by 3 list of mesh vertex normals
+radius : desired separation between points
+best_choice_sampling : When downsampling, always keep the sample that will remove the
+                       fewest number of samples, False by default
 
-//Returns
-//-------
-//A #pv x 3 matrix of points which are approximately evenly spaced and are a subset of the input v
+Returns
+-------
+A #pv x 3 matrix of points which are approximately evenly spaced and are a subset of the input v
 
-//)Qu8mg5v7";
+)Qu8mg5v7";
 
-//npe_function(sample_point_cloud_poisson_disk)
-//npe_arg(v, dense_float, dense_double)
-//npe_arg(n, npe_matches(v))
-//npe_arg(radius, double)
-//npe_default_arg(best_choice_sampling, bool, false)
-//npe_doc(sample_mesh_poisson_disk_doc)
-//npe_begin_code()
+npe_function(prune_point_cloud_poisson_disk)
+npe_arg(v, dense_float, dense_double)
+npe_arg(n, npe_matches(v))
+npe_arg(radius, double)
+npe_default_arg(best_choice_sampling, bool, false)
+npe_doc(prune_point_cloud_poisson_disk_doc)
+npe_begin_code()
 
-//  Eigen::MatrixXi f(0, 3);
+  Eigen::MatrixXi f(0, 3);
 
-//  MyMesh m;
-//  vcg_mesh_from_vfn(v, f, n, m);
+  MyMesh m;
+  vcg_mesh_from_vfn(v, f, n, m);
 
-//  MyMesh subM;
-//  tri::MeshSampler<MyMesh> mps(subM);
+  typedef EigenDenseLike<npe_Matrix_v> EigenRetV;
+  typedef EigenDenseLike<npe_Matrix_n> EigenRetN;
+  typedef Eigen::MatrixXi EigenRetF;
+  typedef EigenMeshSampler<MyMesh, EigenRetV, EigenRetF, EigenRetN> PoissonDiskSampler;
 
-//  tri::SurfaceSampling<MyMesh,tri::MeshSampler<MyMesh> >::PoissonDiskParam pp;
-//  tri::SurfaceSampling<MyMesh,tri::MeshSampler<MyMesh> >::PoissonDiskParam::Stat pds;
-//  pp.pds = pds;
-//  pp.bestSampleChoiceFlag = best_choice_sampling;
-//  pp.geodesicDistanceFlag = false;
-//  tri::SurfaceSampling<MyMesh,tri::MeshSampler<MyMesh> >::PoissonDiskPruning(mps, m, radius, pp);
+  EigenRetV ret_v(0, 3);
+  EigenRetN ret_n(0, 3);
+  EigenRetF ret_f(0, 3);
+  const bool return_normals = (n.rows() != 0);
+  PoissonDiskSampler mps(ret_v, ret_f, ret_n, return_normals);
 
-//  EigenDenseLike<npe_Matrix_v> ret_v;
-//  EigenDenseLike<npe_Matrix_n> ret_n;
-//  vcg_mesh_to_vn(subM, ret_v, ret_n, (n.rows() == 0) /*skip_normals*/);
+  typename tri::SurfaceSampling<MyMesh, PoissonDiskSampler>::PoissonDiskParam pp;
+  typename tri::SurfaceSampling<MyMesh, PoissonDiskSampler>::PoissonDiskParam::Stat pds;
+  pp.pds = pds;
+  pp.bestSampleChoiceFlag = best_choice_sampling;
+  pp.geodesicDistanceFlag = false;
+  tri::SurfaceSampling<MyMesh, PoissonDiskSampler>::PoissonDiskPruning(mps, m, radius, pp);
 
-//  m.Clear();
-//  subM.Clear();
-//  mps.reset();
-//  return std::make_tuple(npe::move(ret_v), npe::move(ret_n));
+  mps.trim();
+  return std::make_tuple(npe::move(ret_v), npe::move(ret_n));
 
-//npe_end_code()
+npe_end_code()
 
 
 
