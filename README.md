@@ -7,8 +7,7 @@
  - A series of algorithms for generating point samples on meshes:
    - Poisson-Disk-Sampling of a mesh based on "[Parallel Poisson Disk Sampling with Spectrum Analysis on Surface](http://graphics.cs.umass.edu/pubs/sa_2010.pdf)".
    - Sampling a mesh with [Lloyd's algorithm](https://en.wikipedia.org/wiki/Lloyd%27s_algorithm)
-   - Sampling a mesh uniformly
- - Clustering point-cloud vertices into bins
+   - Monte-Carlo sampling on a mesh
  - Very fast pairwise nearest neighbor between point clouds (based on [nanoflann](https://github.com/jlblancoc/nanoflann))
  - Hausdorff distances between point-clouds.
  - Chamfer distnaces between point-clouds.
