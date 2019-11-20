@@ -21,7 +21,7 @@ def pairwise_distances(a, b, p=2):
     if len(b.shape) != 3:
         raise ValueError("Invalid shape for a. Must be [m, n, d] or [n, d] but got", b.shape)
 
-    ret = np.power(a[:, :, np.newaxis, :] - b[:, np.newaxis, :, :], p).sum(3)
+    ret = np.power(np.abs(a[:, :, np.newaxis, :] - b[:, np.newaxis, :, :]), p).sum(3)
     if squeezed:
         ret = np.squeeze(ret)
 
