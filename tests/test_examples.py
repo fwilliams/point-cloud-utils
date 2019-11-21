@@ -14,7 +14,7 @@ class TestDenseBindings(unittest.TestCase):
 
         # v is a nv by 3 NumPy array of vertices
         # f is an nf by 3 NumPy array of face indexes into v
-        # n is a nv by 3 NumPy array of vertex normals
+        # n is a nv by 3 NumPy array of vertex normals if they are specified, otherwise an empty array
         v, f, n = pcu.read_obj(os.path.join(self.test_path, "cube_twist.obj"))
         bbox = np.max(v, axis=0) - np.min(v, axis=0)
         bbox_diag = np.linalg.norm(bbox)
@@ -152,6 +152,19 @@ class TestDenseBindings(unittest.TestCase):
         # Find the index pairs of the two points with maximum shortest distancce
         hausdorff_b_to_a, idx_b, idx_a = pcu.hausdorff(b, a, return_index=True)
         self.assertAlmostEqual(np.sum((a[idx_a] - b[idx_b])**2), hausdorff_b_to_a)
+
+    def test_estimate_normals(self):
+        import point_cloud_utils as pcu
+        import numpy as np
+
+        # v is a nv by 3 NumPy array of vertices
+        # f is an nf by 3 NumPy array of face indexes into v
+        # n is a nv by 3 NumPy array of vertex normals if they are specified, otherwise an empty array
+        v, f, n = pcu.read_obj(os.path.join(self.test_path, "cube_twist.obj"))
+
+        # Estimate normals for the point set, v using 12 nearest neighbors per point
+        n = pcu.estimate_normals(v, k=12)
+        self.assertEqual(n.shape, v.shape)
 
 
 if __name__ == '__main__':

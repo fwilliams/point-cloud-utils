@@ -2,6 +2,7 @@
 #include <vcg/complex/complex.h>
 #include <vcg/complex/algorithms/point_sampling.h>
 #include <vcg/complex/algorithms/clustering.h>
+#include <vcg/complex/algorithms/pointcloud_normal.h>
 
 #include <fstream>
 #include <iostream>
@@ -57,6 +58,14 @@ static void vcg_mesh_from_vfn(
 
   tri::UpdateBounding<MyMesh>::Box(m);
 }
+
+template <typename DerivedV>
+static void vcg_mesh_from_v(const Eigen::MatrixBase<DerivedV>& V, MyMesh& m) {
+    Eigen::MatrixXi F(0, 3);
+    Eigen::MatrixXd N(0, 3);
+    vcg_mesh_from_vfn(V, F, N, m);
+}
+
 
 template <class MeshType, typename VType, typename FType, typename NType>
 class EigenMeshSampler
@@ -165,9 +174,9 @@ This function uses the method in "Parallel Poisson Disk Sampling with Spectrum A
 
 Parameters
 ----------
-v : #v by 3 list of mesh vertex positions
-f : #f by 3 list of mesh face indices
-n : #v by 3 list of mesh vertex normals
+v : #v by 3 array of mesh vertex positions
+f : #f by 3 array of mesh face indices
+n : #v by 3 array of mesh vertex normals
 num_samples: desired number of Poisson Disk samples. If this value <= 0, then the parameter radius is used to decide the number of samples
 radius : desired separation between points, if num_samples <= 0, then this value is used to determine the sampling (-1.0, by default)
 use_geodesic_distance : Use geodesic distance on the mesh downsampling, False by default
@@ -177,8 +186,8 @@ random_seed : A random seed used to generate the samples, 0 by default will use 
 
 Returns
 -------
-A #pv x 3 matrix of points which are approximately evenly spaced
-A #pv x 3 matrix of normals if normals were passed in (else an empty array)
+A #pv x 3 array of points which are approximately evenly spaced
+A #pv x 3 array of normals if normals were passed in (else an empty array)
 
 )Qu8mg5v7";
 
@@ -268,9 +277,9 @@ Generate uniformly distributed random point samples on a mesh
 
 Parameters
 ----------
-v : #v by 3 list of mesh vertex positions
-f : #f by 3 list of mesh face indices
-n : #v by 3 list of mesh vertex normals (or 0 by 3 if no normals available)
+v : #v by 3 array of mesh vertex positions
+f : #f by 3 array of mesh face indices
+n : #v by 3 array of mesh vertex normals (or 0 by 3 if no normals available)
 num_samples : The number of samples to generate
 
 Returns
@@ -321,15 +330,15 @@ This function uses the method in "Parallel Poisson Disk Sampling with Spectrum A
 
 Parameters
 ----------
-v : #v by 3 list of mesh vertex positions
-n : #v by 3 list of mesh vertex normals
+v : #v by 3 array of vertex positions
+n : #v by 3 array of vertex normals
 radius : desired separation between points
 best_choice_sampling : When downsampling, always keep the sample that will remove the
                        fewest number of samples, False by default
 
 Returns
 -------
-A #pv x 3 matrix of points which are approximately evenly spaced and are a subset of the input v
+A #pv x 3 array of points which are approximately evenly spaced and are a subset of the input v
 
 )Qu8mg5v7";
 
@@ -371,5 +380,50 @@ npe_end_code()
 
 
 
+const char* estimate_normals_doc = R"Qu8mg5v7(
+Estimate normals for a point cloud by locally fitting a plane to a small neighborhood of points
 
+Parameters
+----------
+v : #v by 3 array of vertex positions (each row is a vertex)
+k : Number of nearest neighbors to use in the estimate for the normal of a point. Default: 10.
+smoothing_iterations : Number of smoothing iterations to applyt to the estimated normals. Default: 0.
+
+Returns
+-------
+A #v x 3 array of normals where each row i is the normal at vertex v[i]
+
+)Qu8mg5v7";
+npe_function(estimate_normals)
+npe_arg(v, dense_float, dense_double)
+npe_default_arg(k, int, 10)
+npe_default_arg(smoothing_iterations, int, 0)
+npe_doc(estimate_normals_doc)
+npe_begin_code()
+
+    MyMesh m;
+    vcg_mesh_from_v(v, m);
+
+    tri::PointCloudNormal<MyMesh>::Param p;
+    p.fittingAdjNum = k;
+    p.smoothingIterNum = smoothing_iterations;
+    p.viewPoint = vcg::Point3d(0.0f, 0.0f, 0.0f);
+    p.useViewPoint = false;
+
+    tri::PointCloudNormal<MyMesh>::Compute(m, p, (vcg::CallBackPos*) nullptr);
+
+    npe_Matrix_v ret(m.vn, 3);
+
+    int vcount = 0;
+    for (MyMesh::VertexIterator vit = m.vert.begin(); vit != m.vert.end(); vit++) {
+        ret(vcount, 0) = vit->N()[0];
+        ret(vcount, 1) = vit->N()[1];
+        ret(vcount, 2) = vit->N()[2];
+        vcount += 1;
+    }
+
+    return npe::move(ret);
+
+
+npe_end_code()
 
