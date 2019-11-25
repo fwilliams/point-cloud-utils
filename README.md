@@ -8,6 +8,7 @@
    - Poisson-Disk-Sampling of a mesh based on "[Parallel Poisson Disk Sampling with Spectrum Analysis on Surface](http://graphics.cs.umass.edu/pubs/sa_2010.pdf)".
    - Sampling a mesh with [Lloyd's algorithm](https://en.wikipedia.org/wiki/Lloyd%27s_algorithm)
    - Monte-Carlo sampling on a mesh
+ - Normal estimation from point clouds
  - Very fast pairwise nearest neighbor between point clouds (based on [nanoflann](https://github.com/jlblancoc/nanoflann))
  - Hausdorff distances between point-clouds.
  - Chamfer distnaces between point-clouds.
@@ -89,6 +90,17 @@ samples_2d = pcu.lloyd_2d(100)
 
 # Generate 100 points on the unit cube with Lloyd's algorithm
 samples_3d = pcu.lloyd_3d(100)
+```
+
+### Estimating Normals From a Point Cloud
+```python
+import point_cloud_utils as pcu
+
+# v is a nv by 3 NumPy array of vertices
+v, _, _, _ = pcu.read_ply("my_model.ply")
+
+# Estimate a normal at each point (row of v) using its 16 nearest neighbors
+n = pcu.estimate_normals(n, k=16)
 ```
 
 ### Approximate Wasserstein (Sinkhorn) Distance Between Point-Clouds
