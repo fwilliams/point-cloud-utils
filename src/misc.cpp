@@ -55,8 +55,8 @@ for (std::uint64_t x = 0; x < nx; x++) {
     for (std::uint64_t y = 0; y < ny; y++) {
         for (std::uint64_t z = 0; z < nz; z++) {
             std::uint64_t idx = x*nx*ny + y*ny + z;
-            std::uint64_t idx_in = x*nx*ny + y*ny + z + 1;
-            std::uint64_t idx_out = x*nx*ny + y*ny + z - 1;
+            std::uint64_t idx_in = x*nx*ny + y*ny + (z+1);
+            std::uint64_t idx_out = x*nx*ny + y*ny + (z-1);
             std::uint64_t idx_left = (x-1)*nx*ny + y*ny + z;
             std::uint64_t idx_right = (x+1)*nx*ny + y*ny + z;
             std::uint64_t idx_up = x*nx*ny + (y+1)*ny + z;
@@ -87,7 +87,7 @@ for (std::uint64_t x = 0; x < nx; x++) {
                 if (y == 0) {
                     val_down = 0.0;
                     val_up = data.data()[idx_up];
-                } else if (y == ny-z) {
+                } else if (y == ny - 1) {
                     val_up = data.data()[idx_up];
                     val_down = 0.0;
                 } else  {
