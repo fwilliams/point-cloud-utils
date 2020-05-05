@@ -2,94 +2,33 @@
 
 #include <vector>
 #include <mutex>
+#include <sstream>
+#include <chrono>
 
+
+#include <geogram/mesh/mesh_tetrahedralize.h>
+#include <geogram/delaunay/delaunay.h>
 #include <geogram/basic/geometry.h>
+#include <geogram/mesh/mesh_geometry.h>
+#include <geogram/mesh/mesh_topology.h>
+#include <geogram/mesh/mesh_repair.h>
+#include <geogram/mesh/mesh_fill_holes.h>
+#include <geogram/mesh/mesh_preprocessing.h>
+#include <geogram/mesh/mesh_degree3_vertices.h>
 #include <geogram/voronoi/CVT.h>
 #include <geogram/voronoi/RVD.h>
-#include <geogram/basic/command_line.h>
-#include <geogram/basic/command_line_args.h>
+#include <geogram/voronoi/RVD_callback.h>
+#include <geogram/voronoi/RVD_mesh_builder.h>
+#include <geogram/numerics/predicates.h>
 
 #include <npe.h>
 #include <pybind11/stl.h>
 
 #include "common.h"
+#include "geogram_utils.h"
 
 
 namespace {
-
-/*
- * Convert a (V, F) pair to a geogram mesh
- */
-template <typename DerivedV, typename DerivedF>
-void vf_to_geogram_mesh(const Eigen::MatrixBase<DerivedV> &V, const Eigen::MatrixBase<DerivedF> &F, GEO::Mesh &M) {
-    M.clear();
-    // Setup vertices
-    M.vertices.create_vertices((int) V.rows());
-    for (int i = 0; i < (int) M.vertices.nb(); ++i) {
-        GEO::vec3 &p = M.vertices.point(i);
-        p[0] = V(i, 0);
-        p[1] = V(i, 1);
-        p[2] = (V.cols() == 2 ? 0 : V(i, 2));
-    }
-    // Setup faces
-    if (F.cols() == 3) {
-        M.facets.create_triangles((int) F.rows());
-    } else if (F.cols() == 4) {
-        M.facets.create_quads((int) F.rows());
-    } else {
-        throw std::runtime_error("Mesh face type not supported");
-    }
-    for (int c = 0; c < (int) M.facets.nb(); ++c) {
-        for (int lv = 0; lv < F.cols(); ++lv) {
-            M.facets.set_vertex(c, lv, F(c, lv));
-        }
-    }
-    M.facets.connect();
-}
-
-/*
- * Convert a (V, T) pair to a geogram mesh
- */
-template <typename DerivedV, typename DerivedF, typename DerivedT>
-void vft_to_geogram_tet_mesh(const Eigen::MatrixBase<DerivedV> &V, const Eigen::MatrixBase<DerivedF> &F, const Eigen::MatrixBase<DerivedT> &T, GEO::Mesh &M) {
-    M.clear();
-
-    // Setup vertices
-    M.vertices.create_vertices((int) V.rows());
-    for (int i = 0; i < (int) M.vertices.nb(); ++i) {
-        GEO::vec3 &p = M.vertices.point(i);
-        p[0] = V(i, 0);
-        p[1] = V(i, 1);
-        p[2] = (V.cols() == 2 ? 0 : V(i, 2));
-    }
-
-    // Setup faces
-    if (F.cols() == 3) {
-        M.facets.create_triangles((int) F.rows());
-    } else {
-        throw std::runtime_error("Mesh face type not supported");
-    }
-    for (int c = 0; c < (int) M.facets.nb(); ++c) {
-        for (int lv = 0; lv < F.cols(); ++lv) {
-            M.facets.set_vertex(c, lv, F(c, lv));
-        }
-    }
-
-    // Setup tets
-    if (T.cols() == 4) {
-        M.cells.create_tets((int) T.rows());
-    } else {
-        throw std::runtime_error("Mesh cell type not supported");
-    }
-    for (int c = 0; c < (int) M.cells.nb(); ++c) {
-        for (int lv = 0; lv < T.cols(); ++lv) {
-            M.cells.set_vertex(c, lv, T(c, lv));
-        }
-    }
-
-    M.cells.connect();
-    M.facets.connect();
-}
 
 /*
  * Sample a mesh using lloyd relaxation
@@ -188,7 +127,6 @@ void voronoi_centroids(const Eigen::MatrixBase<DerivedV> &V,
     P.resize(centers.rows(), centers.cols());
 
     GEO::index_t nb_points = centers.rows();
-
     mg.assign(nb_points * dimension_, 0.0);
     m.assign(nb_points, 0.0);
     delaunay_->set_vertices(nb_points, centers_vec.data());
@@ -205,42 +143,12 @@ void voronoi_centroids(const Eigen::MatrixBase<DerivedV> &V,
     }
 }
 
-// Put geogram log messages in the trash where they belong
-class GeoTrashCan: public GEO::LoggerClient {
-protected:
-    void div(const std::string& log) override { /*pybind11::print(log);*/ }
-    void out(const std::string& log) override { /*pybind11::print(log);*/ }
-    void warn(const std::string& log) override { /*pybind11::print(log);*/ }
-    void err(const std::string& log) override { /*pybind11::print(log);*/ }
-    void status(const std::string& log) override { /*pybind11::print(log);*/ }
-};
 
 
-// Geogram is stateful and needs to be initialized.
-// These variables keep track of whether geogram is initialized in a thread-safe manner.
-// I'm using p-threads so none of this will work on Windows.
-bool geogram_is_initialized = false;
-std::mutex geogram_init_mutex;
 
-// Initialize geogram exactly once.
-void init_geogram_only_once() {
-  std::lock_guard<std::mutex> guard(geogram_init_mutex);
 
-  if (!geogram_is_initialized) {
-    GEO::initialize();
 
-    GEO::Logger *geo_logger = GEO::Logger::instance();
-    geo_logger->unregister_all_clients();
-    geo_logger->register_client(new GeoTrashCan());
-    geo_logger->set_pretty(false);
 
-    GEO::CmdLine::import_arg_group("standard");
-    GEO::CmdLine::import_arg_group("pre");
-    GEO::CmdLine::import_arg_group("algo");
-
-    geogram_is_initialized = true;
-  }
-}
 
 
 } // namespace
@@ -505,4 +413,5 @@ npe_begin_code()
   return npe::move(P);
 
 npe_end_code()
+
 

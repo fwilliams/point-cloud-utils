@@ -57,6 +57,7 @@ npe_add_module(pcu_internal
   ${CMAKE_CURRENT_SOURCE_DIR}/src/meshio.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/mesh_utils.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/misc.cpp)
+target_sources(pcu_internal PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/geogram_utils.cpp)
 target_include_directories(pcu_internal PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/external/vcglib)
 target_include_directories(pcu_internal PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
 target_include_directories(pcu_internal PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/external/nanoflann)
