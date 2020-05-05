@@ -56,7 +56,8 @@ npe_add_module(pcu_internal
   ${CMAKE_CURRENT_SOURCE_DIR}/src/lloyd.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/meshio.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/mesh_utils.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/misc.cpp)
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/misc.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/morton.cpp)
 target_sources(pcu_internal PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/geogram_utils.cpp)
 target_include_directories(pcu_internal PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/external/vcglib)
 target_include_directories(pcu_internal PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
@@ -64,6 +65,11 @@ target_include_directories(pcu_internal PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/exte
 target_include_directories(pcu_internal PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/external)
 target_link_libraries(pcu_internal PRIVATE geogram)
 set_target_properties(pcu_internal PROPERTIES COMPILE_FLAGS "-fvisibility=hidden -msse3")
+find_package(OpenMP)
+if(OpenMP_CXX_FOUND)
+  message(STATUS "!!!!!!!!!! OPENMP FOUND !!!!!!!!!")
+    target_link_libraries(pcu_internal PUBLIC OpenMP::OpenMP_CXX)
+endif()
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
   target_link_libraries(pcu_internal PUBLIC OpenMP::OpenMP_CXX)
