@@ -247,6 +247,7 @@ an [n] shaped array of morton encoded points
 npe_function(morton_encode)
 npe_arg(pts, dense_int, dense_long, dense_longlong)
 npe_default_arg(sort, bool, false)
+npe_default_arg(parallel, bool, true)
 npe_doc(morton_encode)
 npe_begin_code()
 
@@ -259,11 +260,19 @@ npe_begin_code()
 
     Eigen::Matrix<uint64_t, Eigen::Dynamic, 1> codes(pts.rows(), 1);
 
-    #pragma omp parallel for
-    for(int i = 0; i < pts.rows(); i += 1) {
-        int32_t px = pts(i, 0), py = pts(i, 1), pz = pts(i, 2);
-        MortonCode64 code(px, py, pz);
-        codes[i] = code.get_data();
+    if (parallel) {
+        #pragma omp parallel for
+        for(int i = 0; i < pts.rows(); i += 1) {
+            int32_t px = pts(i, 0), py = pts(i, 1), pz = pts(i, 2);
+            MortonCode64 code(px, py, pz);
+            codes[i] = code.get_data();
+        }
+    } else {
+        for(int i = 0; i < pts.rows(); i += 1) {
+            int32_t px = pts(i, 0), py = pts(i, 1), pz = pts(i, 2);
+            MortonCode64 code(px, py, pz);
+            codes[i] = code.get_data();
+        }
     }
 
     if (sort) {
