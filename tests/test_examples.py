@@ -173,6 +173,9 @@ class TestDenseBindings(unittest.TestCase):
         if os.name == 'nt':
             num_pts = 10000
             num_qpts = 100
+        else:
+            num_pts = 1000000
+            num_qpts = 10000
         div = 1.0 / 1000.0
         pts = np.random.rand(num_pts, 3) / div
         pts_int = pts.astype(np.int32)
