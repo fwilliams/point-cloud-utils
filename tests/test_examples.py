@@ -170,10 +170,10 @@ class TestDenseBindings(unittest.TestCase):
         import point_cloud_utils as pcu
         import numpy as np
         div = 1.0 / 1000.0
-        pts = np.random.rand(1_000_000, 3) / div
+        pts = np.random.rand(1000000, 3) / div
         pts_int = pts.astype(np.int32)
 
-        qpts = np.random.rand(10_000, 3) / div
+        qpts = np.random.rand(10000, 3) / div
         qpts_int = qpts.astype(np.int32)
 
         codes = pcu.morton_encode(pts_int)
@@ -184,7 +184,7 @@ class TestDenseBindings(unittest.TestCase):
 
         nn_idx = pcu.morton_knn(codes_sorted, qcodes, 7)
         codes_sorted[nn_idx]
-        self.assertEqual(nn_idx.shape, (10_000, 7))
+        self.assertEqual(nn_idx.shape, (10000, 7))
 
     def test_morton_coding_small_data(self):
         import point_cloud_utils as pcu
@@ -193,7 +193,7 @@ class TestDenseBindings(unittest.TestCase):
         pts = np.random.rand(10, 3) / div
         pts_int = pts.astype(np.int32)
 
-        qpts = np.random.rand(10_000, 3) / div
+        qpts = np.random.rand(10000, 3) / div
         qpts_int = qpts.astype(np.int32)
 
         codes = pcu.morton_encode(pts_int)
@@ -204,7 +204,7 @@ class TestDenseBindings(unittest.TestCase):
 
         nn_idx = pcu.morton_knn(codes_sorted, qcodes, 7)
         codes_sorted[nn_idx]
-        self.assertEqual(nn_idx.shape, (10_000, 7))
+        self.assertEqual(nn_idx.shape, (10000, 7))
 
     def test_morton_coding_tiny_data(self):
         import point_cloud_utils as pcu
@@ -213,7 +213,7 @@ class TestDenseBindings(unittest.TestCase):
         pts = np.random.rand(10, 3) / div
         pts_int = pts.astype(np.int32)
 
-        qpts = np.random.rand(10_000, 3) / div
+        qpts = np.random.rand(10000, 3) / div
         qpts_int = qpts.astype(np.int32)
 
         codes = pcu.morton_encode(pts_int)
@@ -224,7 +224,7 @@ class TestDenseBindings(unittest.TestCase):
 
         nn_idx = pcu.morton_knn(codes_sorted, qcodes, 15)
         codes_sorted[nn_idx]
-        self.assertEqual(nn_idx.shape, (10_000, 10))
+        self.assertEqual(nn_idx.shape, (10000, 10))
 
 if __name__ == '__main__':
     unittest.main()
