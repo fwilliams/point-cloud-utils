@@ -169,11 +169,15 @@ class TestDenseBindings(unittest.TestCase):
     def test_morton_coding_big_data(self):
         import point_cloud_utils as pcu
         import numpy as np
+        import os
+        if os.name == 'nt':
+            num_pts = 10000
+            num_qpts = 100
         div = 1.0 / 1000.0
-        pts = np.random.rand(1000000, 3) / div
+        pts = np.random.rand(num_pts, 3) / div
         pts_int = pts.astype(np.int32)
 
-        qpts = np.random.rand(10000, 3) / div
+        qpts = np.random.rand(num_qpts, 3) / div
         qpts_int = qpts.astype(np.int32)
 
         codes = pcu.morton_encode(pts_int)
@@ -184,7 +188,7 @@ class TestDenseBindings(unittest.TestCase):
 
         nn_idx = pcu.morton_knn(codes_sorted, qcodes, 7)
         codes_sorted[nn_idx]
-        self.assertEqual(nn_idx.shape, (10000, 7))
+        self.assertEqual(nn_idx.shape, (num_qpts, 7))
 
     def test_morton_coding_small_data(self):
         import point_cloud_utils as pcu
