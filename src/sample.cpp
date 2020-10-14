@@ -245,7 +245,9 @@ npe_begin_code()
 
     if(random_seed) {
         tri::SurfaceSampling<MeshType,MontecarloSampler>::SamplingRandomGenerator().initialize(random_seed);
+        tri::SurfaceSampling<MeshType,BaseSampler>::SamplingRandomGenerator().initialize(random_seed);
     }
+    // Generate dense samples on the mesh
     tri::SurfaceSampling<MeshType,MontecarloSampler>::Montecarlo(m, mcSampler, std::max(10000, num_samples*40));
     tri::UpdateBounding<MeshType>::Box(MontecarloMesh);
     //    int t1=clock();
@@ -253,13 +255,14 @@ npe_begin_code()
 
     if(radiusVariance !=1)
     {
+      // TODO: Adaptive radius would be nice actually!
       pp.adaptiveRadiusFlag=true;
       pp.radiusVariance=radiusVariance;
     }
     if(num_samples == 0) {
         tri::SurfaceSampling<MeshType, BaseSampler>::PoissonDiskPruning(pdSampler, MontecarloMesh, radius, pp);
     } else {
-        tri::SurfaceSampling<MeshType, BaseSampler>::PoissonDiskPruningByNumber(pdSampler, MontecarloMesh, num_samples, radius,pp,PruningByNumberTolerance);
+        tri::SurfaceSampling<MeshType, BaseSampler>::PoissonDiskPruningByNumber(pdSampler, MontecarloMesh, num_samples, radius, pp, PruningByNumberTolerance);
     }
     //    int t2=clock();
     //    pp.pds.totalTime = t2-t0;
@@ -323,6 +326,7 @@ npe_begin_code()
 npe_end_code()
 
 
+
 const char* prune_point_cloud_poisson_disk_doc = R"Qu8mg5v7(
 Downsample a point set so that samples are approximately evenly spaced.
 This function uses the method in "Parallel Poisson Disk Sampling with Spectrum Analysis on Surface"
@@ -332,9 +336,12 @@ Parameters
 ----------
 v : #v by 3 array of vertex positions
 n : #v by 3 array of vertex normals
-radius : desired separation between points
+num_samples: The desired number of samples to prune to. Note that the actual returned number may be
+             slightly different than this value
+radius : If num_samples is set to 0, prune so the separation between output points is approximately this radius.
 best_choice_sampling : When downsampling, always keep the sample that will remove the
                        fewest number of samples, False by default
+random_seed: A random seed used to generate the samples, 0 by default will use the current time
 
 Returns
 -------
@@ -345,8 +352,10 @@ A #pv x 3 array of points which are approximately evenly spaced and are a subset
 npe_function(prune_point_cloud_poisson_disk)
 npe_arg(v, dense_float, dense_double)
 npe_arg(n, npe_matches(v))
-npe_arg(radius, double)
+npe_arg(num_samples, int)
+npe_default_arg(radius, double, 0.0)
 npe_default_arg(best_choice_sampling, bool, false)
+npe_default_arg(random_seed, unsigned int, 0)
 npe_doc(prune_point_cloud_poisson_disk_doc)
 npe_begin_code()
 
@@ -371,8 +380,18 @@ npe_begin_code()
   pp.pds = pds;
   pp.bestSampleChoiceFlag = best_choice_sampling;
   pp.geodesicDistanceFlag = false;
-  tri::SurfaceSampling<MyMesh, PoissonDiskSampler>::PoissonDiskPruning(mps, m, radius, pp);
+  pp.randomSeed = random_seed;
 
+  if(random_seed) {
+      tri::SurfaceSampling<MyMesh, PoissonDiskSampler>::SamplingRandomGenerator().initialize(random_seed);
+  }
+
+  if (radius <= 0.0 & num_samples > 0) {
+      double PruningByNumberTolerance = 0.04;
+      tri::SurfaceSampling<MyMesh, PoissonDiskSampler>::PoissonDiskPruningByNumber(mps, m, num_samples, radius, pp, PruningByNumberTolerance);
+  } else if (radius > 0.0 and num_samples <= 0) {
+      tri::SurfaceSampling<MyMesh, PoissonDiskSampler>::PoissonDiskPruning(mps, m, radius, pp);
+  }
   mps.trim();
   return std::make_tuple(npe::move(ret_v), npe::move(ret_n));
 
