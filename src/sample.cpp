@@ -386,10 +386,10 @@ npe_begin_code()
       tri::SurfaceSampling<MyMesh, PoissonDiskSampler>::SamplingRandomGenerator().initialize(random_seed);
   }
 
-  if (radius <= 0.0 & num_samples > 0) {
+  if (radius <= 0.0 && num_samples > 0) {
       double PruningByNumberTolerance = 0.04;
       tri::SurfaceSampling<MyMesh, PoissonDiskSampler>::PoissonDiskPruningByNumber(mps, m, num_samples, radius, pp, PruningByNumberTolerance);
-  } else if (radius > 0.0 and num_samples <= 0) {
+  } else if (radius > 0.0 && num_samples <= 0) {
       tri::SurfaceSampling<MyMesh, PoissonDiskSampler>::PoissonDiskPruning(mps, m, radius, pp);
   }
   mps.trim();
