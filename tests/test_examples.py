@@ -31,7 +31,9 @@ class TestDenseBindings(unittest.TestCase):
         # `radius` distance, use_geodesic_distance indicates that the distance should be measured on the mesh.
         #
         # n_poisson are the corresponding normals of v_poisson
-        v_poisson, n_poisson = pcu.prune_point_cloud_poisson_disk(v_dense, n_dense, 0.1*bbox_diag)
+        v_poisson, n_poisson = pcu.prune_point_cloud_poisson_disk(v_dense, n_dense, 0, 0.1*bbox_diag)
+
+        v_poisson, n_poisson = pcu.prune_point_cloud_poisson_disk(v_dense, n_dense, 100)
 
         v_poisson, n_poisson = pcu.sample_mesh_poisson_disk(
             v, f, n, num_samples=7777, use_geodesic_distance=True)
