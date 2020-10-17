@@ -8,7 +8,7 @@ class TestDenseBindings(unittest.TestCase):
         self.test_path = os.path.join(os.path.dirname(
             os.path.realpath(__file__)), "..", "data")
 
-    def test_poisson_disk_sampling(self):
+    def test_mesh_sampling(self):
         import point_cloud_utils as pcu
         import numpy as np
 
@@ -19,29 +19,54 @@ class TestDenseBindings(unittest.TestCase):
         bbox = np.max(v, axis=0) - np.min(v, axis=0)
         bbox_diag = np.linalg.norm(bbox)
 
-        # Generate very dense  random samples on the mesh (v, f, n)
-        # Note that this function works with no normals, just pass in an empty array np.array([], dtype=v.dtype)
-        # v_dense is an array with shape (100*v.shape[0], 3) where each row is a point on the mesh (v, f)
-        # n_dense is an array with shape (100*v.shape[0], 3) where each row is a the normal of a point in v_dense
-        v_dense, n_dense = pcu.sample_mesh_random(v, f, n, num_samples=v.shape[0] * 100)
+        f_idx1, bc1 = pcu.sample_mesh_random(v, f, num_samples=1000, random_seed=1234567)
+        f_idx2, bc2 = pcu.sample_mesh_random(v, f, num_samples=1000, random_seed=1234567)
+        f_idx3, bc3 = pcu.sample_mesh_random(v, f, num_samples=1000, random_seed=7654321)
+        self.assertTrue(np.all(f_idx1 == f_idx2))
+        self.assertTrue(np.all(bc1 == bc2))
+        self.assertFalse(np.all(f_idx1 == f_idx3))
+        self.assertFalse(np.all(bc1 == bc3))
 
-        # Downsample v_dense to be from a blue noise distribution:
-        #
-        # v_poisson is a downsampled version of v where points are separated by approximately
-        # `radius` distance, use_geodesic_distance indicates that the distance should be measured on the mesh.
-        #
-        # n_poisson are the corresponding normals of v_poisson
-        v_poisson, n_poisson = pcu.prune_point_cloud_poisson_disk(v_dense, n_dense, 0, 0.1*bbox_diag)
+        # Generate very dense  random samples on the mesh (v, f)
+        f_idx, bc = pcu.sample_mesh_random(v, f, num_samples=v.shape[0] * 40)
+        v_dense = (v[f[f_idx]] * bc[:, np.newaxis]).sum(1)
 
-        v_poisson, n_poisson = pcu.prune_point_cloud_poisson_disk(v_dense, n_dense, 100)
+        s_idx = pcu.prune_point_cloud_poisson_disk(v_dense, 0, 0.1*bbox_diag, random_seed=1234567)
+        s_idx2 = pcu.prune_point_cloud_poisson_disk(v_dense, 0, 0.1*bbox_diag, random_seed=1234567)
+        s_idx3 = pcu.prune_point_cloud_poisson_disk(v_dense, 0, 0.1 * bbox_diag, random_seed=7654321)
+        self.assertTrue(np.all(s_idx == s_idx2))
+        if s_idx3.shape == s_idx.shape:
+            self.assertFalse(np.all(s_idx == s_idx3))
+        else:
+            self.assertFalse(s_idx.shape == s_idx3.shape)
 
-        v_poisson, n_poisson = pcu.sample_mesh_poisson_disk(
-            v, f, n, num_samples=7777, use_geodesic_distance=True)
+        s_idx = pcu.prune_point_cloud_poisson_disk(v_dense, 1000, random_seed=1234567)
+        s_idx2 = pcu.prune_point_cloud_poisson_disk(v_dense, 1000, random_seed=1234567)
+        s_idx3 = pcu.prune_point_cloud_poisson_disk(v_dense, 1000, random_seed=7654321)
+        self.assertTrue(np.all(s_idx == s_idx2))
+        if s_idx3.shape == s_idx.shape:
+            self.assertFalse(np.all(s_idx == s_idx3))
+        else:
+            self.assertFalse(s_idx.shape == s_idx3.shape)
 
-        v_poisson, n_poisson = pcu.sample_mesh_poisson_disk(
-            v, f, n, num_samples=-1, radius=0.01*bbox_diag, use_geodesic_distance=True)
+        f_idx1, bc1 = pcu.sample_mesh_poisson_disk(v, f, num_samples=1000,
+                                                   random_seed=1234567, use_geodesic_distance=True)
+        f_idx2, bc2 = pcu.sample_mesh_poisson_disk(v, f, num_samples=1000,
+                                                   random_seed=1234567, use_geodesic_distance=True)
+        f_idx3, bc3 = pcu.sample_mesh_poisson_disk(v, f, num_samples=1000,
+                                                   random_seed=7654321, use_geodesic_distance=True)
+        self.assertTrue(np.all(f_idx1 == f_idx2))
+        self.assertTrue(np.all(bc1 == bc2))
+        self.assertFalse(np.all(f_idx1 == f_idx3))
+        self.assertFalse(np.all(bc1 == bc3))
 
-
+        f_idx1, bc1 = pcu.sample_mesh_poisson_disk(v, f, num_samples=-1, radius=0.01*bbox_diag, random_seed=1234567)
+        f_idx2, bc2 = pcu.sample_mesh_poisson_disk(v, f, num_samples=-1, radius=0.01*bbox_diag,random_seed=1234567)
+        f_idx3, bc3 = pcu.sample_mesh_poisson_disk(v, f, num_samples=-1, radius=0.01*bbox_diag, random_seed=7654321)
+        self.assertTrue(np.all(f_idx1 == f_idx2))
+        self.assertTrue(np.all(bc1 == bc2))
+        self.assertFalse(np.all(f_idx1 == f_idx3))
+        self.assertFalse(np.all(bc1 == bc3))
 
     def test_lloyd_relaxation(self):
         import point_cloud_utils as pcu

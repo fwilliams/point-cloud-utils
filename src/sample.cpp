@@ -29,11 +29,7 @@ class MyMesh    : public tri::TriMesh<std::vector<MyVertex>, std::vector<MyFace>
  * Copy a mesh stored as a #V x 3 matrix of vertices, V, and a #F x 3 matrix of face indices into a VCG mesh
  */
 template <typename DerivedV, typename DerivedF, typename DerivedN>
-static void vcg_mesh_from_vfn(
-    const Eigen::MatrixBase<DerivedV>& V,
-    const Eigen::MatrixBase<DerivedF>& F,
-    const Eigen::MatrixBase<DerivedN>& N,
-    MyMesh& m) {
+static void vcg_mesh_from_vfn(const Eigen::MatrixBase<DerivedV>& V, const Eigen::MatrixBase<DerivedF>& F, const Eigen::MatrixBase<DerivedN>& N, MyMesh& m) {
 
   MyMesh::VertexIterator vit = Allocator<MyMesh>::AddVertices(m, V.rows());
   std::vector<MyMesh::VertexPointer> ivp(V.rows());
@@ -59,6 +55,20 @@ static void vcg_mesh_from_vfn(
   tri::UpdateBounding<MyMesh>::Box(m);
 }
 
+
+/*
+ * Copy a mesh stored as a #V x 3 matrix of vertices, V, and a #F x 3 matrix of face indices into a VCG mesh
+ */
+template <typename DerivedV, typename DerivedF>
+static void vcg_mesh_from_vf(const Eigen::MatrixBase<DerivedV>& V, const Eigen::MatrixBase<DerivedF>& F,MyMesh& m) {
+    Eigen::MatrixXd N(0, 3);
+    vcg_mesh_from_vfn(V, F, N, m);
+}
+
+
+/*
+ * Copy a mesh stored as a #V x 3 matrix of vertices, V, and a #F x 3 matrix of face indices into a VCG mesh
+ */
 template <typename DerivedV>
 static void vcg_mesh_from_v(const Eigen::MatrixBase<DerivedV>& V, MyMesh& m) {
     Eigen::MatrixXi F(0, 3);
@@ -67,102 +77,130 @@ static void vcg_mesh_from_v(const Eigen::MatrixBase<DerivedV>& V, MyMesh& m) {
 }
 
 
-template <class MeshType, typename VType, typename FType, typename NType>
-class EigenMeshSampler
+/*
+ * Use this to sample vertex indices when we are sampling from a point cloud
+ */
+template <class MeshType>
+class EigenVertexIndexSampler
 {
 public:
     typedef typename MeshType::VertexType  VertexType;
-    typedef typename MeshType::FaceType    FaceType;
-    typedef typename MeshType::CoordType   CoordType;
 
-    VType& v;
-    FType& f;
-    NType& n;
+    // The mesh we are sampling from
+    MeshType& sampled_mesh;
 
+    // Indices into the mesh vertex array, this is an eigen matrix of some type
+    typedef Eigen::Matrix<std::ptrdiff_t, Eigen::Dynamic, 1> IndexArray;
+    IndexArray& indices;
+
+    // Number of vertices
     int vcount = 0;
-    int ncount = 0;
-    int fcount = 0;
 
-    bool return_normals = false;
-
-    EigenMeshSampler(VType& v, FType& f, NType& n, bool has_normals, bool per_face_normals=false) : v(v), n(n), f(f), return_normals(has_normals) {
-        perFaceNormal = per_face_normals;
+    EigenVertexIndexSampler(MeshType& in_mesh, IndexArray& out_inds) :
+        sampled_mesh(in_mesh), indices(out_inds) {
     }
-
-    EigenMeshSampler(VType& v, FType& f) : v(v), n(n), f(f), return_normals(false) {
-        perFaceNormal = false;
-    }
-
-    bool perFaceNormal;  // default false; if true the sample normal is the face normal, otherwise it is interpolated
 
     void trim() {
-        v.conservativeResize(vcount, 3);
-        n.conservativeResize(ncount, 3);
-        f.conservativeResize(fcount, 3);
+        indices.conservativeResize(vcount, 1);
     }
 
     void reset() {
         vcount = 0;
-        fcount = 0;
-        ncount = 0;
     }
 
     void maybe_resize()  {
-        if (v.rows() <= vcount) {
-            const int n_rows = v.rows() == 0 ? 1024 : v.rows();
-            v.conservativeResize(2*n_rows, 3);
-        }
-
-        if (return_normals) {
-            if (n.rows() <= ncount) {
-                const int n_rows = n.rows() == 0 ? 1024 : n.rows();
-                n.conservativeResize(2*n_rows, 3);
-            }
+        // If we are about to overflow indexes, double its size
+        if (indices.size() <= vcount) {
+            const int n_rows = indices.size() == 0 ? 1024 : indices.size();
+            indices.conservativeResize(2*n_rows, 1);
         }
     }
 
     void AddVert(const VertexType &p) {
         maybe_resize();
-
-        v(vcount, 0) = p.cP()[0];
-        v(vcount, 1) = p.cP()[1];
-        v(vcount, 2) = p.cP()[2];
+        std::ptrdiff_t p_offset = &p - &*sampled_mesh.vert.begin();
+        indices(vcount, 0) = p_offset;
         vcount += 1;
+    }
+}; // end class EigenVertexIndexSampler
 
-        if (return_normals) {
-            n(ncount, 0) = p.cN()[0];
-            n(ncount, 1) = p.cN()[1];
-            n(ncount, 2) = p.cN()[2];
-            ncount += 1;
+
+/*
+ * Use this to sample vertex indices when we are sampling from a point cloud
+ */
+template <class MeshType, class BCType>
+class EigenBarycentricSampler
+{
+public:
+    typedef typename MeshType::FaceType    FaceType;
+    typedef typename MeshType::CoordType   CoordType;
+
+    // The mesh we are sampling from
+    MeshType* sampled_mesh;
+    MeshType* output_mesh;
+
+    // Indices into the mesh vertex array, this is an eigen matrix of some type
+    typedef Eigen::Matrix<std::ptrdiff_t, Eigen::Dynamic, 1> IndexArray;
+    IndexArray& indices;
+
+    // Barycentric coordinates of each sampled vertex
+    BCType& barycentric_coords;
+
+    // Number of vertices
+    int vcount = 0;
+
+    bool perFaceNormal;  // default false; if true the sample normal is the face normal, otherwise it is interpolated
+
+    EigenBarycentricSampler(MeshType* in_mesh, MeshType* output_mesh, BCType& out_bc, IndexArray& out_face_idxs) :
+        sampled_mesh(in_mesh), output_mesh(output_mesh), barycentric_coords(out_bc), indices(out_face_idxs), perFaceNormal(false) {
+    }
+
+    void trim() {
+        barycentric_coords.conservativeResize(vcount, 3);
+        indices.conservativeResize(vcount, 1);
+    }
+
+    void reset() {
+        vcount = 0;
+    }
+
+    void maybe_resize()  {
+        // If we are about to overflow indexes, double its size
+        if (barycentric_coords.rows() <= vcount) {
+            const int n_rows = barycentric_coords.rows() == 0 ? 1024 : barycentric_coords.rows();
+            barycentric_coords.conservativeResize(2 * n_rows, 3);
+        }
+        if (indices.size() <= vcount) {
+            const int n_rows = indices.size() == 0 ? 1024 : indices.size();
+            barycentric_coords.conservativeResize(2 * n_rows, 1);
         }
     }
 
     void AddFace(const FaceType &f, CoordType p) {
         maybe_resize();
-
-        auto vertex = f.cP(0)*p[0] + f.cP(1)*p[1] +f.cP(2)*p[2];
-        v(vcount, 0) = vertex[0];
-        v(vcount, 1) = vertex[1];
-        v(vcount, 2) = vertex[2];
+        std::ptrdiff_t f_offset = &f - &*(sampled_mesh->face.begin());
+        indices(vcount, 0) = f_offset;
+        barycentric_coords(vcount, 0) = p[0];
+        barycentric_coords(vcount, 1) = p[1];
+        barycentric_coords(vcount, 2) = p[2];
         vcount += 1;
 
-        if (return_normals) {
-            auto normal = perFaceNormal ? f.cN() : f.cV(0)->N()*p[0] + f.cV(1)->N()*p[1] + f.cV(2)->N()*p[2];
-            n(ncount, 0) = normal[0];
-            n(ncount, 1) = normal[0];
-            n(ncount, 2) = normal[0];
-            ncount += 1;
+        if (output_mesh != nullptr) {
+            tri::Allocator<MeshType>::AddVertices(*output_mesh, 1);
+            output_mesh->vert.back().P() = f.cP(0) * p[0] + f.cP(1) * p[1] +f.cP(2) * p[2];
+            if(perFaceNormal) {
+                output_mesh->vert.back().N() = f.cN();
+            } else {
+                output_mesh->vert.back().N() = f.cV(0)->N() * p[0] + f.cV(1)->N() * p[1] + f.cV(2)->N() * p[2];
+            }
+            if(tri::HasPerVertexQuality(*output_mesh)) {
+               output_mesh->vert.back().Q() = f.cV(0)->Q() * p[0] + f.cV(1)->Q() * p[1] + f.cV(2)->Q() * p[2];
+            }
         }
     }
-}; // end class BaseSampler
-
-
+}; // end class EigenVertexIndexSampler
 
 } // namespace
-
-
-
-
 
 
 
@@ -176,56 +214,58 @@ Parameters
 ----------
 v : #v by 3 array of mesh vertex positions
 f : #f by 3 array of mesh face indices
-n : #v by 3 array of mesh vertex normals
-num_samples: desired number of Poisson Disk samples. If this value <= 0, then the parameter radius is used to decide the number of samples
-radius : desired separation between points, if num_samples <= 0, then this value is used to determine the sampling (-1.0, by default)
-use_geodesic_distance : Use geodesic distance on the mesh downsampling, False by default
+num_samples: desired number of Poisson Disk samples. Note that the actual number of returned samples
+             will not be exactly this value (see sample_num_tolerance) to control the range of possible
+             returned samples.
+             Note: If this value <= 0, then the parameter radius is used to decide the number of samples
+radius : desired separation between points, if num_samples <= 0, then this value is used to determine the
+         sampling (-1.0, by default).
+use_geodesic_distance : Use geodesic distance on the mesh downsampling. (True by default).
 best_choice_sampling : When downsampling, always keep the sample that will remove the
-                       fewest number of samples, False by default
-random_seed : A random seed used to generate the samples, 0 by default will use the current time
-
+                       fewest number of samples. (True by default).
+random_seed : A random seed used to generate the samples.
+              Passing in 0 will use the current time. (0 by default).
+sample_num_tolerance: If you requested a target number of samples, by passsing num_samples > 0, then this function will return
+                      between (1 - sample_num_tolerance) * num_samples and (1 + sample_num_tolerance) * num_samples.
+                      Setting a very small value for this parameter will increase convergence time. (0.04 by default).
 Returns
 -------
-A #pv x 3 array of points which are approximately evenly spaced
-A #pv x 3 array of normals if normals were passed in (else an empty array)
+A (m,) shaped array of face indices into f where m is the number of Poisson-disk samples
+A (m, 3) shaped array of barycentric coordinates where m is the number of Poisson-disk samples
 
 )Qu8mg5v7";
-
 npe_function(sample_mesh_poisson_disk)
 npe_arg(v, dense_float, dense_double)
 npe_arg(f, dense_int, dense_longlong, dense_uint, dense_ulonglong)
-npe_arg(n, npe_matches(v))
 npe_arg(num_samples, int)
 npe_default_arg(radius, double, 0.0)
-npe_default_arg(use_geodesic_distance, bool, false)
-npe_default_arg(best_choice_sampling, bool, false)
+npe_default_arg(use_geodesic_distance, bool, true)
+npe_default_arg(best_choice_sampling, bool, true)
 npe_default_arg(random_seed, unsigned int, 0)
+npe_default_arg(sample_num_tolerance, float, 0.04)
 npe_doc(sample_mesh_poisson_disk_doc)
 npe_begin_code()
-
-    validate_mesh(v, f, n);
+{
+    validate_mesh(v, f);
 
     if (num_samples <= 0 && radius <= 0.0) {
         throw pybind11::value_error("Cannot have both num_samples <= 0 and radius <= 0");
     }
 
     double radiusVariance = 1;
-    double PruningByNumberTolerance = 0.04;
 
     typedef MyMesh MeshType;
-    typedef EigenDenseLike<npe_Matrix_v> EigenRetV;
-    typedef EigenDenseLike<npe_Matrix_n> EigenRetN;
-    typedef EigenDenseLike<npe_Matrix_f> EigenRetF;
-    typedef EigenMeshSampler<MeshType, EigenRetV, EigenRetF, EigenRetN> BaseSampler;
-    typedef tri::MeshSampler<MeshType> MontecarloSampler;
+    typedef EigenDenseLike<npe_Matrix_v> EigenRetBC;
+    typedef EigenVertexIndexSampler<MeshType> PoissonDiskSampler;
+    typedef EigenBarycentricSampler<MyMesh, EigenRetBC> MonteCarloSampler;
 
-    MyMesh m;
-    vcg_mesh_from_vfn(v, f, n, m);
-    typename tri::SurfaceSampling<MeshType, BaseSampler>::PoissonDiskParam pp;
-    int t0=clock();
+    MyMesh input_mesh;
+    vcg_mesh_from_vf(v, f, input_mesh);
+    typename tri::SurfaceSampling<MeshType, PoissonDiskSampler>::PoissonDiskParam pp;
+    //    int t0 = clock();
 
     if(radius > 0 && num_samples <= 0) {
-        num_samples = tri::SurfaceSampling<MeshType,BaseSampler>::ComputePoissonSampleNum(m, radius);
+        num_samples = tri::SurfaceSampling<MeshType, PoissonDiskSampler>::ComputePoissonSampleNum(input_mesh, radius);
     }
 
     pp.pds.sampleNum = num_samples;
@@ -233,46 +273,56 @@ npe_begin_code()
     pp.geodesicDistanceFlag = use_geodesic_distance;
     pp.bestSampleChoiceFlag = best_choice_sampling;
 
-    MeshType MontecarloMesh;
 
-    // First step build the sampling
-    MontecarloSampler mcSampler(MontecarloMesh);
-    EigenRetV ret_v(int(num_samples*1.2), 3);
-    EigenRetN ret_n(int(num_samples*1.2), 3);
-    EigenRetF ret_f(0, 3);
-    const bool return_normals = (n.rows() != 0);
-    BaseSampler pdSampler(ret_v, ret_f, ret_n, return_normals);
+    int num_dense_samples = std::max(10000, num_samples*40);
 
-    if(random_seed) {
-        tri::SurfaceSampling<MeshType,MontecarloSampler>::SamplingRandomGenerator().initialize(random_seed);
-        tri::SurfaceSampling<MeshType,BaseSampler>::SamplingRandomGenerator().initialize(random_seed);
+    // Dense barycentric coordinates and face indices
+    EigenRetBC dense_bc(num_dense_samples, 3);
+    typename MonteCarloSampler::IndexArray dense_fi(num_dense_samples);
+    MeshType montecarlo_mesh;
+    MonteCarloSampler mcSampler(&input_mesh, &montecarlo_mesh, dense_bc, dense_fi);
+
+    // We overallocate a bit because we could end up with more samples
+    typename PoissonDiskSampler::IndexArray dense_vi(int(num_samples * (1.0 + sample_num_tolerance)));
+    PoissonDiskSampler pdSampler(montecarlo_mesh, dense_vi);
+
+    if(random_seed > 0) {
+        tri::SurfaceSampling<MeshType, MonteCarloSampler>::SamplingRandomGenerator().initialize(random_seed);
+        tri::SurfaceSampling<MeshType, PoissonDiskSampler>::SamplingRandomGenerator().initialize(random_seed);
     }
+
     // Generate dense samples on the mesh
-    tri::SurfaceSampling<MeshType,MontecarloSampler>::Montecarlo(m, mcSampler, std::max(10000, num_samples*40));
-    tri::UpdateBounding<MeshType>::Box(MontecarloMesh);
+    tri::SurfaceSampling<MeshType, MonteCarloSampler>::Montecarlo(input_mesh, mcSampler, num_dense_samples);
+    tri::UpdateBounding<MeshType>::Box(montecarlo_mesh);
     //    int t1=clock();
     //    pp.pds.montecarloTime = t1-t0;
 
     if(radiusVariance !=1)
     {
       // TODO: Adaptive radius would be nice actually!
-      pp.adaptiveRadiusFlag=true;
-      pp.radiusVariance=radiusVariance;
+      pp.adaptiveRadiusFlag = true;
+      pp.radiusVariance = radiusVariance;
     }
-    if(num_samples == 0) {
-        tri::SurfaceSampling<MeshType, BaseSampler>::PoissonDiskPruning(pdSampler, MontecarloMesh, radius, pp);
+
+    if (radius <= 0.0 && num_samples > 0) {
+        tri::SurfaceSampling<MeshType, PoissonDiskSampler>::PoissonDiskPruningByNumber(pdSampler, montecarlo_mesh, num_samples, radius, pp, sample_num_tolerance);
+
     } else {
-        tri::SurfaceSampling<MeshType, BaseSampler>::PoissonDiskPruningByNumber(pdSampler, MontecarloMesh, num_samples, radius, pp, PruningByNumberTolerance);
+        tri::SurfaceSampling<MeshType, PoissonDiskSampler>::PoissonDiskPruning(pdSampler, montecarlo_mesh, radius, pp);
     }
     //    int t2=clock();
     //    pp.pds.totalTime = t2-t0;
 
-
-    pdSampler.trim();
-    return std::make_tuple(npe::move(ret_v), npe::move(ret_n));
-
+    EigenRetBC ret_bc(pdSampler.vcount, 3);
+    typename MonteCarloSampler::IndexArray ret_fi(pdSampler.vcount);
+    for (int i = 0; i < pdSampler.vcount; i++) {
+        const std::ptrdiff_t dense_idx = dense_vi[i];
+        ret_bc.row(i) = dense_bc.row(dense_idx);
+        ret_fi[i] = dense_fi[dense_idx];
+    }
+    return std::make_tuple(npe::move(ret_fi), npe::move(ret_bc));
+}
 npe_end_code()
-
 
 
 const char* sample_mesh_random_doc = R"Qu8mg5v7(
@@ -282,49 +332,46 @@ Parameters
 ----------
 v : #v by 3 array of mesh vertex positions
 f : #f by 3 array of mesh face indices
-n : #v by 3 array of mesh vertex normals (or 0 by 3 if no normals available)
 num_samples : The number of samples to generate
-
+random_seed : A random seed used to generate the samples.
+              Passing in 0 will use the current time. (0 by default).
 Returns
 -------
-A #pv x 3 array of samples
-A #pv x 3 array of normals if they were passed in, otherwise a (0, 3) empty array
+A (num_samples,) shaped array of face indices into f where
+A (num_samples, 3) shaped array of barycentric coordinates
 
 )Qu8mg5v7";
-
 npe_function(sample_mesh_random)
 npe_arg(v, dense_float, dense_double)
 npe_arg(f, dense_int, dense_longlong, dense_uint, dense_ulonglong)
-npe_arg(n, npe_matches(v))
 npe_arg(num_samples, int)
+npe_default_arg(random_seed, unsigned int, 0)
 npe_doc(sample_mesh_random_doc)
 npe_begin_code()
+{
+    validate_mesh(v, f);
 
-    validate_mesh(v, f, n);
-
-    typedef EigenDenseLike<npe_Matrix_v> EigenRetV;
-    typedef EigenDenseLike<npe_Matrix_n> EigenRetN;
-    typedef EigenDenseLike<npe_Matrix_f> EigenRetF;
-    typedef EigenMeshSampler<MyMesh, EigenRetV, EigenRetF, EigenRetN> MonteCarloSampler;
+    typedef EigenDenseLike<npe_Matrix_v> EigenRetBC;
+    typedef EigenBarycentricSampler<MyMesh, EigenRetBC> MonteCarloSampler;
 
     MyMesh m;
-    vcg_mesh_from_vfn(v, f, n, m);
+    vcg_mesh_from_vf(v, f, m);
 
-    EigenRetV ret_v(num_samples, 3);
-    EigenRetN ret_n(num_samples, 3);
-    EigenRetF ret_f(0, 3);
-    const bool return_normals = (n.rows() != 0);
-    MonteCarloSampler mrs(ret_v, ret_f, ret_n, return_normals);
+    EigenRetBC ret_bc(num_samples, 3);
+    typename MonteCarloSampler::IndexArray ret_fi(num_samples);
+
+    MonteCarloSampler mrs(&m, nullptr, ret_bc, ret_fi);
+
+    if(random_seed > 0) {
+        tri::SurfaceSampling<MyMesh, MonteCarloSampler>::SamplingRandomGenerator().initialize(random_seed);
+    }
 
     tri::SurfaceSampling<MyMesh, MonteCarloSampler>::Montecarlo(m, mrs, num_samples);
 
-//    m.Clear();
-
     mrs.trim();
-    return std::make_tuple(npe::move(ret_v), npe::move(ret_n));
-
+    return std::make_tuple(npe::move(ret_fi), npe::move(ret_bc));
+}
 npe_end_code()
-
 
 
 const char* prune_point_cloud_poisson_disk_doc = R"Qu8mg5v7(
@@ -336,44 +383,43 @@ Parameters
 ----------
 v : #v by 3 array of vertex positions
 n : #v by 3 array of vertex normals
-num_samples: The desired number of samples to prune to. Note that the actual returned number may be
-             slightly different than this value
-radius : If num_samples is set to 0, prune so the separation between output points is approximately this radius.
+num_samples: desired number of Poisson Disk samples. Note that the actual number of returned samples
+             will not be exactly this value (see sample_num_tolerance) to control the range of possible
+             returned samples.
+             Note: If this value <= 0, then the parameter radius is used to decide the number of samples
+radius : desired separation between points, if num_samples <= 0, then this value is used to determine the
+         sampling (-1.0, by default).
 best_choice_sampling : When downsampling, always keep the sample that will remove the
-                       fewest number of samples, False by default
-random_seed: A random seed used to generate the samples, 0 by default will use the current time
+                       fewest number of samples. (True by default).
+random_seed : A random seed used to generate the samples.
+              Passing in 0 will use the current time. (0 by default).
+sample_num_tolerance: If you requested a target number of samples, by passsing num_samples > 0, then this function will return
+                      between (1 - sample_num_tolerance) * num_samples and (1 + sample_num_tolerance) * num_samples.
+                      Setting a very small value for this parameter will increase convergence time. (0.04 by default).
 
 Returns
 -------
-A #pv x 3 array of points which are approximately evenly spaced and are a subset of the input v
+A (m,) shaped array of indices into v where m is the number of Poisson-disk samples
 
 )Qu8mg5v7";
-
 npe_function(prune_point_cloud_poisson_disk)
 npe_arg(v, dense_float, dense_double)
-npe_arg(n, npe_matches(v))
 npe_arg(num_samples, int)
 npe_default_arg(radius, double, 0.0)
-npe_default_arg(best_choice_sampling, bool, false)
+npe_default_arg(best_choice_sampling, bool, true)
 npe_default_arg(random_seed, unsigned int, 0)
+npe_default_arg(sample_num_tolerance, float, 0.04)
 npe_doc(prune_point_cloud_poisson_disk_doc)
 npe_begin_code()
-
-  Eigen::MatrixXi f(0, 3);
-
+{
   MyMesh m;
-  vcg_mesh_from_vfn(v, f, n, m);
+  vcg_mesh_from_v(v, m);
 
-  typedef EigenDenseLike<npe_Matrix_v> EigenRetV;
-  typedef EigenDenseLike<npe_Matrix_n> EigenRetN;
-  typedef Eigen::MatrixXi EigenRetF;
-  typedef EigenMeshSampler<MyMesh, EigenRetV, EigenRetF, EigenRetN> PoissonDiskSampler;
+  typedef EigenVertexIndexSampler<MyMesh> PoissonDiskSampler;
+  typedef PoissonDiskSampler::IndexArray EigenRetI;
 
-  EigenRetV ret_v(0, 3);
-  EigenRetN ret_n(0, 3);
-  EigenRetF ret_f(0, 3);
-  const bool return_normals = (n.rows() != 0);
-  PoissonDiskSampler mps(ret_v, ret_f, ret_n, return_normals);
+  EigenRetI ret_i;
+  PoissonDiskSampler mps(m, ret_i);
 
   typename tri::SurfaceSampling<MyMesh, PoissonDiskSampler>::PoissonDiskParam pp;
   typename tri::SurfaceSampling<MyMesh, PoissonDiskSampler>::PoissonDiskParam::Stat pds;
@@ -387,16 +433,14 @@ npe_begin_code()
   }
 
   if (radius <= 0.0 && num_samples > 0) {
-      double PruningByNumberTolerance = 0.04;
-      tri::SurfaceSampling<MyMesh, PoissonDiskSampler>::PoissonDiskPruningByNumber(mps, m, num_samples, radius, pp, PruningByNumberTolerance);
+      tri::SurfaceSampling<MyMesh, PoissonDiskSampler>::PoissonDiskPruningByNumber(mps, m, num_samples, radius, pp, sample_num_tolerance);
   } else if (radius > 0.0 && num_samples <= 0) {
       tri::SurfaceSampling<MyMesh, PoissonDiskSampler>::PoissonDiskPruning(mps, m, radius, pp);
   }
   mps.trim();
-  return std::make_tuple(npe::move(ret_v), npe::move(ret_n));
-
+  return npe::move(ret_i);
+}
 npe_end_code()
-
 
 
 const char* estimate_normals_doc = R"Qu8mg5v7(
@@ -406,7 +450,7 @@ Parameters
 ----------
 v : #v by 3 array of vertex positions (each row is a vertex)
 k : Number of nearest neighbors to use in the estimate for the normal of a point. Default: 10.
-smoothing_iterations : Number of smoothing iterations to applyt to the estimated normals. Default: 0.
+smoothing_iterations : Number of smoothing iterations to apply to the estimated normals. Default: 0.
 
 Returns
 -------
@@ -419,7 +463,7 @@ npe_default_arg(k, int, 10)
 npe_default_arg(smoothing_iterations, int, 0)
 npe_doc(estimate_normals_doc)
 npe_begin_code()
-
+{
     MyMesh m;
     vcg_mesh_from_v(v, m);
 
@@ -443,6 +487,6 @@ npe_begin_code()
 
     return npe::move(ret);
 
-
+}
 npe_end_code()
 

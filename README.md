@@ -37,30 +37,53 @@ The following dependencies are required to install with `pip`:
 # Examples
 
 ### Poisson-Disk-Sampling
+Generate 10000 samples on a mesh with poisson disk samples
 ```python
 import point_cloud_utils as pcu
+import numpy as np
 
 # v is a nv by 3 NumPy array of vertices
 # f is an nf by 3 NumPy array of face indexes into v 
 # n is a nv by 3 NumPy array of vertex normals
 v, f, n, _ = pcu.read_ply("my_model.ply")
 
-
 # Generate 10000 samples on a mesh with poisson disk samples
-v_poisson, n_poisson = pcu.sample_mesh_poisson_disk(
-    v, f, n, 10000, use_geodesic_distance=True)
-    
+# f_i are the face indices of each sample and bc are barycentric coordinates of the sample within a face
+f_i, bc = pcu.sample_mesh_poisson_disk(v, f, n, 10000)
+
+# Use the face indices and barycentric coordinate to compute sample positions and normals
+v_poisson = (v[f[f_i]] * bc[:, np.newaxis]).sum(1)
+n_poisson = (n[f[f_i]] * bc[:, np.newaxis]).sum(1)
+```
+
+Generate samples on a mesh with poisson disk samples seperated by approximately 0.01 times the boundinb box diagonal
+```python
+import point_cloud_utils as pcu
+import numpy as np
+# v is a nv by 3 NumPy array of vertices
+# f is an nf by 3 NumPy array of face indexes into v 
+# n is a nv by 3 NumPy array of vertex normals
+v, f, n, _ = pcu.read_ply("my_model.ply")
+
+
 # Generate samples on a mesh with poisson disk samples seperated by approximately 0.01 times 
 # the length of the bounding box diagonal
 bbox = np.max(v, axis=0) - np.min(v, axis=0)
 bbox_diag = np.linalg.norm(bbox)
-v_poisson, n_poisson = pcu.sample_mesh_poisson_disk(
-    v, f, n, num_samples=-1, radius=0.01*bbox_diag, use_geodesic_distance=True)
+
+# f_i are the face indices of each sample and bc are barycentric coordinates of the sample within a face
+f_i, bc = pcu.sample_mesh_poisson_disk(v, f, n, 10000)
+
+# Use the face indices and barycentric coordinate to compute sample positions and normals
+v_poisson = (v[f[f_i]] * bc[:, np.newaxis]).sum(1)
+n_poisson = (n[f[f_i]] * bc[:, np.newaxis]).sum(1)
+    
 ```
 
 ### Monte-Carlo Sampling on a mesh
 ```python
 import point_cloud_utils as pcu
+import numpy as np
 
 # v is a nv by 3 NumPy array of vertices
 # f is an nf by 3 NumPy array of face indexes into v 
@@ -68,10 +91,12 @@ import point_cloud_utils as pcu
 v, f, n, _ = pcu.read_ply("my_model.ply")
 
 # Generate very dense random samples on the mesh (v, f, n)
-# Note that this function also works with no normals, just pass in an empty array np.array([], dtype=v.dtype)
-# v_dense is an array with shape (100*v.shape[0], 3) where each row is a point on the mesh (v, f)
-# n_dense is an array with shape (100*v.shape[0], 3) where each row is a the normal of a point in v_dense
-v_dense, n_dense = pcu.sample_mesh_random(v, f, n, num_samples=v.shape[0]*100)
+# f_i are the face indices of each sample and bc are barycentric coordinates of the sample within a face
+f_idx, bc = pcu.sample_mesh_random(v, f, num_samples=v.shape[0] * 40)
+
+# Use the face indices and barycentric coordinate to compute sample positions and normals
+v_dense = (v[f[f_idx]] * bc[:, np.newaxis]).sum(1)
+n_dense = (n[f[f_idx]] * bc[:, np.newaxis]).sum(1)
 ```
 
 ### Lloyd Relaxation
