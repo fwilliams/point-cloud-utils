@@ -65,8 +65,10 @@ class TestDenseBindings(unittest.TestCase):
         f_idx3, bc3 = pcu.sample_mesh_poisson_disk(v, f, num_samples=-1, radius=0.01*bbox_diag, random_seed=7654321)
         self.assertTrue(np.all(f_idx1 == f_idx2))
         self.assertTrue(np.all(bc1 == bc2))
-        self.assertFalse(np.all(f_idx1 == f_idx3))
-        self.assertFalse(np.all(bc1 == bc3))
+        if f_idx1.shape == f_idx3.shape:
+            self.assertFalse(np.all(f_idx1 == f_idx3))
+        if bc1.shape == bc3.shape:
+            self.assertFalse(np.all(bc1 == bc3))
 
     def test_lloyd_relaxation(self):
         import point_cloud_utils as pcu
