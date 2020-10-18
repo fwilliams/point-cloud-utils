@@ -28,7 +28,7 @@ class TestDenseBindings(unittest.TestCase):
         self.assertFalse(np.all(bc1 == bc3))
 
         # Generate very dense  random samples on the mesh (v, f)
-        f_idx, bc = pcu.sample_mesh_random(v, f, num_samples=v.shape[0] * 40)
+        f_idx, bc = pcu.sample_mesh_random(v, f, num_samples=v.shape[0] * 4)
         v_dense = (v[f[f_idx]] * bc[:, np.newaxis]).sum(1)
 
         s_idx = pcu.prune_point_cloud_poisson_disk(v_dense, 0, 0.1*bbox_diag, random_seed=1234567)
@@ -53,11 +53,14 @@ class TestDenseBindings(unittest.TestCase):
             self.assertFalse(s_idx.shape == s_idx3.shape)
 
         f_idx1, bc1 = pcu.sample_mesh_poisson_disk(v, f, num_samples=1000,
-                                                   random_seed=1234567, use_geodesic_distance=True)
+                                                   random_seed=1234567, use_geodesic_distance=True,
+                                                   oversampling_factor=5.0)
         f_idx2, bc2 = pcu.sample_mesh_poisson_disk(v, f, num_samples=1000,
-                                                   random_seed=1234567, use_geodesic_distance=True)
+                                                   random_seed=1234567, use_geodesic_distance=True,
+                                                   oversampling_factor=5.0)
         f_idx3, bc3 = pcu.sample_mesh_poisson_disk(v, f, num_samples=1000,
-                                                   random_seed=7654321, use_geodesic_distance=True)
+                                                   random_seed=7654321, use_geodesic_distance=True,
+                                                   oversampling_factor=5.0)
         self.assertTrue(np.all(f_idx1 == f_idx2))
         self.assertTrue(np.all(bc1 == bc2))
         if f_idx1.shape == f_idx3.shape:
@@ -65,9 +68,12 @@ class TestDenseBindings(unittest.TestCase):
         if bc1.shape == bc3.shape:
             self.assertFalse(np.all(bc1 == bc3))
 
-        f_idx1, bc1 = pcu.sample_mesh_poisson_disk(v, f, num_samples=-1, radius=0.01*bbox_diag, random_seed=1234567)
-        f_idx2, bc2 = pcu.sample_mesh_poisson_disk(v, f, num_samples=-1, radius=0.01*bbox_diag,random_seed=1234567)
-        f_idx3, bc3 = pcu.sample_mesh_poisson_disk(v, f, num_samples=-1, radius=0.01*bbox_diag, random_seed=7654321)
+        f_idx1, bc1 = pcu.sample_mesh_poisson_disk(v, f, num_samples=-1, radius=0.01*bbox_diag,
+                                                   random_seed=1234567, oversampling_factor=5.0)
+        f_idx2, bc2 = pcu.sample_mesh_poisson_disk(v, f, num_samples=-1, radius=0.01*bbox_diag,
+                                                   random_seed=1234567, oversampling_factor=5.0)
+        f_idx3, bc3 = pcu.sample_mesh_poisson_disk(v, f, num_samples=-1, radius=0.01*bbox_diag,
+                                                   random_seed=7654321, oversampling_factor=5.0)
         self.assertTrue(np.all(f_idx1 == f_idx2))
         self.assertTrue(np.all(bc1 == bc2))
         if f_idx1.shape == f_idx3.shape:
