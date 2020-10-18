@@ -144,13 +144,6 @@ void voronoi_centroids(const Eigen::MatrixBase<DerivedV> &V,
 }
 
 
-
-
-
-
-
-
-
 } // namespace
 
 
@@ -178,7 +171,7 @@ npe_default_arg(num_lloyd, int, 10)
 npe_default_arg(num_newton, int, 10)
 npe_doc(lloyd_2d_doc)
 npe_begin_code()
-
+{
   if (n <= 0) {
     throw pybind11::value_error("n must be a positive integer. Got n = " + std::to_string(n));
   }
@@ -200,7 +193,7 @@ npe_begin_code()
   Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> P2d;
   P2d = P.block(0, 0, P.rows(), 2);
   return npe::move(P2d);
-
+}
 npe_end_code()
 
 
@@ -226,7 +219,7 @@ npe_default_arg(num_lloyd, int, 10)
 npe_default_arg(num_newton, int, 10)
 npe_doc(lloyd_3d_doc)
 npe_begin_code()
-
+{
   if (n <= 0) {
     throw pybind11::value_error("n must be a positive integer. Got n = " + std::to_string(n));
   }
@@ -277,7 +270,7 @@ npe_begin_code()
   Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> P3d;
   P3d = P;
   return npe::move(P3d);
-
+}
 npe_end_code()
 
 
@@ -299,7 +292,7 @@ npe_function(voronoi_centroids_unit_cube)
 npe_arg(centers, dense_float, dense_double)
 npe_doc(lloyd_3d_doc)
 npe_begin_code()
-
+{
   if (centers.maxCoeff() > 1.0 || centers.minCoeff() < 0.0) {
     throw pybind11::value_error("Centers of voronoi diagram must lie in the unit cube [0, 1]^3");
   }
@@ -348,7 +341,7 @@ npe_begin_code()
   Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> P3d;
   voronoi_centroids(V, F, T, ctrs_copy, P3d);
   return npe::move(P3d);
-
+}
 npe_end_code()
 
 
@@ -379,7 +372,7 @@ npe_default_arg(num_newton, int, 10)
 npe_default_arg(return_mesh, bool, false)
 npe_doc(sample_mesh_lloyd_doc)
 npe_begin_code()
-
+{
   validate_mesh(v, f);
   if (num_samples <= 0) {
     throw pybind11::value_error("num_samples must be > 0");
@@ -411,7 +404,7 @@ npe_begin_code()
   P.resize(num_samples, 3);
   std::copy_n(CVT.embedding(0), 3*num_samples, P.data());
   return npe::move(P);
-
+}
 npe_end_code()
 
 

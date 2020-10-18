@@ -40,6 +40,9 @@ class TestDenseBindings(unittest.TestCase):
         else:
             self.assertFalse(s_idx.shape == s_idx3.shape)
 
+        # Ensure we can request more samples than vertices and get something reasonable
+        s_idx_0 = pcu.prune_point_cloud_poisson_disk(v_dense, 2*v_dense.shape[0], random_seed=1234567)
+
         s_idx = pcu.prune_point_cloud_poisson_disk(v_dense, 1000, random_seed=1234567)
         s_idx2 = pcu.prune_point_cloud_poisson_disk(v_dense, 1000, random_seed=1234567)
         s_idx3 = pcu.prune_point_cloud_poisson_disk(v_dense, 1000, random_seed=7654321)
@@ -57,8 +60,10 @@ class TestDenseBindings(unittest.TestCase):
                                                    random_seed=7654321, use_geodesic_distance=True)
         self.assertTrue(np.all(f_idx1 == f_idx2))
         self.assertTrue(np.all(bc1 == bc2))
-        self.assertFalse(np.all(f_idx1 == f_idx3))
-        self.assertFalse(np.all(bc1 == bc3))
+        if f_idx1.shape == f_idx3.shape:
+            self.assertFalse(np.all(f_idx1 == f_idx3))
+        if bc1.shape == bc3.shape:
+            self.assertFalse(np.all(bc1 == bc3))
 
         f_idx1, bc1 = pcu.sample_mesh_poisson_disk(v, f, num_samples=-1, radius=0.01*bbox_diag, random_seed=1234567)
         f_idx2, bc2 = pcu.sample_mesh_poisson_disk(v, f, num_samples=-1, radius=0.01*bbox_diag,random_seed=1234567)

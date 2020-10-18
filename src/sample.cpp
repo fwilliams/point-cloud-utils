@@ -228,6 +228,10 @@ random_seed : A random seed used to generate the samples.
 sample_num_tolerance: If you requested a target number of samples, by passsing num_samples > 0, then this function will return
                       between (1 - sample_num_tolerance) * num_samples and (1 + sample_num_tolerance) * num_samples.
                       Setting a very small value for this parameter will increase convergence time. (0.04 by default).
+oversampling_factor: To generate Poisson disk samples, we first generate a very dense (uniform) random sampling of the mesh, then
+                     prune these down to have the Poisson disk property. This parameter controls how many dense samples are generated.
+                     i.e. we generate oversampling_factor * num_samples samples (if you passed in radius, we estimate num_samples from
+                     the input points and radius). This parameter must be >= 1.0. (Default 40.0).
 Returns
 -------
 A (m,) shaped array of face indices into f where m is the number of Poisson-disk samples
@@ -243,6 +247,7 @@ npe_default_arg(use_geodesic_distance, bool, true)
 npe_default_arg(best_choice_sampling, bool, true)
 npe_default_arg(random_seed, unsigned int, 0)
 npe_default_arg(sample_num_tolerance, float, 0.04)
+npe_default_arg(oversampling_factor, float, 40.0)
 npe_doc(sample_mesh_poisson_disk_doc)
 npe_begin_code()
 {
@@ -251,8 +256,9 @@ npe_begin_code()
     if (num_samples <= 0 && radius <= 0.0) {
         throw pybind11::value_error("Cannot have both num_samples <= 0 and radius <= 0");
     }
-
-    double radiusVariance = 1;
+    if (sample_num_tolerance > 1.0 || sample_num_tolerance <= 0.0) {
+        throw pybind11::value_error("sample_num_tolerance must be in (0, 1]");
+    }
 
     typedef MyMesh MeshType;
     typedef EigenDenseLike<npe_Matrix_v> EigenRetBC;
@@ -273,10 +279,8 @@ npe_begin_code()
     pp.geodesicDistanceFlag = use_geodesic_distance;
     pp.bestSampleChoiceFlag = best_choice_sampling;
 
-
-    int num_dense_samples = std::max(10000, num_samples*40);
-
     // Dense barycentric coordinates and face indices
+    const int num_dense_samples = std::max(10000, int(num_samples * oversampling_factor));
     EigenRetBC dense_bc(num_dense_samples, 3);
     typename MonteCarloSampler::IndexArray dense_fi(num_dense_samples);
     MeshType montecarlo_mesh;
@@ -297,9 +301,10 @@ npe_begin_code()
     //    int t1=clock();
     //    pp.pds.montecarloTime = t1-t0;
 
+    // TODO: Adaptive radius would be nice actually!
+    const double radiusVariance = 1;
     if(radiusVariance !=1)
     {
-      // TODO: Adaptive radius would be nice actually!
       pp.adaptiveRadiusFlag = true;
       pp.radiusVariance = radiusVariance;
     }
@@ -415,6 +420,13 @@ npe_begin_code()
   MyMesh m;
   vcg_mesh_from_v(v, m);
 
+  if (num_samples <= 0 && radius <= 0.0) {
+      throw pybind11::value_error("Cannot have both num_samples <= 0 and radius <= 0");
+  }
+  if (sample_num_tolerance > 1.0 || sample_num_tolerance <= 0.0) {
+      throw pybind11::value_error("sample_num_tolerance must be in (0, 1]");
+  }
+
   typedef EigenVertexIndexSampler<MyMesh> PoissonDiskSampler;
   typedef PoissonDiskSampler::IndexArray EigenRetI;
 
@@ -433,6 +445,7 @@ npe_begin_code()
   }
 
   if (radius <= 0.0 && num_samples > 0) {
+      num_samples = std::min(num_samples, (int)v.rows());
       tri::SurfaceSampling<MyMesh, PoissonDiskSampler>::PoissonDiskPruningByNumber(mps, m, num_samples, radius, pp, sample_num_tolerance);
   } else if (radius > 0.0 && num_samples <= 0) {
       tri::SurfaceSampling<MyMesh, PoissonDiskSampler>::PoissonDiskPruning(mps, m, radius, pp);
