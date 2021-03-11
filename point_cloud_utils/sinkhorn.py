@@ -1,5 +1,6 @@
 import numpy as np
 
+
 def pairwise_distances(a, b, p=2):
     """
     Compute the pairwise distance matrix between a and b which both have size [m, n, d] or [n, d]. The result is a tensor of
