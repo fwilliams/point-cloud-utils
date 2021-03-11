@@ -125,7 +125,7 @@ import point_cloud_utils as pcu
 v, _, _, _ = pcu.read_ply("my_model.ply")
 
 # Estimate a normal at each point (row of v) using its 16 nearest neighbors
-n = pcu.estimate_normals(n, k=16)
+n = pcu.estimate_point_cloud_normals(n, k=16)
 ```
 
 ### Approximate Wasserstein (Sinkhorn) Distance Between Point-Clouds
