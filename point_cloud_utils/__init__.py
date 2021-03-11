@@ -58,7 +58,9 @@ def downsample_point_cloud_voxel_grid(voxel_size, points, normals=None, colors=N
         raise ValueError("Invalid min_bound and max_bound. max_bound must be greater than min_bound in all dimensions")
 
     ret_v, ret_n, ret_c = __internal_downsample_point_cloud_voxel_grid(points, normals, colors,
-                                                                       *voxel_size, *min_bound, *max_bound,
+                                                                       voxel_size[0], voxel_size[1], voxel_size[2],
+                                                                       min_bound[0], min_bound[1], min_bound[2],
+                                                                       max_bound[0], max_bound[1], max_bound[2],
                                                                        min_points_per_voxel)
     ret = [ret_v, None, None]
     if has_normals:
