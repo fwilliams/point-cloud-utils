@@ -31,9 +31,9 @@ class TestDenseBindings(unittest.TestCase):
         f_idx, bc = pcu.sample_mesh_random(v, f, num_samples=v.shape[0] * 4)
         v_dense = (v[f[f_idx]] * bc[:, np.newaxis]).sum(1)
 
-        s_idx = pcu.prune_point_cloud_poisson_disk(v_dense, 0, 0.1*bbox_diag, random_seed=1234567)
-        s_idx2 = pcu.prune_point_cloud_poisson_disk(v_dense, 0, 0.1*bbox_diag, random_seed=1234567)
-        s_idx3 = pcu.prune_point_cloud_poisson_disk(v_dense, 0, 0.1 * bbox_diag, random_seed=7654321)
+        s_idx = pcu.downsample_point_cloud_poisson_disk(v_dense, 0, 0.1*bbox_diag, random_seed=1234567)
+        s_idx2 = pcu.downsample_point_cloud_poisson_disk(v_dense, 0, 0.1*bbox_diag, random_seed=1234567)
+        s_idx3 = pcu.downsample_point_cloud_poisson_disk(v_dense, 0, 0.1 * bbox_diag, random_seed=7654321)
         self.assertTrue(np.all(s_idx == s_idx2))
         if s_idx3.shape == s_idx.shape:
             self.assertFalse(np.all(s_idx == s_idx3))
@@ -41,11 +41,11 @@ class TestDenseBindings(unittest.TestCase):
             self.assertFalse(s_idx.shape == s_idx3.shape)
 
         # Ensure we can request more samples than vertices and get something reasonable
-        s_idx_0 = pcu.prune_point_cloud_poisson_disk(v_dense, 2*v_dense.shape[0], random_seed=1234567)
+        s_idx_0 = pcu.downsample_point_cloud_poisson_disk(v_dense, 2*v_dense.shape[0], random_seed=1234567)
 
-        s_idx = pcu.prune_point_cloud_poisson_disk(v_dense, 1000, random_seed=1234567)
-        s_idx2 = pcu.prune_point_cloud_poisson_disk(v_dense, 1000, random_seed=1234567)
-        s_idx3 = pcu.prune_point_cloud_poisson_disk(v_dense, 1000, random_seed=7654321)
+        s_idx = pcu.downsample_point_cloud_poisson_disk(v_dense, 1000, random_seed=1234567)
+        s_idx2 = pcu.downsample_point_cloud_poisson_disk(v_dense, 1000, random_seed=1234567)
+        s_idx3 = pcu.downsample_point_cloud_poisson_disk(v_dense, 1000, random_seed=7654321)
         self.assertTrue(np.all(s_idx == s_idx2))
         if s_idx3.shape == s_idx.shape:
             self.assertFalse(np.all(s_idx == s_idx3))
@@ -80,6 +80,151 @@ class TestDenseBindings(unittest.TestCase):
             self.assertFalse(np.all(f_idx1 == f_idx3))
         if bc1.shape == bc3.shape:
             self.assertFalse(np.all(bc1 == bc3))
+
+    def test_downsample_point_cloud_voxel_grid(self):
+        import point_cloud_utils as pcu
+        import numpy as np
+
+        # v is a nv by 3 NumPy array of vertices
+        # f is an nf by 3 NumPy array of face indexes into v
+        # n is a nv by 3 NumPy array of vertex normals if they are specified, otherwise an empty array
+        v, f, n = pcu.read_obj(os.path.join(self.test_path, "cube_twist.obj"))
+        bbox = np.max(v, axis=0) - np.min(v, axis=0)
+        bbox_diag = np.linalg.norm(bbox)
+        vox_grid_size = 1.0 / 128.0
+
+        # Make sure we have normals
+        self.assertEqual(n.shape, v.shape)
+
+        # Vanilla case
+        pts, nms, clr = pcu.downsample_point_cloud_voxel_grid(vox_grid_size, v)
+        self.assertIsNone(nms)
+        self.assertIsNone(clr)
+        self.assertGreater(pts.shape[0], 0)
+        self.assertEqual(pts.shape[1], 3)
+
+        # With normals
+        pts, nms, clr = pcu.downsample_point_cloud_voxel_grid(vox_grid_size, v, n)
+        self.assertIsNone(clr)
+        self.assertEqual(nms.shape, pts.shape)
+        self.assertGreater(pts.shape[0], 0)
+        self.assertEqual(pts.shape[1], 3)
+
+        # With RBG colors
+        c = np.random.rand(v.shape[0], 3)
+        pts, nms, clr = pcu.downsample_point_cloud_voxel_grid(vox_grid_size, v, None, c)
+        self.assertIsNone(nms)
+        self.assertEqual(clr.shape, pts.shape)
+        self.assertGreater(pts.shape[0], 0)
+        self.assertEqual(pts.shape[1], 3)
+
+        # With RBGA colors
+        c = np.random.rand(v.shape[0], 4)
+        pts, nms, clr = pcu.downsample_point_cloud_voxel_grid(vox_grid_size, v, None, c)
+        self.assertIsNone(nms)
+        self.assertEqual(clr.shape[0], pts.shape[0])
+        self.assertEqual(clr.shape[1], 4)
+        self.assertGreater(pts.shape[0], 0)
+        self.assertEqual(pts.shape[1], 3)
+
+        # With normals and RGB colors
+        c = np.random.rand(v.shape[0], 3)
+        pts, nms, clr = pcu.downsample_point_cloud_voxel_grid(vox_grid_size, v, n, c)
+        self.assertEqual(nms.shape, pts.shape)
+        self.assertEqual(clr.shape, pts.shape)
+        self.assertGreater(pts.shape[0], 0)
+        self.assertEqual(pts.shape[1], 3)
+
+        # With normals and RBGA colors
+        c = np.random.rand(v.shape[0], 4)
+        pts, nms, clr = pcu.downsample_point_cloud_voxel_grid(vox_grid_size, v, n, c)
+        self.assertEqual(nms.shape, pts.shape)
+        self.assertEqual(clr.shape[0], pts.shape[0])
+        self.assertEqual(clr.shape[1], 4)
+        self.assertGreater(pts.shape[0], 0)
+        self.assertEqual(pts.shape[1], 3)
+
+        # With different voxel size per axis
+        vox_grid_size = [1.0/128.0, 1.0/99.0, 1.0/222.0]
+        c = np.random.rand(v.shape[0], 4)
+        pts, nms, clr = pcu.downsample_point_cloud_voxel_grid(vox_grid_size, v, n, c)
+        self.assertEqual(nms.shape, pts.shape)
+        self.assertEqual(clr.shape[0], pts.shape[0])
+        self.assertEqual(clr.shape[1], 4)
+        self.assertGreater(pts.shape[0], 0)
+        self.assertEqual(pts.shape[1], 3)
+
+        # With bounding box dimensions
+        vox_grid_size = np.array([1.0/128.0, 1.0/99.0, 1.0/222.0])
+        min_bound = np.min(v, axis=0) - 0.5 * np.array(vox_grid_size)
+        max_bound = np.max(v, axis=0) + 0.5 * np.array(vox_grid_size)
+        c = np.random.rand(v.shape[0], 4)
+        pts, nms, clr = pcu.downsample_point_cloud_voxel_grid(vox_grid_size, v, n, c,
+                                                              min_bound=min_bound, max_bound=max_bound)
+        self.assertEqual(nms.shape, pts.shape)
+        self.assertEqual(clr.shape[0], pts.shape[0])
+        self.assertEqual(clr.shape[1], 4)
+        self.assertGreater(pts.shape[0], 0)
+        self.assertEqual(pts.shape[1], 3)
+
+        # Should raise if the voxel size is too small
+        with self.assertRaises(ValueError):
+            vox_grid_size = [1e-16, 1.0/99.0, 1.0/222.0]
+            c = np.random.rand(v.shape[0], 4)
+            pcu.downsample_point_cloud_voxel_grid(vox_grid_size, v, n, c)
+
+        # Should raise if the voxel size is negative
+        with self.assertRaises(ValueError):
+            vox_grid_size = [1.0/100.0, -1.0/99.0, 1.0/222.0]
+            c = np.random.rand(v.shape[0], 4)
+            pcu.downsample_point_cloud_voxel_grid(vox_grid_size, v, n, c)
+
+        # Invalid color dimension
+        with self.assertRaises(ValueError):
+            c = np.random.rand(v.shape[0], 2)
+            pcu.downsample_point_cloud_voxel_grid(vox_grid_size, v, n, c)
+
+        # Invalid normal dimension
+        with self.assertRaises(ValueError):
+            c = np.random.rand(v.shape[0], 2)
+            pcu.downsample_point_cloud_voxel_grid(vox_grid_size, v, n[:, :1], c)
+
+        # Invalid number of normals
+        with self.assertRaises(ValueError):
+            c = np.random.rand(v.shape[0], 3)
+            pcu.downsample_point_cloud_voxel_grid(vox_grid_size, v, n[1:, :], c)
+
+        # Invalid number of colors
+        with self.assertRaises(ValueError):
+            c = np.random.rand(v.shape[0]//2, 3)
+            pcu.downsample_point_cloud_voxel_grid(vox_grid_size, v, n, c)
+
+        # Negative bounding box
+        with self.assertRaises(ValueError):
+            min_bound = np.min(v, axis=0) - 0.5 * np.array(vox_grid_size)
+            max_bound = np.max(v, axis=0) + 0.5 * np.array(vox_grid_size)
+            pcu.downsample_point_cloud_voxel_grid(vox_grid_size, v, n, c, max_bound=min_bound, min_bound=max_bound)
+
+        # Badly shaped grid size
+        with self.assertRaises(ValueError):
+            vox_grid_size = [1.0/100.0, 1.0/99.0]
+            min_bound = np.min(v, axis=0) - 0.5 * np.array(vox_grid_size)
+            max_bound = np.max(v, axis=0) + 0.5 * np.array(vox_grid_size)
+            pcu.downsample_point_cloud_voxel_grid(vox_grid_size, v, n, c, max_bound=max_bound, min_bound=min_bound)
+
+        # Badly shaped max bound
+        with self.assertRaises(ValueError):
+            vox_grid_size = [1.0/100.0, 1.0/99.0, 1.0/77.0]
+            min_bound = np.min(v, axis=0) - 0.5 * np.array(vox_grid_size)
+            max_bound = np.max(v, axis=0) + 0.5 * np.array(vox_grid_size)
+            pcu.downsample_point_cloud_voxel_grid(vox_grid_size, v, n, c, max_bound=max_bound[:1], min_bound=min_bound)
+
+        # Badly shaped max bound
+        with self.assertRaises(ValueError):
+            vox_grid_size = [1.0/100.0, 1.0/99.0, 1.0/77.0]
+            min_bound = np.min(v, axis=0) - 0.5 * np.array(vox_grid_size)
+            max_bound = np.max(v, axis=0) + 0.5 * np.array(vox_grid_size)
+            pcu.downsample_point_cloud_voxel_grid(vox_grid_size, v, n, c, max_bound=max_bound[:1], min_bound=(1.0, 1.0))
 
     def test_lloyd_relaxation(self):
         import point_cloud_utils as pcu
@@ -193,7 +338,7 @@ class TestDenseBindings(unittest.TestCase):
         hausdorff_b_to_a, idx_b, idx_a = pcu.hausdorff(b, a, return_index=True)
         self.assertAlmostEqual(np.sum((a[idx_a] - b[idx_b])**2), hausdorff_b_to_a)
 
-    def test_estimate_normals(self):
+    def test_estimate_point_cloud_normals(self):
         import point_cloud_utils as pcu
         import numpy as np
 
@@ -203,7 +348,7 @@ class TestDenseBindings(unittest.TestCase):
         v, f, n = pcu.read_obj(os.path.join(self.test_path, "cube_twist.obj"))
 
         # Estimate normals for the point set, v using 12 nearest neighbors per point
-        n = pcu.estimate_normals(v, k=12)
+        n = pcu.estimate_point_cloud_normals(v, k=12)
         self.assertEqual(n.shape, v.shape)
 
     def test_morton_coding_big_data(self):

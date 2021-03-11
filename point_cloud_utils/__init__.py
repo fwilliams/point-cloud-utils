@@ -38,7 +38,7 @@ def downsample_point_cloud_voxel_grid(voxel_size, points, normals=None, colors=N
     has_colors = True
     if normals is None:
         normals = np.zeros([0, 0]).astype(points.dtype)
-        has_colors = False
+        has_normals = False
     if colors is None:
         colors = np.zeros([0, 0]).astype(points.dtype)
         has_colors = False
@@ -64,5 +64,5 @@ def downsample_point_cloud_voxel_grid(voxel_size, points, normals=None, colors=N
     if has_normals:
         ret[1] = ret_n
     if has_colors:
-        ret[1] = ret_c
+        ret[2] = ret_c
     return tuple(ret)

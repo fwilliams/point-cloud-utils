@@ -302,7 +302,7 @@ void downsample_point_cloud_to_voxels(const DerivedV& V,
                                     "). Must match number of input vertices (" +
                                     std::to_string(V.rows()) + ") or b 0.");
     }
-    if (has_colors && (C.cols() != 3 || C.cols() != 4)) {
+    if (has_colors && (C.cols() != 3 && C.cols() != 4)) {
         throw pybind11::value_error("Invalid dimension for colors. Got shape (" + std::to_string(C.rows()) +
                                     ", " + std::to_string(C.cols()) + "). Must have shape (N, 3) or (N, 4)");
     }
