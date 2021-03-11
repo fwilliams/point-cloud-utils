@@ -276,12 +276,6 @@ void downsample_point_cloud_to_voxels(const DerivedV& V,
                                       int min_pts_per_bin) {
     // The way this is templated is dangerous since you could pass in an Eigen expression template. However,
     // we always pass either an Eigen::Map or Eigen::Matrix so it should be okay.
-    std::cout << "V.shape: (" << std::to_string(V.rows()) << ", " << std::to_string(V.cols()) << ")" << std::endl;
-    std::cout << "N.shape: (" << std::to_string(N.rows()) << ", " << std::to_string(N.cols()) << ")" << std::endl;
-    std::cout << "C.shape: (" << std::to_string(C.rows()) << ", " << std::to_string(C.cols()) << ")" << std::endl;
-    std::cout << "outV.shape: (" << std::to_string(outV.rows()) << ", " << std::to_string(outV.cols()) << ")" << std::endl;
-    std::cout << "outN.shape: (" << std::to_string(outN.rows()) << ", " << std::to_string(outN.cols()) << ")" << std::endl;
-    std::cout << "outC.shape: (" << std::to_string(outC.rows()) << ", " << std::to_string(outC.cols()) << ")" << std::endl;
 
     for (int i = 0; i < 3; i++) {
         if (voxel_size3[i] <= 0.0) {
@@ -314,17 +308,6 @@ void downsample_point_cloud_to_voxels(const DerivedV& V,
     }
     bool color_has_alpha_channel = C.cols() == 4;
 
-    std::cout << "has normals: " << std::to_string(has_normals) << std::endl;
-    std::cout << "has colors: " << std::to_string(has_colors) << std::endl;
-    std::cout << "color has alpha: " << std::to_string(color_has_alpha_channel) << std::endl;
-    std::cout << "V.shape: (" << std::to_string(V.rows()) << ", " << std::to_string(V.cols()) << ")" << std::endl;
-    std::cout << "N.shape: (" << std::to_string(N.rows()) << ", " << std::to_string(N.cols()) << ")" << std::endl;
-    std::cout << "C.shape: (" << std::to_string(C.rows()) << ", " << std::to_string(C.cols()) << ")" << std::endl;
-
-    std::cout << "outV.shape: (" << std::to_string(outV.rows()) << ", " << std::to_string(outV.cols()) << ")" << std::endl;
-    std::cout << "outN.shape: (" << std::to_string(outN.rows()) << ", " << std::to_string(outN.cols()) << ")" << std::endl;
-    std::cout << "outC.shape: (" << std::to_string(outC.rows()) << ", " << std::to_string(outC.cols()) << ")" << std::endl;
-
     std::unordered_map<Eigen::Vector3i, AccumulatedPoint, hash_eigen<Eigen::Vector3i>> voxelindex_to_accpoint;
 
     Eigen::Vector3d ref_coord;
@@ -350,8 +333,6 @@ void downsample_point_cloud_to_voxels(const DerivedV& V,
     }
 
     int num_output_points = voxelindex_to_accpoint.size();
-    std::cout << "num_output_points: " << std::to_string(num_output_points) << std::endl;
-    std::cout << "voxelindex_to_accpoint.size(): " << voxelindex_to_accpoint.size() << std::endl;
     outV.resize(num_output_points, 3);
     if (has_normals) {
         outN.resize(num_output_points, 3);
@@ -360,9 +341,6 @@ void downsample_point_cloud_to_voxels(const DerivedV& V,
         int dim = color_has_alpha_channel ? 4 : 3;
         outC.resize(num_output_points, dim);
     }
-    std::cout << "outV.shape: (" << std::to_string(outV.rows()) << ", " << std::to_string(outV.cols()) << ")" << std::endl;
-    std::cout << "outN.shape: (" << std::to_string(outN.rows()) << ", " << std::to_string(outN.cols()) << ")" << std::endl;
-    std::cout << "outC.shape: (" << std::to_string(outC.rows()) << ", " << std::to_string(outC.cols()) << ")" << std::endl;
 
     int count = 0;
     for (auto accpoint : voxelindex_to_accpoint) {
@@ -385,10 +363,7 @@ void downsample_point_cloud_to_voxels(const DerivedV& V,
         }
         count += 1;
     }
-    std::cout << "count: " << count << std::endl;
-    std::cout << "num_output_points: " << std::to_string(num_output_points) << std::endl;
     if (count < num_output_points) {
-        std::cout << "count < num_output_points" << std::endl;
         outV.conservativeResize(count, 3);
         if (has_normals) {
             outN.conservativeResize(count, 3);
