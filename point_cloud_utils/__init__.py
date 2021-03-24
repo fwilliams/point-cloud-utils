@@ -1,5 +1,12 @@
-from .pcu_internal import *
-from .sinkhorn import *
+from ._pcu_internal import sample_mesh_poisson_disk, sample_mesh_random, \
+    downsample_point_cloud_poisson_disk, estimate_point_cloud_normals, \
+    shortest_squared_distances, squared_hausdorff_distance, \
+    morton_encode, morton_decode, morton_knn, \
+    lloyd_2d, lloyd_3d, voronoi_centroids_unit_cube, sample_mesh_lloyd, \
+    read_obj, write_obj, read_off, write_off, read_ply, write_ply
+
+from ._sinkhorn import *
+# from ._mesh_io import * TODO: Merge in new mesh IO stuff
 import numpy as np
 
 
@@ -26,7 +33,7 @@ def downsample_point_cloud_voxel_grid(voxel_size, points, normals=None, colors=N
     A triple (v, n, c) of downsampled vertices, normals and colors. If no vertices or colors are passed in, then
     n and c are None.
     """
-    from .pcu_internal import __internal_downsample_point_cloud_voxel_grid
+    from ._pcu_internal import __internal_downsample_point_cloud_voxel_grid
 
     if np.isscalar(voxel_size):
         voxel_size = np.array([voxel_size] * 3)

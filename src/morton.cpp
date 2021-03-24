@@ -250,7 +250,7 @@ npe_default_arg(sort, bool, false)
 npe_default_arg(parallel, bool, true)
 npe_doc(morton_encode)
 npe_begin_code()
-
+{
     if (pts.rows() <= 0) {
         throw pybind11::value_error("pts must be an array of shape [n, 3] but got an empty array");
     }
@@ -279,7 +279,7 @@ npe_begin_code()
         std::sort(codes.data(), codes.data() + codes.rows());
     }
     return npe::move(codes);
-
+}
 npe_end_code()
 
 
@@ -300,7 +300,7 @@ npe_function(morton_decode)
 npe_arg(codes, dense_uint, dense_ulong, dense_ulonglong)
 npe_doc(morton_decode)
 npe_begin_code()
-
+{
     if (codes.rows() <= 0) {
         throw pybind11::value_error("codes must be an array of shape [n] but got an empty array");
     }
@@ -310,7 +310,7 @@ npe_begin_code()
 
     Eigen::Matrix<int32_t, Eigen::Dynamic, 3, Eigen::RowMajor> pts(codes.rows(), 3);
 
-    #pragma omp parallel for
+#pragma omp parallel for
     for(int i = 0; i < codes.rows(); i += 1) {
         int32_t px, py, pz;
         MortonCode64(codes(i, 0)).decode(px, py, pz);
@@ -320,7 +320,7 @@ npe_begin_code()
     }
 
     return npe::move(pts);
-
+}
 npe_end_code()
 
 
@@ -346,86 +346,86 @@ npe_arg(k, int)
 npe_default_arg(sort_dist, bool, true)
 npe_doc(morton_knn)
 npe_begin_code()
-
-if (k <= 0) {
-    throw pybind11::value_error("k must be greater than 0");
-}
-if (codes.rows() <= 0) {
-    throw pybind11::value_error("codes must be an array of shape [n] but got an empty array");
-}
-if (qcodes.rows() <= 0) {
-    throw pybind11::value_error("codes must be an array of shape [n] but got an empty array");
-}
-if (codes.cols() != 1) {
-    throw pybind11::value_error("codes must be an array of shape [n] but got an invalid shape");
-}
-if (qcodes.cols() != 1) {
-    throw pybind11::value_error("qcodes must be an array of shape [n] but got an invalid shape");
-}
-
-k = std::min(k, (int)codes.rows());
-
-Eigen::Matrix<std::ptrdiff_t, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor, Eigen::Dynamic, Eigen::Dynamic> nn_idx(qcodes.rows(), k);
-
-//#pragma omp parallel for
-for(int i = 0; i < qcodes.rows(); i += 1) {
-    npe_Scalar_codes* code_ptr = std::lower_bound(codes.data(), codes.data() + codes.rows(), qcodes(i, 0));
-    std::ptrdiff_t idx = code_ptr - codes.data();
-
-    const int half_k_up = k / 2;
-    const int half_k_down = k - half_k_up;
-
-    std::ptrdiff_t upper_bound = idx + half_k_up;
-    std::ptrdiff_t lower_bound = idx - half_k_down;
-
-    if (upper_bound >= codes.rows()) {
-        lower_bound -= (upper_bound - codes.rows());
-        upper_bound = codes.rows();
+{
+    if (k <= 0) {
+        throw pybind11::value_error("k must be greater than 0");
     }
-    if (lower_bound < 0) {
-        upper_bound += -lower_bound;
-        lower_bound = 0;
+    if (codes.rows() <= 0) {
+        throw pybind11::value_error("codes must be an array of shape [n] but got an empty array");
+    }
+    if (qcodes.rows() <= 0) {
+        throw pybind11::value_error("codes must be an array of shape [n] but got an empty array");
+    }
+    if (codes.cols() != 1) {
+        throw pybind11::value_error("codes must be an array of shape [n] but got an invalid shape");
+    }
+    if (qcodes.cols() != 1) {
+        throw pybind11::value_error("qcodes must be an array of shape [n] but got an invalid shape");
     }
 
-    std::vector<std::ptrdiff_t> indices;
-    indices.reserve(k);
-    for (int j = 0; j < (upper_bound - lower_bound); j += 1) {
-        indices.push_back(lower_bound + j);
+    k = std::min(k, (int)codes.rows());
+
+    Eigen::Matrix<std::ptrdiff_t, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor, Eigen::Dynamic, Eigen::Dynamic> nn_idx(qcodes.rows(), k);
+
+    //#pragma omp parallel for
+    for(int i = 0; i < qcodes.rows(); i += 1) {
+        npe_Scalar_codes* code_ptr = std::lower_bound(codes.data(), codes.data() + codes.rows(), qcodes(i, 0));
+        std::ptrdiff_t idx = code_ptr - codes.data();
+
+        const int half_k_up = k / 2;
+        const int half_k_down = k - half_k_up;
+
+        std::ptrdiff_t upper_bound = idx + half_k_up;
+        std::ptrdiff_t lower_bound = idx - half_k_down;
+
+        if (upper_bound >= codes.rows()) {
+            lower_bound -= (upper_bound - codes.rows());
+            upper_bound = codes.rows();
+        }
+        if (lower_bound < 0) {
+            upper_bound += -lower_bound;
+            lower_bound = 0;
+        }
+
+        std::vector<std::ptrdiff_t> indices;
+        indices.reserve(k);
+        for (int j = 0; j < (upper_bound - lower_bound); j += 1) {
+            indices.push_back(lower_bound + j);
+        }
+
+        MortonCode64 code_i(*code_ptr);
+        if (sort_dist) {
+            auto cmp_codes = [&](const std::ptrdiff_t& lhs, const std::ptrdiff_t& rhs) {
+                int32_t q_x, q_y, q_z;
+                int32_t lhs_x, lhs_y, lhs_z, rhs_x, rhs_y, rhs_z;
+                MortonCode64(codes(lhs, 0)).decode(lhs_x, lhs_y, lhs_z);
+                MortonCode64(codes(rhs, 0)).decode(rhs_x, rhs_y, rhs_z);
+
+                double diff_lhs_x = q_x - lhs_x;
+                double diff_lhs_y = q_y - lhs_y;
+                double diff_lhs_z = q_z - lhs_z;
+
+                double diff_rhs_x = q_x - rhs_x;
+                double diff_rhs_y = q_y - rhs_y;
+                double diff_rhs_z = q_z - rhs_z;
+
+                double dist_lhs = diff_lhs_x * diff_lhs_x + diff_lhs_y * diff_lhs_y + diff_lhs_z * diff_lhs_z;
+                double dist_rhs = diff_rhs_x * diff_rhs_x + diff_rhs_y * diff_rhs_y + diff_rhs_z * diff_rhs_z;
+
+                return dist_lhs < dist_rhs;
+            };
+
+            std::sort(indices.begin(), indices.end(), cmp_codes);
+        }
+        for (int j = 0; j < (upper_bound - lower_bound); j += 1) {
+            nn_idx(i, j) = indices[j];
+        }
+
     }
 
-    MortonCode64 code_i(*code_ptr);
-    if (sort_dist) {
-        auto cmp_codes = [&](const std::ptrdiff_t& lhs, const std::ptrdiff_t& rhs) {
-            int32_t q_x, q_y, q_z;
-            int32_t lhs_x, lhs_y, lhs_z, rhs_x, rhs_y, rhs_z;
-            MortonCode64(codes(lhs, 0)).decode(lhs_x, lhs_y, lhs_z);
-            MortonCode64(codes(rhs, 0)).decode(rhs_x, rhs_y, rhs_z);
-
-            double diff_lhs_x = q_x - lhs_x;
-            double diff_lhs_y = q_y - lhs_y;
-            double diff_lhs_z = q_z - lhs_z;
-
-            double diff_rhs_x = q_x - rhs_x;
-            double diff_rhs_y = q_y - rhs_y;
-            double diff_rhs_z = q_z - rhs_z;
-
-            double dist_lhs = diff_lhs_x * diff_lhs_x + diff_lhs_y * diff_lhs_y + diff_lhs_z * diff_lhs_z;
-            double dist_rhs = diff_rhs_x * diff_rhs_x + diff_rhs_y * diff_rhs_y + diff_rhs_z * diff_rhs_z;
-
-            return dist_lhs < dist_rhs;
-        };
-
-        std::sort(indices.begin(), indices.end(), cmp_codes);
-    }
-    for (int j = 0; j < (upper_bound - lower_bound); j += 1) {
-        nn_idx(i, j) = indices[j];
-    }
+    return npe::move(nn_idx);
 
 }
-
-return npe::move(nn_idx);
-
-
 npe_end_code()
 
 

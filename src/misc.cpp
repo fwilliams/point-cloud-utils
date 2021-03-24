@@ -1,3 +1,6 @@
+//
+// FIXME: This function is not publically exposed.
+//
 #include <npe.h>
 #include <npe_typedefs.h>
 #include "common.h"
@@ -39,7 +42,7 @@ npe_arg(nx, std::uint64_t)
 npe_arg(ny, std::uint64_t)
 npe_arg(nz, std::uint64_t)
 npe_begin_code()
-
+{
     if (data.rows() != 1 && data.cols() != 1) {
         throw pybind11::value_error("Invalid shape for data. Expected a flat array.");
     }
@@ -199,5 +202,5 @@ npe_begin_code()
     }
 
     return std::make_tuple(npe::move(retv), npe::move(retf));
-
+}
 npe_end_code()

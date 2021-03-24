@@ -13,6 +13,7 @@ const int IglDefaultOptions = Eigen::RowMajor;
 //    }
 //}
 
+
 constexpr bool opts_dontalign(int options) {
     return (options == (Eigen::ColMajor | Eigen::DontAlign) || options == (Eigen::RowMajor | Eigen::DontAlign));
 }

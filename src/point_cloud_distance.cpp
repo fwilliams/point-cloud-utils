@@ -57,7 +57,7 @@ void compute_distance(
 
 
 
-const char* point_cloud_distance_ds = R"Qu8mg5v7(
+const char* shortest_squared_distances_doc = R"Qu8mg5v7(
 Compute the shortest squared L2 distances from each point in the source point cloud to the target point cloud.
 
 Parameters
@@ -72,12 +72,12 @@ squared L2 distance from the point `source[i, :]` to `target`. `corrs[i]` contai
 `target` of the nearest point to `source[i, :]`.
 )Qu8mg5v7";
 
-npe_function(point_cloud_distance)
+npe_function(shortest_squared_distances)
 npe_arg(source, dense_float, dense_double)
 npe_arg(target, npe_matches(source))
-npe_doc(point_cloud_distance_ds)
+npe_doc(shortest_squared_distances_doc)
 npe_begin_code()
-
+{
   if (source.rows() == 0 || target.rows() == 0) {
     std::stringstream ss;
     ss << "Invalid input set with zero elements: source and targets must have shape (n, 3) and (m, 3). Got source.shape = ("
@@ -105,13 +105,13 @@ npe_begin_code()
   compute_distance(src, dst, corrs, dists);
 
   return std::make_tuple(npe::move(dists), npe::move(corrs));
-
+}
 npe_end_code()
 
 
 
 
-const char* hausdorff_ds = R"Qu8mg5v7(
+const char* squared_hausdorff_distance_doc = R"Qu8mg5v7(
 Compute the one sided squared Hausdorff distance from source to target
 
 Parameters
@@ -129,13 +129,13 @@ distance.
 
 )Qu8mg5v7";
 
-npe_function(hausdorff)
+npe_function(squared_hausdorff_distance)
 npe_arg(source, dense_float, dense_double)
 npe_arg(target, npe_matches(source))
 npe_default_arg(return_index, bool, false)
-npe_doc(hausdorff_ds)
+npe_doc(squared_hausdorff_distance_doc)
 npe_begin_code()
-
+{
   if (source.rows() == 0 || target.rows() == 0) {
     std::stringstream ss;
     ss << "Invalid input set with zero elements: source and targets must have shape (n, 3) and (m, 3). Got source.shape = ("
@@ -174,5 +174,5 @@ npe_begin_code()
   } else {
     return pybind11::cast(max_dist);
   }
-
+}
 npe_end_code()

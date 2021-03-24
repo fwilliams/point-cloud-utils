@@ -49,7 +49,7 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 endif()
 
 # Create the python module
-npe_add_module(pcu_internal
+npe_add_module(_pcu_internal
   BINDING_SOURCES
   ${CMAKE_CURRENT_SOURCE_DIR}/src/sample.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/point_cloud_distance.cpp
@@ -58,21 +58,22 @@ npe_add_module(pcu_internal
   ${CMAKE_CURRENT_SOURCE_DIR}/src/mesh_utils.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/misc.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/morton.cpp)
-target_sources(pcu_internal PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/geogram_utils.cpp)
-target_include_directories(pcu_internal PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/external/vcglib)
-target_include_directories(pcu_internal PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
-target_include_directories(pcu_internal PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/external/nanoflann)
-target_include_directories(pcu_internal PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/external)
-target_link_libraries(pcu_internal PRIVATE geogram)
-set_target_properties(pcu_internal PROPERTIES COMPILE_FLAGS "-fvisibility=hidden -msse3")
+target_sources(_pcu_internal PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/geogram_utils.cpp)
+target_sources(_pcu_internal PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/external/vcglib/wrap/ply/plylib.cpp)
+target_include_directories(_pcu_internal PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/external/vcglib)
+target_include_directories(_pcu_internal PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+target_include_directories(_pcu_internal PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/external/nanoflann)
+target_include_directories(_pcu_internal PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/external)
+target_link_libraries(_pcu_internal PRIVATE geogram)
+set_target_properties(_pcu_internal PROPERTIES COMPILE_FLAGS "-fvisibility=hidden -msse3")
 find_package(OpenMP)
 if(OpenMP_CXX_FOUND)
-  message(STATUS "!!!!!!!!!! OPENMP FOUND !!!!!!!!!")
-    target_link_libraries(pcu_internal PUBLIC OpenMP::OpenMP_CXX)
+  # message(STATUS "!!!!!!!!!! OPENMP FOUND !!!!!!!!!")
+  target_link_libraries(_pcu_internal PUBLIC OpenMP::OpenMP_CXX)
 endif()
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-  target_link_libraries(pcu_internal PUBLIC OpenMP::OpenMP_CXX)
+  target_link_libraries(_pcu_internal PUBLIC OpenMP::OpenMP_CXX)
 endif()
 
 enable_testing()

@@ -325,17 +325,17 @@ class TestDenseBindings(unittest.TestCase):
         # between each point in a and the points in b
         # corrs_a_to_b is of shape (a.shape[0],) and contains the index into b of the
         # closest point for each point in a
-        dists_a_to_b, corrs_a_to_b = pcu.point_cloud_distance(a, b)
+        dists_a_to_b, corrs_a_to_b = pcu.shortest_squared_distances(a, b)
 
         # Compute each one sided squared Hausdorff distances
-        hausdorff_a_to_b = pcu.hausdorff(a, b)
-        hausdorff_b_to_a = pcu.hausdorff(b, a)
+        hausdorff_a_to_b = pcu.squared_hausdorff_distance(a, b)
+        hausdorff_b_to_a = pcu.squared_hausdorff_distance(b, a)
 
         # Take a max of the one sided squared  distances to get the two sided Hausdorff distance
         hausdorff_dist = max(hausdorff_a_to_b, hausdorff_b_to_a)
 
         # Find the index pairs of the two points with maximum shortest distancce
-        hausdorff_b_to_a, idx_b, idx_a = pcu.hausdorff(b, a, return_index=True)
+        hausdorff_b_to_a, idx_b, idx_a = pcu.squared_hausdorff_distance(b, a, return_index=True)
         self.assertAlmostEqual(np.sum((a[idx_a] - b[idx_b])**2), hausdorff_b_to_a)
 
     def test_estimate_point_cloud_normals(self):
