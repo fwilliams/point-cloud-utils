@@ -32,8 +32,8 @@ namespace igl
       const Eigen::MatrixBase<DerivedV> & V, 
       const Eigen::MatrixBase<DerivedF> & F, 
       Eigen::SparseMatrix<LT> & L,
-      Eigen::MatrixBase<DerivedE> & E,
-      Eigen::MatrixBase<DerivedEMAP> & EMAP);
+      Eigen::PlainObjectBase<DerivedE> & E,
+      Eigen::PlainObjectBase<DerivedEMAP> & EMAP);
   // wrapper if E and EMAP are already computed (better match!)
   template <typename DerivedV, typename DerivedF, typename DerivedE, typename DerivedEMAP, typename LT>
   void crouzeix_raviart_cotmatrix(

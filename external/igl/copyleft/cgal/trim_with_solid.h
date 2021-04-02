@@ -45,14 +45,14 @@ namespace igl
         typename DerivedD,
         typename DerivedJ>
       IGL_INLINE void trim_with_solid(
-        const Eigen::MatrixBase<DerivedVA> & VA,
-        const Eigen::MatrixBase<DerivedFA> & FA,
-        const Eigen::MatrixBase<DerivedVB> & VB,
-        const Eigen::MatrixBase<DerivedFB> & FB,
-        Eigen::MatrixBase<DerivedV> & Vd,
-        Eigen::MatrixBase<DerivedF> & F,
-        Eigen::MatrixBase<DerivedD> & D,
-        Eigen::MatrixBase<DerivedJ> & J);
+        const Eigen::PlainObjectBase<DerivedVA> & VA,
+        const Eigen::PlainObjectBase<DerivedFA> & FA,
+        const Eigen::PlainObjectBase<DerivedVB> & VB,
+        const Eigen::PlainObjectBase<DerivedFB> & FB,
+        Eigen::PlainObjectBase<DerivedV> & Vd,
+        Eigen::PlainObjectBase<DerivedF> & F,
+        Eigen::PlainObjectBase<DerivedD> & D,
+        Eigen::PlainObjectBase<DerivedJ> & J);
     }
   }
 }

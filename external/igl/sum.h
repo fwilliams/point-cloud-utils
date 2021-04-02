@@ -37,7 +37,7 @@ namespace igl
   IGL_INLINE void sum(
     const Eigen::SparseMatrix<AType> & A, 
     const int dim,
-    Eigen::MatrixBase<DerivedB>& B);
+    Eigen::PlainObjectBase<DerivedB>& B);
 }
 
 #ifndef IGL_STATIC_LIBRARY

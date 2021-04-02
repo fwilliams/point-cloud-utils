@@ -25,10 +25,10 @@ namespace igl
   //
   template <typename Scalar, typename Index>
   IGL_INLINE void false_barycentric_subdivision(
-    const Eigen::MatrixBase<Scalar> & V,
-    const Eigen::MatrixBase<Index> & F,
-    Eigen::MatrixBase<Scalar> & VD,
-    Eigen::MatrixBase<Index> & FD);
+    const Eigen::PlainObjectBase<Scalar> & V,
+    const Eigen::PlainObjectBase<Index> & F,
+    Eigen::PlainObjectBase<Scalar> & VD,
+    Eigen::PlainObjectBase<Index> & FD);
 
 }
 

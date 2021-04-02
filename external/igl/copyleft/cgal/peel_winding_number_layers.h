@@ -11,9 +11,9 @@ namespace igl {
             typename DerivedF,
             typename DerivedW >
         IGL_INLINE size_t peel_winding_number_layers(
-                const Eigen::MatrixBase<DerivedV > & V,
-                const Eigen::MatrixBase<DerivedF > & F,
-                Eigen::MatrixBase<DerivedW>& W);
+                const Eigen::PlainObjectBase<DerivedV > & V,
+                const Eigen::PlainObjectBase<DerivedF > & F,
+                Eigen::PlainObjectBase<DerivedW>& W);
     }
   }
 }

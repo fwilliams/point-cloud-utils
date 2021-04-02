@@ -20,6 +20,10 @@ namespace igl
   //   viewport  4-long viewport vector
   // Outputs:
   //   scene  #P by 3 or 3-vector (#P=1) the unprojected x, y, and z coordinates
+  //
+  // Known issue:
+  //   The compiler will not complain if V and P are Vector3d, but the result
+  //   will be incorrect.
   template <
     typename Derivedwin,
     typename Derivedmodel,
@@ -31,7 +35,7 @@ namespace igl
     const Eigen::MatrixBase<Derivedmodel>& model,
     const Eigen::MatrixBase<Derivedproj>& proj,
     const Eigen::MatrixBase<Derivedviewport>&  viewport,
-    Eigen::MatrixBase<Derivedscene> & scene);
+    Eigen::PlainObjectBase<Derivedscene> & scene);
   template <typename Scalar>
   IGL_INLINE Eigen::Matrix<Scalar,3,1> unproject(
     const Eigen::Matrix<Scalar,3,1>&  win,

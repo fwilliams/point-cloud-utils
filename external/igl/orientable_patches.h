@@ -25,15 +25,15 @@ namespace igl
   //    C  #F list of component ids
   //    A  #F by #F adjacency matrix
   // 
-  template <typename DerivedF, typename DerivedC, typename SparseT>
+  template <typename DerivedF, typename DerivedC, typename AScalar>
   IGL_INLINE void orientable_patches(
     const Eigen::MatrixBase<DerivedF> & F,
     Eigen::PlainObjectBase<DerivedC> & C,
-    SparseT & A);
+    Eigen::SparseMatrix<AScalar> & A);
   template <typename DerivedF, typename DerivedC>
   IGL_INLINE void orientable_patches(
-    const Eigen::PlainObjectBase<DerivedF> & F,
-    Eigen::MatrixBase<DerivedC> & C);
+    const Eigen::MatrixBase<DerivedF> & F,
+    Eigen::PlainObjectBase<DerivedC> & C);
 };
 #ifndef IGL_STATIC_LIBRARY
 #  include "orientable_patches.cpp"

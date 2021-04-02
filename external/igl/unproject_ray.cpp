@@ -20,15 +20,15 @@ IGL_INLINE void igl::unproject_ray(
   const Eigen::MatrixBase<Derivedmodel> & model,
   const Eigen::MatrixBase<Derivedproj> & proj,
   const Eigen::MatrixBase<Derivedviewport> & viewport,
-  Eigen::MatrixBase<Deriveds> & s,
-  Eigen::MatrixBase<Deriveddir> & dir)
+  Eigen::PlainObjectBase<Deriveds> & s,
+  Eigen::PlainObjectBase<Deriveddir> & dir)
 {
   using namespace std;
   using namespace Eigen;
   // Source and direction on screen
   typedef Eigen::Matrix<typename Deriveds::Scalar,3,1> Vec3;
-  Vec3 win_s(pos(0),pos(1),0);
-  Vec3 win_d(pos(0),pos(1),1);
+  Vec3 win_s(pos(0, 0),pos(1, 0),0);
+  Vec3 win_d(pos(0, 0),pos(1, 0),1);
   // Source, destination and direction in world
   Vec3 d;
   igl::unproject(win_s,model,proj,viewport,s);
@@ -37,5 +37,5 @@ IGL_INLINE void igl::unproject_ray(
 }
 
 #ifdef IGL_STATIC_LIBRARY
-template void igl::unproject_ray<Eigen::Matrix<float, 2, 1, 0, 2, 1>, Eigen::Matrix<float, 4, 4, 0, 4, 4>, Eigen::Matrix<float, 4, 4, 0, 4, 4>, Eigen::Matrix<float, 4, 1, 0, 4, 1>, Eigen::Matrix<float, 3, 1, 0, 3, 1>, Eigen::Matrix<float, 3, 1, 0, 3, 1> >(Eigen::MatrixBase<Eigen::Matrix<float, 2, 1, 0, 2, 1> > const&, Eigen::MatrixBase<Eigen::Matrix<float, 4, 4, 0, 4, 4> > const&, Eigen::MatrixBase<Eigen::Matrix<float, 4, 4, 0, 4, 4> > const&, Eigen::MatrixBase<Eigen::Matrix<float, 4, 1, 0, 4, 1> > const&, Eigen::MatrixBase<Eigen::Matrix<float, 3, 1, 0, 3, 1> >&, Eigen::MatrixBase<Eigen::Matrix<float, 3, 1, 0, 3, 1> >&);
+template void igl::unproject_ray<Eigen::Matrix<float, 2, 1, 0, 2, 1>, Eigen::Matrix<float, 4, 4, 0, 4, 4>, Eigen::Matrix<float, 4, 4, 0, 4, 4>, Eigen::Matrix<float, 4, 1, 0, 4, 1>, Eigen::Matrix<float, 3, 1, 0, 3, 1>, Eigen::Matrix<float, 3, 1, 0, 3, 1> >(Eigen::MatrixBase<Eigen::Matrix<float, 2, 1, 0, 2, 1> > const&, Eigen::MatrixBase<Eigen::Matrix<float, 4, 4, 0, 4, 4> > const&, Eigen::MatrixBase<Eigen::Matrix<float, 4, 4, 0, 4, 4> > const&, Eigen::MatrixBase<Eigen::Matrix<float, 4, 1, 0, 4, 1> > const&, Eigen::PlainObjectBase<Eigen::Matrix<float, 3, 1, 0, 3, 1> >&, Eigen::PlainObjectBase<Eigen::Matrix<float, 3, 1, 0, 3, 1> >&);
 #endif

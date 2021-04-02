@@ -58,10 +58,10 @@ namespace igl
             std::vector<
             std::pair<typename DerivedF::Index, CGAL::Object> > > & offending,
         bool stitch_all,
-        Eigen::MatrixBase<DerivedVV> & VV,
-        Eigen::MatrixBase<DerivedFF> & FF,
-        Eigen::MatrixBase<DerivedJ> & J,
-        Eigen::MatrixBase<DerivedIM> & IM);
+        Eigen::PlainObjectBase<DerivedVV> & VV,
+        Eigen::PlainObjectBase<DerivedFF> & FF,
+        Eigen::PlainObjectBase<DerivedJ> & J,
+        Eigen::PlainObjectBase<DerivedIM> & IM);
       // Same as above except stitch_all is assumed "false"
       template <
         typename DerivedV,
@@ -79,10 +79,10 @@ namespace igl
           typename DerivedF::Index,
             std::vector<
             std::pair<typename DerivedF::Index, CGAL::Object> > > & offending,
-        Eigen::MatrixBase<DerivedVV> & VV,
-        Eigen::MatrixBase<DerivedFF> & FF,
-        Eigen::MatrixBase<DerivedJ> & J,
-        Eigen::MatrixBase<DerivedIM> & IM);
+        Eigen::PlainObjectBase<DerivedVV> & VV,
+        Eigen::PlainObjectBase<DerivedFF> & FF,
+        Eigen::PlainObjectBase<DerivedJ> & J,
+        Eigen::PlainObjectBase<DerivedIM> & IM);
     }
   }
 }

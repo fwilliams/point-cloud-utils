@@ -30,20 +30,20 @@ namespace igl
     typename Derivedtheta,
     typename Derivedcos_theta>
   IGL_INLINE void dihedral_angles(
-    Eigen::MatrixBase<DerivedV>& V,
-    Eigen::MatrixBase<DerivedT>& T,
-    Eigen::MatrixBase<Derivedtheta>& theta,
-    Eigen::MatrixBase<Derivedcos_theta>& cos_theta);
+    const Eigen::MatrixBase<DerivedV>& V,
+    const Eigen::MatrixBase<DerivedT>& T,
+    Eigen::PlainObjectBase<Derivedtheta>& theta,
+    Eigen::PlainObjectBase<Derivedcos_theta>& cos_theta);
   template <
     typename DerivedL, 
     typename DerivedA, 
     typename Derivedtheta,
     typename Derivedcos_theta>
   IGL_INLINE void dihedral_angles_intrinsic(
-    Eigen::MatrixBase<DerivedL>& L,
-    Eigen::MatrixBase<DerivedA>& A,
-    Eigen::MatrixBase<Derivedtheta>& theta,
-    Eigen::MatrixBase<Derivedcos_theta>& cos_theta);
+    const Eigen::MatrixBase<DerivedL>& L,
+    const Eigen::MatrixBase<DerivedA>& A,
+    Eigen::PlainObjectBase<Derivedtheta>& theta,
+    Eigen::PlainObjectBase<Derivedcos_theta>& cos_theta);
 
 }
 

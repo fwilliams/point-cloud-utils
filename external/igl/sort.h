@@ -35,32 +35,38 @@ namespace igl
     const Eigen::DenseBase<DerivedX>& X,
     const int dim,
     const bool ascending,
-    Eigen::MatrixBase<DerivedY>& Y,
-    Eigen::MatrixBase<DerivedIX>& IX);
+    Eigen::PlainObjectBase<DerivedY>& Y,
+    Eigen::PlainObjectBase<DerivedIX>& IX);
+  template <typename DerivedX, typename DerivedY>
+  IGL_INLINE void sort(
+    const Eigen::DenseBase<DerivedX>& X,
+    const int dim,
+    const bool ascending,
+    Eigen::PlainObjectBase<DerivedY>& Y);
   template <typename DerivedX, typename DerivedY, typename DerivedIX>
   // Only better if size(X,dim) is small
   IGL_INLINE void sort_new(
     const Eigen::DenseBase<DerivedX>& X,
     const int dim,
     const bool ascending,
-    Eigen::MatrixBase<DerivedY>& Y,
-    Eigen::MatrixBase<DerivedIX>& IX);
+    Eigen::PlainObjectBase<DerivedY>& Y,
+    Eigen::PlainObjectBase<DerivedIX>& IX);
   // Special case if size(X,dim) == 2
   template <typename DerivedX, typename DerivedY, typename DerivedIX>
   IGL_INLINE void sort2(
     const Eigen::DenseBase<DerivedX>& X,
     const int dim,
     const bool ascending,
-    Eigen::MatrixBase<DerivedY>& Y,
-    Eigen::MatrixBase<DerivedIX>& IX);
+    Eigen::PlainObjectBase<DerivedY>& Y,
+    Eigen::PlainObjectBase<DerivedIX>& IX);
   // Special case if size(X,dim) == 3
   template <typename DerivedX, typename DerivedY, typename DerivedIX>
   IGL_INLINE void sort3(
     const Eigen::DenseBase<DerivedX>& X,
     const int dim,
     const bool ascending,
-    Eigen::MatrixBase<DerivedY>& Y,
-    Eigen::MatrixBase<DerivedIX>& IX);
+    Eigen::PlainObjectBase<DerivedY>& Y,
+    Eigen::PlainObjectBase<DerivedIX>& IX);
 
 
   // Act like matlab's [Y,I] = SORT(X) for std library vectors

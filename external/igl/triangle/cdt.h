@@ -41,10 +41,10 @@ namespace igl
       const Eigen::MatrixBase<DerivedV> & V,
       const Eigen::MatrixBase<DerivedE> & E,
       const std::string & flags,
-      Eigen::MatrixBase<DerivedWV> & WV,
-      Eigen::MatrixBase<DerivedWF> & WF,
-      Eigen::MatrixBase<DerivedWE> & WE,
-      Eigen::MatrixBase<DerivedJ> & J);
+      Eigen::PlainObjectBase<DerivedWV> & WV,
+      Eigen::PlainObjectBase<DerivedWF> & WF,
+      Eigen::PlainObjectBase<DerivedWE> & WE,
+      Eigen::PlainObjectBase<DerivedJ> & J);
   }
 }
 

@@ -37,7 +37,7 @@ namespace igl
     const Eigen::MatrixBase<DerivedP> & P,
     const Eigen::MatrixBase<DerivedN> & N,
     const int num_samples,
-    Eigen::MatrixBase<DerivedS> & S);
+    Eigen::PlainObjectBase<DerivedS> & S);
   // Inputs:
   //   AABB  axis-aligned bounding box hierarchy around (V,F)
   template <
@@ -54,7 +54,7 @@ namespace igl
     const Eigen::MatrixBase<DerivedP> & P,
     const Eigen::MatrixBase<DerivedN> & N,
     const int num_samples,
-    Eigen::MatrixBase<DerivedS> & S);
+    Eigen::PlainObjectBase<DerivedS> & S);
   // Inputs:
   //    V  #V by 3 list of mesh vertex positions
   //    F  #F by 3 list of mesh face indices into V
@@ -70,7 +70,7 @@ namespace igl
     const Eigen::MatrixBase<DerivedP> & P,
     const Eigen::MatrixBase<DerivedN> & N,
     const int num_samples,
-    Eigen::MatrixBase<DerivedS> & S);
+    Eigen::PlainObjectBase<DerivedS> & S);
 
 };
 #ifndef IGL_STATIC_LIBRARY

@@ -26,8 +26,10 @@ namespace igl
   // Outputs:
   //   NV  #NV by dim list of mesh vertex positions
   //   NF  #NF by ss list of simplices
-  //   IM  #V by 1 list of indices such that: NF = IM(F) and NT = IM(T)
+  //   I   #V by 1 list of indices such that: NF = IM(F) and NT = IM(T)
   //      and V(find(IM<=size(NV,1)),:) = NV
+  //   J  #NV by 1 list, such that NV = V(J,:)
+  //   
   //
   template <
     typename DerivedV,
@@ -38,9 +40,9 @@ namespace igl
   IGL_INLINE void remove_unreferenced(
     const Eigen::MatrixBase<DerivedV> &V,
     const Eigen::MatrixBase<DerivedF> &F,
-    Eigen::MatrixBase<DerivedNV> &NV,
-    Eigen::MatrixBase<DerivedNF> &NF,
-    Eigen::MatrixBase<DerivedI> &I);
+    Eigen::PlainObjectBase<DerivedNV> &NV,
+    Eigen::PlainObjectBase<DerivedNF> &NF,
+    Eigen::PlainObjectBase<DerivedI> &I);
   template <
     typename DerivedV,
     typename DerivedF,
@@ -51,10 +53,10 @@ namespace igl
   IGL_INLINE void remove_unreferenced(
     const Eigen::MatrixBase<DerivedV> &V,
     const Eigen::MatrixBase<DerivedF> &F,
-    Eigen::MatrixBase<DerivedNV> &NV,
-    Eigen::MatrixBase<DerivedNF> &NF,
-    Eigen::MatrixBase<DerivedI> &I,
-    Eigen::MatrixBase<DerivedJ> &J);
+    Eigen::PlainObjectBase<DerivedNV> &NV,
+    Eigen::PlainObjectBase<DerivedNF> &NF,
+    Eigen::PlainObjectBase<DerivedI> &I,
+    Eigen::PlainObjectBase<DerivedJ> &J);
   // Inputs:
   //   n  number of vertices (possibly greater than F.maxCoeff()+1)
   //   F  #F by ss list of simplices
@@ -70,8 +72,8 @@ namespace igl
   IGL_INLINE void remove_unreferenced(
     const size_t n,
     const Eigen::MatrixBase<DerivedF> &F,
-    Eigen::MatrixBase<DerivedI> &I,
-    Eigen::MatrixBase<DerivedJ> &J);
+    Eigen::PlainObjectBase<DerivedI> &I,
+    Eigen::PlainObjectBase<DerivedJ> &J);
 
 }
 

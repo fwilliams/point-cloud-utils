@@ -32,9 +32,9 @@ namespace igl
   IGL_INLINE void local_basis(
     const Eigen::MatrixBase<DerivedV>& V,
     const Eigen::MatrixBase<DerivedF>& F,
-    Eigen::MatrixBase<DerivedV>& B1,
-    Eigen::MatrixBase<DerivedV>& B2,
-    Eigen::MatrixBase<DerivedV>& B3
+    Eigen::PlainObjectBase<DerivedV>& B1,
+    Eigen::PlainObjectBase<DerivedV>& B2,
+    Eigen::PlainObjectBase<DerivedV>& B3
     );
 
 }

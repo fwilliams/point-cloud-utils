@@ -21,7 +21,7 @@ namespace igl
   //   pad_count  number of cells beyond box
   // Outputs:
   //   GV  side(0)*side(1)*side(2) by 3 list of cell center positions
-  //   side  3-long list of dimension of voxel grid
+  //   side  1 by 3 list of dimension of voxel grid
   template <
     typename Scalar,
     typename DerivedGV,
@@ -30,8 +30,19 @@ namespace igl
     const Eigen::AlignedBox<Scalar,3> & box, 
     const int s,
     const int pad_count,
-    Eigen::MatrixBase<DerivedGV> & GV,
-    Eigen::MatrixBase<Derivedside> & side);
+    Eigen::PlainObjectBase<DerivedGV> & GV,
+    Eigen::PlainObjectBase<Derivedside> & side);
+  template <
+    typename DerivedV,
+    typename DerivedGV,
+    typename Derivedside>
+  IGL_INLINE void voxel_grid(
+    const Eigen::MatrixBase<DerivedV> & V, 
+    const typename DerivedV::Scalar offset,
+    const int s,
+    const int pad_count,
+    Eigen::PlainObjectBase<DerivedGV> & GV,
+    Eigen::PlainObjectBase<Derivedside> & side);
 }
 #ifndef IGL_STATIC_LIBRARY
 #  include "voxel_grid.cpp"

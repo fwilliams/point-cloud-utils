@@ -18,7 +18,7 @@ namespace igl
   struct active_set_params;
   // Known Bugs: rows of [Aeq;Aieq] **must** be linearly independent. Should be
   // using QR decomposition otherwise:
-  //   http://www.okstate.edu/sas/v8/sashtml/ormp/chap5/sect32.htm
+  // https://v8doc.sas.com/sashtml/ormp/chap5/sect32.htm
   //
   // ACTIVE_SET Minimize quadratic energy 
   //
@@ -64,17 +64,17 @@ namespace igl
     >
   IGL_INLINE igl::SolverStatus active_set(
     const Eigen::SparseMatrix<AT>& A,
-    const Eigen::MatrixBase<DerivedB> & B,
-    const Eigen::MatrixBase<Derivedknown> & known,
-    const Eigen::MatrixBase<DerivedY> & Y,
+    const Eigen::PlainObjectBase<DerivedB> & B,
+    const Eigen::PlainObjectBase<Derivedknown> & known,
+    const Eigen::PlainObjectBase<DerivedY> & Y,
     const Eigen::SparseMatrix<AeqT>& Aeq,
-    const Eigen::MatrixBase<DerivedBeq> & Beq,
+    const Eigen::PlainObjectBase<DerivedBeq> & Beq,
     const Eigen::SparseMatrix<AieqT>& Aieq,
-    const Eigen::MatrixBase<DerivedBieq> & Bieq,
-    const Eigen::MatrixBase<Derivedlx> & lx,
-    const Eigen::MatrixBase<Derivedux> & ux,
+    const Eigen::PlainObjectBase<DerivedBieq> & Bieq,
+    const Eigen::PlainObjectBase<Derivedlx> & lx,
+    const Eigen::PlainObjectBase<Derivedux> & ux,
     const igl::active_set_params & params,
-    Eigen::MatrixBase<DerivedZ> & Z
+    Eigen::PlainObjectBase<DerivedZ> & Z
     );
 };
 

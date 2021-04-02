@@ -36,12 +36,12 @@ namespace igl
         typename DerivedJ,
         typename DerivedIM>
       IGL_INLINE void resolve_intersections(
-        const Eigen::MatrixBase<DerivedV> & V,
-        const Eigen::MatrixBase<DerivedE> & E,
-        Eigen::MatrixBase<DerivedVI> & VI,
-        Eigen::MatrixBase<DerivedEI> & EI,
-        Eigen::MatrixBase<DerivedJ> & J,
-        Eigen::MatrixBase<DerivedIM> & IM);
+        const Eigen::PlainObjectBase<DerivedV> & V,
+        const Eigen::PlainObjectBase<DerivedE> & E,
+        Eigen::PlainObjectBase<DerivedVI> & VI,
+        Eigen::PlainObjectBase<DerivedEI> & EI,
+        Eigen::PlainObjectBase<DerivedJ> & J,
+        Eigen::PlainObjectBase<DerivedIM> & IM);
     }
   }
 }

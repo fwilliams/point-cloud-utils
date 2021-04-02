@@ -50,13 +50,13 @@ namespace igl
     typename Derivedboundaries,
     typename Derivedfoldovers>
   IGL_INLINE void seam_edges(
-    const Eigen::MatrixBase<DerivedV>& V,
-    const Eigen::MatrixBase<DerivedTC>& TC,
-    const Eigen::MatrixBase<DerivedF>& F,
-    const Eigen::MatrixBase<DerivedFTC>& FTC,
-    Eigen::MatrixBase<Derivedseams>& seams,
-    Eigen::MatrixBase<Derivedboundaries>& boundaries,
-    Eigen::MatrixBase<Derivedfoldovers>& foldovers);
+    const Eigen::PlainObjectBase<DerivedV>& V,
+    const Eigen::PlainObjectBase<DerivedTC>& TC,
+    const Eigen::PlainObjectBase<DerivedF>& F,
+    const Eigen::PlainObjectBase<DerivedFTC>& FTC,
+    Eigen::PlainObjectBase<Derivedseams>& seams,
+    Eigen::PlainObjectBase<Derivedboundaries>& boundaries,
+    Eigen::PlainObjectBase<Derivedfoldovers>& foldovers);
 }
 #ifndef IGL_STATIC_LIBRARY
 #  include "seam_edges.cpp"

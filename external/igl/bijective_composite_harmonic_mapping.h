@@ -43,7 +43,7 @@ namespace igl
     const Eigen::MatrixBase<DerivedF> & F,
     const Eigen::MatrixBase<Derivedb> & b,
     const Eigen::MatrixBase<Derivedbc> & bc,
-    Eigen::MatrixBase<DerivedU> & U);
+    Eigen::PlainObjectBase<DerivedU> & U);
   //
   // Inputs:
   //   min_steps  minimum number of steps to take from V(b,:) to bc
@@ -70,7 +70,7 @@ namespace igl
     const int max_steps,
     const int num_inner_iters,
     const bool test_for_flips,
-    Eigen::MatrixBase<DerivedU> & U);
+    Eigen::PlainObjectBase<DerivedU> & U);
 }
 
 #ifndef IGL_STATIC_LIBRARY

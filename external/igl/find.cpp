@@ -48,9 +48,9 @@ template <
   typename DerivedV>
 IGL_INLINE void igl::find(
   const Eigen::DenseBase<DerivedX>& X,
-  Eigen::MatrixBase<DerivedI> & I,
-  Eigen::MatrixBase<DerivedJ> & J,
-  Eigen::MatrixBase<DerivedV> & V)
+  Eigen::PlainObjectBase<DerivedI> & I,
+  Eigen::PlainObjectBase<DerivedJ> & J,
+  Eigen::PlainObjectBase<DerivedV> & V)
 {
   const int nnz = X.count();
   I.resize(nnz,1);
@@ -79,7 +79,7 @@ template <
   typename DerivedI>
 IGL_INLINE void igl::find(
   const Eigen::DenseBase<DerivedX>& X,
-  Eigen::MatrixBase<DerivedI> & I)
+  Eigen::PlainObjectBase<DerivedI> & I)
 {
   const int nnz = X.count();
   I.resize(nnz,1);
@@ -123,16 +123,15 @@ IGL_INLINE void igl::find(
 // Explicit template instantiation
 
 template void igl::find<bool, Eigen::Matrix<int, -1, 1, 0, -1, 1>, Eigen::Matrix<int, -1, 1, 0, -1, 1>, Eigen::Array<bool, -1, 1, 0, -1, 1> >(Eigen::SparseMatrix<bool, 0, int> const&, Eigen::DenseBase<Eigen::Matrix<int, -1, 1, 0, -1, 1> >&, Eigen::DenseBase<Eigen::Matrix<int, -1, 1, 0, -1, 1> >&, Eigen::DenseBase<Eigen::Array<bool, -1, 1, 0, -1, 1> >&);
-template void igl::find<Eigen::Array<bool, -1, 1, 0, -1, 1>, Eigen::Matrix<int, -1, 1, 0, -1, 1> >(Eigen::DenseBase<Eigen::Array<bool, -1, 1, 0, -1, 1> > const&, Eigen::MatrixBase<Eigen::Matrix<int, -1, 1, 0, -1, 1> >&);
+template void igl::find<Eigen::Array<bool, -1, 1, 0, -1, 1>, Eigen::Matrix<int, -1, 1, 0, -1, 1> >(Eigen::DenseBase<Eigen::Array<bool, -1, 1, 0, -1, 1> > const&, Eigen::PlainObjectBase<Eigen::Matrix<int, -1, 1, 0, -1, 1> >&);
 template void igl::find<double, Eigen::Matrix<int, -1, 1, 0, -1, 1>, Eigen::Matrix<int, -1, 1, 0, -1, 1>, Eigen::Matrix<double, -1, 1, 0, -1, 1> >(Eigen::SparseMatrix<double, 0, int> const&, Eigen::DenseBase<Eigen::Matrix<int, -1, 1, 0, -1, 1> >&, Eigen::DenseBase<Eigen::Matrix<int, -1, 1, 0, -1, 1> >&, Eigen::DenseBase<Eigen::Matrix<double, -1, 1, 0, -1, 1> >&);
 template void igl::find<double, Eigen::Matrix<double, -1, 1, 0, -1, 1>, Eigen::Matrix<double, -1, 1, 0, -1, 1>, Eigen::Matrix<double, -1, 1, 0, -1, 1> >(Eigen::SparseMatrix<double, 0, int> const&, Eigen::DenseBase<Eigen::Matrix<double, -1, 1, 0, -1, 1> >&, Eigen::DenseBase<Eigen::Matrix<double, -1, 1, 0, -1, 1> >&, Eigen::DenseBase<Eigen::Matrix<double, -1, 1, 0, -1, 1> >&);
 template void igl::find<double, Eigen::Matrix<int, -1, 1, 0, -1, 1>, Eigen::Matrix<int, -1, 1, 0, -1, 1>, Eigen::Matrix<double, -1, -1, 0, -1, -1> >(Eigen::SparseMatrix<double, 0, int> const&, Eigen::DenseBase<Eigen::Matrix<int, -1, 1, 0, -1, 1> >&, Eigen::DenseBase<Eigen::Matrix<int, -1, 1, 0, -1, 1> >&, Eigen::DenseBase<Eigen::Matrix<double, -1, -1, 0, -1, -1> >&);
-template void igl::find<Eigen::Matrix<int, -1, 1, 0, -1, 1>, Eigen::Matrix<int, -1, 1, 0, -1, 1> >(Eigen::DenseBase<Eigen::Matrix<int, -1, 1, 0, -1, 1> > const&, Eigen::MatrixBase<Eigen::Matrix<int, -1, 1, 0, -1, 1> >&);
+template void igl::find<Eigen::Matrix<int, -1, 1, 0, -1, 1>, Eigen::Matrix<int, -1, 1, 0, -1, 1> >(Eigen::DenseBase<Eigen::Matrix<int, -1, 1, 0, -1, 1> > const&, Eigen::PlainObjectBase<Eigen::Matrix<int, -1, 1, 0, -1, 1> >&);
 template void igl::find<double, Eigen::Matrix<long, -1, 1, 0, -1, 1>, Eigen::Matrix<long, -1, 1, 0, -1, 1>, Eigen::Matrix<double, -1, 1, 0, -1, 1> >(Eigen::SparseMatrix<double, 0, int> const&, Eigen::DenseBase<Eigen::Matrix<long, -1, 1, 0, -1, 1> >&, Eigen::DenseBase<Eigen::Matrix<long, -1, 1, 0, -1, 1> >&, Eigen::DenseBase<Eigen::Matrix<double, -1, 1, 0, -1, 1> >&);
+template void igl::find<Eigen::Matrix<bool, -1, 1, 0, -1, 1>, Eigen::Matrix<int, -1, 1, 0, -1, 1> >(Eigen::DenseBase<Eigen::Matrix<bool, -1, 1, 0, -1, 1> > const&, Eigen::PlainObjectBase<Eigen::Matrix<int, -1, 1, 0, -1, 1> >&);
 #if EIGEN_VERSION_AT_LEAST(3,3,0)
 #else
-template void igl::find<Eigen::CwiseBinaryOp<Eigen::internal::scalar_cmp_op<long, (Eigen::internal::ComparisonName)0>, Eigen::PartialReduxExpr<Eigen::Array<bool, -1, 3, 0, -1, 3>, Eigen::internal::member_count<long>, 1> const, Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<long>, Eigen::Array<long, -1, 1, 0, -1, 1> > const>, Eigen::Matrix<int, -1, 1, 0, -1, 1> >(Eigen::DenseBase<Eigen::CwiseBinaryOp<Eigen::internal::scalar_cmp_op<long, (Eigen::internal::ComparisonName)0>, Eigen::PartialReduxExpr<Eigen::Array<bool, -1, 3, 0, -1, 3>, Eigen::internal::member_count<long>, 1> const, Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<long>, Eigen::Array<long, -1, 1, 0, -1, 1> > const> > const&, Eigen::MatrixBase<Eigen::Matrix<int, -1, 1, 0, -1, 1> >&);
-template void igl::find<Eigen::CwiseBinaryOp<Eigen::internal::scalar_cmp_op<int, (Eigen::internal::ComparisonName)0>, Eigen::Array<int, -1, 1, 0, -1, 1> const, Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<int>, Eigen::Array<int, -1, 1, 0, -1, 1> > const>, Eigen::Matrix<int, -1, 1, 0, -1, 1> >(Eigen::DenseBase<Eigen::CwiseBinaryOp<Eigen::internal::scalar_cmp_op<int, (Eigen::internal::ComparisonName)0>, Eigen::Array<int, -1, 1, 0, -1, 1> const, Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<int>, Eigen::Array<int, -1, 1, 0, -1, 1> > const> > const&, Eigen::MatrixBase<Eigen::Matrix<int, -1, 1, 0, -1, 1> >&);
 #endif
 
 #endif

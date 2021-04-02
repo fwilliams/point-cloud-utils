@@ -442,5 +442,18 @@ class TestDenseBindings(unittest.TestCase):
         codes_sorted[nn_idx]
         self.assertEqual(nn_idx.shape, (10000, 10))
 
+    def test_remove_duplicate_points(self):
+        import point_cloud_utils as pcu
+        import numpy as np
+
+        # v is a nv by 3 NumPy array of vertices
+        v, _, _, _ = pcu.read_ply(os.path.join(self.test_path, "duplicated_pcloud.ply"))
+
+        v2, idx_v_to_v2, idx_v2_to_v = pcu.remove_duplicate_points(v, 1e-11, return_index=True)
+        self.assertLess(v2.shape[0], v.shape[0])
+        self.assertTrue(np.all(np.equal(v2[idx_v2_to_v], v)))
+        self.assertTrue(np.all(np.equal(v[idx_v_to_v2], v2)))
+
+
 if __name__ == '__main__':
     unittest.main()

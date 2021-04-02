@@ -14,7 +14,7 @@ namespace igl
   // Convert RGB to HSV
   //
   // Inputs:
-  //   h  hue value (degrees: [0,360])
+  //   h  hue value (degrees: [0,360]. Values outside this range will be mapped periodically to [0,360].)
   //   s  saturation value ([0,1])
   //   v  value value ([0,1])
   // Outputs:
@@ -29,8 +29,8 @@ namespace igl
     T & r, T & g, T & b);
   template <typename DerivedH, typename DerivedR>
   void hsv_to_rgb(
-    const Eigen::MatrixBase<DerivedH> & H,
-    Eigen::MatrixBase<DerivedR> & R);
+    const Eigen::PlainObjectBase<DerivedH> & H,
+    Eigen::PlainObjectBase<DerivedR> & R);
 };
 
 #ifndef IGL_STATIC_LIBRARY

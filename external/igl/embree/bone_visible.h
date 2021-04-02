@@ -41,11 +41,11 @@ namespace igl
       typename DerivedSD,
       typename Derivedflag>
     IGL_INLINE void bone_visible(
-      const Eigen::MatrixBase<DerivedV> & V,
-      const Eigen::MatrixBase<DerivedF> & F,
-      const Eigen::MatrixBase<DerivedSD> & s,
-      const Eigen::MatrixBase<DerivedSD> & d,
-      Eigen::MatrixBase<Derivedflag>  & flag);
+      const Eigen::PlainObjectBase<DerivedV> & V,
+      const Eigen::PlainObjectBase<DerivedF> & F,
+      const Eigen::PlainObjectBase<DerivedSD> & s,
+      const Eigen::PlainObjectBase<DerivedSD> & d,
+      Eigen::PlainObjectBase<Derivedflag>  & flag);
     // Inputs:
     //  ei  EmbreeIntersector for mesh (V,F) should be double sided
     template <
@@ -54,12 +54,12 @@ namespace igl
       typename DerivedSD,
       typename Derivedflag>
     IGL_INLINE void bone_visible(
-      const Eigen::MatrixBase<DerivedV> & V,
-      const Eigen::MatrixBase<DerivedF> & F,
+      const Eigen::PlainObjectBase<DerivedV> & V,
+      const Eigen::PlainObjectBase<DerivedF> & F,
       const EmbreeIntersector & ei,
-      const Eigen::MatrixBase<DerivedSD> & s,
-      const Eigen::MatrixBase<DerivedSD> & d,
-      Eigen::MatrixBase<Derivedflag>  & flag);
+      const Eigen::PlainObjectBase<DerivedSD> & s,
+      const Eigen::PlainObjectBase<DerivedSD> & d,
+      Eigen::PlainObjectBase<Derivedflag>  & flag);
   }
 }
 #ifndef IGL_STATIC_LIBRARY

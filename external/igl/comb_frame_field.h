@@ -37,8 +37,8 @@ namespace igl
                                         const Eigen::MatrixBase<DerivedP> &PD2,
                                         const Eigen::MatrixBase<DerivedP> &BIS1_combed,
                                         const Eigen::MatrixBase<DerivedP> &BIS2_combed,
-                                        Eigen::MatrixBase<DerivedP> &PD1_combed,
-                                        Eigen::MatrixBase<DerivedP> &PD2_combed);
+                                        Eigen::PlainObjectBase<DerivedP> &PD1_combed,
+                                        Eigen::PlainObjectBase<DerivedP> &PD2_combed);
 }
 #ifndef IGL_STATIC_LIBRARY
 #include "comb_frame_field.cpp"

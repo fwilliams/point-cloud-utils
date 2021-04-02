@@ -31,8 +31,8 @@ namespace igl
                                    const Eigen::MatrixBase<DerivedF> &F,
                                    const Eigen::MatrixBase<DerivedV> &PD1in,
                                    const Eigen::MatrixBase<DerivedV> &PD2in,
-                                   Eigen::MatrixBase<DerivedV> &PD1out,
-                                   Eigen::MatrixBase<DerivedV> &PD2out);
+                                   Eigen::PlainObjectBase<DerivedV> &PD1out,
+                                   Eigen::PlainObjectBase<DerivedV> &PD2out);
 }
 #ifndef IGL_STATIC_LIBRARY
 #include "comb_cross_field.cpp"

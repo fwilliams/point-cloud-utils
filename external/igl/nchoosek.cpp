@@ -32,7 +32,7 @@ template < typename DerivedV, typename DerivedU>
 IGL_INLINE void igl::nchoosek(
   const Eigen::MatrixBase<DerivedV> & V,
   const int k,
-  Eigen::MatrixBase<DerivedU> & U)
+  Eigen::PlainObjectBase<DerivedU> & U)
 {
   using namespace Eigen;
   if(V.size() == 0)
@@ -68,10 +68,10 @@ IGL_INLINE void igl::nchoosek(
 
 #ifdef IGL_STATIC_LIBRARY
 // Explicit template instantiation
-template void igl::nchoosek<Eigen::Matrix<int, -1, 1, 0, -1, 1>, Eigen::Matrix<int, -1, -1, 0, -1, -1> >(Eigen::MatrixBase<Eigen::Matrix<int, -1, 1, 0, -1, 1> > const&, int, Eigen::MatrixBase<Eigen::Matrix<int, -1, -1, 0, -1, -1> >&);
+template void igl::nchoosek<Eigen::Matrix<int, -1, 1, 0, -1, 1>, Eigen::Matrix<int, -1, -1, 0, -1, -1> >(Eigen::MatrixBase<Eigen::Matrix<int, -1, 1, 0, -1, 1> > const&, int, Eigen::PlainObjectBase<Eigen::Matrix<int, -1, -1, 0, -1, -1> >&);
 #if EIGEN_VERSION_AT_LEAST(3,3,0)
 #else
-template void igl::nchoosek<Eigen::CwiseNullaryOp<Eigen::internal::linspaced_op<int, true>, Eigen::Matrix<int, -1, 1, 0, -1, 1> >, Eigen::Matrix<int, -1, -1, 0, -1, -1> >(Eigen::MatrixBase<Eigen::CwiseNullaryOp<Eigen::internal::linspaced_op<int, true>, Eigen::Matrix<int, -1, 1, 0, -1, 1> > > const&, int, Eigen::MatrixBase<Eigen::Matrix<int, -1, -1, 0, -1, -1> >&);
+template void igl::nchoosek<Eigen::CwiseNullaryOp<Eigen::internal::linspaced_op<int, true>, Eigen::Matrix<int, -1, 1, 0, -1, 1> >, Eigen::Matrix<int, -1, -1, 0, -1, -1> >(Eigen::MatrixBase<Eigen::CwiseNullaryOp<Eigen::internal::linspaced_op<int, true>, Eigen::Matrix<int, -1, 1, 0, -1, 1> > > const&, int, Eigen::PlainObjectBase<Eigen::Matrix<int, -1, -1, 0, -1, -1> >&);
 #endif
 
 #endif

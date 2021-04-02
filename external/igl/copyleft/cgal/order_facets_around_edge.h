@@ -42,12 +42,12 @@ namespace igl
         typename DerivedI >
       IGL_INLINE
       void order_facets_around_edge(
-          const Eigen::MatrixBase<DerivedV>& V,
-          const Eigen::MatrixBase<DerivedF>& F,
+          const Eigen::PlainObjectBase<DerivedV>& V,
+          const Eigen::PlainObjectBase<DerivedF>& F,
           size_t s, 
           size_t d, 
           const std::vector<int>& adj_faces,
-          Eigen::MatrixBase<DerivedI>& order,
+          Eigen::PlainObjectBase<DerivedI>& order,
           bool debug=false);
 
       // This function is a wrapper around the one above.  Since the ordering
@@ -60,13 +60,13 @@ namespace igl
         typename DerivedI>
       IGL_INLINE
       void order_facets_around_edge(
-        const Eigen::MatrixBase<DerivedV>& V,
-        const Eigen::MatrixBase<DerivedF>& F,
+        const Eigen::PlainObjectBase<DerivedV>& V,
+        const Eigen::PlainObjectBase<DerivedF>& F,
         size_t s, 
         size_t d, 
         const std::vector<int>& adj_faces,
-        const Eigen::MatrixBase<DerivedV>& pivot_point,
-        Eigen::MatrixBase<DerivedI>& order);
+        const Eigen::PlainObjectBase<DerivedV>& pivot_point,
+        Eigen::PlainObjectBase<DerivedI>& order);
     }
   }
 }

@@ -37,7 +37,7 @@ namespace igl
 #ifndef IGL_NO_EIGEN
   template <typename DerivedW>
   IGL_INLINE bool readDMAT(const std::string file_name, 
-    Eigen::MatrixBase<DerivedW> & W);
+    Eigen::PlainObjectBase<DerivedW> & W);
 #endif
   // Wrapper for vector of vectors
   template <typename Scalar>

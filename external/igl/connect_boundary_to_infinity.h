@@ -23,14 +23,14 @@ namespace igl
   template <typename DerivedF, typename DerivedFO>
   IGL_INLINE void connect_boundary_to_infinity(
     const Eigen::MatrixBase<DerivedF> & F,
-    Eigen::MatrixBase<DerivedFO> & FO);
+    Eigen::PlainObjectBase<DerivedFO> & FO);
   // Inputs:
   //   inf_index  index of point at infinity (usually V.rows() or F.maxCoeff())
   template <typename DerivedF, typename DerivedFO>
   IGL_INLINE void connect_boundary_to_infinity(
     const Eigen::MatrixBase<DerivedF> & F,
     const typename DerivedF::Scalar inf_index,
-    Eigen::MatrixBase<DerivedFO> & FO);
+    Eigen::PlainObjectBase<DerivedFO> & FO);
   // Inputs:
   //   V  #V by 3 list of vertex positions
   //   F  #F by 3 list of face indices into some V
@@ -47,8 +47,8 @@ namespace igl
   IGL_INLINE void connect_boundary_to_infinity(
     const Eigen::MatrixBase<DerivedV> & V,
     const Eigen::MatrixBase<DerivedF> & F,
-    Eigen::MatrixBase<DerivedVO> & VO,
-    Eigen::MatrixBase<DerivedFO> & FO);
+    Eigen::PlainObjectBase<DerivedVO> & VO,
+    Eigen::PlainObjectBase<DerivedFO> & FO);
 }
 #ifndef IGL_STATIC_LIBRARY
 #  include "connect_boundary_to_infinity.cpp"

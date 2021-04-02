@@ -10,10 +10,10 @@
 
 template <typename DerivedA, typename DerivedB>
 IGL_INLINE void igl::columnize(
-  const Eigen::MatrixBase<DerivedA> & A,
+  const Eigen::PlainObjectBase<DerivedA> & A,
   const int k,
   const int dim,
-  Eigen::MatrixBase<DerivedB> & B)
+  Eigen::PlainObjectBase<DerivedB> & B)
 {
   // Eigen matrices must be 2d so dim must be only 1 or 2
   assert(dim == 1 || dim == 2);
@@ -56,8 +56,8 @@ IGL_INLINE void igl::columnize(
 
 #ifdef IGL_STATIC_LIBRARY
 // Explicit template instantiation
-template void igl::columnize<Eigen::Matrix<double, -1, -1, 0, -1, -1>, Eigen::Matrix<double, -1, 1, 0, -1, 1> >(Eigen::MatrixBase<Eigen::Matrix<double, -1, -1, 0, -1, -1> > const&, int, int, Eigen::MatrixBase<Eigen::Matrix<double, -1, 1, 0, -1, 1> >&);
-template void igl::columnize<Eigen::Matrix<double, -1, -1, 0, -1, -1>, Eigen::Matrix<double, -1, -1, 0, -1, -1> >(Eigen::MatrixBase<Eigen::Matrix<double, -1, -1, 0, -1, -1> > const&, int, int, Eigen::MatrixBase<Eigen::Matrix<double, -1, -1, 0, -1, -1> >&);
-template void igl::columnize<Eigen::Matrix<float, -1, -1, 0, -1, -1>, Eigen::Matrix<float, -1, -1, 0, -1, -1> >(Eigen::MatrixBase<Eigen::Matrix<float, -1, -1, 0, -1, -1> > const&, int, int, Eigen::MatrixBase<Eigen::Matrix<float, -1, -1, 0, -1, -1> >&);
-template void igl::columnize<Eigen::Matrix<float, -1, -1, 0, -1, -1>, Eigen::Matrix<float, -1, 1, 0, -1, 1> >(Eigen::MatrixBase<Eigen::Matrix<float, -1, -1, 0, -1, -1> > const&, int, int, Eigen::MatrixBase<Eigen::Matrix<float, -1, 1, 0, -1, 1> >&);
+template void igl::columnize<Eigen::Matrix<double, -1, -1, 0, -1, -1>, Eigen::Matrix<double, -1, 1, 0, -1, 1> >(Eigen::PlainObjectBase<Eigen::Matrix<double, -1, -1, 0, -1, -1> > const&, int, int, Eigen::PlainObjectBase<Eigen::Matrix<double, -1, 1, 0, -1, 1> >&);
+template void igl::columnize<Eigen::Matrix<double, -1, -1, 0, -1, -1>, Eigen::Matrix<double, -1, -1, 0, -1, -1> >(Eigen::PlainObjectBase<Eigen::Matrix<double, -1, -1, 0, -1, -1> > const&, int, int, Eigen::PlainObjectBase<Eigen::Matrix<double, -1, -1, 0, -1, -1> >&);
+template void igl::columnize<Eigen::Matrix<float, -1, -1, 0, -1, -1>, Eigen::Matrix<float, -1, -1, 0, -1, -1> >(Eigen::PlainObjectBase<Eigen::Matrix<float, -1, -1, 0, -1, -1> > const&, int, int, Eigen::PlainObjectBase<Eigen::Matrix<float, -1, -1, 0, -1, -1> >&);
+template void igl::columnize<Eigen::Matrix<float, -1, -1, 0, -1, -1>, Eigen::Matrix<float, -1, 1, 0, -1, 1> >(Eigen::PlainObjectBase<Eigen::Matrix<float, -1, -1, 0, -1, -1> > const&, int, int, Eigen::PlainObjectBase<Eigen::Matrix<float, -1, 1, 0, -1, 1> >&);
 #endif

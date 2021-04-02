@@ -13,7 +13,7 @@ template <typename AType, typename DerivedB>
 IGL_INLINE void igl::all(
   const Eigen::SparseMatrix<AType> & A, 
   const int dim,
-  Eigen::MatrixBase<DerivedB>& B)
+  Eigen::PlainObjectBase<DerivedB>& B)
 {
   typedef typename DerivedB::Scalar Scalar;
   igl::redux(A,dim,[](Scalar a, Scalar b){ return a && b!=0;},B);

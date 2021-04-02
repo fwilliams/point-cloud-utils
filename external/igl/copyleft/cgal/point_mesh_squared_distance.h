@@ -42,12 +42,12 @@ namespace igl
         typename DerivedI,
         typename DerivedC>
       IGL_INLINE void point_mesh_squared_distance(
-        const Eigen::MatrixBase<DerivedP> & P,
-        const Eigen::MatrixBase<DerivedV> & V,
-        const Eigen::MatrixBase<DerivedF> & F,
-              Eigen::MatrixBase<DerivedsqrD> & sqrD,
-              Eigen::MatrixBase<DerivedI> & I,
-              Eigen::MatrixBase<DerivedC> & C);
+        const Eigen::PlainObjectBase<DerivedP> & P,
+        const Eigen::PlainObjectBase<DerivedV> & V,
+        const Eigen::PlainObjectBase<DerivedF> & F,
+              Eigen::PlainObjectBase<DerivedsqrD> & sqrD,
+              Eigen::PlainObjectBase<DerivedI> & I,
+              Eigen::PlainObjectBase<DerivedC> & C);
       // Probably can do this in a way that we don't pass around `tree` and `T`
       //
       // Outputs:
@@ -60,8 +60,8 @@ namespace igl
         typename DerivedF
         >
       IGL_INLINE void point_mesh_squared_distance_precompute(
-        const Eigen::MatrixBase<DerivedV> & V,
-        const Eigen::MatrixBase<DerivedF> & F,
+        const Eigen::PlainObjectBase<DerivedV> & V,
+        const Eigen::PlainObjectBase<DerivedF> & F,
         CGAL::AABB_tree<
           CGAL::AABB_traits<Kernel, 
             CGAL::AABB_triangle_primitive<Kernel, 
@@ -81,7 +81,7 @@ namespace igl
         typename DerivedI,
         typename DerivedC>
       IGL_INLINE void point_mesh_squared_distance(
-        const Eigen::MatrixBase<DerivedP> & P,
+        const Eigen::PlainObjectBase<DerivedP> & P,
         const CGAL::AABB_tree<
           CGAL::AABB_traits<Kernel, 
             CGAL::AABB_triangle_primitive<Kernel, 
@@ -90,9 +90,9 @@ namespace igl
           >
         > & tree,
         const std::vector<CGAL::Triangle_3<Kernel> > & T,
-        Eigen::MatrixBase<DerivedsqrD> & sqrD,
-        Eigen::MatrixBase<DerivedI> & I,
-        Eigen::MatrixBase<DerivedC> & C);
+        Eigen::PlainObjectBase<DerivedsqrD> & sqrD,
+        Eigen::PlainObjectBase<DerivedI> & I,
+        Eigen::PlainObjectBase<DerivedC> & C);
     }
   }
 }

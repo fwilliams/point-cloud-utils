@@ -30,8 +30,8 @@ namespace igl
   IGL_INLINE void ismember(
     const Eigen::MatrixBase<DerivedA> & A,
     const Eigen::MatrixBase<DerivedB> & B,
-    Eigen::MatrixBase<DerivedIA> & IA,
-    Eigen::MatrixBase<DerivedLOCB> & LOCB);
+    Eigen::PlainObjectBase<DerivedIA> & IA,
+    Eigen::PlainObjectBase<DerivedLOCB> & LOCB);
   template <
     typename DerivedA,
     typename DerivedB,
@@ -40,8 +40,8 @@ namespace igl
   IGL_INLINE void ismember_rows(
     const Eigen::MatrixBase<DerivedA> & A,
     const Eigen::MatrixBase<DerivedB> & B,
-    Eigen::MatrixBase<DerivedIA> & IA,
-    Eigen::MatrixBase<DerivedLOCB> & LOCB);
+    Eigen::PlainObjectBase<DerivedIA> & IA,
+    Eigen::PlainObjectBase<DerivedLOCB> & LOCB);
 
 }
 

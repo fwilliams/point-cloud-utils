@@ -43,9 +43,9 @@ namespace igl
   template < typename DerivedA, typename DerivedU, typename DerivedG, typename DerivedJ>
   IGL_INLINE void unzip_corners(
     const std::vector<std::reference_wrapper<DerivedA> > & A,
-    Eigen::MatrixBase<DerivedU> & U,
-    Eigen::MatrixBase<DerivedG> & G,
-    Eigen::MatrixBase<DerivedJ> & J);
+    Eigen::PlainObjectBase<DerivedU> & U,
+    Eigen::PlainObjectBase<DerivedG> & G,
+    Eigen::PlainObjectBase<DerivedJ> & J);
 }
 
 #ifndef IGL_STATIC_LIBRARY

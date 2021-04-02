@@ -33,7 +33,7 @@ namespace igl
         >
       IGL_INLINE void delaunay_triangulation(
           const Eigen::MatrixBase<DerivedV>& V,
-          Eigen::MatrixBase<DerivedF>& F);
+          Eigen::PlainObjectBase<DerivedF>& F);
     }
   }
 }

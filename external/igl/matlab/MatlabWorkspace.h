@@ -71,7 +71,7 @@ namespace igl
         // Known Bugs: Assumes Eigen is using column major ordering
         template <typename DerivedM>
         inline MatlabWorkspace& save(
-          const Eigen::MatrixBase<DerivedM>& M,
+          const Eigen::PlainObjectBase<DerivedM>& M,
           const std::string & name);
         // Template:
         //   MT  sparse matrix type (e.g. double)
@@ -132,7 +132,7 @@ namespace igl
         template <typename DerivedM>
         inline bool find( 
           const std::string & name,
-          Eigen::MatrixBase<DerivedM>& M);
+          Eigen::PlainObjectBase<DerivedM>& M);
         template <typename MT>
         inline bool find( 
           const std::string & name,
@@ -147,7 +147,7 @@ namespace igl
         template <typename DerivedM>
         inline bool find_index( 
           const std::string & name,
-          Eigen::MatrixBase<DerivedM>& M);
+          Eigen::PlainObjectBase<DerivedM>& M);
     };
   }
 }
@@ -288,7 +288,7 @@ inline bool igl::matlab::MatlabWorkspace::read(const std::string & path)
 // Treat everything as a double
 template <typename DerivedM>
 inline igl::matlab::MatlabWorkspace& igl::matlab::MatlabWorkspace::save(
-  const Eigen::MatrixBase<DerivedM>& M,
+  const Eigen::PlainObjectBase<DerivedM>& M,
   const std::string & name)
 {
   using namespace std;
@@ -419,7 +419,7 @@ inline igl::matlab::MatlabWorkspace& igl::matlab::MatlabWorkspace::save_index(
 template <typename DerivedM>
 inline bool igl::matlab::MatlabWorkspace::find( 
   const std::string & name,
-  Eigen::MatrixBase<DerivedM>& M)
+  Eigen::PlainObjectBase<DerivedM>& M)
 {
   using namespace std;
   const int i = std::find(names.begin(), names.end(), name)-names.begin();
@@ -554,7 +554,7 @@ inline bool igl::matlab::MatlabWorkspace::find(
 template <typename DerivedM>
 inline bool igl::matlab::MatlabWorkspace::find_index( 
   const std::string & name,
-  Eigen::MatrixBase<DerivedM>& M)
+  Eigen::PlainObjectBase<DerivedM>& M)
 {
   if(!find(name,M))
   {

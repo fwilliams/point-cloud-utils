@@ -29,14 +29,14 @@ template <
   typename DerivedD,
   typename DerivedJ>
 IGL_INLINE void igl::copyleft::cgal::trim_with_solid(
-  const Eigen::MatrixBase<DerivedVA> & VA,
-  const Eigen::MatrixBase<DerivedFA> & FA,
-  const Eigen::MatrixBase<DerivedVB> & VB,
-  const Eigen::MatrixBase<DerivedFB> & FB,
-  Eigen::MatrixBase<DerivedV> & Vd,
-  Eigen::MatrixBase<DerivedF> & F,
-  Eigen::MatrixBase<DerivedD> & D,
-  Eigen::MatrixBase<DerivedJ> & J)
+  const Eigen::PlainObjectBase<DerivedVA> & VA,
+  const Eigen::PlainObjectBase<DerivedFA> & FA,
+  const Eigen::PlainObjectBase<DerivedVB> & VB,
+  const Eigen::PlainObjectBase<DerivedFB> & FB,
+  Eigen::PlainObjectBase<DerivedV> & Vd,
+  Eigen::PlainObjectBase<DerivedF> & F,
+  Eigen::PlainObjectBase<DerivedD> & D,
+  Eigen::PlainObjectBase<DerivedJ> & J)
 {
   // resolve intersections using exact representation
   typedef Eigen::Matrix<CGAL::Epeck::FT,Eigen::Dynamic,3> MatrixX3E;
@@ -96,10 +96,10 @@ IGL_INLINE void igl::copyleft::cgal::trim_with_solid(
 template void igl::copyleft::cgal::trim_with_solid<Eigen::Matrix<double, -1, -1, 0, -1, -1>, Eigen::Matrix<int, -1, -1, 0, -1,
   -1>, Eigen::Matrix<double, -1, -1, 0, -1, -1>, Eigen::Matrix<int, -1, -1, 0, -1, -1>, Eigen::Matrix<double, -1, -1, 0,
   -1, -1>, Eigen::Matrix<int, -1, -1, 0, -1, -1>, Eigen::Matrix<int, -1, 1, 0, -1, 1>, Eigen::Matrix<int, -1, 1, 0, -1, 1>
-  >(Eigen::MatrixBase<Eigen::Matrix<double, -1, -1, 0, -1, -1> > const&, Eigen::MatrixBase<Eigen::Matrix<int,
-  -1, -1, 0, -1, -1> > const&, Eigen::MatrixBase<Eigen::Matrix<double, -1, -1, 0, -1, -1> > const&,
-  Eigen::MatrixBase<Eigen::Matrix<int, -1, -1, 0, -1, -1> > const&, Eigen::MatrixBase<Eigen::Matrix<double, -1,
-  -1, 0, -1, -1> >&, Eigen::MatrixBase<Eigen::Matrix<int, -1, -1, 0, -1, -1> >&,
-  Eigen::MatrixBase<Eigen::Matrix<int, -1, 1, 0, -1, 1> >&, Eigen::MatrixBase<Eigen::Matrix<int, -1, 1, 0, -1,
+  >(Eigen::PlainObjectBase<Eigen::Matrix<double, -1, -1, 0, -1, -1> > const&, Eigen::PlainObjectBase<Eigen::Matrix<int,
+  -1, -1, 0, -1, -1> > const&, Eigen::PlainObjectBase<Eigen::Matrix<double, -1, -1, 0, -1, -1> > const&,
+  Eigen::PlainObjectBase<Eigen::Matrix<int, -1, -1, 0, -1, -1> > const&, Eigen::PlainObjectBase<Eigen::Matrix<double, -1,
+  -1, 0, -1, -1> >&, Eigen::PlainObjectBase<Eigen::Matrix<int, -1, -1, 0, -1, -1> >&,
+  Eigen::PlainObjectBase<Eigen::Matrix<int, -1, 1, 0, -1, 1> >&, Eigen::PlainObjectBase<Eigen::Matrix<int, -1, 1, 0, -1,
   1> >&);
 #endif

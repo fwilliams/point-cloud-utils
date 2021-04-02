@@ -5,8 +5,8 @@
 // This Source Code Form is subject to the terms of the Mozilla Public License
 // v. 2.0. If a copy of the MPL was not distributed with this file, You can
 // obtain one at http://mozilla.org/MPL/2.0/.
-#ifndef IGL_GRAD_MAT_H
-#define IGL_GRAD_MAT_H
+#ifndef IGL_GRAD_H
+#define IGL_GRAD_H
 #include "igl_inline.h"
 
 #include <Eigen/Core>
@@ -25,6 +25,7 @@ namespace igl {
   // Outputs:
   //   G  #faces*dim by #V Gradient operator
   //
+
   // Gradient of a scalar function defined on piecewise linear elements (mesh)
   // is constant on each triangle [tetrahedron] i,j,k:
   // grad(Xijk) = (Xj-Xi) * (Vi - Vk)^R90 / 2A + (Xk-Xi) * (Vj - Vi)^R90 / 2A
@@ -32,11 +33,12 @@ namespace igl {
   // i, and A is the area of triangle (i,j,k). ^R90 represent a rotation of
   // 90 degrees
   //
-template <typename DerivedV, typename DerivedF, typename Scalar>
-IGL_INLINE void grad(const Eigen::MatrixBase<DerivedV>& V,
-                     const Eigen::MatrixBase<DerivedF>& F,
-                     Eigen::SparseMatrix<Scalar> &G,
-                     bool uniform = false);
+  template <typename DerivedV, typename DerivedF>
+  IGL_INLINE void grad(
+    const Eigen::MatrixBase<DerivedV>&V,
+    const Eigen::MatrixBase<DerivedF>&F,
+    Eigen::SparseMatrix<typename DerivedV::Scalar> &G,
+    bool uniform = false);
 }
 #ifndef IGL_STATIC_LIBRARY
 #  include "grad.cpp"

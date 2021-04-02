@@ -1027,7 +1027,6 @@ inline void Mesh::build_adjacencies()
 
 inline bool Mesh::verify()		//verifies connectivity of the mesh and prints some debug info
 {
-	std::cout << std::endl;
 	// make sure that all vertices are mentioned at least once.
 	// though the loose vertex is not a bug, it most likely indicates that something is wrong with the mesh
 	std::vector<bool> map(m_vertices.size(), false);
@@ -3173,7 +3172,7 @@ IGL_INLINE void igl::exact_geodesic(
   Eigen::PlainObjectBase<DerivedD> &D)
 {
   assert(V.cols() == 3 && F.cols() == 3 && "Only support 3D triangle mesh");
-  assert(VS.cols() ==1 && FS.cols() == 1 && VT.cols() == 1 && FT.cols() ==1 && "Only support one dimensional inputs");
+  assert(VS.cols() <=1 && FS.cols() <= 1 && VT.cols() <= 1 && FT.cols() <=1 && "Only support one dimensional inputs");
   std::vector<typename DerivedV::Scalar> points(V.rows() * V.cols());
   std::vector<typename DerivedF::Scalar> faces(F.rows() * F.cols());
   for (int i = 0; i < points.size(); i++)
@@ -3193,20 +3192,20 @@ IGL_INLINE void igl::exact_geodesic(
   std::vector<igl::geodesic::SurfacePoint> target(VT.rows() + FT.rows());
   for (int i = 0; i < VS.rows(); i++)
   {
-    source[i] = (igl::geodesic::SurfacePoint(&mesh.vertices()[VS(i)]));
+    source[i] = (igl::geodesic::SurfacePoint(&mesh.vertices()[VS(i, 0)]));
   }
   for (int i = 0; i < FS.rows(); i++)
   {
-    source[i] = (igl::geodesic::SurfacePoint(&mesh.faces()[FS(i)]));
+    source[i] = (igl::geodesic::SurfacePoint(&mesh.faces()[FS(i, 0)]));
   }
 
   for (int i = 0; i < VT.rows(); i++)
   {
-    target[i] = (igl::geodesic::SurfacePoint(&mesh.vertices()[VT(i)]));
+    target[i] = (igl::geodesic::SurfacePoint(&mesh.vertices()[VT(i, 0)]));
   }
   for (int i = 0; i < FT.rows(); i++)
   {
-    target[i] = (igl::geodesic::SurfacePoint(&mesh.faces()[FT(i)]));
+    target[i] = (igl::geodesic::SurfacePoint(&mesh.faces()[FT(i, 0)]));
   }
 
   exact_algorithm.propagate(source);

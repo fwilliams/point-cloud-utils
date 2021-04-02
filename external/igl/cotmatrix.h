@@ -32,7 +32,7 @@ namespace igl
   //   Scalar  scalar type for eigen sparse matrix (e.g. double)
   // Inputs:
   //   V  #V by dim list of mesh vertex positions
-  //   F  #F by simplex_size list of mesh faces (must be triangles)
+  //   F  #F by simplex_size list of mesh elements (triangles or tetrahedra)
   // Outputs: 
   //   L  #V by #V cotangent matrix, each row i corresponding to V(i,:)
   //
@@ -48,6 +48,31 @@ namespace igl
     const Eigen::MatrixBase<DerivedV> & V, 
     const Eigen::MatrixBase<DerivedF> & F, 
     Eigen::SparseMatrix<Scalar>& L);
+  // Cotangent Laplacian (and mass matrix) for polygon meshes according to
+  // "Polygon Laplacian Made Simple" [Bunge et al. 2020]
+  //
+  // Inputs:
+  //   V  #V by 3 list of mesh vertex positions
+  //   I  #I vectorized list of polygon corner indices into rows of some matrix V
+  //   C  #polygons+1 list of cumulative polygon sizes so that C(i+1)-C(i) = size of
+  //     the ith polygon, and so I(C(i)) through I(C(i+1)-1) are the indices of
+  //     the ith polygon
+  // Outputs:
+  //   L  #V by #V polygon Laplacian made simple matrix
+  //   M  #V by #V mass matrix
+  //   P  #V+#polygons by #V prolongation operator
+  template <
+    typename DerivedV, 
+    typename DerivedI, 
+    typename DerivedC, 
+    typename Scalar>
+  IGL_INLINE void cotmatrix(
+    const Eigen::MatrixBase<DerivedV> & V, 
+    const Eigen::MatrixBase<DerivedI> & I, 
+    const Eigen::MatrixBase<DerivedC> & C, 
+    Eigen::SparseMatrix<Scalar>& L,
+    Eigen::SparseMatrix<Scalar>& M,
+    Eigen::SparseMatrix<Scalar>& P);
 }
 
 #ifndef IGL_STATIC_LIBRARY

@@ -69,7 +69,7 @@ namespace igl
     const Eigen::MatrixBase<DerivedV> & V,
     const Eigen::MatrixBase<DerivedT> & T,
     const std::vector<std::vector<SType> > & S,
-    Eigen::MatrixBase<DerivedW> & W);
+    Eigen::PlainObjectBase<DerivedW> & W);
   // k  2-->biharmonic, 3-->triharmonic
   template <
     typename DerivedV,
@@ -81,7 +81,7 @@ namespace igl
     const Eigen::MatrixBase<DerivedT> & T,
     const std::vector<std::vector<SType> > & S,
     const int k,
-    Eigen::MatrixBase<DerivedW> & W);
+    Eigen::PlainObjectBase<DerivedW> & W);
 
 };
 #  ifndef IGL_STATIC_LIBRARY

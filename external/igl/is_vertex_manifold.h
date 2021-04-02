@@ -28,8 +28,8 @@ namespace igl
   // See also: is_edge_manifold
   template <typename DerivedF,typename DerivedB>
   IGL_INLINE bool is_vertex_manifold(
-    const Eigen::MatrixBase<DerivedF>& F,
-    Eigen::MatrixBase<DerivedB>& B);
+    const Eigen::PlainObjectBase<DerivedF>& F,
+    Eigen::PlainObjectBase<DerivedB>& B);
 }
 
 #ifndef IGL_STATIC_LIBRARY

@@ -25,8 +25,8 @@ namespace igl
   //   N  n by r matrix, where r is the row rank of A
   template <typename DerivedA, typename DerivedN>
   IGL_INLINE void null(
-    const Eigen::MatrixBase<DerivedA> & A,
-    Eigen::MatrixBase<DerivedN> & N);
+    const Eigen::PlainObjectBase<DerivedA> & A,
+    Eigen::PlainObjectBase<DerivedN> & N);
 }
 
 #ifndef IGL_STATIC_LIBRARY

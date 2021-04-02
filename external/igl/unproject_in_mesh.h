@@ -41,7 +41,7 @@ namespace igl
         const Eigen::Vector4f& viewport,
         const Eigen::MatrixBase<DerivedV> & V,
         const Eigen::MatrixBase<DerivedF> & F,
-        Eigen::MatrixBase<Derivedobj> & obj,
+        Eigen::PlainObjectBase<Derivedobj> & obj,
         std::vector<igl::Hit > & hits);
   //
   // Inputs:
@@ -69,7 +69,7 @@ namespace igl
             const Eigen::Vector3f&,
             std::vector<igl::Hit> &)
             > & shoot_ray,
-        Eigen::MatrixBase<Derivedobj> & obj,
+        Eigen::PlainObjectBase<Derivedobj> & obj,
         std::vector<igl::Hit > & hits);
   template < typename DerivedV, typename DerivedF, typename Derivedobj>
     IGL_INLINE int unproject_in_mesh(
@@ -79,7 +79,7 @@ namespace igl
         const Eigen::Vector4f& viewport,
         const Eigen::MatrixBase<DerivedV> & V,
         const Eigen::MatrixBase<DerivedF> & F,
-        Eigen::MatrixBase<Derivedobj> & obj);
+        Eigen::PlainObjectBase<Derivedobj> & obj);
 }
 #ifndef IGL_STATIC_LIBRARY
 #  include "unproject_in_mesh.cpp"

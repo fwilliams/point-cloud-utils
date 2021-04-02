@@ -24,7 +24,7 @@ namespace igl
   IGL_INLINE void flipped_triangles(
     const Eigen::MatrixBase<DerivedV> & V,
     const Eigen::MatrixBase<DerivedF> & F,
-    Eigen::MatrixBase<DerivedX> & X);
+    Eigen::PlainObjectBase<DerivedX> & X);
   template <typename Scalar, typename Index>
   IGL_INLINE Eigen::VectorXi flipped_triangles(
     const Eigen::MatrixBase<Scalar> & V,

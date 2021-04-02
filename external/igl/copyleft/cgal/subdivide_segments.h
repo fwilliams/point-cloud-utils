@@ -40,13 +40,13 @@ namespace igl
         typename DerivedJ,
         typename DerivedIM>
       IGL_INLINE void subdivide_segments(
-        const Eigen::MatrixBase<DerivedV> & V,
-        const Eigen::MatrixBase<DerivedE> & E,
+        const Eigen::PlainObjectBase<DerivedV> & V,
+        const Eigen::PlainObjectBase<DerivedE> & E,
         const std::vector<std::vector<CGAL::Point_2<Kernel> > > & steiner,
-        Eigen::MatrixBase<DerivedVI> & VI,
-        Eigen::MatrixBase<DerivedEI> & EI,
-        Eigen::MatrixBase<DerivedJ> & J,
-        Eigen::MatrixBase<DerivedIM> & IM);
+        Eigen::PlainObjectBase<DerivedVI> & VI,
+        Eigen::PlainObjectBase<DerivedEI> & EI,
+        Eigen::PlainObjectBase<DerivedJ> & J,
+        Eigen::PlainObjectBase<DerivedIM> & IM);
     }
   }
 }

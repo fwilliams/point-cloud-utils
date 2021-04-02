@@ -33,8 +33,8 @@ namespace igl
   IGL_INLINE void mat_max(
     const Eigen::DenseBase<DerivedX> & X,
     const int dim,
-    Eigen::MatrixBase<DerivedY> & Y,
-    Eigen::MatrixBase<DerivedI> & I);
+    Eigen::PlainObjectBase<DerivedY> & Y,
+    Eigen::PlainObjectBase<DerivedI> & I);
 }
 
 #ifndef IGL_STATIC_LIBRARY

@@ -35,12 +35,12 @@ namespace igl
         typename DerivedJ,
         typename Derivedflip>
       IGL_INLINE void outer_hull(
-        const Eigen::MatrixBase<DerivedV> & V,
-        const Eigen::MatrixBase<DerivedF> & F,
-        Eigen::MatrixBase<DerivedHV> & HV,
-        Eigen::MatrixBase<DerivedHF> & HF,
-        Eigen::MatrixBase<DerivedJ> & J,
-        Eigen::MatrixBase<Derivedflip> & flip);
+        const Eigen::PlainObjectBase<DerivedV> & V,
+        const Eigen::PlainObjectBase<DerivedF> & F,
+        Eigen::PlainObjectBase<DerivedHV> & HV,
+        Eigen::PlainObjectBase<DerivedHF> & HF,
+        Eigen::PlainObjectBase<DerivedJ> & J,
+        Eigen::PlainObjectBase<Derivedflip> & flip);
       // Compute the "outer hull" of a potentially non-manifold mesh (V,F) whose
       // intersections have been "resolved" (e.g. using `cork` or
       // `igl::copyleft::cgal::selfintersect`). The outer hull is defined to be all facets
@@ -69,11 +69,11 @@ namespace igl
         typename DerivedJ,
         typename Derivedflip>
       IGL_INLINE void outer_hull_legacy(
-        const Eigen::MatrixBase<DerivedV> & V,
-        const Eigen::MatrixBase<DerivedF> & F,
-        Eigen::MatrixBase<DerivedG> & G,
-        Eigen::MatrixBase<DerivedJ> & J,
-        Eigen::MatrixBase<Derivedflip> & flip);
+        const Eigen::PlainObjectBase<DerivedV> & V,
+        const Eigen::PlainObjectBase<DerivedF> & F,
+        Eigen::PlainObjectBase<DerivedG> & G,
+        Eigen::PlainObjectBase<DerivedJ> & J,
+        Eigen::PlainObjectBase<Derivedflip> & flip);
     }
   }
 }

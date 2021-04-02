@@ -74,8 +74,8 @@ namespace igl {
       igl::per_face_normals(V,F,N);
       igl::triangle_triangle_adjacency(F,TT,TTi);
     }
-    inline void comb(Eigen::MatrixBase<DerivedV> &PD1out,
-              Eigen::MatrixBase<DerivedV> &PD2out)
+    inline void comb(Eigen::PlainObjectBase<DerivedV> &PD1out,
+              Eigen::PlainObjectBase<DerivedV> &PD2out)
     {
 //      PD1out = PD1;
 //      PD2out = PD2;
@@ -86,35 +86,42 @@ namespace igl {
 
       std::deque<int> d;
 
-      d.push_back(0);
-      mark(0) = true;
-
-      while (!d.empty())
+      while (!mark.all()) // Stop until all vertices are marked
       {
-        int f0 = d.at(0);
-        d.pop_front();
-        for (int k=0; k<3; k++)
+        int unmarked = 0;
+        while (mark(unmarked))
+          unmarked++;
+        
+        d.push_back(unmarked);
+        mark(unmarked) = true;
+
+        while (!d.empty())
         {
-          int f1 = TT(f0,k);
-          if (f1==-1) continue;
-          if (mark(f1)) continue;
+          int f0 = d.at(0);
+          d.pop_front();
+          for (int k=0; k<3; k++)
+          {
+            int f1 = TT(f0,k);
+            if (f1==-1) continue;
+            if (mark(f1)) continue;
 
-          Eigen::Matrix<typename DerivedV::Scalar, 3, 1> dir0    = PD1out.row(f0);
-          Eigen::Matrix<typename DerivedV::Scalar, 3, 1> dir1    = PD1out.row(f1);
-          Eigen::Matrix<typename DerivedV::Scalar, 3, 1> n0    = N.row(f0);
-          Eigen::Matrix<typename DerivedV::Scalar, 3, 1> n1    = N.row(f1);
+            Eigen::Matrix<typename DerivedV::Scalar, 3, 1> dir0    = PD1out.row(f0);
+            Eigen::Matrix<typename DerivedV::Scalar, 3, 1> dir1    = PD1out.row(f1);
+            Eigen::Matrix<typename DerivedV::Scalar, 3, 1> n0    = N.row(f0);
+            Eigen::Matrix<typename DerivedV::Scalar, 3, 1> n1    = N.row(f1);
 
 
-          Eigen::Matrix<typename DerivedV::Scalar, 3, 1> dir0Rot = igl::rotation_matrix_from_directions(n0, n1)*dir0;
-          dir0Rot.normalize();
-          Eigen::Matrix<typename DerivedV::Scalar, 3, 1> targD   = K_PI_new(dir1,dir0Rot,n1);
+            Eigen::Matrix<typename DerivedV::Scalar, 3, 1> dir0Rot = igl::rotation_matrix_from_directions(n0, n1)*dir0;
+            dir0Rot.normalize();
+            Eigen::Matrix<typename DerivedV::Scalar, 3, 1> targD   = K_PI_new(dir1,dir0Rot,n1);
 
-          PD1out.row(f1)  = targD;
-          PD2out.row(f1)  = n1.cross(targD).normalized();
+            PD1out.row(f1)  = targD;
+            PD2out.row(f1)  = n1.cross(targD).normalized();
 
-          mark(f1) = true;
-          d.push_back(f1);
+            mark(f1) = true;
+            d.push_back(f1);
 
+          }
         }
       }
 
@@ -134,8 +141,8 @@ IGL_INLINE void igl::comb_cross_field(const Eigen::MatrixBase<DerivedV> &V,
                                       const Eigen::MatrixBase<DerivedF> &F,
                                       const Eigen::MatrixBase<DerivedV> &PD1,
                                       const Eigen::MatrixBase<DerivedV> &PD2,
-                                      Eigen::MatrixBase<DerivedV> &PD1out,
-                                      Eigen::MatrixBase<DerivedV> &PD2out)
+                                      Eigen::PlainObjectBase<DerivedV> &PD1out,
+                                      Eigen::PlainObjectBase<DerivedV> &PD2out)
 {
   igl::Comb<DerivedV, DerivedF> cmb(V, F, PD1, PD2);
   cmb.comb(PD1out, PD2out);
@@ -143,6 +150,6 @@ IGL_INLINE void igl::comb_cross_field(const Eigen::MatrixBase<DerivedV> &V,
 
 #ifdef IGL_STATIC_LIBRARY
 // Explicit template instantiation
-template void igl::comb_cross_field<Eigen::Matrix<double, -1, 3, 0, -1, 3>, Eigen::Matrix<int, -1, 3, 0, -1, 3> >(Eigen::MatrixBase<Eigen::Matrix<double, -1, 3, 0, -1, 3> > const&, Eigen::MatrixBase<Eigen::Matrix<int, -1, 3, 0, -1, 3> > const&, Eigen::MatrixBase<Eigen::Matrix<double, -1, 3, 0, -1, 3> > const&, Eigen::MatrixBase<Eigen::Matrix<double, -1, 3, 0, -1, 3> > const&, Eigen::MatrixBase<Eigen::Matrix<double, -1, 3, 0, -1, 3> >&, Eigen::MatrixBase<Eigen::Matrix<double, -1, 3, 0, -1, 3> >&);
-template void igl::comb_cross_field<Eigen::Matrix<double, -1, -1, 0, -1, -1>, Eigen::Matrix<int, -1, -1, 0, -1, -1> >(Eigen::MatrixBase<Eigen::Matrix<double, -1, -1, 0, -1, -1> > const&, Eigen::MatrixBase<Eigen::Matrix<int, -1, -1, 0, -1, -1> > const&, Eigen::MatrixBase<Eigen::Matrix<double, -1, -1, 0, -1, -1> > const&, Eigen::MatrixBase<Eigen::Matrix<double, -1, -1, 0, -1, -1> > const&, Eigen::MatrixBase<Eigen::Matrix<double, -1, -1, 0, -1, -1> >&, Eigen::MatrixBase<Eigen::Matrix<double, -1, -1, 0, -1, -1> >&);
+template void igl::comb_cross_field<Eigen::Matrix<double, -1, 3, 0, -1, 3>, Eigen::Matrix<int, -1, 3, 0, -1, 3> >(Eigen::MatrixBase<Eigen::Matrix<double, -1, 3, 0, -1, 3> > const&, Eigen::MatrixBase<Eigen::Matrix<int, -1, 3, 0, -1, 3> > const&, Eigen::MatrixBase<Eigen::Matrix<double, -1, 3, 0, -1, 3> > const&, Eigen::MatrixBase<Eigen::Matrix<double, -1, 3, 0, -1, 3> > const&, Eigen::PlainObjectBase<Eigen::Matrix<double, -1, 3, 0, -1, 3> >&, Eigen::PlainObjectBase<Eigen::Matrix<double, -1, 3, 0, -1, 3> >&);
+template void igl::comb_cross_field<Eigen::Matrix<double, -1, -1, 0, -1, -1>, Eigen::Matrix<int, -1, -1, 0, -1, -1> >(Eigen::MatrixBase<Eigen::Matrix<double, -1, -1, 0, -1, -1> > const&, Eigen::MatrixBase<Eigen::Matrix<int, -1, -1, 0, -1, -1> > const&, Eigen::MatrixBase<Eigen::Matrix<double, -1, -1, 0, -1, -1> > const&, Eigen::MatrixBase<Eigen::Matrix<double, -1, -1, 0, -1, -1> > const&, Eigen::PlainObjectBase<Eigen::Matrix<double, -1, -1, 0, -1, -1> >&, Eigen::PlainObjectBase<Eigen::Matrix<double, -1, -1, 0, -1, -1> >&);
 #endif

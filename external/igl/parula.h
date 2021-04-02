@@ -42,7 +42,7 @@ namespace igl
   IGL_INLINE void parula(
     const Eigen::MatrixBase<DerivedZ> & Z,
     const bool normalize,
-    Eigen::MatrixBase<DerivedC> & C);
+    Eigen::PlainObjectBase<DerivedC> & C);
   // Inputs:
   //   min_Z  value at blue
   //   max_Z  value at red
@@ -51,7 +51,7 @@ namespace igl
     const Eigen::MatrixBase<DerivedZ> & Z,
     const double min_Z,
     const double max_Z,
-    Eigen::MatrixBase<DerivedC> & C);
+    Eigen::PlainObjectBase<DerivedC> & C);
 };
   
 #ifndef IGL_STATIC_LIBRARY

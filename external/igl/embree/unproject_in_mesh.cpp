@@ -18,7 +18,7 @@ IGL_INLINE int igl::embree::unproject_in_mesh(
   const Eigen::Matrix4f& proj,
   const Eigen::Vector4f& viewport,
   const EmbreeIntersector & ei,
-  Eigen::MatrixBase<Derivedobj> & obj,
+  Eigen::PlainObjectBase<Derivedobj> & obj,
   std::vector<igl::Hit > & hits)
 {
   using namespace std;
@@ -41,7 +41,7 @@ IGL_INLINE int igl::embree::unproject_in_mesh(
     const Eigen::Matrix4f& proj,
     const Eigen::Vector4f& viewport,
     const EmbreeIntersector & ei,
-    Eigen::MatrixBase<Derivedobj> & obj)
+    Eigen::PlainObjectBase<Derivedobj> & obj)
 {
   std::vector<igl::Hit> hits;
   return unproject_in_mesh(pos,model,proj,viewport,ei,obj,hits);
@@ -49,7 +49,7 @@ IGL_INLINE int igl::embree::unproject_in_mesh(
 
 
 #ifdef IGL_STATIC_LIBRARY
-template int igl::embree::unproject_in_mesh<Eigen::Matrix<double, -1, -1, 0, -1, -1> >(Eigen::Matrix<float, 2, 1, 0, 2, 1> const&, Eigen::Matrix<float, 4, 4, 0, 4, 4> const&, Eigen::Matrix<float, 4, 4, 0, 4, 4> const&, Eigen::Matrix<float, 4, 1, 0, 4, 1> const&, igl::embree::EmbreeIntersector const&, Eigen::MatrixBase<Eigen::Matrix<double, -1, -1, 0, -1, -1> >&, std::vector<igl::Hit, std::allocator<igl::Hit> >&);
-template int igl::embree::unproject_in_mesh<Eigen::Matrix<double, 1, 3, 1, 1, 3> >(Eigen::Matrix<float, 2, 1, 0, 2, 1> const&, Eigen::Matrix<float, 4, 4, 0, 4, 4> const&, Eigen::Matrix<float, 4, 4, 0, 4, 4> const&, Eigen::Matrix<float, 4, 1, 0, 4, 1> const&, igl::embree::EmbreeIntersector const&, Eigen::MatrixBase<Eigen::Matrix<double, 1, 3, 1, 1, 3> >&, std::vector<igl::Hit, std::allocator<igl::Hit> >&);
-template int igl::embree::unproject_in_mesh<Eigen::Matrix<double, 3, 1, 0, 3, 1> >(Eigen::Matrix<float, 2, 1, 0, 2, 1> const&, Eigen::Matrix<float, 4, 4, 0, 4, 4> const&, Eigen::Matrix<float, 4, 4, 0, 4, 4> const&, Eigen::Matrix<float, 4, 1, 0, 4, 1> const&, igl::embree::EmbreeIntersector const&, Eigen::MatrixBase<Eigen::Matrix<double, 3, 1, 0, 3, 1> >&);
+template int igl::embree::unproject_in_mesh<Eigen::Matrix<double, -1, -1, 0, -1, -1> >(Eigen::Matrix<float, 2, 1, 0, 2, 1> const&, Eigen::Matrix<float, 4, 4, 0, 4, 4> const&, Eigen::Matrix<float, 4, 4, 0, 4, 4> const&, Eigen::Matrix<float, 4, 1, 0, 4, 1> const&, igl::embree::EmbreeIntersector const&, Eigen::PlainObjectBase<Eigen::Matrix<double, -1, -1, 0, -1, -1> >&, std::vector<igl::Hit, std::allocator<igl::Hit> >&);
+template int igl::embree::unproject_in_mesh<Eigen::Matrix<double, 1, 3, 1, 1, 3> >(Eigen::Matrix<float, 2, 1, 0, 2, 1> const&, Eigen::Matrix<float, 4, 4, 0, 4, 4> const&, Eigen::Matrix<float, 4, 4, 0, 4, 4> const&, Eigen::Matrix<float, 4, 1, 0, 4, 1> const&, igl::embree::EmbreeIntersector const&, Eigen::PlainObjectBase<Eigen::Matrix<double, 1, 3, 1, 1, 3> >&, std::vector<igl::Hit, std::allocator<igl::Hit> >&);
+template int igl::embree::unproject_in_mesh<Eigen::Matrix<double, 3, 1, 0, 3, 1> >(Eigen::Matrix<float, 2, 1, 0, 2, 1> const&, Eigen::Matrix<float, 4, 4, 0, 4, 4> const&, Eigen::Matrix<float, 4, 4, 0, 4, 4> const&, Eigen::Matrix<float, 4, 1, 0, 4, 1> const&, igl::embree::EmbreeIntersector const&, Eigen::PlainObjectBase<Eigen::Matrix<double, 3, 1, 0, 3, 1> >&);
 #endif

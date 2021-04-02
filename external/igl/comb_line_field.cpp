@@ -68,7 +68,7 @@ public:
         igl::triangle_triangle_adjacency(F,TT,TTi);
     }
 
-    inline void comb(Eigen::MatrixBase<DerivedV> &PD1out)
+    inline void comb(Eigen::PlainObjectBase<DerivedV> &PD1out)
     {
         PD1out.setZero(F.rows(),3);PD1out<<PD1;
 
@@ -121,7 +121,7 @@ template <typename DerivedV, typename DerivedF>
 IGL_INLINE void igl::comb_line_field(const Eigen::MatrixBase<DerivedV> &V,
                                      const Eigen::MatrixBase<DerivedF> &F,
                                      const Eigen::MatrixBase<DerivedV> &PD1,
-                                     Eigen::MatrixBase<DerivedV> &PD1out)
+                                     Eigen::PlainObjectBase<DerivedV> &PD1out)
 {
     igl::CombLine<DerivedV, DerivedF> cmb(V, F, PD1);
     cmb.comb(PD1out);

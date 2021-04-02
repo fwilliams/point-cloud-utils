@@ -35,7 +35,7 @@ namespace igl
   IGL_INLINE void count(
     const Eigen::SparseMatrix<XType>& X, 
     const int dim,
-    Eigen::MatrixBase<DerivedS>& S);
+    Eigen::PlainObjectBase<DerivedS>& S);
 }
 
 #ifndef IGL_STATIC_LIBRARY

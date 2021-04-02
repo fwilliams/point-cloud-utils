@@ -38,10 +38,10 @@ namespace igl
     typename DerivedEMAP,
     typename uE2EType>
   IGL_INLINE void flip_edge(
-    Eigen::MatrixBase<DerivedF> & F,
-    Eigen::MatrixBase<DerivedE> & E,
-    Eigen::MatrixBase<DeriveduE> & uE,
-    Eigen::MatrixBase<DerivedEMAP> & EMAP,
+    Eigen::PlainObjectBase<DerivedF> & F,
+    Eigen::PlainObjectBase<DerivedE> & E,
+    Eigen::PlainObjectBase<DeriveduE> & uE,
+    Eigen::PlainObjectBase<DerivedEMAP> & EMAP,
     std::vector<std::vector<uE2EType> > & uE2E,
     const size_t uei);
 }

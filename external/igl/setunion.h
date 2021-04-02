@@ -30,9 +30,9 @@ namespace igl
   IGL_INLINE void setunion(
     const Eigen::DenseBase<DerivedA> & A,
     const Eigen::DenseBase<DerivedB> & B,
-    Eigen::MatrixBase<DerivedC> & C,
-    Eigen::MatrixBase<DerivedIA> & IA,
-    Eigen::MatrixBase<DerivedIB> & IB);
+    Eigen::PlainObjectBase<DerivedC> & C,
+    Eigen::PlainObjectBase<DerivedIA> & IA,
+    Eigen::PlainObjectBase<DerivedIB> & IB);
 }
 
 #ifndef IGL_STATIC_LIBRARY

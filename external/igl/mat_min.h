@@ -35,8 +35,8 @@ namespace igl
   IGL_INLINE void mat_min(
     const Eigen::DenseBase<DerivedX> & X,
     const int dim,
-    Eigen::MatrixBase<DerivedY> & Y,
-    Eigen::MatrixBase<DerivedI> & I);
+    Eigen::PlainObjectBase<DerivedY> & Y,
+    Eigen::PlainObjectBase<DerivedI> & I);
   // Use Y = X.colwise().minCoeff() instead
   //// In-line wrapper
   //template <typename T>

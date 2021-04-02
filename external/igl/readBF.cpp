@@ -18,9 +18,9 @@ template <
   typename DerivedO>
 IGL_INLINE bool igl::readBF(
   const std::string & filename,
-  Eigen::MatrixBase<DerivedWI> & WI,
-  Eigen::MatrixBase<DerivedP> & P,
-  Eigen::MatrixBase<DerivedO> & O)
+  Eigen::PlainObjectBase<DerivedWI> & WI,
+  Eigen::PlainObjectBase<DerivedP> & P,
+  Eigen::PlainObjectBase<DerivedO> & O)
 {
   using namespace std;
   ifstream is(filename);
@@ -59,12 +59,12 @@ template <
   typename DerivedP>
 IGL_INLINE bool igl::readBF(
   const std::string & filename,
-  Eigen::MatrixBase<DerivedWI> & WI,
-  Eigen::MatrixBase<DerivedbfP> & bfP,
-  Eigen::MatrixBase<DerivedO> & offsets,
-  Eigen::MatrixBase<DerivedC> & C,
-  Eigen::MatrixBase<DerivedBE> & BE,
-  Eigen::MatrixBase<DerivedP> & P)
+  Eigen::PlainObjectBase<DerivedWI> & WI,
+  Eigen::PlainObjectBase<DerivedbfP> & bfP,
+  Eigen::PlainObjectBase<DerivedO> & offsets,
+  Eigen::PlainObjectBase<DerivedC> & C,
+  Eigen::PlainObjectBase<DerivedBE> & BE,
+  Eigen::PlainObjectBase<DerivedP> & P)
 {
   using namespace Eigen;
   using namespace std;
@@ -110,5 +110,5 @@ IGL_INLINE bool igl::readBF(
 }
 
 #ifdef IGL_STATIC_LIBRARY
-template bool igl::readBF<Eigen::Matrix<int, -1, 1, 0, -1, 1>, Eigen::Matrix<int, -1, 1, 0, -1, 1>, Eigen::Matrix<double, -1, -1, 0, -1, -1>, Eigen::Matrix<double, -1, -1, 0, -1, -1>, Eigen::Matrix<int, -1, -1, 0, -1, -1>, Eigen::Matrix<int, -1, 1, 0, -1, 1> >(std::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, Eigen::MatrixBase<Eigen::Matrix<int, -1, 1, 0, -1, 1> >&, Eigen::MatrixBase<Eigen::Matrix<int, -1, 1, 0, -1, 1> >&, Eigen::MatrixBase<Eigen::Matrix<double, -1, -1, 0, -1, -1> >&, Eigen::MatrixBase<Eigen::Matrix<double, -1, -1, 0, -1, -1> >&, Eigen::MatrixBase<Eigen::Matrix<int, -1, -1, 0, -1, -1> >&, Eigen::MatrixBase<Eigen::Matrix<int, -1, 1, 0, -1, 1> >&);
+template bool igl::readBF<Eigen::Matrix<int, -1, 1, 0, -1, 1>, Eigen::Matrix<int, -1, 1, 0, -1, 1>, Eigen::Matrix<double, -1, -1, 0, -1, -1>, Eigen::Matrix<double, -1, -1, 0, -1, -1>, Eigen::Matrix<int, -1, -1, 0, -1, -1>, Eigen::Matrix<int, -1, 1, 0, -1, 1> >(std::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, Eigen::PlainObjectBase<Eigen::Matrix<int, -1, 1, 0, -1, 1> >&, Eigen::PlainObjectBase<Eigen::Matrix<int, -1, 1, 0, -1, 1> >&, Eigen::PlainObjectBase<Eigen::Matrix<double, -1, -1, 0, -1, -1> >&, Eigen::PlainObjectBase<Eigen::Matrix<double, -1, -1, 0, -1, -1> >&, Eigen::PlainObjectBase<Eigen::Matrix<int, -1, -1, 0, -1, -1> >&, Eigen::PlainObjectBase<Eigen::Matrix<int, -1, 1, 0, -1, 1> >&);
 #endif

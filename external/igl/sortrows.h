@@ -28,10 +28,15 @@ namespace igl
   //     Y = X(I,:);
   template <typename DerivedX, typename DerivedI>
   IGL_INLINE void sortrows(
-    const Eigen::MatrixBase<DerivedX>& X,
+    const Eigen::DenseBase<DerivedX>& X,
     const bool ascending,
     Eigen::PlainObjectBase<DerivedX>& Y,
     Eigen::PlainObjectBase<DerivedI>& I);
+  template <typename DerivedX >
+  IGL_INLINE void sortrows(
+    const Eigen::DenseBase<DerivedX>& X,
+    const bool ascending,
+    Eigen::PlainObjectBase<DerivedX>& Y);
 }
 
 #ifndef IGL_STATIC_LIBRARY

@@ -35,8 +35,8 @@ namespace igl
     const Eigen::MatrixBase<Derivedmodel> & model,
     const Eigen::MatrixBase<Derivedproj> & proj,
     const Eigen::MatrixBase<Derivedviewport> & viewport,
-    Eigen::MatrixBase<Deriveds> & s,
-    Eigen::MatrixBase<Deriveddir> & dir);
+    Eigen::PlainObjectBase<Deriveds> & s,
+    Eigen::PlainObjectBase<Deriveddir> & dir);
 }
 #ifndef IGL_STATIC_LIBRARY
 #  include "unproject_ray.cpp"

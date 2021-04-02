@@ -24,7 +24,7 @@ namespace igl
   IGL_INLINE bool is_symmetric(const Eigen::SparseMatrix<AT>& A, const epsilonT epsilon);
   template <typename DerivedA>
   IGL_INLINE bool is_symmetric(
-    const Eigen::MatrixBase<DerivedA>& A);
+    const Eigen::PlainObjectBase<DerivedA>& A);
 }
 
 #ifndef IGL_STATIC_LIBRARY

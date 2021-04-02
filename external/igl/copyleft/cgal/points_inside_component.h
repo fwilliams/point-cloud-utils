@@ -43,11 +43,11 @@ namespace igl
         typename DerivedP,
         typename DerivedB>
       IGL_INLINE void points_inside_component(
-        const Eigen::MatrixBase<DerivedV>& V,
-        const Eigen::MatrixBase<DerivedF>& F,
-        const Eigen::MatrixBase<DerivedI>& I,
-        const Eigen::MatrixBase<DerivedP>& P,
-        Eigen::MatrixBase<DerivedB>& inside);
+        const Eigen::PlainObjectBase<DerivedV>& V,
+        const Eigen::PlainObjectBase<DerivedF>& F,
+        const Eigen::PlainObjectBase<DerivedI>& I,
+        const Eigen::PlainObjectBase<DerivedP>& P,
+        Eigen::PlainObjectBase<DerivedB>& inside);
 
       // Determine if query points P is inside of the mesh (V, F).
       // See above for precondition and I/O specs.
@@ -57,10 +57,10 @@ namespace igl
         typename DerivedP,
         typename DerivedB>
       IGL_INLINE void points_inside_component(
-          const Eigen::MatrixBase<DerivedV>& V,
-          const Eigen::MatrixBase<DerivedF>& F,
-          const Eigen::MatrixBase<DerivedP>& P,
-          Eigen::MatrixBase<DerivedB>& inside);
+          const Eigen::PlainObjectBase<DerivedV>& V,
+          const Eigen::PlainObjectBase<DerivedF>& F,
+          const Eigen::PlainObjectBase<DerivedP>& P,
+          Eigen::PlainObjectBase<DerivedB>& inside);
     }
   }
 }

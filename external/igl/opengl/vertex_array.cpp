@@ -5,8 +5,8 @@ template <
   typename DerivedV,
   typename DerivedF>
 IGL_INLINE void igl::opengl::vertex_array(
-  const Eigen::MatrixBase<DerivedV> & V,
-  const Eigen::MatrixBase<DerivedF> & F,
+  const Eigen::PlainObjectBase<DerivedV> & V,
+  const Eigen::PlainObjectBase<DerivedF> & F,
   GLuint & va_id,
   GLuint & ab_id,
   GLuint & eab_id)
@@ -57,5 +57,5 @@ IGL_INLINE void igl::opengl::vertex_array(
 }
 
 #ifdef IGL_STATIC_LIBRARY
-template void igl::opengl::vertex_array<Eigen::Matrix<float, -1, 3, 1, -1, 3>, Eigen::Matrix<int, -1, 3, 1, -1, 3> >(Eigen::MatrixBase<Eigen::Matrix<float, -1, 3, 1, -1, 3> > const&, Eigen::MatrixBase<Eigen::Matrix<int, -1, 3, 1, -1, 3> > const&, unsigned int&, unsigned int&, unsigned int&);
+template void igl::opengl::vertex_array<Eigen::Matrix<float, -1, 3, 1, -1, 3>, Eigen::Matrix<int, -1, 3, 1, -1, 3> >(Eigen::PlainObjectBase<Eigen::Matrix<float, -1, 3, 1, -1, 3> > const&, Eigen::PlainObjectBase<Eigen::Matrix<int, -1, 3, 1, -1, 3> > const&, unsigned int&, unsigned int&, unsigned int&);
 #endif
