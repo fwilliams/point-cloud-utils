@@ -96,10 +96,10 @@ Examples
 --------
 )igl_Qu8mg5v7";
 npe_function(estimate_mesh_normals_doc)
-    npe_doc(estimate_mesh_normals_doc)
-    npe_arg(v, dense_float, dense_double)
-    npe_arg(f, dense_int, dense_longlong, dense_uint, dense_ulonglong)
-    npe_default_arg(weighting_type, std::string, std::string("uniform"))
+npe_doc(estimate_mesh_normals_doc)
+npe_arg(v, dense_float, dense_double)
+npe_arg(f, dense_int, dense_longlong, dense_uint, dense_ulonglong)
+npe_default_arg(weighting_type, std::string, std::string("uniform"))
 npe_begin_code()
 {
     validate_mesh(v, f);
