@@ -299,21 +299,26 @@ class TestDenseBindings(unittest.TestCase):
         a = np.random.rand(100, 3)
         b = np.random.rand(100, 3)
 
-        chamfer_dist = pcu.chamfer(a, b)
+        chamfer_dist = pcu.chamfer_distance(a, b)
+        chamfer_dist, c_a_to_b, c_b_to_a = pcu.chamfer_distance(a, b, return_index=True)
 
-    def test_batched_chamfer(self):
+    def knn(self):
         import point_cloud_utils as pcu
         import numpy as np
 
-        # a and b are each contain 10 batches each of which contain 100 points  of dimension 3
-        # i.e. a[i, :, :] is the i^th point set which contains 100 points
-        # Note that the point sets can have different sizes (e.g [10, 100, 3], [10, 111, 3])
-        a = np.random.rand(10, 100, 3)
-        b = np.random.rand(10, 100, 3)
+        # Generate two random point sets
+        a = np.random.rand(1000, 3)
+        b = np.random.rand(500, 3)
+        # dists_a_to_b is of shape (a.shape[0],) and contains the shortest squared distance
+        # between each point in a and the points in b
+        # corrs_a_to_b is of shape (a.shape[0],) and contains the index into b of the
+        # closest point for each point in a
+        k = np.random.randint(10)
+        dists_a_to_b, corrs_a_to_b = pcu.k_nearest_neighbors(a, b, k)
+        self.assertEqual(dists_a_to_b.shape == (a.shape[0], k))
+        self.assertEqual(corrs_a_to_b.shape == (a.shape[0], k))
 
-        chamfer_dist = pcu.chamfer(a, b)
-
-    def test_hausdorff_and_nearest_neighbor(self):
+    def test_hausdorff(self):
         import point_cloud_utils as pcu
         import numpy as np
 
@@ -321,22 +326,26 @@ class TestDenseBindings(unittest.TestCase):
         a = np.random.rand(1000, 3)
         b = np.random.rand(500, 3)
 
-        # dists_a_to_b is of shape (a.shape[0],) and contains the shortest squared distance
-        # between each point in a and the points in b
-        # corrs_a_to_b is of shape (a.shape[0],) and contains the index into b of the
-        # closest point for each point in a
-        dists_a_to_b, corrs_a_to_b = pcu.shortest_squared_distances(a, b)
-
         # Compute each one sided squared Hausdorff distances
-        hausdorff_a_to_b = pcu.squared_hausdorff_distance(a, b)
-        hausdorff_b_to_a = pcu.squared_hausdorff_distance(b, a)
+        hausdorff_a_to_b, idx_a1, idx_b1 = pcu.one_sided_hausdorff_distance(a, b, return_index=True)
+        hausdorff_b_to_a, idx_b2, idx_a2 = pcu.one_sided_hausdorff_distance(b, a, return_index=True)
 
         # Take a max of the one sided squared  distances to get the two sided Hausdorff distance
-        hausdorff_dist = max(hausdorff_a_to_b, hausdorff_b_to_a)
+        hausdorff_a_b = max(hausdorff_a_to_b, hausdorff_b_to_a)
+        hausdorff_a_b_pcu, i1, i2 = pcu.hausdorff_distance(a, b, return_index=True)
+        self.assertAlmostEqual(hausdorff_a_b, hausdorff_a_b_pcu)
+        self.assertAlmostEqual(hausdorff_a_b, np.linalg.norm(a[i1] - b[i2]))
+        self.assertAlmostEqual(hausdorff_a_b_pcu, np.linalg.norm(a[i1] - b[i2]))
+        if hausdorff_a_to_b > hausdorff_b_to_a:
+            self.assertEqual(i1, idx_a1)
+            self.assertEqual(i2, idx_b1)
+        else:
+            self.assertEqual(i1, idx_a2)
+            self.assertEqual(i2, idx_b2)
 
         # Find the index pairs of the two points with maximum shortest distancce
-        hausdorff_b_to_a, idx_b, idx_a = pcu.squared_hausdorff_distance(b, a, return_index=True)
-        self.assertAlmostEqual(np.sum((a[idx_a] - b[idx_b])**2), hausdorff_b_to_a)
+        hausdorff_b_to_a, idx_b, idx_a = pcu.one_sided_hausdorff_distance(b, a, return_index=True)
+        self.assertAlmostEqual(np.linalg.norm(a[idx_a] - b[idx_b]), hausdorff_b_to_a)
 
     def test_estimate_point_cloud_normals(self):
         import point_cloud_utils as pcu

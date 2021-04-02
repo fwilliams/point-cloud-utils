@@ -2,80 +2,28 @@
 #include <vcg/complex/complex.h>
 #include <vcg/complex/algorithms/point_sampling.h>
 #include <vcg/complex/algorithms/clustering.h>
-#include <vcg/complex/algorithms/pointcloud_normal.h>
 
 #include <fstream>
 #include <iostream>
 #include <functional>
 
 #include "common.h"
+#include "vcg_utils.h"
 
 
 namespace {
 
 using namespace vcg;
-class MyEdge;
-class MyFace;
-class MyVertex;
-struct MyUsedTypes : public UsedTypes<	Use<MyVertex>   ::AsVertexType,
-                                        Use<MyEdge>     ::AsEdgeType,
-                                        Use<MyFace>     ::AsFaceType>{};
-class MyVertex  : public Vertex<MyUsedTypes, vertex::Coord3d, vertex::Normal3d, vertex::BitFlags> {};
-class MyFace    : public Face<MyUsedTypes, face::FFAdj,  face::Normal3d, face::VertexRef, face::BitFlags> {};
-class MyEdge    : public Edge<MyUsedTypes>{};
-class MyMesh    : public tri::TriMesh<std::vector<MyVertex>, std::vector<MyFace>, std::vector<MyEdge>> {};
-
-
-/*
- * Copy a mesh stored as a #V x 3 matrix of vertices, V, and a #F x 3 matrix of face indices into a VCG mesh
- */
-template <typename DerivedV, typename DerivedF, typename DerivedN>
-static void vcg_mesh_from_vfn(const Eigen::MatrixBase<DerivedV>& V, const Eigen::MatrixBase<DerivedF>& F, const Eigen::MatrixBase<DerivedN>& N, MyMesh& m) {
-
-  MyMesh::VertexIterator vit = Allocator<MyMesh>::AddVertices(m, V.rows());
-  std::vector<MyMesh::VertexPointer> ivp(V.rows());
-  for (int i = 0; i < V.rows(); i++) {
-    ivp[i] = &*vit;
-    vit->P() = MyMesh::CoordType(V(i, 0), V(i, 1), V(i, 2));
-    if (N.rows() > 0) {
-      vit->N() = MyMesh::CoordType(N(i, 0), N(i, 1), N(i, 2));
-    }
-    vit++;
-  }
-
-  if (F.rows() > 0) {
-    MyMesh::FaceIterator fit = Allocator<MyMesh>::AddFaces(m, F.rows());
-    for (int i = 0; i < F.rows(); i++) {
-      fit->V(0) = ivp[F(i, 0)];
-      fit->V(1) = ivp[F(i, 1)];
-      fit->V(2) = ivp[F(i, 2)];
-      fit++;
-    }
-  }
-
-  tri::UpdateBounding<MyMesh>::Box(m);
-}
-
-
-/*
- * Copy a mesh stored as a #V x 3 matrix of vertices, V, and a #F x 3 matrix of face indices into a VCG mesh
- */
-template <typename DerivedV, typename DerivedF>
-static void vcg_mesh_from_vf(const Eigen::MatrixBase<DerivedV>& V, const Eigen::MatrixBase<DerivedF>& F,MyMesh& m) {
-    Eigen::MatrixXd N(0, 3);
-    vcg_mesh_from_vfn(V, F, N, m);
-}
-
-
-/*
- * Copy a mesh stored as a #V x 3 matrix of vertices, V, and a #F x 3 matrix of face indices into a VCG mesh
- */
-template <typename DerivedV>
-static void vcg_mesh_from_v(const Eigen::MatrixBase<DerivedV>& V, MyMesh& m) {
-    Eigen::MatrixXi F(0, 3);
-    Eigen::MatrixXd N(0, 3);
-    vcg_mesh_from_vfn(V, F, N, m);
-}
+class VCGMeshEdge;
+class VCGMeshFace;
+class VCGMeshVertex;
+struct VCGMeshUsedTypes : public UsedTypes<	Use<VCGMeshVertex>   ::AsVertexType,
+                                            Use<VCGMeshEdge>     ::AsEdgeType,
+                                            Use<VCGMeshFace>     ::AsFaceType>{};
+class VCGMeshVertex  : public Vertex<VCGMeshUsedTypes, vertex::Coord3d, vertex::Normal3d, vertex::BitFlags> {};
+class VCGMeshFace    : public Face<VCGMeshUsedTypes, face::FFAdj,  face::Normal3d, face::VertexRef, face::BitFlags> {};
+class VCGMeshEdge    : public Edge<VCGMeshUsedTypes>{};
+class VCGMesh : public tri::TriMesh<std::vector<VCGMeshVertex>, std::vector<VCGMeshFace>, std::vector<VCGMeshEdge>> {};
 
 
 /*
@@ -262,6 +210,7 @@ struct hash_eigen {
     }
 };
 
+
 template <typename DerivedV, typename DerivedN, typename DerivedC,
           typename DerivedOutV, typename DerivedOutN, typename DerivedOutC>
 void downsample_point_cloud_to_voxels(const DerivedV& V,
@@ -435,12 +384,12 @@ npe_begin_code()
         throw pybind11::value_error("sample_num_tolerance must be in (0, 1]");
     }
 
-    typedef MyMesh MeshType;
+    typedef VCGMesh MeshType;
     typedef EigenDenseLike<npe_Matrix_v> EigenRetBC;
     typedef EigenVertexIndexSampler<MeshType> PoissonDiskSampler;
-    typedef EigenBarycentricSampler<MyMesh, EigenRetBC> MonteCarloSampler;
+    typedef EigenBarycentricSampler<VCGMesh, EigenRetBC> MonteCarloSampler;
 
-    MyMesh input_mesh;
+    VCGMesh input_mesh;
     vcg_mesh_from_vf(v, f, input_mesh);
     typename tri::SurfaceSampling<MeshType, PoissonDiskSampler>::PoissonDiskParam pp;
     //    int t0 = clock();
@@ -532,9 +481,9 @@ npe_begin_code()
     validate_mesh(v, f);
 
     typedef EigenDenseLike<npe_Matrix_v> EigenRetBC;
-    typedef EigenBarycentricSampler<MyMesh, EigenRetBC> MonteCarloSampler;
+    typedef EigenBarycentricSampler<VCGMesh, EigenRetBC> MonteCarloSampler;
 
-    MyMesh m;
+    VCGMesh m;
     vcg_mesh_from_vf(v, f, m);
 
     EigenRetBC ret_bc(num_samples, 3);
@@ -543,10 +492,10 @@ npe_begin_code()
     MonteCarloSampler mrs(&m, nullptr, ret_bc, ret_fi);
 
     if(random_seed > 0) {
-        tri::SurfaceSampling<MyMesh, MonteCarloSampler>::SamplingRandomGenerator().initialize(random_seed);
+        tri::SurfaceSampling<VCGMesh, MonteCarloSampler>::SamplingRandomGenerator().initialize(random_seed);
     }
 
-    tri::SurfaceSampling<MyMesh, MonteCarloSampler>::Montecarlo(m, mrs, num_samples);
+    tri::SurfaceSampling<VCGMesh, MonteCarloSampler>::Montecarlo(m, mrs, num_samples);
 
     mrs.trim();
     return std::make_tuple(npe::move(ret_fi), npe::move(ret_bc));
@@ -592,7 +541,7 @@ npe_default_arg(sample_num_tolerance, float, 0.04)
 npe_doc(downsample_point_cloud_poisson_disk_doc)
 npe_begin_code()
 {
-  MyMesh m;
+  VCGMesh m;
   vcg_mesh_from_v(v, m);
 
   if (num_samples <= 0 && radius <= 0.0) {
@@ -602,28 +551,28 @@ npe_begin_code()
       throw pybind11::value_error("sample_num_tolerance must be in (0, 1]");
   }
 
-  typedef EigenVertexIndexSampler<MyMesh> PoissonDiskSampler;
+  typedef EigenVertexIndexSampler<VCGMesh> PoissonDiskSampler;
   typedef PoissonDiskSampler::IndexArray EigenRetI;
 
   EigenRetI ret_i;
   PoissonDiskSampler mps(m, ret_i);
 
-  typename tri::SurfaceSampling<MyMesh, PoissonDiskSampler>::PoissonDiskParam pp;
-  typename tri::SurfaceSampling<MyMesh, PoissonDiskSampler>::PoissonDiskParam::Stat pds;
+  typename tri::SurfaceSampling<VCGMesh, PoissonDiskSampler>::PoissonDiskParam pp;
+  typename tri::SurfaceSampling<VCGMesh, PoissonDiskSampler>::PoissonDiskParam::Stat pds;
   pp.pds = pds;
   pp.bestSampleChoiceFlag = best_choice_sampling;
   pp.geodesicDistanceFlag = false;
   pp.randomSeed = random_seed;
 
   if(random_seed) {
-      tri::SurfaceSampling<MyMesh, PoissonDiskSampler>::SamplingRandomGenerator().initialize(random_seed);
+      tri::SurfaceSampling<VCGMesh, PoissonDiskSampler>::SamplingRandomGenerator().initialize(random_seed);
   }
 
   if (radius <= 0.0 && num_samples > 0) {
       num_samples = std::min(num_samples, (int)v.rows());
-      tri::SurfaceSampling<MyMesh, PoissonDiskSampler>::PoissonDiskPruningByNumber(mps, m, num_samples, radius, pp, sample_num_tolerance);
+      tri::SurfaceSampling<VCGMesh, PoissonDiskSampler>::PoissonDiskPruningByNumber(mps, m, num_samples, radius, pp, sample_num_tolerance);
   } else if (radius > 0.0 && num_samples <= 0) {
-      tri::SurfaceSampling<MyMesh, PoissonDiskSampler>::PoissonDiskPruning(mps, m, radius, pp);
+      tri::SurfaceSampling<VCGMesh, PoissonDiskSampler>::PoissonDiskPruning(mps, m, radius, pp);
   }
   mps.trim();
   return npe::move(ret_i);
@@ -662,51 +611,5 @@ npe_begin_code()
 }
 
 
-npe_end_code()
-const char* estimate_normals_doc = R"Qu8mg5v7(
-Estimate normals for a point cloud by locally fitting a plane to a small neighborhood of points
-
-Parameters
-----------
-v : #v by 3 array of vertex positions (each row is a vertex)
-k : Number of nearest neighbors to use in the estimate for the normal of a point. Default: 10.
-smoothing_iterations : Number of smoothing iterations to apply to the estimated normals. Default: 0.
-
-Returns
--------
-A #v x 3 array of normals where each row i is the normal at vertex v[i]
-
-)Qu8mg5v7";
-npe_function(estimate_point_cloud_normals)
-npe_arg(v, dense_float, dense_double)
-npe_default_arg(k, int, 10)
-npe_default_arg(smoothing_iterations, int, 0)
-npe_doc(estimate_normals_doc)
-npe_begin_code()
-{
-    MyMesh m;
-    vcg_mesh_from_v(v, m);
-
-    tri::PointCloudNormal<MyMesh>::Param p;
-    p.fittingAdjNum = k;
-    p.smoothingIterNum = smoothing_iterations;
-    p.viewPoint = vcg::Point3d(0.0f, 0.0f, 0.0f);
-    p.useViewPoint = false;
-
-    tri::PointCloudNormal<MyMesh>::Compute(m, p, (vcg::CallBackPos*) nullptr);
-
-    npe_Matrix_v ret(m.vn, 3);
-
-    int vcount = 0;
-    for (MyMesh::VertexIterator vit = m.vert.begin(); vit != m.vert.end(); vit++) {
-        ret(vcount, 0) = vit->N()[0];
-        ret(vcount, 1) = vit->N()[1];
-        ret(vcount, 2) = vit->N()[2];
-        vcount += 1;
-    }
-
-    return npe::move(ret);
-
-}
 npe_end_code()
 

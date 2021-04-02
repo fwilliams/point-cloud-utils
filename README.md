@@ -154,35 +154,6 @@ P = pcu.sinkhorn(w_a, w_b, M, eps=1e-3)
 sinkhorn_dist = (M*P).sum() 
 ```
 
-
-##### Batched Version:
-
-```python
-import point_cloud_utils as pcu
-import numpy as np
-
-# a and b are each contain 10 batches each of which contain 100 points  of dimension 3
-# i.e. a[i, :, :] is the i^th point set which contains 100 points 
-# Note that the point sets can have different sizes (e.g [10, 100, 3], [10, 111, 3])
-a = np.random.rand(10, 100, 3)
-b = np.random.rand(10, 100, 3)
-
-# M is a 10x100x100 array where each entry (k, i, j) is the squared distance between point a[k, i, :] and b[k, j, :]
-M = pcu.pairwise_distances(a, b)
-
-# w_a and w_b are masses assigned to each point. In this case each point is weighted equally.
-w_a = np.ones(a.shape[:2])
-w_b = np.ones(b.shape[:2])
-
-# P is the transport matrix between a and b, eps is a regularization parameter, smaller epsilons lead to 
-# better approximation of the true Wasserstein distance at the expense of slower convergence
-P = pcu.sinkhorn(w_a, w_b, M, eps=1e-3)
-
-# To get the distance as a number just compute the frobenius inner product <M, P>
-sinkhorn_dist = (M*P).sum() 
-```
-
-
 ### Chamfer Distance Between Point-Clouds
 ```python
 import point_cloud_utils as pcu
@@ -193,25 +164,36 @@ import numpy as np
 a = np.random.rand(100, 3)
 b = np.random.rand(100, 3)
 
-chamfer_dist = pcu.chamfer(a, b)
+chamfer_dist = pcu.chamfer_distance(a, b)
 ```
-##### Batched Version:
 
+### Hausdorff Distances Between Point-Clouds
 ```python
 import point_cloud_utils as pcu
 import numpy as np
 
-# a and b are each contain 10 batches each of which contain 100 points  of dimension 3
-# i.e. a[i, :, :] is the i^th point set which contains 100 points 
-# Note that the point sets can have different sizes (e.g [10, 100, 3], [10, 111, 3])
-a = np.random.rand(10, 100, 3)
-b = np.random.rand(10, 100, 3)
+# Generate two random point sets
+a = np.random.rand(1000, 3)
+b = np.random.rand(500, 3)
 
-chamfer_dist = pcu.chamfer(a, b)
+# Compute one-sided squared Hausdorff distances
+hausdorff_a_to_b = pcu.one_sided_hausdorff_distance(a, b)
+hausdorff_b_to_a = pcu.one_sided_hausdorff_distance(b, a)
+
+# Take a max of the one sided squared  distances to get the two sided Hausdorff distance
+hausdorff_dist = pcu.hausdorff_distance(a, b)
+
+# Find the index pairs of the two points with maximum shortest distancce
+hausdorff_b_to_a, idx_b, idx_a = pcu.one_sided_hausdorff_distance(b, a, return_index=True)
+assert np.abs(np.sum((a[idx_a] - b[idx_b])**2) - hausdorff_b_to_a) < 1e-5, "These values should be almost equal"
+
+# Find the index pairs of the two points with maximum shortest distancce
+hausdorff_dist, idx_b, idx_a = pcu.hausdorff_distance(b, a, return_index=True)
+assert np.abs(np.sum((a[idx_a] - b[idx_b])**2) - hausdorff_dist) < 1e-5, "These values should be almost equal"
+
 ```
 
-
-### Nearest-Neighbors and Hausdorff Distances Between Point-Clouds
+### K-Nearest-Neighbors Between Point Clouds
 ```python
 import point_cloud_utils as pcu
 import numpy as np
@@ -224,16 +206,5 @@ b = np.random.rand(500, 3)
 # between each point in a and the points in b
 # corrs_a_to_b is of shape (a.shape[0],) and contains the index into b of the 
 # closest point for each point in a
-dists_a_to_b, corrs_a_to_b = pcu.shortest_squared_distances(a, b)
-
-# Compute each one sided squared Hausdorff distances
-hausdorff_a_to_b = pcu.squared_hausdorff_distance(a, b)
-hausdorff_b_to_a = pcu.squared_hausdorff_distance(b, a)
-
-# Take a max of the one sided squared  distances to get the two sided Hausdorff distance
-hausdorff_dist = max(hausdorff_a_to_b, hausdorff_b_to_a)
-
-# Find the index pairs of the two points with maximum shortest distancce
-hausdorff_b_to_a, idx_b, idx_a = pcu.squared_hausdorff_distance(b, a, return_index=True)
-assert np.abs(np.sum((a[idx_a] - b[idx_b])**2) - hausdorff_b_to_a) < 1e-5, "These values should be almost equal"
+dists_a_to_b, corrs_a_to_b = pcu.shortest_distance_pairs(a, b)
 ```
