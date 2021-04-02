@@ -11,7 +11,7 @@
 template <typename DerivedV>
 IGL_INLINE void igl::matlab::parse_rhs_double(
     const mxArray *prhs[], 
-    Eigen::MatrixBase<DerivedV> & V)
+    Eigen::PlainObjectBase<DerivedV> & V)
 {
   using namespace Eigen;
   // Use Eigen's map and cast to copy
@@ -23,7 +23,7 @@ IGL_INLINE void igl::matlab::parse_rhs_double(
 template <typename DerivedV>
 IGL_INLINE void igl::matlab::parse_rhs_index(
     const mxArray *prhs[], 
-    Eigen::MatrixBase<DerivedV> & V)
+    Eigen::PlainObjectBase<DerivedV> & V)
 {
   parse_rhs_double(prhs,V);
   V.array() -= 1;
@@ -75,9 +75,11 @@ IGL_INLINE void igl::matlab::parse_rhs(
 }
 
 #ifdef IGL_STATIC_LIBRARY
-template void igl::matlab::parse_rhs_index<Eigen::Matrix<int, -1, 1, 0, -1, 1> >(mxArray_tag const**, Eigen::MatrixBase<Eigen::Matrix<int, -1, 1, 0, -1, 1> >&);
-template void igl::matlab::parse_rhs_index<Eigen::Matrix<int, -1, -1, 0, -1, -1> >(mxArray_tag const**, Eigen::MatrixBase<Eigen::Matrix<int, -1, -1, 0, -1, -1> >&);
-template void igl::matlab::parse_rhs_double<Eigen::Matrix<double, -1, -1, 0, -1, -1> >(mxArray_tag const**, Eigen::MatrixBase<Eigen::Matrix<double, -1, -1, 0, -1, -1> >&);
-template void igl::matlab::parse_rhs_index<Eigen::Matrix<int, -1, 3, 1, -1, 3> >(mxArray_tag const**, Eigen::MatrixBase<Eigen::Matrix<int, -1, 3, 1, -1, 3> >&);
-template void igl::matlab::parse_rhs_double<Eigen::Matrix<double, -1, 3, 1, -1, 3> >(mxArray_tag const**, Eigen::MatrixBase<Eigen::Matrix<double, -1, 3, 1, -1, 3> >&);
+template void igl::matlab::parse_rhs_index<Eigen::Matrix<int, -1, 1, 0, -1, 1> >(mxArray_tag const**, Eigen::PlainObjectBase<Eigen::Matrix<int, -1, 1, 0, -1, 1> >&);
+template void igl::matlab::parse_rhs_index<Eigen::Matrix<int, -1, -1, 0, -1, -1> >(mxArray_tag const**, Eigen::PlainObjectBase<Eigen::Matrix<int, -1, -1, 0, -1, -1> >&);
+template void igl::matlab::parse_rhs_double<Eigen::Matrix<double, -1, -1, 0, -1, -1> >(mxArray_tag const**, Eigen::PlainObjectBase<Eigen::Matrix<double, -1, -1, 0, -1, -1> >&);
+template void igl::matlab::parse_rhs_index<Eigen::Matrix<int, -1, 3, 1, -1, 3> >(mxArray_tag const**, Eigen::PlainObjectBase<Eigen::Matrix<int, -1, 3, 1, -1, 3> >&);
+template void igl::matlab::parse_rhs_double<Eigen::Matrix<double, -1, 3, 1, -1, 3> >(mxArray_tag const**, Eigen::PlainObjectBase<Eigen::Matrix<double, -1, 3, 1, -1, 3> >&);
+template void igl::matlab::parse_rhs_double<Eigen::Matrix<double, -1, 1, 0, -1, 1> >(mxArray_tag const**, Eigen::PlainObjectBase<Eigen::Matrix<double, -1, 1, 0, -1, 1> >&);
+template void igl::matlab::parse_rhs_double<Eigen::Matrix<float, -1, -1, 0, -1, -1> >(mxArray_tag const**, Eigen::PlainObjectBase<Eigen::Matrix<float, -1, -1, 0, -1, -1> >&);
 #endif

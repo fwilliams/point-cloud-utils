@@ -24,12 +24,12 @@ IGL_INLINE void igl::boundary_loop(
     return;
 
   VectorXd Vdummy(F.maxCoeff()+1,1);
-  DerivedF TT,TTi;
+  Eigen::Matrix<typename DerivedF::Scalar, Eigen::Dynamic, Eigen::Dynamic> TT,TTi;
   vector<std::vector<int> > VF, VFi;
   triangle_triangle_adjacency(F,TT,TTi);
   vertex_triangle_adjacency(Vdummy,F,VF,VFi);
 
-  vector<bool> unvisited = is_border_vertex(Vdummy,F);
+  vector<bool> unvisited = is_border_vertex(F);
   set<int> unseen;
   for (size_t i = 0; i < unvisited.size(); ++i)
   {
@@ -131,7 +131,7 @@ IGL_INLINE void igl::boundary_loop(
 template <typename DerivedF, typename DerivedL>
 IGL_INLINE void igl::boundary_loop(
   const Eigen::MatrixBase<DerivedF>& F,
-  Eigen::MatrixBase<DerivedL>& L)
+  Eigen::PlainObjectBase<DerivedL>& L)
 {
   using namespace Eigen;
   using namespace std;
@@ -142,12 +142,13 @@ IGL_INLINE void igl::boundary_loop(
   vector<int> Lvec;
   boundary_loop(F,Lvec);
 
-  L.resize(Lvec.size());
+  L.resize(Lvec.size(), 1);
   for (size_t i = 0; i < Lvec.size(); ++i)
     L(i) = Lvec[i];
 }
 
 #ifdef IGL_STATIC_LIBRARY
 // Explicit template instantiation
-template void igl::boundary_loop<Eigen::Matrix<int, -1, -1, 0, -1, -1>, Eigen::Matrix<int, -1, 1, 0, -1, 1> >(Eigen::MatrixBase<Eigen::Matrix<int, -1, -1, 0, -1, -1> > const&, Eigen::MatrixBase<Eigen::Matrix<int, -1, 1, 0, -1, 1> >&);
+template void igl::boundary_loop<Eigen::Matrix<int, -1, -1, 0, -1, -1>, Eigen::Matrix<int, -1, 1, 0, -1, 1> >(Eigen::MatrixBase<Eigen::Matrix<int, -1, -1, 0, -1, -1> > const&, Eigen::PlainObjectBase<Eigen::Matrix<int, -1, 1, 0, -1, 1> >&);
+template void igl::boundary_loop<Eigen::Matrix<int, -1, -1, 0, -1, -1>, int>(Eigen::MatrixBase<Eigen::Matrix<int, -1, -1, 0, -1, -1> > const&, std::vector<std::vector<int, std::allocator<int> >, std::allocator<std::vector<int, std::allocator<int> > > >&);
 #endif

@@ -22,7 +22,7 @@ namespace igl
   IGL_INLINE void per_vertex_attribute_smoothing(
     const Eigen::MatrixBase<DerivedV>& Ain,
     const Eigen::MatrixBase<DerivedF>& F,
-    Eigen::MatrixBase<DerivedV> & Aout);
+    Eigen::PlainObjectBase<DerivedV> & Aout);
 }
 
 #ifndef IGL_STATIC_LIBRARY

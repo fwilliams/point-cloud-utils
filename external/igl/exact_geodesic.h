@@ -45,7 +45,7 @@ namespace igl
       const Eigen::MatrixBase<DerivedFS> &FS,
       const Eigen::MatrixBase<DerivedVT> &VT,
       const Eigen::MatrixBase<DerivedFT> &FT,
-      Eigen::MatrixBase<DerivedD> &D);
+      Eigen::PlainObjectBase<DerivedD> &D);
 }
 
 #ifndef IGL_STATIC_LIBRARY

@@ -37,11 +37,11 @@ namespace igl
           typename DerivedA
           >
       IGL_INLINE void outer_vertex(
-              const Eigen::MatrixBase<DerivedV> & V,
-              const Eigen::MatrixBase<DerivedF> & F,
-              const Eigen::MatrixBase<DerivedI> & I,
+              const Eigen::PlainObjectBase<DerivedV> & V,
+              const Eigen::PlainObjectBase<DerivedF> & F,
+              const Eigen::PlainObjectBase<DerivedI> & I,
               IndexType & v_index,
-              Eigen::MatrixBase<DerivedA> & A);
+              Eigen::PlainObjectBase<DerivedA> & A);
       // Find an edge that is reachable from infinity without crossing any faces.
       // Such edge is called "outer edge."
       //
@@ -66,12 +66,12 @@ namespace igl
           typename DerivedA
           >
       IGL_INLINE void outer_edge(
-              const Eigen::MatrixBase<DerivedV> & V,
-              const Eigen::MatrixBase<DerivedF> & F,
-              const Eigen::MatrixBase<DerivedI> & I,
+              const Eigen::PlainObjectBase<DerivedV> & V,
+              const Eigen::PlainObjectBase<DerivedF> & F,
+              const Eigen::PlainObjectBase<DerivedI> & I,
               IndexType & v1,
               IndexType & v2,
-              Eigen::MatrixBase<DerivedA> & A);
+              Eigen::PlainObjectBase<DerivedA> & A);
 
     }
   }

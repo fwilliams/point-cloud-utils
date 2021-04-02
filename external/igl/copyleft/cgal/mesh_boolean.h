@@ -54,9 +54,9 @@ namespace igl
         const Eigen::MatrixBase<DerivedVB > & VB,
         const Eigen::MatrixBase<DerivedFB > & FB,
         const MeshBooleanType & type,
-        Eigen::MatrixBase<DerivedVC > & VC,
-        Eigen::MatrixBase<DerivedFC > & FC,
-        Eigen::MatrixBase<DerivedJ > & J);
+        Eigen::PlainObjectBase<DerivedVC > & VC,
+        Eigen::PlainObjectBase<DerivedFC > & FC,
+        Eigen::PlainObjectBase<DerivedJ > & J);
       template <
         typename DerivedVA,
         typename DerivedFA,
@@ -71,9 +71,9 @@ namespace igl
         const Eigen::MatrixBase<DerivedVB > & VB,
         const Eigen::MatrixBase<DerivedFB > & FB,
         const std::string & type_str,
-        Eigen::MatrixBase<DerivedVC > & VC,
-        Eigen::MatrixBase<DerivedFC > & FC,
-        Eigen::MatrixBase<DerivedJ > & J);
+        Eigen::PlainObjectBase<DerivedVC > & VC,
+        Eigen::PlainObjectBase<DerivedFC > & FC,
+        Eigen::PlainObjectBase<DerivedJ > & J);
       //
       //  Inputs:
       //    VA  #VA by 3 list of vertex positions of first mesh
@@ -108,9 +108,9 @@ namespace igl
           const Eigen::MatrixBase<DerivedFB> & FB,
           const std::function<int(const Eigen::Matrix<int,1,Eigen::Dynamic>) >& wind_num_op,
           const std::function<int(const int, const int)> & keep,
-          Eigen::MatrixBase<DerivedVC > & VC,
-          Eigen::MatrixBase<DerivedFC > & FC,
-          Eigen::MatrixBase<DerivedJ > & J);
+          Eigen::PlainObjectBase<DerivedVC > & VC,
+          Eigen::PlainObjectBase<DerivedFC > & FC,
+          Eigen::PlainObjectBase<DerivedJ > & J);
       //  MESH_BOOLEAN Variadic boolean operations
       //
       //  Inputs:
@@ -142,9 +142,9 @@ namespace igl
           const std::vector<DerivedF > & Flist,
           const std::function<int(const Eigen::Matrix<int,1,Eigen::Dynamic>) >& wind_num_op,
           const std::function<int(const int, const int)> & keep,
-          Eigen::MatrixBase<DerivedVC > & VC,
-          Eigen::MatrixBase<DerivedFC > & FC,
-          Eigen::MatrixBase<DerivedJ > & J);
+          Eigen::PlainObjectBase<DerivedVC > & VC,
+          Eigen::PlainObjectBase<DerivedFC > & FC,
+          Eigen::PlainObjectBase<DerivedJ > & J);
       template <
         typename DerivedV,
         typename DerivedF,
@@ -155,9 +155,9 @@ namespace igl
           const std::vector<DerivedV > & Vlist,
           const std::vector<DerivedF > & Flist,
           const MeshBooleanType & type,
-          Eigen::MatrixBase<DerivedVC > & VC,
-          Eigen::MatrixBase<DerivedFC > & FC,
-          Eigen::MatrixBase<DerivedJ > & J);
+          Eigen::PlainObjectBase<DerivedVC > & VC,
+          Eigen::PlainObjectBase<DerivedFC > & FC,
+          Eigen::PlainObjectBase<DerivedJ > & J);
       // Given a merged mesh (V,F) and list of sizes of inputs
       //
       // Inputs:
@@ -189,9 +189,9 @@ namespace igl
           const Eigen::MatrixBase<Derivedsizes> & sizes,
           const std::function<int(const Eigen::Matrix<int,1,Eigen::Dynamic>) >& wind_num_op,
           const std::function<int(const int, const int)> & keep,
-          Eigen::MatrixBase<DerivedVC > & VC,
-          Eigen::MatrixBase<DerivedFC > & FC,
-          Eigen::MatrixBase<DerivedJ > & J);
+          Eigen::PlainObjectBase<DerivedVC > & VC,
+          Eigen::PlainObjectBase<DerivedFC > & FC,
+          Eigen::PlainObjectBase<DerivedJ > & J);
       //  Inputs:
       //    VA  #VA by 3 list of vertex positions of first mesh
       //    FA  #FA by 3 list of triangle indices into VA
@@ -216,8 +216,8 @@ namespace igl
           const Eigen::MatrixBase<DerivedVB > & VB,
           const Eigen::MatrixBase<DerivedFB > & FB,
           const MeshBooleanType & type,
-          Eigen::MatrixBase<DerivedVC > & VC,
-          Eigen::MatrixBase<DerivedFC > & FC);
+          Eigen::PlainObjectBase<DerivedVC > & VC,
+          Eigen::PlainObjectBase<DerivedFC > & FC);
     }
   }
 }

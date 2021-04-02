@@ -33,12 +33,12 @@ namespace igl {
   //
 template <typename DerivedV, typename DerivedF, typename DerivedK>
 IGL_INLINE void parallel_transport_angles(
-const Eigen::MatrixBase<DerivedV>&V,
-const Eigen::MatrixBase<DerivedF>&F,
-const Eigen::MatrixBase<DerivedV>&FN,
+const Eigen::PlainObjectBase<DerivedV>&V,
+const Eigen::PlainObjectBase<DerivedF>&F,
+const Eigen::PlainObjectBase<DerivedV>&FN,
 const Eigen::MatrixXi &E2F,
 const Eigen::MatrixXi &F2E,
-Eigen::MatrixBase<DerivedK>&K);
+Eigen::PlainObjectBase<DerivedK>&K);
 
 };
 

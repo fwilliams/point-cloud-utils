@@ -18,8 +18,8 @@ namespace igl
   IGL_INLINE void max(
     const Eigen::SparseMatrix<AType> & A,
     const int dim,
-    Eigen::MatrixBase<DerivedB> & B,
-    Eigen::MatrixBase<DerivedI> & I);
+    Eigen::PlainObjectBase<DerivedB> & B,
+    Eigen::PlainObjectBase<DerivedI> & I);
 }
 #ifndef IGL_STATIC_LIBRARY
 #  include "max.cpp"

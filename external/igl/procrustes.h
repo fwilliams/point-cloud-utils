@@ -54,8 +54,8 @@ namespace igl
     bool includeScaling,
     bool includeReflections,
     Scalar& scale,
-    Eigen::MatrixBase<DerivedR>& R,
-    Eigen::MatrixBase<DerivedT>& t);
+    Eigen::PlainObjectBase<DerivedR>& R,
+    Eigen::PlainObjectBase<DerivedT>& t);
   // Same as above but returns Eigen transformation object.
   //
   // Templates:
@@ -102,8 +102,8 @@ namespace igl
     const Eigen::MatrixBase<DerivedY>& Y,
     bool includeScaling,
     bool includeReflections,
-    Eigen::MatrixBase<DerivedR>& S,
-    Eigen::MatrixBase<DerivedT>& t);
+    Eigen::PlainObjectBase<DerivedR>& S,
+    Eigen::PlainObjectBase<DerivedT>& t);
 
   // Convenient wrapper for rigid case (no scaling, no reflections)
   template <
@@ -114,8 +114,8 @@ namespace igl
   IGL_INLINE void procrustes(
     const Eigen::MatrixBase<DerivedX>& X,
     const Eigen::MatrixBase<DerivedY>& Y,
-    Eigen::MatrixBase<DerivedR>& R,
-    Eigen::MatrixBase<DerivedT>& t);
+    Eigen::PlainObjectBase<DerivedR>& R,
+    Eigen::PlainObjectBase<DerivedT>& t);
 
   // Convenient wrapper for 2D case.
   template <
@@ -127,7 +127,7 @@ namespace igl
     const Eigen::MatrixBase<DerivedX>& X,
     const Eigen::MatrixBase<DerivedY>& Y,
     Eigen::Rotation2D<Scalar>& R,
-    Eigen::MatrixBase<DerivedT>& t);
+    Eigen::PlainObjectBase<DerivedT>& t);
 }
 
 #ifndef IGL_STATIC_LIBRARY

@@ -31,7 +31,7 @@ namespace igl
         public:
           template<typename DerivedW>
             typename DerivedW::Scalar operator()(
-                const Eigen::MatrixBase<DerivedW>& /*win_nums*/) const {
+                const Eigen::PlainObjectBase<DerivedW>& /*win_nums*/) const {
               throw (std::runtime_error("not implemented!"));
             }
       };
@@ -42,7 +42,7 @@ namespace igl
         public:
           template<typename DerivedW>
           typename DerivedW::Scalar operator()(
-              const Eigen::MatrixBase<DerivedW>& win_nums) const 
+              const Eigen::PlainObjectBase<DerivedW>& win_nums) const 
           {
             for(int i = 0;i<win_nums.size();i++)
             {
@@ -58,7 +58,7 @@ namespace igl
         public:
           template<typename DerivedW>
           typename DerivedW::Scalar operator()(
-              const Eigen::MatrixBase<DerivedW>& win_nums) const 
+              const Eigen::PlainObjectBase<DerivedW>& win_nums) const 
           {
             for(int i = 0;i<win_nums.size();i++)
             {
@@ -74,7 +74,7 @@ namespace igl
         public:
           template<typename DerivedW>
           typename DerivedW::Scalar operator()(
-              const Eigen::MatrixBase<DerivedW>& win_nums) const 
+              const Eigen::PlainObjectBase<DerivedW>& win_nums) const 
           {
             assert(win_nums.size()>1);
             // Union of objects 1 through n-1
@@ -95,7 +95,7 @@ namespace igl
         public:
           template<typename DerivedW>
           typename DerivedW::Scalar operator()(
-              const Eigen::MatrixBase<DerivedW>& win_nums) const 
+              const Eigen::PlainObjectBase<DerivedW>& win_nums) const 
           {
             // If inside an odd number of objects
             int count = 0;
@@ -112,7 +112,7 @@ namespace igl
         public:
           template<typename DerivedW>
             typename DerivedW::Scalar operator()(
-                const Eigen::MatrixBase<DerivedW>& /*win_nums*/) const {
+                const Eigen::PlainObjectBase<DerivedW>& /*win_nums*/) const {
               return true;
             }
       };
@@ -133,7 +133,7 @@ namespace igl
         public:
           template<typename DerivedW>
             short operator()(
-                const Eigen::MatrixBase<DerivedW>& /*win_nums*/) const {
+                const Eigen::PlainObjectBase<DerivedW>& /*win_nums*/) const {
               throw std::runtime_error("Not implemented");
             }
       };

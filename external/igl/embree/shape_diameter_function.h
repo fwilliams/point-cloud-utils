@@ -31,10 +31,10 @@ namespace igl
       typename DerivedS >
     IGL_INLINE void shape_diameter_function(
       const EmbreeIntersector & ei,
-      const Eigen::MatrixBase<DerivedP> & P,
-      const Eigen::MatrixBase<DerivedN> & N,
+      const Eigen::PlainObjectBase<DerivedP> & P,
+      const Eigen::PlainObjectBase<DerivedN> & N,
       const int num_samples,
-      Eigen::MatrixBase<DerivedS> & S);
+      Eigen::PlainObjectBase<DerivedS> & S);
     // Wrapper which builds new EmbreeIntersector for (V,F). That's expensive so
     // avoid this if repeatedly calling.
     template <
@@ -44,12 +44,12 @@ namespace igl
       typename DerivedN,
       typename DerivedS >
     IGL_INLINE void shape_diameter_function(
-      const Eigen::MatrixBase<DerivedV> & V,
-      const Eigen::MatrixBase<DerivedF> & F,
-      const Eigen::MatrixBase<DerivedP> & P,
-      const Eigen::MatrixBase<DerivedN> & N,
+      const Eigen::PlainObjectBase<DerivedV> & V,
+      const Eigen::PlainObjectBase<DerivedF> & F,
+      const Eigen::PlainObjectBase<DerivedP> & P,
+      const Eigen::PlainObjectBase<DerivedN> & N,
       const int num_samples,
-      Eigen::MatrixBase<DerivedS> & S);
+      Eigen::PlainObjectBase<DerivedS> & S);
   }
 };
 #ifndef IGL_STATIC_LIBRARY

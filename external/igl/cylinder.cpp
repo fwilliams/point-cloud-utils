@@ -14,8 +14,8 @@ template <typename DerivedV, typename DerivedF>
 IGL_INLINE void igl::cylinder(
   const int axis_devisions,
   const int height_devisions,
-  Eigen::MatrixBase<DerivedV> & V,
-  Eigen::MatrixBase<DerivedF> & F)
+  Eigen::PlainObjectBase<DerivedV> & V,
+  Eigen::PlainObjectBase<DerivedF> & F)
 {
   V.resize(axis_devisions*height_devisions,3);
   F.resize(2*(axis_devisions*(height_devisions-1)),3);
@@ -48,5 +48,5 @@ IGL_INLINE void igl::cylinder(
 }
 
 #ifdef IGL_STATIC_LIBRARY
-template void igl::cylinder<Eigen::Matrix<double, -1, -1, 0, -1, -1>, Eigen::Matrix<int, -1, -1, 0, -1, -1> >(int, int, Eigen::MatrixBase<Eigen::Matrix<double, -1, -1, 0, -1, -1> >&, Eigen::MatrixBase<Eigen::Matrix<int, -1, -1, 0, -1, -1> >&);
+template void igl::cylinder<Eigen::Matrix<double, -1, -1, 0, -1, -1>, Eigen::Matrix<int, -1, -1, 0, -1, -1> >(int, int, Eigen::PlainObjectBase<Eigen::Matrix<double, -1, -1, 0, -1, -1> >&, Eigen::PlainObjectBase<Eigen::Matrix<int, -1, -1, 0, -1, -1> >&);
 #endif

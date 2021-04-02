@@ -49,8 +49,8 @@ namespace igl
       IGL_INLINE void projected_cdt(
         const std::vector<CGAL::Object> & objects,
         const CGAL::Plane_3<Kernel> & P,
-        Eigen::MatrixBase<DerivedV> & V,
-        Eigen::MatrixBase<DerivedF> & F);
+        Eigen::PlainObjectBase<DerivedV> & V,
+        Eigen::PlainObjectBase<DerivedF> & F);
     }
   }
 }

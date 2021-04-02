@@ -66,15 +66,15 @@ namespace igl
   template <typename DerivedV, typename DerivedF>
   IGL_INLINE bool readOFF(
     const std::string str,
-    Eigen::MatrixBase<DerivedV>& V,
-    Eigen::MatrixBase<DerivedF>& F);
+    Eigen::PlainObjectBase<DerivedV>& V,
+    Eigen::PlainObjectBase<DerivedF>& F);
 
   template <typename DerivedV, typename DerivedF>
   IGL_INLINE bool readOFF(
     const std::string str,
-    Eigen::MatrixBase<DerivedV>& V,
-    Eigen::MatrixBase<DerivedF>& F,
-    Eigen::MatrixBase<DerivedV>& N);
+    Eigen::PlainObjectBase<DerivedV>& V,
+    Eigen::PlainObjectBase<DerivedF>& F,
+    Eigen::PlainObjectBase<DerivedV>& N);
 #endif
 
 }

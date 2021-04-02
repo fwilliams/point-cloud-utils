@@ -51,8 +51,8 @@ template < typename Kernel, typename DerivedV, typename DerivedF>
 IGL_INLINE void igl::copyleft::cgal::projected_cdt(
   const std::vector<CGAL::Object> & objects,
   const CGAL::Plane_3<Kernel> & P,
-  Eigen::MatrixBase<DerivedV> & V,
-  Eigen::MatrixBase<DerivedF> & F)
+  Eigen::PlainObjectBase<DerivedV> & V,
+  Eigen::PlainObjectBase<DerivedF> & F)
 {
   std::vector<CGAL::Point_3<Kernel> > vertices;
   std::vector<std::vector<typename DerivedF::Scalar> > faces;

@@ -26,7 +26,7 @@ namespace igl
   IGL_INLINE void all(
     const Eigen::SparseMatrix<AType> & A, 
     const int dim,
-    Eigen::MatrixBase<DerivedB>& B);
+    Eigen::PlainObjectBase<DerivedB>& B);
 }
 #ifndef IGL_STATIC_LIBRARY
 #  include "all.cpp"

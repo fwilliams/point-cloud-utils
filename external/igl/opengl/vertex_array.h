@@ -22,11 +22,11 @@ namespace igl
       typename DerivedF>
     IGL_INLINE void vertex_array(
       // Note: Unlike most libigl functions, the **input** Eigen matrices must
-      // be `Eigen::MatrixBase` because we want to directly access it's
+      // be `Eigen::PlainObjectBase` because we want to directly access it's
       // underlying storage. It cannot be `Eigen::MatrixBase` (see
       // http://stackoverflow.com/questions/25094948/)
-      const Eigen::MatrixBase<DerivedV> & V,
-      const Eigen::MatrixBase<DerivedF> & F,
+      const Eigen::PlainObjectBase<DerivedV> & V,
+      const Eigen::PlainObjectBase<DerivedF> & F,
       GLuint & va_id,
       GLuint & ab_id,
       GLuint & eab_id);

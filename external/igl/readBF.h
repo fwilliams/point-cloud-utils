@@ -26,9 +26,9 @@ namespace igl
     typename DerivedO>
   IGL_INLINE bool readBF(
     const std::string & filename,
-    Eigen::MatrixBase<DerivedWI> & WI,
-    Eigen::MatrixBase<DerivedP> & P,
-    Eigen::MatrixBase<DerivedO> & O);
+    Eigen::PlainObjectBase<DerivedWI> & WI,
+    Eigen::PlainObjectBase<DerivedP> & P,
+    Eigen::PlainObjectBase<DerivedO> & O);
   // Read bone forest into pure bone-skeleton format, expects only bones (no
   // point handles), and that a root in the .bf <---> no weight attachment.
   //
@@ -53,12 +53,12 @@ namespace igl
     typename DerivedP>
   IGL_INLINE bool readBF(
     const std::string & filename,
-    Eigen::MatrixBase<DerivedWI> & WI,
-    Eigen::MatrixBase<DerivedbfP> & bfP,
-    Eigen::MatrixBase<DerivedO> & O,
-    Eigen::MatrixBase<DerivedC> & C,
-    Eigen::MatrixBase<DerivedBE> & BE,
-    Eigen::MatrixBase<DerivedP> & P);
+    Eigen::PlainObjectBase<DerivedWI> & WI,
+    Eigen::PlainObjectBase<DerivedbfP> & bfP,
+    Eigen::PlainObjectBase<DerivedO> & O,
+    Eigen::PlainObjectBase<DerivedC> & C,
+    Eigen::PlainObjectBase<DerivedBE> & BE,
+    Eigen::PlainObjectBase<DerivedP> & P);
 }
 
 #ifndef IGL_STATIC_LIBRARY

@@ -27,9 +27,9 @@ namespace igl
   IGL_INLINE void dfs(
     const std::vector<std::vector<AType> > & A,
     const size_t s,
-    Eigen::MatrixBase<DerivedD> & D,
-    Eigen::MatrixBase<DerivedP> & P,
-    Eigen::MatrixBase<DerivedC> & C);
+    Eigen::PlainObjectBase<DerivedD> & D,
+    Eigen::PlainObjectBase<DerivedP> & P,
+    Eigen::PlainObjectBase<DerivedC> & C);
   template <
     typename AType,
     typename DType,

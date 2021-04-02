@@ -28,10 +28,10 @@ namespace igl
     typename Derivedup,
     typename DerivedR >
   IGL_INLINE void look_at(
-    const Eigen::MatrixBase<Derivedeye> & eye,
-    const Eigen::MatrixBase<Derivedcenter> & center,
-    const Eigen::MatrixBase<Derivedup> & up,
-    Eigen::MatrixBase<DerivedR> & R);
+    const Eigen::PlainObjectBase<Derivedeye> & eye,
+    const Eigen::PlainObjectBase<Derivedcenter> & center,
+    const Eigen::PlainObjectBase<Derivedup> & up,
+    Eigen::PlainObjectBase<DerivedR> & R);
 }
 
 #ifndef IGL_STATIC_LIBRARY

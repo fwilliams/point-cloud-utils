@@ -27,8 +27,8 @@ namespace igl
         typename DerivedV,
         typename DerivedF>
       IGL_INLINE void to_cork_mesh(
-        const Eigen::MatrixBase<DerivedV > & V,
-        const Eigen::MatrixBase<DerivedF > & F,
+        const Eigen::PlainObjectBase<DerivedV > & V,
+        const Eigen::PlainObjectBase<DerivedF > & F,
         CorkTriMesh & mesh);
     }
   }

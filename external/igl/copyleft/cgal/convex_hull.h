@@ -29,8 +29,8 @@ namespace igl
         typename DerivedG>
       IGL_INLINE void convex_hull(
         const Eigen::MatrixBase<DerivedV> & V,
-        Eigen::MatrixBase<DerivedW> & W,
-        Eigen::MatrixBase<DerivedG> & G);
+        Eigen::PlainObjectBase<DerivedW> & W,
+        Eigen::PlainObjectBase<DerivedG> & G);
       // Given a set of points (V), compute the convex hull as a triangle mesh (F)
       // over input vertex set (V)
       // 
@@ -44,7 +44,7 @@ namespace igl
         typename DerivedF>
       IGL_INLINE void convex_hull(
         const Eigen::MatrixBase<DerivedV> & V,
-        Eigen::MatrixBase<DerivedF> & F);
+        Eigen::PlainObjectBase<DerivedF> & F);
     }
   }
 }

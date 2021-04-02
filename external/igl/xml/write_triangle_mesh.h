@@ -8,6 +8,7 @@
 #ifndef IGL_XML_WRITE_TRIANGLE_MESH_H
 #define IGL_XML_WRITE_TRIANGLE_MESH_H
 #include "../igl_inline.h"
+#include "../FileEncoding.h"
 
 #include <Eigen/Core>
 #include <string>
@@ -31,9 +32,9 @@ namespace igl
     template <typename DerivedV, typename DerivedF>
     IGL_INLINE bool write_triangle_mesh(
       const std::string str,
-      const Eigen::MatrixBase<DerivedV>& V,
-      const Eigen::MatrixBase<DerivedF>& F,
-      const bool ascii = true);
+      const Eigen::PlainObjectBase<DerivedV>& V,
+      const Eigen::PlainObjectBase<DerivedF>& F,
+      const FileEncoding fe = FileEncoding::Ascii);
   }
 }
 

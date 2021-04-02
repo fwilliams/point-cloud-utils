@@ -32,7 +32,7 @@ namespace igl
     const typename DerivedP::Scalar top,
     const typename DerivedP::Scalar nearVal,
     const typename DerivedP::Scalar farVal,
-    Eigen::MatrixBase<DerivedP> & P);
+    Eigen::PlainObjectBase<DerivedP> & P);
 }
 
 #ifndef IGL_STATIC_LIBRARY

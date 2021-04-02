@@ -3,7 +3,8 @@ from ._pcu_internal import sample_mesh_poisson_disk, sample_mesh_random, \
     k_nearest_neighbors, one_sided_hausdorff_distance, \
     morton_encode, morton_decode, morton_knn, \
     lloyd_2d, lloyd_3d, voronoi_centroids_unit_cube, sample_mesh_lloyd, \
-    read_obj, write_obj, read_off, write_off, read_ply, write_ply
+    read_obj, write_obj, read_off, write_off, read_ply, write_ply, \
+    remove_duplicate_points, remove_duplicate_mesh_vertices
 
 from ._sinkhorn import *
 # from ._mesh_io import * TODO: Merge in new mesh IO stuff

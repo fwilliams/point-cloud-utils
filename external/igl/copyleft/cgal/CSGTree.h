@@ -28,7 +28,7 @@ namespace igl
       {
         public:
           typedef CGAL::Epeck::FT ExactScalar;
-          //typedef Eigen::MatrixBase<DerivedF> POBF;
+          //typedef Eigen::PlainObjectBase<DerivedF> POBF;
           typedef Eigen::MatrixXi POBF;
           typedef POBF::Index FIndex;
           typedef Eigen::Matrix<ExactScalar,Eigen::Dynamic,3> MatrixX3E;
@@ -128,7 +128,7 @@ namespace igl
           //     converted to exact)
           //   F  #F by 3 list of mesh face indices into V
           template <typename DerivedV>
-          CSGTree(const Eigen::MatrixBase<DerivedV> & V, const POBF & F)//:
+          CSGTree(const Eigen::PlainObjectBase<DerivedV> & V, const POBF & F)//:
           // Possible Eigen bug:
           // https://forum.kde.org/viewtopic.php?f=74&t=128414
             //m_V(V.template cast<ExactScalar>()),m_F(F)

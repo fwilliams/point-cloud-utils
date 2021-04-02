@@ -65,11 +65,11 @@ namespace igl
         const Eigen::MatrixBase<DerivedV> & V,
         const Eigen::MatrixBase<DerivedF> & F,
         const RemeshSelfIntersectionsParam & params,
-        Eigen::MatrixBase<DerivedVV> & VV,
-        Eigen::MatrixBase<DerivedFF> & FF,
-        Eigen::MatrixBase<DerivedIF> & IF,
-        Eigen::MatrixBase<DerivedJ> & J,
-        Eigen::MatrixBase<DerivedIM> & IM);
+        Eigen::PlainObjectBase<DerivedVV> & VV,
+        Eigen::PlainObjectBase<DerivedFF> & FF,
+        Eigen::PlainObjectBase<DerivedIF> & IF,
+        Eigen::PlainObjectBase<DerivedJ> & J,
+        Eigen::PlainObjectBase<DerivedIM> & IM);
     }
   }
 }

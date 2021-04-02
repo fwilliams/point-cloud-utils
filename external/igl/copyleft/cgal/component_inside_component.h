@@ -37,12 +37,12 @@ namespace igl {
         //   return true iff (V1, F1, I1) is entirely inside of (V2, F2, I2).
         template<typename DerivedV, typename DerivedF, typename DerivedI>
             IGL_INLINE bool component_inside_component(
-                    const Eigen::MatrixBase<DerivedV>& V1,
-                    const Eigen::MatrixBase<DerivedF>& F1,
-                    const Eigen::MatrixBase<DerivedI>& I1,
-                    const Eigen::MatrixBase<DerivedV>& V2,
-                    const Eigen::MatrixBase<DerivedF>& F2,
-                    const Eigen::MatrixBase<DerivedI>& I2);
+                    const Eigen::PlainObjectBase<DerivedV>& V1,
+                    const Eigen::PlainObjectBase<DerivedF>& F1,
+                    const Eigen::PlainObjectBase<DerivedI>& I1,
+                    const Eigen::PlainObjectBase<DerivedV>& V2,
+                    const Eigen::PlainObjectBase<DerivedF>& F2,
+                    const Eigen::PlainObjectBase<DerivedI>& I2);
 
         // Determine if mesh (V1, F1) is inside of mesh (V2, F2).
         //
@@ -61,10 +61,10 @@ namespace igl {
         //   return true iff (V1, F1) is entirely inside of (V2, F2).
         template<typename DerivedV, typename DerivedF>
             IGL_INLINE bool component_inside_component(
-                    const Eigen::MatrixBase<DerivedV>& V1,
-                    const Eigen::MatrixBase<DerivedF>& F1,
-                    const Eigen::MatrixBase<DerivedV>& V2,
-                    const Eigen::MatrixBase<DerivedF>& F2);
+                    const Eigen::PlainObjectBase<DerivedV>& V1,
+                    const Eigen::PlainObjectBase<DerivedF>& F1,
+                    const Eigen::PlainObjectBase<DerivedV>& V2,
+                    const Eigen::PlainObjectBase<DerivedF>& F2);
     }
   }
 }

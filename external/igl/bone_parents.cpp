@@ -10,7 +10,7 @@
 template <typename DerivedBE, typename DerivedP>
 IGL_INLINE void igl::bone_parents(
   const Eigen::MatrixBase<DerivedBE>& BE,
-  Eigen::MatrixBase<DerivedP>& P)
+  Eigen::PlainObjectBase<DerivedP>& P)
 {
   P.resize(BE.rows(),1);
   // Stupid O(n²) version
@@ -28,5 +28,5 @@ IGL_INLINE void igl::bone_parents(
 }
 
 #ifdef IGL_STATIC_LIBRARY
-template void igl::bone_parents<Eigen::Matrix<int, -1, -1, 0, -1, -1>, Eigen::Matrix<int, -1, 1, 0, -1, 1> >(Eigen::MatrixBase<Eigen::Matrix<int, -1, -1, 0, -1, -1> > const&, Eigen::MatrixBase<Eigen::Matrix<int, -1, 1, 0, -1, 1> >&);
+template void igl::bone_parents<Eigen::Matrix<int, -1, -1, 0, -1, -1>, Eigen::Matrix<int, -1, 1, 0, -1, 1> >(Eigen::MatrixBase<Eigen::Matrix<int, -1, -1, 0, -1, -1> > const&, Eigen::PlainObjectBase<Eigen::Matrix<int, -1, 1, 0, -1, 1> >&);
 #endif

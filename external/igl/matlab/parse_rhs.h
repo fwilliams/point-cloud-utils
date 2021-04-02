@@ -24,12 +24,12 @@ namespace igl
     template <typename DerivedV>
     IGL_INLINE void parse_rhs_double(
       const mxArray *prhs[], 
-      Eigen::MatrixBase<DerivedV> & V);
+      Eigen::PlainObjectBase<DerivedV> & V);
     // Reads in a matrix and subtracts 1
     template <typename DerivedV>
     IGL_INLINE void parse_rhs_index(
       const mxArray *prhs[], 
-      Eigen::MatrixBase<DerivedV> & V);
+      Eigen::PlainObjectBase<DerivedV> & V);
     template <typename VType>
     IGL_INLINE void parse_rhs(
       const mxArray *prhs[], 

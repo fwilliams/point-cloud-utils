@@ -35,9 +35,9 @@ namespace igl {
         typename DerivedF,
         typename DerivedC >
       IGL_INLINE size_t extract_cells(
-        const Eigen::MatrixBase<DerivedV>& V,
-        const Eigen::MatrixBase<DerivedF>& F,
-        Eigen::MatrixBase<DerivedC>& cells);
+        const Eigen::PlainObjectBase<DerivedV>& V,
+        const Eigen::PlainObjectBase<DerivedF>& F,
+        Eigen::PlainObjectBase<DerivedC>& cells);
 
       // Extract connected 3D space partitioned by mesh (V, F).
       //
@@ -65,14 +65,14 @@ namespace igl {
         typename DerivedEMAP,
         typename DerivedC >
       IGL_INLINE size_t extract_cells(
-        const Eigen::MatrixBase<DerivedV>& V,
-        const Eigen::MatrixBase<DerivedF>& F,
-        const Eigen::MatrixBase<DerivedP>& P,
-        const Eigen::MatrixBase<DerivedE>& E,
-        const Eigen::MatrixBase<DeriveduE>& uE,
+        const Eigen::PlainObjectBase<DerivedV>& V,
+        const Eigen::PlainObjectBase<DerivedF>& F,
+        const Eigen::PlainObjectBase<DerivedP>& P,
+        const Eigen::PlainObjectBase<DerivedE>& E,
+        const Eigen::PlainObjectBase<DeriveduE>& uE,
         const std::vector<std::vector<uE2EType> >& uE2E,
-        const Eigen::MatrixBase<DerivedEMAP>& EMAP,
-        Eigen::MatrixBase<DerivedC>& cells);
+        const Eigen::PlainObjectBase<DerivedEMAP>& EMAP,
+        Eigen::PlainObjectBase<DerivedC>& cells);
 
       // Extract connected 3D space partitioned by mesh (V,F) composed of
       // **possibly multiple components** (the name of this function is
@@ -99,13 +99,13 @@ namespace igl {
         typename DerivedEMAP,
         typename DerivedC >
       IGL_INLINE size_t extract_cells_single_component(
-        const Eigen::MatrixBase<DerivedV>& V,
-        const Eigen::MatrixBase<DerivedF>& F,
-        const Eigen::MatrixBase<DerivedP>& P,
-        const Eigen::MatrixBase<DeriveduE>& uE,
+        const Eigen::PlainObjectBase<DerivedV>& V,
+        const Eigen::PlainObjectBase<DerivedF>& F,
+        const Eigen::PlainObjectBase<DerivedP>& P,
+        const Eigen::PlainObjectBase<DeriveduE>& uE,
         const std::vector<std::vector<uE2EType> >& uE2E,
-        const Eigen::MatrixBase<DerivedEMAP>& EMAP,
-        Eigen::MatrixBase<DerivedC>& cells);
+        const Eigen::PlainObjectBase<DerivedEMAP>& EMAP,
+        Eigen::PlainObjectBase<DerivedC>& cells);
     }
   }
 }

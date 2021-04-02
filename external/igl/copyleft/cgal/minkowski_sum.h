@@ -47,9 +47,9 @@ namespace igl
         const Eigen::MatrixBase<DerivedVB> & VB,
         const Eigen::MatrixBase<DerivedFB> & FB,
         const bool resolve_overlaps,
-        Eigen::MatrixBase<DerivedW> & W,
-        Eigen::MatrixBase<DerivedG> & G,
-        Eigen::MatrixBase<DerivedJ> & J);
+        Eigen::PlainObjectBase<DerivedW> & W,
+        Eigen::PlainObjectBase<DerivedG> & G,
+        Eigen::PlainObjectBase<DerivedJ> & J);
       // Compute the Minkowski sum of a closed triangle mesh (V,F) and a
       // segment [s,d] in 3D.
       //
@@ -80,9 +80,9 @@ namespace igl
         const Eigen::Matrix<sType,1,sCols,sOptions> & s,
         const Eigen::Matrix<dType,1,dCols,dOptions> & d,
         const bool resolve_overlaps,
-        Eigen::MatrixBase<DerivedW> & W,
-        Eigen::MatrixBase<DerivedG> & G,
-        Eigen::MatrixBase<DerivedJ> & J);
+        Eigen::PlainObjectBase<DerivedW> & W,
+        Eigen::PlainObjectBase<DerivedG> & G,
+        Eigen::PlainObjectBase<DerivedJ> & J);
       template <
         typename DerivedVA,
         typename DerivedFA,
@@ -96,9 +96,9 @@ namespace igl
         const Eigen::MatrixBase<DerivedFA> & FA,
         const Eigen::Matrix<sType,1,sCols,sOptions> & s,
         const Eigen::Matrix<dType,1,dCols,dOptions> & d,
-        Eigen::MatrixBase<DerivedW> & W,
-        Eigen::MatrixBase<DerivedG> & G,
-        Eigen::MatrixBase<DerivedJ> & J);
+        Eigen::PlainObjectBase<DerivedW> & W,
+        Eigen::PlainObjectBase<DerivedG> & G,
+        Eigen::PlainObjectBase<DerivedJ> & J);
     }
   }
 }

@@ -27,10 +27,10 @@ template <
   typename DerivedF,
   typename Derivedb>
 IGL_INLINE bool igl::arap_precomputation(
-  const Eigen::MatrixBase<DerivedV> & V,
-  const Eigen::MatrixBase<DerivedF> & F,
+  const Eigen::PlainObjectBase<DerivedV> & V,
+  const Eigen::PlainObjectBase<DerivedF> & F,
   const int dim,
-  const Eigen::MatrixBase<Derivedb> & b,
+  const Eigen::PlainObjectBase<Derivedb> & b,
   ARAPData & data)
 {
   using namespace std;
@@ -64,8 +64,8 @@ IGL_INLINE bool igl::arap_precomputation(
     project_isometrically_to_plane(V,F,plane_V,plane_F,ref_map);
     repdiag(ref_map,dim,ref_map_dim);
   }
-  const MatrixBase<DerivedV>& ref_V = (flat?plane_V:V);
-  const MatrixBase<DerivedF>& ref_F = (flat?plane_F:F);
+  const PlainObjectBase<DerivedV>& ref_V = (flat?plane_V:V);
+  const PlainObjectBase<DerivedF>& ref_F = (flat?plane_F:F);
   SparseMatrixS L;
   cotmatrix(V,F,L);
 
@@ -169,9 +169,9 @@ template <
   typename Derivedbc,
   typename DerivedU>
 IGL_INLINE bool igl::arap_solve(
-  const Eigen::MatrixBase<Derivedbc> & bc,
+  const Eigen::PlainObjectBase<Derivedbc> & bc,
   ARAPData & data,
-  Eigen::MatrixBase<DerivedU> & U)
+  Eigen::PlainObjectBase<DerivedU> & U)
 {
   using namespace Eigen;
   using namespace std;
@@ -307,6 +307,6 @@ IGL_INLINE bool igl::arap_solve(
 }
 
 #ifdef IGL_STATIC_LIBRARY
-template bool igl::arap_solve<Eigen::Matrix<double, -1, -1, 0, -1, -1>, Eigen::Matrix<double, -1, -1, 0, -1, -1> >(Eigen::MatrixBase<Eigen::Matrix<double, -1, -1, 0, -1, -1> > const&, igl::ARAPData&, Eigen::MatrixBase<Eigen::Matrix<double, -1, -1, 0, -1, -1> >&);
-template bool igl::arap_precomputation<Eigen::Matrix<double, -1, -1, 0, -1, -1>, Eigen::Matrix<int, -1, -1, 0, -1, -1>, Eigen::Matrix<int, -1, 1, 0, -1, 1> >(Eigen::MatrixBase<Eigen::Matrix<double, -1, -1, 0, -1, -1> > const&, Eigen::MatrixBase<Eigen::Matrix<int, -1, -1, 0, -1, -1> > const&, int, Eigen::MatrixBase<Eigen::Matrix<int, -1, 1, 0, -1, 1> > const&, igl::ARAPData&);
+template bool igl::arap_solve<Eigen::Matrix<double, -1, -1, 0, -1, -1>, Eigen::Matrix<double, -1, -1, 0, -1, -1> >(Eigen::PlainObjectBase<Eigen::Matrix<double, -1, -1, 0, -1, -1> > const&, igl::ARAPData&, Eigen::PlainObjectBase<Eigen::Matrix<double, -1, -1, 0, -1, -1> >&);
+template bool igl::arap_precomputation<Eigen::Matrix<double, -1, -1, 0, -1, -1>, Eigen::Matrix<int, -1, -1, 0, -1, -1>, Eigen::Matrix<int, -1, 1, 0, -1, 1> >(Eigen::PlainObjectBase<Eigen::Matrix<double, -1, -1, 0, -1, -1> > const&, Eigen::PlainObjectBase<Eigen::Matrix<int, -1, -1, 0, -1, -1> > const&, int, Eigen::PlainObjectBase<Eigen::Matrix<int, -1, 1, 0, -1, 1> > const&, igl::ARAPData&);
 #endif

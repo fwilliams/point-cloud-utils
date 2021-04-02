@@ -11,7 +11,7 @@
 template <typename DerivedS, typename DerivedF>
 IGL_INLINE void igl::triangles_from_strip(
   const Eigen::MatrixBase<DerivedS>& S,
-  Eigen::MatrixBase<DerivedF>& F)
+  Eigen::PlainObjectBase<DerivedF>& F)
 {
   using namespace std;
   F.resize(S.size()-2,3);

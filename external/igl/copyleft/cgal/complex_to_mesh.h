@@ -33,8 +33,8 @@ namespace igl
       template <typename Tr, typename DerivedV, typename DerivedF>
       IGL_INLINE bool complex_to_mesh(
         const CGAL::Complex_2_in_triangulation_3<Tr> & c2t3,
-        Eigen::MatrixBase<DerivedV> & V, 
-        Eigen::MatrixBase<DerivedF> & F);
+        Eigen::PlainObjectBase<DerivedV> & V, 
+        Eigen::PlainObjectBase<DerivedF> & F);
     }
   }
 }

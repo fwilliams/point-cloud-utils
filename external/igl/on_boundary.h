@@ -38,8 +38,8 @@ namespace igl
   template <typename DerivedT, typename DerivedI, typename DerivedC>
   IGL_INLINE void on_boundary(
     const Eigen::MatrixBase<DerivedT>& T,
-    Eigen::MatrixBase<DerivedI>& I,
-    Eigen::MatrixBase<DerivedC>& C);
+    Eigen::PlainObjectBase<DerivedI>& I,
+    Eigen::PlainObjectBase<DerivedC>& C);
 }
 
 #ifndef IGL_STATIC_LIBRARY

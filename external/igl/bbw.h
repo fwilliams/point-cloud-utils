@@ -61,12 +61,12 @@ namespace igl
     typename Derivedbc,
     typename DerivedW>
   IGL_INLINE bool bbw(
-    const Eigen::MatrixBase<DerivedV> & V,
-    const Eigen::MatrixBase<DerivedEle> & Ele,
-    const Eigen::MatrixBase<Derivedb> & b,
-    const Eigen::MatrixBase<Derivedbc> & bc,
+    const Eigen::PlainObjectBase<DerivedV> & V,
+    const Eigen::PlainObjectBase<DerivedEle> & Ele,
+    const Eigen::PlainObjectBase<Derivedb> & b,
+    const Eigen::PlainObjectBase<Derivedbc> & bc,
     BBWData & data,
-    Eigen::MatrixBase<DerivedW> & W);
+    Eigen::PlainObjectBase<DerivedW> & W);
 }
 
 #ifndef IGL_STATIC_LIBRARY

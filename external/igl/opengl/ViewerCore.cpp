@@ -7,6 +7,7 @@
 // obtain one at http://mozilla.org/MPL/2.0/.
 
 #include "ViewerCore.h"
+#include "ViewerData.h"
 #include "gl.h"
 #include "../quat_to_mat.h"
 #include "../snap_to_fixed_up.h"
@@ -87,11 +88,16 @@ IGL_INLINE void igl::opengl::ViewerCore::get_scale_and_shift_to_fit_mesh(
 
 IGL_INLINE void igl::opengl::ViewerCore::clear_framebuffers()
 {
+  // The glScissor call ensures we only clear this core's buffers,
+  // (in case the user wants different background colors in each viewport.)
+  glScissor(viewport(0), viewport(1), viewport(2), viewport(3));
+  glEnable(GL_SCISSOR_TEST);
   glClearColor(background_color[0],
                background_color[1],
                background_color[2],
                background_color[3]);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  glDisable(GL_SCISSOR_TEST);
 }
 
 IGL_INLINE void igl::opengl::ViewerCore::draw(
@@ -112,7 +118,7 @@ IGL_INLINE void igl::opengl::ViewerCore::draw(
   /* Bind and potentially refresh mesh/line/point data */
   if (data.dirty)
   {
-    data.updateGL(data, data.invert_normals,data.meshgl);
+    data.updateGL(data, data.invert_normals, data.meshgl);
     data.dirty = MeshGL::DIRTY_NONE;
   }
   data.meshgl.bind_mesh();
@@ -166,6 +172,8 @@ IGL_INLINE void igl::opengl::ViewerCore::draw(
   GLint lighting_factori      = glGetUniformLocation(data.meshgl.shader_mesh,"lighting_factor");
   GLint fixed_colori          = glGetUniformLocation(data.meshgl.shader_mesh,"fixed_color");
   GLint texture_factori       = glGetUniformLocation(data.meshgl.shader_mesh,"texture_factor");
+  GLint matcap_factori        = glGetUniformLocation(data.meshgl.shader_mesh,"matcap_factor");
+  GLint double_sidedi         = glGetUniformLocation(data.meshgl.shader_mesh,"double_sided");
 
   glUniform1f(specular_exponenti, data.shininess);
   glUniform3fv(light_position_eyei, 1, light_position.data());
@@ -175,16 +183,19 @@ IGL_INLINE void igl::opengl::ViewerCore::draw(
   if (data.V.rows()>0)
   {
     // Render fill
-    if (data.show_faces)
+    if (is_set(data.show_faces))
     {
       // Texture
-      glUniform1f(texture_factori, data.show_texture ? 1.0f : 0.0f);
+      glUniform1f(texture_factori, is_set(data.show_texture) ? 1.0f : 0.0f);
+      glUniform1f(matcap_factori, is_set(data.use_matcap) ? 1.0f : 0.0f);
+      glUniform1f(double_sidedi, data.double_sided ? 1.0f : 0.0f);
       data.meshgl.draw_mesh(true);
+      glUniform1f(matcap_factori, 0.0f);
       glUniform1f(texture_factori, 0.0f);
     }
 
     // Render wireframe
-    if (data.show_lines)
+    if (is_set(data.show_lines))
     {
       glLineWidth(data.line_width);
       glUniform4f(fixed_colori,
@@ -196,9 +207,9 @@ IGL_INLINE void igl::opengl::ViewerCore::draw(
     }
   }
 
-  if (data.show_overlay)
+  if (is_set(data.show_overlay))
   {
-    if (data.show_overlay_depth)
+    if (is_set(data.show_overlay_depth))
       glEnable(GL_DEPTH_TEST);
     else
       glDisable(GL_DEPTH_TEST);
@@ -227,13 +238,17 @@ IGL_INLINE void igl::opengl::ViewerCore::draw(
       glUniformMatrix4fv(viewi, 1, GL_FALSE, view.data());
       glUniformMatrix4fv(proji, 1, GL_FALSE, proj.data());
       glPointSize(data.point_size);
-
       data.meshgl.draw_overlay_points();
     }
-
     glEnable(GL_DEPTH_TEST);
   }
 
+  if(is_set(data.show_vertex_labels)&&data.vertex_labels_positions.rows()>0) 
+    draw_labels(data, data.meshgl.vertex_labels);
+  if(is_set(data.show_face_labels)&&data.face_labels_positions.rows()>0) 
+    draw_labels(data, data.meshgl.face_labels);
+  if(is_set(data.show_custom_labels)&&data.labels_positions.rows()>0) 
+    draw_labels(data, data.meshgl.custom_labels);
 }
 
 IGL_INLINE void igl::opengl::ViewerCore::draw_buffer(ViewerData& data,
@@ -333,6 +348,34 @@ IGL_INLINE void igl::opengl::ViewerCore::draw_buffer(ViewerData& data,
   free(pixels);
 }
 
+// Define uniforms for text labels
+IGL_INLINE void igl::opengl::ViewerCore::draw_labels(
+  ViewerData& data,
+  const igl::opengl::MeshGL::TextGL& labels
+){
+  glDisable(GL_LINE_SMOOTH); // Clear settings if overlay is activated
+  data.meshgl.bind_labels(labels);
+  GLint viewi = glGetUniformLocation(data.meshgl.shader_text,"view");
+  GLint proji = glGetUniformLocation(data.meshgl.shader_text,"proj");
+  glUniformMatrix4fv(viewi, 1, GL_FALSE, view.data());
+  glUniformMatrix4fv(proji, 1, GL_FALSE, proj.data());
+  // Parameters for mapping characters from font atlass
+  float width  = viewport(2);
+  float height = viewport(3);
+  float text_shift_scale_factor = orthographic ? 0.01 : 0.03;
+  float render_scale = orthographic ? 0.6 : 1.7;
+  glUniform1f(glGetUniformLocation(data.meshgl.shader_text, "TextShiftFactor"), text_shift_scale_factor);
+  glUniform3f(glGetUniformLocation(data.meshgl.shader_text, "TextColor"), 0, 0, 0);
+  glUniform2f(glGetUniformLocation(data.meshgl.shader_text, "CellSize"), 1.0f / 16, (300.0f / 384) / 6);
+  glUniform2f(glGetUniformLocation(data.meshgl.shader_text, "CellOffset"), 0.5 / 256.0, 0.5 / 256.0);
+  glUniform2f(glGetUniformLocation(data.meshgl.shader_text, "RenderSize"), 
+                                    render_scale * 0.75 * 16 / (width), 
+                                    render_scale * 0.75 * 33.33 / (height));
+  glUniform2f(glGetUniformLocation(data.meshgl.shader_text, "RenderOrigin"), -2, 2);
+  data.meshgl.draw_labels(labels);
+  glEnable(GL_DEPTH_TEST);
+}
+
 IGL_INLINE void igl::opengl::ViewerCore::set_rotation_type(
   const igl::opengl::ViewerCore::RotationType & value)
 {
@@ -347,6 +390,28 @@ IGL_INLINE void igl::opengl::ViewerCore::set_rotation_type(
   }
 }
 
+IGL_INLINE void igl::opengl::ViewerCore::set(unsigned int &property_mask, bool value) const
+{
+  if (!value)
+    unset(property_mask);
+  else
+    property_mask |= id;
+}
+
+IGL_INLINE void igl::opengl::ViewerCore::unset(unsigned int &property_mask) const
+{
+  property_mask &= ~id;
+}
+
+IGL_INLINE void igl::opengl::ViewerCore::toggle(unsigned int &property_mask) const
+{
+  property_mask ^= id;
+}
+
+IGL_INLINE bool igl::opengl::ViewerCore::is_set(unsigned int property_mask) const
+{
+  return (property_mask & id);
+}
 
 IGL_INLINE igl::opengl::ViewerCore::ViewerCore()
 {
@@ -359,6 +424,7 @@ IGL_INLINE igl::opengl::ViewerCore::ViewerCore()
 
   // Default trackball
   trackball_angle = Eigen::Quaternionf::Identity();
+  rotation_type = ViewerCore::ROTATION_TYPE_TRACKBALL;
   set_rotation_type(ViewerCore::ROTATION_TYPE_TWO_AXIS_VALUATOR_FIXED_UP);
 
   // Camera parameters

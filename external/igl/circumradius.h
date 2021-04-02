@@ -17,7 +17,7 @@ namespace igl
   //   V  #V by dim list of mesh vertex positions
   //   F  #F by 3 list of triangle indices into V
   // Outputs:
-  //   R  #F list of circumradii
+  //   R  #F list of circumradius
   //
   template <
     typename DerivedV, 
@@ -26,7 +26,7 @@ namespace igl
   IGL_INLINE void circumradius(
     const Eigen::MatrixBase<DerivedV> & V, 
     const Eigen::MatrixBase<DerivedF> & F,
-    Eigen::MatrixBase<DerivedR> & R);
+    Eigen::PlainObjectBase<DerivedR> & R);
 }
 #ifndef IGL_STATIC_LIBRARY
 #  include "circumradius.cpp"

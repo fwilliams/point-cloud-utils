@@ -28,8 +28,8 @@ namespace igl
       template <typename DerivedV, typename DerivedF>
       IGL_INLINE bool read_triangle_mesh(
         const std::string str,
-        Eigen::MatrixBase<DerivedV>& V,
-        Eigen::MatrixBase<DerivedF>& F);
+        Eigen::PlainObjectBase<DerivedV>& V,
+        Eigen::PlainObjectBase<DerivedF>& F);
     }
   }
 }

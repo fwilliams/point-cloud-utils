@@ -16,8 +16,8 @@ template<
   typename DerivedF
   >
 IGL_INLINE void igl::copyleft::cgal::lexicographic_triangulation(
-    const Eigen::MatrixBase<DerivedP>& P,
-    Eigen::MatrixBase<DerivedF>& F)
+    const Eigen::PlainObjectBase<DerivedP>& P,
+    Eigen::PlainObjectBase<DerivedF>& F)
 {
   typedef typename DerivedP::Scalar Scalar;
   igl::lexicographic_triangulation(P, orient2D<Scalar>, F);

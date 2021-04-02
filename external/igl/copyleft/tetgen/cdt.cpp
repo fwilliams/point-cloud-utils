@@ -16,12 +16,12 @@ template <
   typename DerivedTT, 
   typename DerivedTF>
 IGL_INLINE bool igl::copyleft::tetgen::cdt(
-  const Eigen::MatrixBase<DerivedV>& V,
-  const Eigen::MatrixBase<DerivedF>& F,
+  const Eigen::PlainObjectBase<DerivedV>& V,
+  const Eigen::PlainObjectBase<DerivedF>& F,
   const CDTParam & param,
-  Eigen::MatrixBase<DerivedTV>& TV,
-  Eigen::MatrixBase<DerivedTT>& TT,
-  Eigen::MatrixBase<DerivedTF>& TF)
+  Eigen::PlainObjectBase<DerivedTV>& TV,
+  Eigen::PlainObjectBase<DerivedTT>& TT,
+  Eigen::PlainObjectBase<DerivedTF>& TF)
 {
   using namespace Eigen;
   using namespace std;
@@ -60,5 +60,5 @@ IGL_INLINE bool igl::copyleft::tetgen::cdt(
 
 #ifdef IGL_STATIC_LIBRARY
 // Explicit template instantiation
-template bool igl::copyleft::tetgen::cdt<Eigen::Matrix<double, -1, -1, 0, -1, -1>, Eigen::Matrix<int, -1, -1, 0, -1, -1>, Eigen::Matrix<double, -1, -1, 0, -1, -1>, Eigen::Matrix<int, -1, -1, 0, -1, -1>, Eigen::Matrix<int, -1, -1, 0, -1, -1> >(Eigen::MatrixBase<Eigen::Matrix<double, -1, -1, 0, -1, -1> > const&, Eigen::MatrixBase<Eigen::Matrix<int, -1, -1, 0, -1, -1> > const&, igl::copyleft::tetgen::CDTParam const&, Eigen::MatrixBase<Eigen::Matrix<double, -1, -1, 0, -1, -1> >&, Eigen::MatrixBase<Eigen::Matrix<int, -1, -1, 0, -1, -1> >&, Eigen::MatrixBase<Eigen::Matrix<int, -1, -1, 0, -1, -1> >&);
+template bool igl::copyleft::tetgen::cdt<Eigen::Matrix<double, -1, -1, 0, -1, -1>, Eigen::Matrix<int, -1, -1, 0, -1, -1>, Eigen::Matrix<double, -1, -1, 0, -1, -1>, Eigen::Matrix<int, -1, -1, 0, -1, -1>, Eigen::Matrix<int, -1, -1, 0, -1, -1> >(Eigen::PlainObjectBase<Eigen::Matrix<double, -1, -1, 0, -1, -1> > const&, Eigen::PlainObjectBase<Eigen::Matrix<int, -1, -1, 0, -1, -1> > const&, igl::copyleft::tetgen::CDTParam const&, Eigen::PlainObjectBase<Eigen::Matrix<double, -1, -1, 0, -1, -1> >&, Eigen::PlainObjectBase<Eigen::Matrix<int, -1, -1, 0, -1, -1> >&, Eigen::PlainObjectBase<Eigen::Matrix<int, -1, -1, 0, -1, -1> >&);
 #endif

@@ -19,7 +19,7 @@ namespace igl
   IGL_INLINE void find_zero(
     const Eigen::SparseMatrix<AType> & A,
     const int dim,
-    Eigen::MatrixBase<DerivedI> & I);
+    Eigen::PlainObjectBase<DerivedI> & I);
 }
 #ifndef IGL_STATIC_LIBRARY
 #  include "find_zero.cpp"

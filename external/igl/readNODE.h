@@ -39,8 +39,8 @@ namespace igl
   template <typename DerivedV, typename DerivedI>
   IGL_INLINE bool readNODE(
     const std::string node_file_name,
-    Eigen::MatrixBase<DerivedV>& V,
-    Eigen::MatrixBase<DerivedI>& I);
+    Eigen::PlainObjectBase<DerivedV>& V,
+    Eigen::PlainObjectBase<DerivedI>& I);
 }
 
 #ifndef IGL_STATIC_LIBRARY

@@ -55,7 +55,7 @@ namespace igl
                              const int maxIter_,
                              const double &threshold_);
     // Planarization - output to Vout
-    inline void planarize(Eigen::MatrixBase<DerivedV> &Vout);
+    inline void planarize(Eigen::PlainObjectBase<DerivedV> &Vout);
   };
 }
 
@@ -196,7 +196,7 @@ inline void igl::PlanarizerShapeUp<DerivedV, DerivedF>::assembleP()
 
 
 template <typename DerivedV, typename DerivedF>
-inline void igl::PlanarizerShapeUp<DerivedV, DerivedF>::planarize(Eigen::MatrixBase<DerivedV> &Vout)
+inline void igl::PlanarizerShapeUp<DerivedV, DerivedF>::planarize(Eigen::PlainObjectBase<DerivedV> &Vout)
 {
   Eigen::Matrix<typename DerivedV::Scalar, Eigen::Dynamic, 1> planarity;
   Vout = Vin;
@@ -233,7 +233,7 @@ IGL_INLINE void igl::planarize_quad_mesh(const Eigen::MatrixBase<DerivedV> &Vin,
                                     const Eigen::MatrixBase<DerivedF> &Fin,
                                     const int maxIter,
                                     const double &threshold,
-                                    Eigen::MatrixBase<DerivedV> &Vout)
+                                    Eigen::PlainObjectBase<DerivedV> &Vout)
 {
   PlanarizerShapeUp<DerivedV, DerivedF> planarizer(Vin, Fin, maxIter, threshold);
   planarizer.planarize(Vout);
@@ -241,5 +241,5 @@ IGL_INLINE void igl::planarize_quad_mesh(const Eigen::MatrixBase<DerivedV> &Vin,
 
 #ifdef IGL_STATIC_LIBRARY
 // Explicit template instantiation
-template void igl::planarize_quad_mesh<Eigen::Matrix<double, -1, -1, 0, -1, -1>, Eigen::Matrix<int, -1, -1, 0, -1, -1> >(Eigen::MatrixBase<Eigen::Matrix<double, -1, -1, 0, -1, -1> > const&, Eigen::MatrixBase<Eigen::Matrix<int, -1, -1, 0, -1, -1> > const&, int, double const&, Eigen::MatrixBase<Eigen::Matrix<double, -1, -1, 0, -1, -1> >&);
+template void igl::planarize_quad_mesh<Eigen::Matrix<double, -1, -1, 0, -1, -1>, Eigen::Matrix<int, -1, -1, 0, -1, -1> >(Eigen::MatrixBase<Eigen::Matrix<double, -1, -1, 0, -1, -1> > const&, Eigen::MatrixBase<Eigen::Matrix<int, -1, -1, 0, -1, -1> > const&, int, double const&, Eigen::PlainObjectBase<Eigen::Matrix<double, -1, -1, 0, -1, -1> >&);
 #endif

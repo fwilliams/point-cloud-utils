@@ -34,7 +34,7 @@ namespace igl
       const Eigen::MatrixBase<DerivedP> & P,
       const Eigen::MatrixBase<DerivedN> & N,
       const int num_samples,
-      Eigen::MatrixBase<DerivedS> & S);
+      Eigen::PlainObjectBase<DerivedS> & S);
     // Wrapper which builds new EmbreeIntersector for (V,F). That's expensive so
     // avoid this if repeatedly calling.
     template <
@@ -49,7 +49,7 @@ namespace igl
       const Eigen::MatrixBase<DerivedP> & P,
       const Eigen::MatrixBase<DerivedN> & N,
       const int num_samples,
-      Eigen::MatrixBase<DerivedS> & S);
+      Eigen::PlainObjectBase<DerivedS> & S);
   }
 };
 #ifndef IGL_STATIC_LIBRARY

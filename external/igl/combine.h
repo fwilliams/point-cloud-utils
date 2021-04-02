@@ -43,10 +43,10 @@ namespace igl
   IGL_INLINE void combine(
     const std::vector<DerivedVV> & VV,
     const std::vector<DerivedFF> & FF,
-    Eigen::MatrixBase<DerivedV> & V,
-    Eigen::MatrixBase<DerivedF> & F,
-    Eigen::MatrixBase<DerivedVsizes> & Vsizes,
-    Eigen::MatrixBase<DerivedFsizes> & Fsizes);
+    Eigen::PlainObjectBase<DerivedV> & V,
+    Eigen::PlainObjectBase<DerivedF> & F,
+    Eigen::PlainObjectBase<DerivedVsizes> & Vsizes,
+    Eigen::PlainObjectBase<DerivedFsizes> & Fsizes);
   template <
     typename DerivedVV, 
     typename DerivedFF, 
@@ -55,8 +55,8 @@ namespace igl
   IGL_INLINE void combine(
     const std::vector<DerivedVV> & VV,
     const std::vector<DerivedFF> & FF,
-    Eigen::MatrixBase<DerivedV> & V,
-    Eigen::MatrixBase<DerivedF> & F);
+    Eigen::PlainObjectBase<DerivedV> & V,
+    Eigen::PlainObjectBase<DerivedF> & F);
 }
 
 #ifndef IGL_STATIC_LIBRARY

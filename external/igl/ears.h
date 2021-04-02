@@ -21,8 +21,8 @@ namespace igl
     typename Derivedear_opp>
   IGL_INLINE void ears(
     const Eigen::MatrixBase<DerivedF> & F,
-    Eigen::MatrixBase<Derivedear> & ear,
-    Eigen::MatrixBase<Derivedear_opp> & ear_opp);
+    Eigen::PlainObjectBase<Derivedear> & ear,
+    Eigen::PlainObjectBase<Derivedear_opp> & ear_opp);
 }
 #ifndef IGL_STATIC_LIBRARY
 #  include "ears.cpp"

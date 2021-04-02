@@ -48,16 +48,16 @@ namespace igl
         typename DerivedJAB,
         typename DerivedIMAB>
       IGL_INLINE bool intersect_other(
-        const Eigen::MatrixBase<DerivedVA> & VA,
-        const Eigen::MatrixBase<DerivedFA> & FA,
-        const Eigen::MatrixBase<DerivedVB> & VB,
-        const Eigen::MatrixBase<DerivedFB> & FB,
+        const Eigen::PlainObjectBase<DerivedVA> & VA,
+        const Eigen::PlainObjectBase<DerivedFA> & FA,
+        const Eigen::PlainObjectBase<DerivedVB> & VB,
+        const Eigen::PlainObjectBase<DerivedFB> & FB,
         const RemeshSelfIntersectionsParam & params,
-        Eigen::MatrixBase<DerivedIF> & IF,
-        Eigen::MatrixBase<DerivedVVAB> & VVAB,
-        Eigen::MatrixBase<DerivedFFAB> & FFAB,
-        Eigen::MatrixBase<DerivedJAB>  & JAB,
-        Eigen::MatrixBase<DerivedIMAB> & IMAB);
+        Eigen::PlainObjectBase<DerivedIF> & IF,
+        Eigen::PlainObjectBase<DerivedVVAB> & VVAB,
+        Eigen::PlainObjectBase<DerivedFFAB> & FFAB,
+        Eigen::PlainObjectBase<DerivedJAB>  & JAB,
+        Eigen::PlainObjectBase<DerivedIMAB> & IMAB);
       // Legacy wrapper for detect only using common types.
       //
       // Inputs:

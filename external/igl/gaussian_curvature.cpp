@@ -13,7 +13,7 @@ template <typename DerivedV, typename DerivedF, typename DerivedK>
 IGL_INLINE void igl::gaussian_curvature(
   const Eigen::MatrixBase<DerivedV>& V,
   const Eigen::MatrixBase<DerivedF>& F,
-  Eigen::MatrixBase<DerivedK> & K)
+  Eigen::PlainObjectBase<DerivedK> & K)
 {
   using namespace Eigen;
   using namespace std;
@@ -23,8 +23,8 @@ IGL_INLINE void igl::gaussian_curvature(
     DerivedF::RowsAtCompileTime,
     DerivedF::ColsAtCompileTime> A;
   internal_angles(V,F,A);
-  K.derived().resize(V.rows(),1);
-  K.derived().setConstant(V.rows(),1,2.*PI);
+  K.resize(V.rows(),1);
+  K.setConstant(V.rows(),1,2.*PI);
   assert(A.rows() == F.rows());
   assert(A.cols() == F.cols());
   assert(K.rows() == V.rows());
@@ -51,6 +51,6 @@ IGL_INLINE void igl::gaussian_curvature(
 
 #ifdef IGL_STATIC_LIBRARY
 // Explicit template instantiation
-template void igl::gaussian_curvature<Eigen::Matrix<double, -1, -1, 0, -1, -1>, Eigen::Matrix<int, -1, -1, 0, -1, -1>, Eigen::Matrix<double, -1, -1, 0, -1, -1> >(Eigen::MatrixBase<Eigen::Matrix<double, -1, -1, 0, -1, -1> > const&, Eigen::MatrixBase<Eigen::Matrix<int, -1, -1, 0, -1, -1> > const&, Eigen::MatrixBase<Eigen::Matrix<double, -1, -1, 0, -1, -1> >&);
-template void igl::gaussian_curvature<Eigen::Matrix<double, -1, -1, 0, -1, -1>, Eigen::Matrix<int, -1, -1, 0, -1, -1>, Eigen::Matrix<double, -1, 1, 0, -1, 1> >(Eigen::MatrixBase<Eigen::Matrix<double, -1, -1, 0, -1, -1> > const&, Eigen::MatrixBase<Eigen::Matrix<int, -1, -1, 0, -1, -1> > const&, Eigen::MatrixBase<Eigen::Matrix<double, -1, 1, 0, -1, 1> >&);
+template void igl::gaussian_curvature<Eigen::Matrix<double, -1, -1, 0, -1, -1>, Eigen::Matrix<int, -1, -1, 0, -1, -1>, Eigen::Matrix<double, -1, -1, 0, -1, -1> >(Eigen::MatrixBase<Eigen::Matrix<double, -1, -1, 0, -1, -1> > const&, Eigen::MatrixBase<Eigen::Matrix<int, -1, -1, 0, -1, -1> > const&, Eigen::PlainObjectBase<Eigen::Matrix<double, -1, -1, 0, -1, -1> >&);
+template void igl::gaussian_curvature<Eigen::Matrix<double, -1, -1, 0, -1, -1>, Eigen::Matrix<int, -1, -1, 0, -1, -1>, Eigen::Matrix<double, -1, 1, 0, -1, 1> >(Eigen::MatrixBase<Eigen::Matrix<double, -1, -1, 0, -1, -1> > const&, Eigen::MatrixBase<Eigen::Matrix<int, -1, -1, 0, -1, -1> > const&, Eigen::PlainObjectBase<Eigen::Matrix<double, -1, 1, 0, -1, 1> >&);
 #endif

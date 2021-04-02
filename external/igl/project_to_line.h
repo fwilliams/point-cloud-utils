@@ -38,8 +38,8 @@ namespace igl
     const Eigen::MatrixBase<DerivedP> & P,
     const Eigen::MatrixBase<DerivedS> & S,
     const Eigen::MatrixBase<DerivedD> & D,
-    Eigen::MatrixBase<Derivedt> & t,
-    Eigen::MatrixBase<DerivedsqrD> & sqrD);
+    Eigen::PlainObjectBase<Derivedt> & t,
+    Eigen::PlainObjectBase<DerivedsqrD> & sqrD);
 
   // Same as above but for a single query point
   template <typename Scalar>

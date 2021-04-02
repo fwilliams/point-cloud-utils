@@ -20,7 +20,7 @@ namespace igl
       template <typename DerivedC, typename DerivedD>
       IGL_INLINE void assign(
         const Eigen::MatrixBase<DerivedC> & C,
-        Eigen::MatrixBase<DerivedD> & D);
+        Eigen::PlainObjectBase<DerivedD> & D);
       template <typename ReturnScalar, typename DerivedC>
       IGL_INLINE 
       Eigen::Matrix<

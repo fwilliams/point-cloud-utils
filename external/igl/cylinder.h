@@ -24,8 +24,8 @@ namespace igl
   IGL_INLINE void cylinder(
     const int axis_devisions,
     const int height_devisions,
-    Eigen::MatrixBase<DerivedV> & V,
-    Eigen::MatrixBase<DerivedF> & F);
+    Eigen::PlainObjectBase<DerivedV> & V,
+    Eigen::PlainObjectBase<DerivedF> & F);
 }
 #ifndef IGL_STATIC_LIBRARY
 #  include "cylinder.cpp"

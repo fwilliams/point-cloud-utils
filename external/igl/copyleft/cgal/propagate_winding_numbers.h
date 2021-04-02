@@ -52,10 +52,10 @@ namespace igl
         typename DerivedL,
         typename DerivedW>
       IGL_INLINE bool propagate_winding_numbers(
-        const Eigen::MatrixBase<DerivedV>& V,
-        const Eigen::MatrixBase<DerivedF>& F,
-        const Eigen::MatrixBase<DerivedL>& labels,
-        Eigen::MatrixBase<DerivedW>& W);
+        const Eigen::PlainObjectBase<DerivedV>& V,
+        const Eigen::PlainObjectBase<DerivedF>& F,
+        const Eigen::PlainObjectBase<DerivedL>& labels,
+        Eigen::PlainObjectBase<DerivedW>& W);
 
       // Inputs:
       //   V  #V by 3 list of vertex positions.
@@ -83,16 +83,16 @@ namespace igl
         typename DerivedL,
         typename DerivedW>
       IGL_INLINE bool propagate_winding_numbers(
-        const Eigen::MatrixBase<DerivedV>& V,
-        const Eigen::MatrixBase<DerivedF>& F,
-        const Eigen::MatrixBase<DeriveduE>& uE,
+        const Eigen::PlainObjectBase<DerivedV>& V,
+        const Eigen::PlainObjectBase<DerivedF>& F,
+        const Eigen::PlainObjectBase<DeriveduE>& uE,
         const std::vector<std::vector<uE2EType> >& uE2E,
         const size_t num_patches,
-        const Eigen::MatrixBase<DerivedP>& P,
+        const Eigen::PlainObjectBase<DerivedP>& P,
         const size_t num_cells,
-        const Eigen::MatrixBase<DerivedC>& C,
-        const Eigen::MatrixBase<DerivedL>& labels,
-        Eigen::MatrixBase<DerivedW>& W);
+        const Eigen::PlainObjectBase<DerivedC>& C,
+        const Eigen::PlainObjectBase<DerivedL>& labels,
+        Eigen::PlainObjectBase<DerivedW>& W);
     }
   }
 }

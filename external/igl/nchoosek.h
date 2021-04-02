@@ -9,7 +9,6 @@
 #ifndef IGL_NCHOOSEK
 #define IGL_NCHOOSEK
 #include "igl_inline.h"
-#include "deprecated.h"
 #include <vector>
 
 #include <Eigen/Core>
@@ -34,7 +33,7 @@ namespace igl
   IGL_INLINE void nchoosek(
     const Eigen::MatrixBase<DerivedV> & V,
     const int k,
-    Eigen::MatrixBase<DerivedU> & U);
+    Eigen::PlainObjectBase<DerivedU> & U);
 }
 
 

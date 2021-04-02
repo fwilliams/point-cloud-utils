@@ -36,9 +36,9 @@ namespace igl
         const Eigen::MatrixBase<DerivedF > & F,
         const Eigen::MatrixBase<Derivedp > & p,
         const Eigen::MatrixBase<Derivedn > & n,
-        Eigen::MatrixBase<DerivedVC > & VC,
-        Eigen::MatrixBase<DerivedFC > & FC,
-        Eigen::MatrixBase<DerivedJ > & J);
+        Eigen::PlainObjectBase<DerivedVC > & VC,
+        Eigen::PlainObjectBase<DerivedFC > & FC,
+        Eigen::PlainObjectBase<DerivedJ > & J);
       // Intersect a PWN mesh with a half-space. Plane equation.
       //
       // Inputs:
@@ -60,9 +60,9 @@ namespace igl
         const Eigen::MatrixBase<DerivedV > & V,
         const Eigen::MatrixBase<DerivedF > & F,
         const Eigen::MatrixBase<Derivedequ > & equ,
-        Eigen::MatrixBase<DerivedVC > & VC,
-        Eigen::MatrixBase<DerivedFC > & FC,
-        Eigen::MatrixBase<DerivedJ > & J);
+        Eigen::PlainObjectBase<DerivedVC > & VC,
+        Eigen::PlainObjectBase<DerivedFC > & FC,
+        Eigen::PlainObjectBase<DerivedJ > & J);
       // Intersect a PWN mesh with a half-space. CGAL Plane.
       //
       // Inputs:
@@ -82,9 +82,9 @@ namespace igl
         const Eigen::MatrixBase<DerivedV > & V,
         const Eigen::MatrixBase<DerivedF > & F,
         const CGAL::Plane_3<CGAL::Epeck> & P,
-        Eigen::MatrixBase<DerivedVC > & VC,
-        Eigen::MatrixBase<DerivedFC > & FC,
-        Eigen::MatrixBase<DerivedJ > & J);
+        Eigen::PlainObjectBase<DerivedVC > & VC,
+        Eigen::PlainObjectBase<DerivedFC > & FC,
+        Eigen::PlainObjectBase<DerivedJ > & J);
     }
   }
 }

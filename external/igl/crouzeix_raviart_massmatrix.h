@@ -33,8 +33,8 @@ namespace igl
       const Eigen::MatrixBase<DerivedV> & V, 
       const Eigen::MatrixBase<DerivedF> & F, 
       Eigen::SparseMatrix<MT> & M,
-      Eigen::MatrixBase<DerivedE> & E,
-      Eigen::MatrixBase<DerivedEMAP> & EMAP);
+      Eigen::PlainObjectBase<DerivedE> & E,
+      Eigen::PlainObjectBase<DerivedEMAP> & EMAP);
   // wrapper if E and EMAP are already computed (better match!)
   template <typename MT, typename DerivedV, typename DerivedF, typename DerivedE, typename DerivedEMAP>
   void crouzeix_raviart_massmatrix(

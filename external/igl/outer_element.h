@@ -1,9 +1,9 @@
 // This file is part of libigl, a simple c++ geometry processing library.
-// 
+//
 // Copyright (C) 2015 Qingan Zhou <qnzhou@gmail.com>
-// 
-// This Source Code Form is subject to the terms of the Mozilla Public License 
-// v. 2.0. If a copy of the MPL was not distributed with this file, You can 
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
 // obtain one at http://mozilla.org/MPL/2.0/.
 #ifndef IGL_OUTER_ELEMENT_H
 #define IGL_OUTER_ELEMENT_H
@@ -37,7 +37,7 @@ namespace igl
           const Eigen::MatrixBase<DerivedF> & F,
           const Eigen::MatrixBase<DerivedI> & I,
           IndexType & v_index,
-          Eigen::MatrixBase<DerivedA> & A);
+          Eigen::PlainObjectBase<DerivedA> & A);
 
 
   // Find an edge that is reachable from infinity without crossing any faces.
@@ -69,7 +69,7 @@ namespace igl
           const Eigen::MatrixBase<DerivedI> & I,
           IndexType & v1,
           IndexType & v2,
-          Eigen::MatrixBase<DerivedA> & A);
+          Eigen::PlainObjectBase<DerivedA> & A);
 
 
   // Find a facet that is reachable from infinity without crossing any faces.

@@ -27,7 +27,7 @@ namespace igl
         typename Kernel,
         typename DerivedV>
       IGL_INLINE CGAL::Point_2<Kernel> row_to_point(
-        const Eigen::MatrixBase<DerivedV> & V,
+        const Eigen::PlainObjectBase<DerivedV> & V,
         const typename DerivedV::Index & i);
     }
   }

@@ -62,12 +62,12 @@ namespace igl
   //   X  m by n sparse matrix
   template <typename DerivedD, typename T>
   IGL_INLINE void sparse(
-    const Eigen::MatrixBase<DerivedD>& D,
+    const Eigen::PlainObjectBase<DerivedD>& D,
     Eigen::SparseMatrix<T>& X);
   // Wrapper with return
   template <typename DerivedD>
   IGL_INLINE Eigen::SparseMatrix<typename DerivedD::Scalar > sparse(
-    const Eigen::MatrixBase<DerivedD>& D);
+    const Eigen::PlainObjectBase<DerivedD>& D);
 
 }
 

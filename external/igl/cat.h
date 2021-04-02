@@ -12,6 +12,7 @@
 #define EIGEN_YES_I_KNOW_SPARSE_MODULE_IS_NOT_STABLE_YET
 #include <Eigen/Sparse>
 #include <Eigen/Dense>
+#include <vector>
 
 namespace igl
 {
@@ -62,6 +63,16 @@ namespace igl
   //   C
   template <class Mat>
   IGL_INLINE void cat(const std::vector<std::vector< Mat > > & A, Mat & C);
+
+  // Concatenate a std::vector of matrices along the specified dimension
+  //
+  // Inputs:
+  //   dim  dimension along which to concatenate, 1 or 2
+  //   A  std::vector of eigen matrices. Must have identical # cols if dim == 1 or rows if dim == 2
+  // Outputs:
+  //   C  output matrix
+  template <typename T, typename DerivedC>
+  IGL_INLINE void cat(const int dim, const std::vector<T> & A, Eigen::PlainObjectBase<DerivedC> & C);
 }
 
 #ifndef IGL_STATIC_LIBRARY

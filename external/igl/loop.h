@@ -33,7 +33,7 @@ namespace igl
     const int n_verts,
     const Eigen::MatrixBase<DerivedF> & F,
     Eigen::SparseMatrix<SType>& S,
-    Eigen::MatrixBase<DerivedNF> & NF);
+    Eigen::PlainObjectBase<DerivedNF> & NF);
   // LOOP Given the triangle mesh [V, F], computes number_of_subdivs steps of loop subdivision and outputs the new mesh [newV, newF]
   //
   // Inputs:
@@ -44,15 +44,15 @@ namespace igl
   //  NV a matrix containing the new vertices
   //  NF a matrix containing the new faces
   template <
-    typename DerivedV, 
+    typename DerivedV,
     typename DerivedF,
     typename DerivedNV,
     typename DerivedNF>
   IGL_INLINE void loop(
     const Eigen::MatrixBase<DerivedV>& V,
     const Eigen::MatrixBase<DerivedF>& F,
-    Eigen::MatrixBase<DerivedNV>& NV,
-    Eigen::MatrixBase<DerivedNF>& NF,
+    Eigen::PlainObjectBase<DerivedNV>& NV,
+    Eigen::PlainObjectBase<DerivedNF>& NF,
     const int number_of_subdivs = 1);
 }
 

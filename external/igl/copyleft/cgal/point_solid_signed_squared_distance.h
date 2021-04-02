@@ -33,10 +33,10 @@ namespace igl
         typename DerivedFB,
         typename DerivedD>
       IGL_INLINE void point_solid_signed_squared_distance(
-        const Eigen::MatrixBase<DerivedQ> & Q,
-        const Eigen::MatrixBase<DerivedVB> & VB,
-        const Eigen::MatrixBase<DerivedFB> & FB,
-        Eigen::MatrixBase<DerivedD> & D);
+        const Eigen::PlainObjectBase<DerivedQ> & Q,
+        const Eigen::PlainObjectBase<DerivedVB> & VB,
+        const Eigen::PlainObjectBase<DerivedFB> & FB,
+        Eigen::PlainObjectBase<DerivedD> & D);
     }
   }
 }

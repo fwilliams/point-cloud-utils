@@ -13,8 +13,8 @@
 template <typename DerivedV, typename DerivedF>
 IGL_INLINE bool igl::copyleft::cgal::read_triangle_mesh(
   const std::string str,
-  Eigen::MatrixBase<DerivedV>& V,
-  Eigen::MatrixBase<DerivedF>& F)
+  Eigen::PlainObjectBase<DerivedV>& V,
+  Eigen::PlainObjectBase<DerivedF>& F)
 {
   Eigen::MatrixXd Vd;
   bool ret = igl::read_triangle_mesh(str,Vd,F);

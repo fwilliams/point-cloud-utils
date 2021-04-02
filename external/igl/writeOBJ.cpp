@@ -14,7 +14,6 @@
 #include <cstdio>
 #include <cassert>
 
-#define SHAPE(V) "(" << V.rows() << ", " << V.cols() << ")"
 template <
   typename DerivedV, 
   typename DerivedF,
@@ -82,15 +81,14 @@ IGL_INLINE bool igl::writeOBJ(
       // OBJ is 1-indexed
       fprintf(obj_file," %u",F(i,j)+1);
 
-      if(write_texture_coords) {
+      if(write_texture_coords)
         fprintf(obj_file,"/%u",FTC(i,j)+1);
-      }
-      if(write_N) {
-        if (write_texture_coords) {
+      if(write_N)
+      {
+        if (write_texture_coords)
           fprintf(obj_file,"/%u",FN(i,j)+1);
-        } else if (FN.rows() > 0){
+        else
           fprintf(obj_file,"//%u",FN(i,j)+1);
-        }
       }
     }
     fprintf(obj_file,"\n");
@@ -117,6 +115,39 @@ IGL_INLINE bool igl::writeOBJ(
   s<<
     V.format(IOFormat(FullPrecision,DontAlignCols," ","\n","v ","","","\n"))<<
     (F.array()+1).format(IOFormat(FullPrecision,DontAlignCols," ","\n","f ","","","\n"));
+  return true;
+}
+
+template <typename DerivedV, typename T>
+IGL_INLINE bool igl::writeOBJ(
+  const std::string &str,
+  const Eigen::MatrixBase<DerivedV>& V,
+  const std::vector<std::vector<T> >& F)
+{
+  using namespace std;
+  using namespace Eigen;
+  assert(V.cols() == 3 && "V should have 3 columns");
+  ofstream s(str);
+  if(!s.is_open())
+  {
+    fprintf(stderr,"IOError: writeOBJ() could not open %s\n",str.c_str());
+    return false;
+  }
+  s<<V.format(IOFormat(FullPrecision,DontAlignCols," ","\n","v ","","","\n"));
+  
+  for(const auto& face : F)
+  {
+    int face_size = face.size();
+    assert(face_size != 0);
+
+    s << (face_size == 2 ? "l" : "f");
+
+    for(const auto& vi : face)
+    {
+      s<<" "<<vi; 
+    }
+    s<<"\n";
+  }
   return true;
 }
 

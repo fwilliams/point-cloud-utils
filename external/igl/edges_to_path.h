@@ -26,9 +26,9 @@ namespace igl
     typename DerivedK>
   IGL_INLINE void edges_to_path(
     const Eigen::MatrixBase<DerivedE> & E,
-    Eigen::MatrixBase<DerivedI> & I,
-    Eigen::MatrixBase<DerivedJ> & J,
-    Eigen::MatrixBase<DerivedK> & K);
+    Eigen::PlainObjectBase<DerivedI> & I,
+    Eigen::PlainObjectBase<DerivedJ> & J,
+    Eigen::PlainObjectBase<DerivedK> & K);
 }
 #ifndef IGL_STATIC_LIBRARY
 #  include "edges_to_path.cpp"

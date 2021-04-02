@@ -26,8 +26,8 @@ namespace igl
   //   B  #rows by k input matrix, can be the same as A
   template <typename DerivedV>
   IGL_INLINE void normalize_row_lengths(
-   const Eigen::MatrixBase<DerivedV>& A,
-   Eigen::MatrixBase<DerivedV> & B);
+   const Eigen::PlainObjectBase<DerivedV>& A,
+   Eigen::PlainObjectBase<DerivedV> & B);
 }
 
 #ifndef IGL_STATIC_LIBRARY

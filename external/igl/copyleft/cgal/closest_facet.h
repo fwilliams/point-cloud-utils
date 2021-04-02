@@ -47,14 +47,14 @@ namespace igl
         typename DerivedR,
         typename DerivedS >
       IGL_INLINE void closest_facet(
-        const Eigen::MatrixBase<DerivedV>& V,
-        const Eigen::MatrixBase<DerivedF>& F,
-        const Eigen::MatrixBase<DerivedI>& I,
-        const Eigen::MatrixBase<DerivedP>& P,
+        const Eigen::PlainObjectBase<DerivedV>& V,
+        const Eigen::PlainObjectBase<DerivedF>& F,
+        const Eigen::PlainObjectBase<DerivedI>& I,
+        const Eigen::PlainObjectBase<DerivedP>& P,
         const std::vector<std::vector<uE2EType> >& uE2E,
-        const Eigen::MatrixBase<DerivedEMAP>& EMAP,
-              Eigen::MatrixBase<DerivedR>& R,
-              Eigen::MatrixBase<DerivedS>& S);
+        const Eigen::PlainObjectBase<DerivedEMAP>& EMAP,
+              Eigen::PlainObjectBase<DerivedR>& R,
+              Eigen::PlainObjectBase<DerivedS>& S);
       template<
         typename DerivedV,
         typename DerivedF,
@@ -64,13 +64,13 @@ namespace igl
         typename DerivedR,
         typename DerivedS >
       IGL_INLINE void closest_facet(
-        const Eigen::MatrixBase<DerivedV>& V,
-        const Eigen::MatrixBase<DerivedF>& F,
-        const Eigen::MatrixBase<DerivedP>& P,
+        const Eigen::PlainObjectBase<DerivedV>& V,
+        const Eigen::PlainObjectBase<DerivedF>& F,
+        const Eigen::PlainObjectBase<DerivedP>& P,
         const std::vector<std::vector<uE2EType> >& uE2E,
-        const Eigen::MatrixBase<DerivedEMAP>& EMAP,
-        Eigen::MatrixBase<DerivedR>& R,
-        Eigen::MatrixBase<DerivedS>& S);
+        const Eigen::PlainObjectBase<DerivedEMAP>& EMAP,
+        Eigen::PlainObjectBase<DerivedR>& R,
+        Eigen::PlainObjectBase<DerivedS>& S);
       template<
         typename DerivedV,
         typename DerivedF,
@@ -82,12 +82,12 @@ namespace igl
         typename DerivedR,
         typename DerivedS >
       IGL_INLINE void closest_facet(
-          const Eigen::MatrixBase<DerivedV>& V,
-          const Eigen::MatrixBase<DerivedF>& F,
-          const Eigen::MatrixBase<DerivedI>& I,
-          const Eigen::MatrixBase<DerivedP>& P,
+          const Eigen::PlainObjectBase<DerivedV>& V,
+          const Eigen::PlainObjectBase<DerivedF>& F,
+          const Eigen::PlainObjectBase<DerivedI>& I,
+          const Eigen::PlainObjectBase<DerivedP>& P,
           const std::vector<std::vector<uE2EType> >& uE2E,
-          const Eigen::MatrixBase<DerivedEMAP>& EMAP,
+          const Eigen::PlainObjectBase<DerivedEMAP>& EMAP,
           const std::vector<std::vector<size_t> > & VF,
           const std::vector<std::vector<size_t> > & VFi,
           const CGAL::AABB_tree<
@@ -98,8 +98,8 @@ namespace igl
                   typename Kernel::Triangle_3 >::iterator > > > & tree,
           const std::vector<typename Kernel::Triangle_3 > & triangles,
           const std::vector<bool> & in_I,
-          Eigen::MatrixBase<DerivedR>& R,
-          Eigen::MatrixBase<DerivedS>& S);
+          Eigen::PlainObjectBase<DerivedR>& R,
+          Eigen::PlainObjectBase<DerivedS>& S);
     }
   }
 }

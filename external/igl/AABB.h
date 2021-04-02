@@ -177,9 +177,9 @@ public:
         typename Derivedbb_maxs,
         typename Derivedelements>
         IGL_INLINE void serialize(
-            Eigen::MatrixBase<Derivedbb_mins> & bb_mins,
-            Eigen::MatrixBase<Derivedbb_maxs> & bb_maxs,
-            Eigen::MatrixBase<Derivedelements> & elements,
+            Eigen::PlainObjectBase<Derivedbb_mins> & bb_mins,
+            Eigen::PlainObjectBase<Derivedbb_maxs> & bb_maxs,
+            Eigen::PlainObjectBase<Derivedelements> & elements,
             const int i = 0) const;
       // Compute squared distance to a query point
       //
@@ -200,7 +200,7 @@ public:
         const Eigen::MatrixBase<DerivedEle> & Ele, 
         const RowVectorDIMS & p,
         int & i,
-        Eigen::MatrixBase<RowVectorDIMS> & c) const;
+        Eigen::PlainObjectBase<RowVectorDIMS> & c) const;
 //private:
       // Compute squared distance to a query point
       //
@@ -229,7 +229,7 @@ public:
         const Scalar low_sqr_d,
         const Scalar up_sqr_d,
         int & i,
-        Eigen::MatrixBase<RowVectorDIMS> & c) const;
+        Eigen::PlainObjectBase<RowVectorDIMS> & c) const;
       // Default low_sqr_d
       template <typename DerivedEle>
       IGL_INLINE Scalar squared_distance(
@@ -238,7 +238,7 @@ public:
         const RowVectorDIMS & p,
         const Scalar up_sqr_d,
         int & i,
-        Eigen::MatrixBase<RowVectorDIMS> & c) const;
+        Eigen::PlainObjectBase<RowVectorDIMS> & c) const;
       // All hits
       template <typename DerivedEle>
       IGL_INLINE bool intersect_ray(
@@ -289,9 +289,9 @@ public:
         const Eigen::MatrixBase<DerivedV> & V,
         const Eigen::MatrixBase<DerivedEle> & Ele, 
         const Eigen::MatrixBase<DerivedP> & P,
-        Eigen::MatrixBase<DerivedsqrD> & sqrD,
-        Eigen::MatrixBase<DerivedI> & I,
-        Eigen::MatrixBase<DerivedC> & C) const;
+        Eigen::PlainObjectBase<DerivedsqrD> & sqrD,
+        Eigen::PlainObjectBase<DerivedI> & I,
+        Eigen::PlainObjectBase<DerivedC> & C) const;
 
       // Compute the squared distance from all query points in P already stored
       // in its own AABB hierarchy to the _closest_ points on the primitives
@@ -321,9 +321,9 @@ public:
         const AABB<Derivedother_V,DIM> & other,
         const Eigen::MatrixBase<Derivedother_V> & other_V,
         const Eigen::MatrixBase<Derivedother_Ele> & other_Ele, 
-        Eigen::MatrixBase<DerivedsqrD> & sqrD,
-        Eigen::MatrixBase<DerivedI> & I,
-        Eigen::MatrixBase<DerivedC> & C) const;
+        Eigen::PlainObjectBase<DerivedsqrD> & sqrD,
+        Eigen::PlainObjectBase<DerivedI> & I,
+        Eigen::PlainObjectBase<DerivedC> & C) const;
 private:
       template < 
         typename DerivedEle,
@@ -339,9 +339,9 @@ private:
         const Eigen::MatrixBase<Derivedother_V> & other_V,
         const Eigen::MatrixBase<Derivedother_Ele>& other_Ele, 
         const Scalar up_sqr_d,
-        Eigen::MatrixBase<DerivedsqrD> & sqrD,
-        Eigen::MatrixBase<DerivedI> & I,
-        Eigen::MatrixBase<DerivedC> & C) const;
+        Eigen::PlainObjectBase<DerivedsqrD> & sqrD,
+        Eigen::PlainObjectBase<DerivedI> & I,
+        Eigen::PlainObjectBase<DerivedC> & C) const;
       // Compute the squared distance to the primitive in this node: assumes
       // that this is indeed a leaf node.
       //
@@ -365,7 +365,7 @@ private:
         const Scalar low_sqr_d,
         Scalar & sqr_d,
         int & i,
-        Eigen::MatrixBase<RowVectorDIMS> & c) const;
+        Eigen::PlainObjectBase<RowVectorDIMS> & c) const;
       // Default low_sqr_d
       template <typename DerivedEle>
       IGL_INLINE void leaf_squared_distance(
@@ -374,7 +374,7 @@ private:
         const RowVectorDIMS & p,
         Scalar & sqr_d,
         int & i,
-        Eigen::MatrixBase<RowVectorDIMS> & c) const;
+        Eigen::PlainObjectBase<RowVectorDIMS> & c) const;
       // If new distance (sqr_d_candidate) is less than current distance
       // (sqr_d), then update this distance and its associated values
       // _in-place_:
@@ -399,7 +399,7 @@ private:
         const RowVectorDIMS & c_candidate,
         Scalar & sqr_d,
         int & i,
-        Eigen::MatrixBase<RowVectorDIMS> & c) const;
+        Eigen::PlainObjectBase<RowVectorDIMS> & c) const;
 public:
       EIGEN_MAKE_ALIGNED_OPERATOR_NEW
     };

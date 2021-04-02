@@ -26,9 +26,9 @@ namespace igl
     typename DerivedO>
   IGL_INLINE bool writeBF(
     const std::string & filename,
-    const Eigen::MatrixBase<DerivedWI> & WI,
-    const Eigen::MatrixBase<DerivedP> & P,
-    const Eigen::MatrixBase<DerivedO> & O);
+    const Eigen::PlainObjectBase<DerivedWI> & WI,
+    const Eigen::PlainObjectBase<DerivedP> & P,
+    const Eigen::PlainObjectBase<DerivedO> & O);
 }
 
 #ifndef IGL_STATIC_LIBRARY

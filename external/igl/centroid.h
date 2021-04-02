@@ -28,7 +28,7 @@ namespace igl
   IGL_INLINE void centroid(
     const Eigen::MatrixBase<DerivedV>& V,
     const Eigen::MatrixBase<DerivedF>& F,
-    Eigen::MatrixBase<Derivedc>& c,
+    Eigen::PlainObjectBase<Derivedc>& c,
     Derivedvol & vol);
   template <
     typename DerivedV, 
@@ -37,7 +37,7 @@ namespace igl
   IGL_INLINE void centroid(
     const Eigen::MatrixBase<DerivedV>& V,
     const Eigen::MatrixBase<DerivedF>& F,
-    Eigen::MatrixBase<Derivedc>& c);
+    Eigen::PlainObjectBase<Derivedc>& c);
 
 }
 

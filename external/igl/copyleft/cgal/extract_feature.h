@@ -45,10 +45,10 @@ namespace igl
         typename DerivedF,
         typename DerivedE>
       IGL_INLINE void extract_feature(
-            const Eigen::MatrixBase<DerivedV>& V,
-            const Eigen::MatrixBase<DerivedF>& F,
+            const Eigen::PlainObjectBase<DerivedV>& V,
+            const Eigen::PlainObjectBase<DerivedF>& F,
             const double tol,
-            Eigen::MatrixBase<DerivedE>& feature_edges);
+            Eigen::PlainObjectBase<DerivedE>& feature_edges);
 
       // Inputs:
       //   V    #V by 3 array of vertices.
@@ -73,13 +73,13 @@ namespace igl
         typename DerivedF,
         typename DerivedE>
       IGL_INLINE void extract_feature(
-            const Eigen::MatrixBase<DerivedV>& V,
-            const Eigen::MatrixBase<DerivedF>& F,
+            const Eigen::PlainObjectBase<DerivedV>& V,
+            const Eigen::PlainObjectBase<DerivedF>& F,
             const double tol,
-            const Eigen::MatrixBase<DerivedE>& E,
-            const Eigen::MatrixBase<DerivedE>& uE,
+            const Eigen::PlainObjectBase<DerivedE>& E,
+            const Eigen::PlainObjectBase<DerivedE>& uE,
             const std::vector<std::vector<typename DerivedE::Scalar> >& uE2E,
-            Eigen::MatrixBase<DerivedE>& feature_edges);
+            Eigen::PlainObjectBase<DerivedE>& feature_edges);
     }
   }
 }

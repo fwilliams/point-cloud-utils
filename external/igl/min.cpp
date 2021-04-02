@@ -6,8 +6,8 @@ template <typename AType, typename DerivedB, typename DerivedI>
 IGL_INLINE void igl::min(
   const Eigen::SparseMatrix<AType> & A,
   const int dim,
-  Eigen::MatrixBase<DerivedB> & B,
-  Eigen::MatrixBase<DerivedI> & I)
+  Eigen::PlainObjectBase<DerivedB> & B,
+  Eigen::PlainObjectBase<DerivedI> & I)
 {
   const int n = A.cols();
   const int m = A.rows();

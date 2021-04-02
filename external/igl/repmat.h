@@ -37,7 +37,7 @@ namespace igl
     const Eigen::MatrixBase<DerivedA> & A,
     const int r,
     const int c,
-    Eigen::MatrixBase<DerivedB> & B);
+    Eigen::PlainObjectBase<DerivedB> & B);
   template <typename T>
   IGL_INLINE void repmat(
     const Eigen::SparseMatrix<T> & A,

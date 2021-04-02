@@ -22,7 +22,7 @@ namespace igl
   IGL_INLINE void quad_planarity(
     const Eigen::MatrixBase<DerivedV>& V,
     const Eigen::MatrixBase<DerivedF>& F,
-    Eigen::MatrixBase<DerivedP> & P);
+    Eigen::PlainObjectBase<DerivedP> & P);
 }
 
 #ifndef IGL_STATIC_LIBRARY

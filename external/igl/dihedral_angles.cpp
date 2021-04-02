@@ -6,6 +6,9 @@
 // v. 2.0. If a copy of the MPL was not distributed with this file, You can 
 // obtain one at http://mozilla.org/MPL/2.0/.
 #include "dihedral_angles.h"
+#include "edge_lengths.h"
+#include "face_areas.h"
+
 #include <cassert>
 
 template <
@@ -14,10 +17,10 @@ template <
   typename Derivedtheta,
   typename Derivedcos_theta>
 IGL_INLINE void igl::dihedral_angles(
-  Eigen::MatrixBase<DerivedV>& V,
-  Eigen::MatrixBase<DerivedT>& T,
-  Eigen::MatrixBase<Derivedtheta>& theta,
-  Eigen::MatrixBase<Derivedcos_theta>& cos_theta)
+  const Eigen::MatrixBase<DerivedV>& V,
+  const Eigen::MatrixBase<DerivedT>& T,
+  Eigen::PlainObjectBase<Derivedtheta>& theta,
+  Eigen::PlainObjectBase<Derivedcos_theta>& cos_theta)
 {
   using namespace Eigen;
   assert(T.cols() == 4);
@@ -34,10 +37,10 @@ template <
   typename Derivedtheta,
   typename Derivedcos_theta>
 IGL_INLINE void igl::dihedral_angles_intrinsic(
-  Eigen::MatrixBase<DerivedL>& L,
-  Eigen::MatrixBase<DerivedA>& A,
-  Eigen::MatrixBase<Derivedtheta>& theta,
-  Eigen::MatrixBase<Derivedcos_theta>& cos_theta)
+  const Eigen::MatrixBase<DerivedL>& L,
+  const Eigen::MatrixBase<DerivedA>& A,
+  Eigen::PlainObjectBase<Derivedtheta>& theta,
+  Eigen::PlainObjectBase<Derivedcos_theta>& cos_theta)
 {
   using namespace Eigen;
   const int m = L.rows();
@@ -90,5 +93,6 @@ IGL_INLINE void igl::dihedral_angles_intrinsic(
 }
 #ifdef IGL_STATIC_LIBRARY
 // Explicit template instantiation
-template void igl::dihedral_angles_intrinsic<Eigen::Matrix<double, -1, 6, 0, -1, 6>, Eigen::Matrix<double, -1, 4, 0, -1, 4>, Eigen::Matrix<double, -1, 6, 0, -1, 6>, Eigen::Matrix<double, -1, 6, 0, -1, 6> >(Eigen::MatrixBase<Eigen::Matrix<double, -1, 6, 0, -1, 6> >&, Eigen::MatrixBase<Eigen::Matrix<double, -1, 4, 0, -1, 4> >&, Eigen::MatrixBase<Eigen::Matrix<double, -1, 6, 0, -1, 6> >&, Eigen::MatrixBase<Eigen::Matrix<double, -1, 6, 0, -1, 6> >&);
+template void igl::dihedral_angles_intrinsic< Eigen::Matrix<double, -1, 6, 0, -1, 6>, Eigen::Matrix<double, -1, 4, 0, -1, 4>, Eigen::Matrix<double, -1, 6, 0, -1, 6>, Eigen::Matrix<double, -1, 6, 0, -1, 6> >(const Eigen::MatrixBase<Eigen::Matrix<double, -1, 6, 0, -1, 6> >&, const Eigen::MatrixBase<Eigen::Matrix<double, -1, 4, 0, -1, 4> >&, Eigen::PlainObjectBase<Eigen::Matrix<double, -1, 6, 0, -1, 6> >&, Eigen::PlainObjectBase<Eigen::Matrix<double, -1, 6, 0, -1, 6> >&);
+template void igl::dihedral_angles<Eigen::Matrix<double, -1, -1, 0, -1, -1>, Eigen::Matrix<int, -1, -1, 0, -1, -1>, Eigen::Matrix<double, -1, -1, 0, -1, -1>, Eigen::Matrix<double, -1, -1, 0, -1, -1> >(Eigen::MatrixBase<Eigen::Matrix<double, -1, -1, 0, -1, -1> > const&, Eigen::MatrixBase<Eigen::Matrix<int, -1, -1, 0, -1, -1> > const&, Eigen::PlainObjectBase<Eigen::Matrix<double, -1, -1, 0, -1, -1> >&, Eigen::PlainObjectBase<Eigen::Matrix<double, -1, -1, 0, -1, -1> >&);
 #endif

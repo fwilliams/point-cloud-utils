@@ -45,9 +45,9 @@ namespace igl
     const Eigen::MatrixBase<DerivedVT> & VT,
     const Eigen::MatrixBase<DerivedFT> & FT,
     const Scalar tol,
-    Eigen::MatrixBase<DerivedUE> & UE,
-    Eigen::MatrixBase<DerivedUT> & UT,
-    Eigen::MatrixBase<DerivedOT> & OT);
+    Eigen::PlainObjectBase<DerivedUE> & UE,
+    Eigen::PlainObjectBase<DerivedUT> & UT,
+    Eigen::PlainObjectBase<DerivedOT> & OT);
 }
 
 #ifndef IGL_STATIC_LIBRARY

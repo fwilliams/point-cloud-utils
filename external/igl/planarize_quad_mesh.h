@@ -37,7 +37,7 @@ namespace igl
                                       const Eigen::MatrixBase<DerivedF> &F,
                                       const int maxIter,
                                       const double &threshold,
-                                      Eigen::MatrixBase<DerivedV> &Vout);
+                                      Eigen::PlainObjectBase<DerivedV> &Vout);
 }
 #ifndef IGL_STATIC_LIBRARY
 #  include "planarize_quad_mesh.cpp"

@@ -27,7 +27,7 @@ namespace igl
   //   IC  #A index vector so that A = C(IC,:);
   template <typename DerivedA, typename DerivedC, typename DerivedIA, typename DerivedIC>
   IGL_INLINE void unique_rows(
-    const Eigen::MatrixBase<DerivedA>& A,
+    const Eigen::DenseBase<DerivedA>& A,
     Eigen::PlainObjectBase<DerivedC>& C,
     Eigen::PlainObjectBase<DerivedIA>& IA,
     Eigen::PlainObjectBase<DerivedIC>& IC);

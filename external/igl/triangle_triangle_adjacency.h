@@ -25,18 +25,27 @@ namespace igl
   //        triangle TT(i,j) that is adjacent with triangle i
   //
   // NOTE: the first edge of a triangle is [0,1] the second [1,2] and the third
-  //       [2,3].  this convention is DIFFERENT from cotmatrix_entries.h
+  //       [2,3].  this convention is DIFFERENT from
+  //       cotmatrix_entries.h/edge_lengths.h/etc. To fix this you could use:
+  //           // Fix mis-match convention
+  //           {
+  //             Eigen::PermutationMatrix<3,3> perm(3);
+  //             perm.indices() = Eigen::Vector3i(1,2,0);
+  //             TT = (TT*perm).eval();
+  //             TTi = (TTi*perm).eval();
+  //             for(int i=0;i<TTi.rows();i++)
+  //               for(int j=0;j<TTi.cols();j++)
+  //                 TTi(i,j)=TTi(i,j)==-1?-1:(TTi(i,j)+3-1)%3;
+  //           }
   template <typename DerivedF, typename DerivedTT, typename DerivedTTi>
   IGL_INLINE void triangle_triangle_adjacency(
     const Eigen::MatrixBase<DerivedF>& F,
     Eigen::PlainObjectBase<DerivedTT>& TT,
     Eigen::PlainObjectBase<DerivedTTi>& TTi);
-
   template <typename DerivedF, typename DerivedTT>
   IGL_INLINE void triangle_triangle_adjacency(
     const Eigen::MatrixBase<DerivedF>& F,
     Eigen::PlainObjectBase<DerivedTT>& TT);
-
   // Preprocessing
   template <typename DerivedF, typename TTT_type>
   IGL_INLINE void triangle_triangle_adjacency_preprocess(
@@ -47,7 +56,7 @@ namespace igl
   IGL_INLINE void triangle_triangle_adjacency_extractTT(
     const Eigen::MatrixBase<DerivedF>& F,
     std::vector<std::vector<TTT_type> >& TTT,
-    Eigen::MatrixBase<DerivedTT>& TT);
+    Eigen::PlainObjectBase<DerivedTT>& TT);
   // Extract the face adjacencies indices (needed for fast traversal)
   template <typename DerivedF, typename TTT_type, typename DerivedTTi>
   IGL_INLINE void triangle_triangle_adjacency_extractTTi(

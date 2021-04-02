@@ -13,8 +13,8 @@
 
 template < typename DerivedV, typename DerivedF>
 IGL_INLINE bool igl::copyleft::cgal::piecewise_constant_winding_number(
-  const Eigen::MatrixBase<DerivedV> & V,
-  const Eigen::MatrixBase<DerivedF> & F)
+  const Eigen::PlainObjectBase<DerivedV> & V,
+  const Eigen::PlainObjectBase<DerivedF> & F)
 {
   Eigen::Matrix<CGAL::Epeck::FT,Eigen::Dynamic,3> VV;
   Eigen::Matrix<typename DerivedF::Scalar,Eigen::Dynamic,3> FF;

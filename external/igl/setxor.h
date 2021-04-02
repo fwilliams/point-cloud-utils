@@ -29,11 +29,11 @@ namespace igl
     typename DerivedIA,
     typename DerivedIB>
   IGL_INLINE void setxor(
-    const Eigen::DenseBase<DerivedA> & A,
-    const Eigen::DenseBase<DerivedB> & B,
-    Eigen::MatrixBase<DerivedC> & C,
-    Eigen::MatrixBase<DerivedIA> & IA,
-    Eigen::MatrixBase<DerivedIB> & IB);
+    const Eigen::MatrixBase<DerivedA> & A,
+    const Eigen::MatrixBase<DerivedB> & B,
+    Eigen::PlainObjectBase<DerivedC> & C,
+    Eigen::PlainObjectBase<DerivedIA> & IA,
+    Eigen::PlainObjectBase<DerivedIB> & IB);
 }
 
 #ifndef IGL_STATIC_LIBRARY

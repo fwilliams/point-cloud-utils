@@ -23,7 +23,7 @@ namespace igl
     typename DerivedD,
     typename DerivedP>
   IGL_INLINE void bfs(
-    const AType& A,
+    const AType & A,
     const size_t s,
     Eigen::PlainObjectBase<DerivedD> & D,
     Eigen::PlainObjectBase<DerivedP> & P);
@@ -42,7 +42,7 @@ namespace igl
     typename DType,
     typename PType>
   IGL_INLINE void bfs(
-    const AType& A,
+    const Eigen::SparseCompressedBase<AType> & A,
     const size_t s,
     std::vector<DType> & D,
     std::vector<PType> & P);

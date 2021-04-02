@@ -30,14 +30,14 @@ namespace igl
   IGL_INLINE void histc(
     const Eigen::MatrixBase<DerivedX > & X,
     const Eigen::MatrixBase<DerivedE > & E,
-    Eigen::MatrixBase<DerivedN > & N,
-    Eigen::MatrixBase<DerivedB > & B);
+    Eigen::PlainObjectBase<DerivedN > & N,
+    Eigen::PlainObjectBase<DerivedB > & B);
   // Truly O(m*log(n))
   template <typename DerivedX, typename DerivedE, typename DerivedB>
   IGL_INLINE void histc(
     const Eigen::MatrixBase<DerivedX > & X,
     const Eigen::MatrixBase<DerivedE > & E,
-    Eigen::MatrixBase<DerivedB > & B);
+    Eigen::PlainObjectBase<DerivedB > & B);
   // Scalar search wrapper
   template <typename DerivedE>
   IGL_INLINE void histc(

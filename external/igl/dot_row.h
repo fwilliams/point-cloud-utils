@@ -24,8 +24,8 @@ namespace igl
   //
   template <typename DerivedV>
   IGL_INLINE DerivedV dot_row(
-    const Eigen::MatrixBase<DerivedV>& A,
-    const Eigen::MatrixBase<DerivedV>& B);
+    const Eigen::PlainObjectBase<DerivedV>& A,
+    const Eigen::PlainObjectBase<DerivedV>& B);
 
 }
 

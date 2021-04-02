@@ -42,9 +42,9 @@ namespace igl
             typename IndexType
             >
         IGL_INLINE void outer_facet(
-                const Eigen::MatrixBase<DerivedV> & V,
-                const Eigen::MatrixBase<DerivedF> & F,
-                const Eigen::MatrixBase<DerivedI> & I,
+                const Eigen::PlainObjectBase<DerivedV> & V,
+                const Eigen::PlainObjectBase<DerivedF> & F,
+                const Eigen::PlainObjectBase<DerivedI> & I,
                 IndexType & f,
                 bool & flipped);
 
@@ -73,10 +73,10 @@ namespace igl
           typename IndexType
           >
       IGL_INLINE void outer_facet(
-              const Eigen::MatrixBase<DerivedV> & V,
-              const Eigen::MatrixBase<DerivedF> & F,
-              const Eigen::MatrixBase<DerivedN> & N,
-              const Eigen::MatrixBase<DerivedI> & I,
+              const Eigen::PlainObjectBase<DerivedV> & V,
+              const Eigen::PlainObjectBase<DerivedF> & F,
+              const Eigen::PlainObjectBase<DerivedN> & N,
+              const Eigen::PlainObjectBase<DerivedI> & I,
               IndexType & f,
               bool & flipped);
 

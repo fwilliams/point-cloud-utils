@@ -39,12 +39,12 @@ template <
   typename Derivedbc,
   typename DerivedW>
 IGL_INLINE bool igl::bbw(
-  const Eigen::MatrixBase<DerivedV> & V,
-  const Eigen::MatrixBase<DerivedEle> & Ele,
-  const Eigen::MatrixBase<Derivedb> & b,
-  const Eigen::MatrixBase<Derivedbc> & bc,
+  const Eigen::PlainObjectBase<DerivedV> & V,
+  const Eigen::PlainObjectBase<DerivedEle> & Ele,
+  const Eigen::PlainObjectBase<Derivedb> & b,
+  const Eigen::PlainObjectBase<Derivedbc> & bc,
   igl::BBWData & data,
-  Eigen::MatrixBase<DerivedW> & W
+  Eigen::PlainObjectBase<DerivedW> & W
   )
 {
   using namespace std;
@@ -118,7 +118,12 @@ IGL_INLINE bool igl::bbw(
     }
     W.col(i) = Wi;
   };
+#ifdef WIN32
+  for (int i = 0; i < m; ++i)
+    optimize_weight(i);
+#else
   parallel_for(m,optimize_weight,2);
+#endif
   if(error)
   {
     return false;
@@ -138,6 +143,6 @@ IGL_INLINE bool igl::bbw(
 
 #ifdef IGL_STATIC_LIBRARY
 // Explicit template instantiation
-template bool igl::bbw<Eigen::Matrix<double, -1, -1, 0, -1, -1>, Eigen::Matrix<int, -1, -1, 0, -1, -1>, Eigen::Matrix<int, -1, 1, 0, -1, 1>, Eigen::Matrix<double, -1, -1, 0, -1, -1>, Eigen::Matrix<double, -1, -1, 0, -1, -1> >(Eigen::MatrixBase<Eigen::Matrix<double, -1, -1, 0, -1, -1> > const&, Eigen::MatrixBase<Eigen::Matrix<int, -1, -1, 0, -1, -1> > const&, Eigen::MatrixBase<Eigen::Matrix<int, -1, 1, 0, -1, 1> > const&, Eigen::MatrixBase<Eigen::Matrix<double, -1, -1, 0, -1, -1> > const&, igl::BBWData&, Eigen::MatrixBase<Eigen::Matrix<double, -1, -1, 0, -1, -1> >&);
+template bool igl::bbw<Eigen::Matrix<double, -1, -1, 0, -1, -1>, Eigen::Matrix<int, -1, -1, 0, -1, -1>, Eigen::Matrix<int, -1, 1, 0, -1, 1>, Eigen::Matrix<double, -1, -1, 0, -1, -1>, Eigen::Matrix<double, -1, -1, 0, -1, -1> >(Eigen::PlainObjectBase<Eigen::Matrix<double, -1, -1, 0, -1, -1> > const&, Eigen::PlainObjectBase<Eigen::Matrix<int, -1, -1, 0, -1, -1> > const&, Eigen::PlainObjectBase<Eigen::Matrix<int, -1, 1, 0, -1, 1> > const&, Eigen::PlainObjectBase<Eigen::Matrix<double, -1, -1, 0, -1, -1> > const&, igl::BBWData&, Eigen::PlainObjectBase<Eigen::Matrix<double, -1, -1, 0, -1, -1> >&);
 #endif
 

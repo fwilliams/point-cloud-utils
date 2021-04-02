@@ -24,7 +24,7 @@ namespace igl
   IGL_INLINE void gaussian_curvature(
     const Eigen::MatrixBase<DerivedV>& V,
     const Eigen::MatrixBase<DerivedF>& F,
-    Eigen::MatrixBase<DerivedK> & K);
+    Eigen::PlainObjectBase<DerivedK> & K);
 }
 
 #ifndef IGL_STATIC_LIBRARY
