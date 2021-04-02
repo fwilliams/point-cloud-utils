@@ -48,9 +48,9 @@ void shortest_distances_nanoflann(
     for (int k = 0; k < founds; k++) {
         corrs(i, k) = out_indices[k];
         if (squared_dist) {
-            distances(i, k) = out_dists_sqr[0];
+            distances(i, k) = out_dists_sqr[k];
         } else {
-            distances(i, k) = sqrt(out_dists_sqr[0]);
+            distances(i, k) = sqrt(out_dists_sqr[k]);
         }
     }
     for (int k = founds; k < num_nbrs; k++) {
