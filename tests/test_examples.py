@@ -302,7 +302,7 @@ class TestDenseBindings(unittest.TestCase):
         chamfer_dist = pcu.chamfer_distance(a, b)
         chamfer_dist, c_a_to_b, c_b_to_a = pcu.chamfer_distance(a, b, return_index=True)
 
-    def knn(self):
+    def test_knn(self):
         import point_cloud_utils as pcu
         import numpy as np
 
@@ -315,8 +315,23 @@ class TestDenseBindings(unittest.TestCase):
         # closest point for each point in a
         k = np.random.randint(10)
         dists_a_to_b, corrs_a_to_b = pcu.k_nearest_neighbors(a, b, k)
-        self.assertEqual(dists_a_to_b.shape == (a.shape[0], k))
-        self.assertEqual(corrs_a_to_b.shape == (a.shape[0], k))
+        if k > 1:
+            self.assertEqual(dists_a_to_b.shape, (a.shape[0], k))
+            self.assertEqual(corrs_a_to_b.shape, (a.shape[0], k))
+        else:
+            self.assertEqual(dists_a_to_b.shape, (a.shape[0],))
+            self.assertEqual(corrs_a_to_b.shape, (a.shape[0],))
+
+        for i in range(dists_a_to_b.shape[1]):
+            b_map = b[corrs_a_to_b[:, i]]
+            dists = np.linalg.norm(a - b_map, axis=-1)
+            diff_dists = dists - dists_a_to_b[:, i]
+            self.assertTrue(np.all(np.abs(diff_dists) < 1e-5))
+
+        b_map = b[corrs_a_to_b]
+        dists = np.linalg.norm(a[:, np.newaxis, :] - b_map, axis=-1)
+        diff_dists = dists - dists_a_to_b
+        self.assertTrue(np.all(np.abs(diff_dists) < 1e-5))
 
     def test_hausdorff(self):
         import point_cloud_utils as pcu
