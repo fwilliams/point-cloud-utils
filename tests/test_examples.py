@@ -322,6 +322,16 @@ class TestDenseBindings(unittest.TestCase):
             self.assertEqual(dists_a_to_b.shape, (a.shape[0],))
             self.assertEqual(corrs_a_to_b.shape, (a.shape[0],))
 
+        if k == 1:
+            dists_a_to_b = dists_a_to_b[:, np.newaxis]
+            corrs_a_to_b = corrs_a_to_b[:, np.newaxis]
+
+        for i in range(dists_a_to_b.shape[1]):
+            b_map = b[corrs_a_to_b[:, i]]
+            dists = np.linalg.norm(a - b_map, axis=-1)
+            diff_dists = dists - dists_a_to_b[:, i]
+            self.assertTrue(np.all(np.abs(diff_dists) < 1e-5))
+
         b_map = b[corrs_a_to_b]
         dists = np.linalg.norm(a[:, np.newaxis, :] - b_map, axis=-1)
         diff_dists = dists - dists_a_to_b
