@@ -40,7 +40,7 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
   find_package(OpenMP REQUIRED)
   if(NOT TARGET OpenMP::OpenMP_CXX)
     add_library(OpenMP_TARGET INTERFACE)
-    add_library(OpenMP::OpenMP_CXX ALIAS OpenMP_TARGET)
+    add_library(OpenMP::OpenMP_CXX ALIAS OpenMP_TARGET src/vcg_utils.h)
     target_compile_options(OpenMP_TARGET INTERFACE ${OpenMP_CXX_FLAGS})
     find_package(Threads REQUIRED)
     target_link_libraries(OpenMP_TARGET INTERFACE Threads::Threads)
@@ -55,7 +55,7 @@ npe_add_module(_pcu_internal
   ${CMAKE_CURRENT_SOURCE_DIR}/src/point_cloud_distance.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/lloyd.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/meshio.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/mesh_utils.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/normals.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/misc.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/morton.cpp)
 target_sources(_pcu_internal PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/geogram_utils.cpp)

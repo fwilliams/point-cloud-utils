@@ -29,19 +29,6 @@ def pairwise_distances(a, b, p=2):
     return ret
 
 
-def chamfer(a, b):
-    """
-    Compute the chamfer distance between two sets of vectors, a, and b
-    :param a: A m-sized minibatch of point sets in R^d. i.e. shape [m, n_a, d]
-    :param b: A m-sized minibatch of point sets in R^d. i.e. shape [m, n_b, d]
-    :return: A [m] shaped tensor storing the Chamfer distance between each minibatch entry
-    """
-    M = pairwise_distances(a, b)
-    if len(M.shape) == 2:
-        M = M[np.newaxis, :, :]
-    return M.min(1).sum(1) + M.min(2).sum(1)
-
-
 def sinkhorn(a, b, M, eps, max_iters=100, stop_thresh=1e-3):
     """
     Compute the Sinkhorn divergence between two sum of dirac delta distributions, U, and V.
