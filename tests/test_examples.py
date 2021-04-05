@@ -384,8 +384,8 @@ class TestDenseBindings(unittest.TestCase):
         import numpy as np
         import os
         if os.name == 'nt':
-            num_pts = 10000
-            num_qpts = 100
+            num_pts = 1000
+            num_qpts = 10
         else:
             num_pts = 1000000
             num_qpts = 10000
