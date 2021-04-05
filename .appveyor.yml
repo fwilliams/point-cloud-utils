@@ -36,4 +36,4 @@ build_script:
 test_script:
   - cd c:\projects\point-cloud-utils
   - "SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%"
-  - "python tests/test_examples.py"
+  - "python setup.py test"
