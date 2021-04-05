@@ -4,18 +4,20 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/ujv44lqbeosgl9ij/branch/master?svg=true)](https://ci.appveyor.com/project/fwilliams/point-cloud-utils/branch/master)
 
 **Point Cloud Utils (pcu)** is a utility library providing the following functionality:
+ - Utility functions for reading and writing many common mesh formats (PLY, STL, OFF, OBJ, 3DS, VRML 2.0, X3D, COLLADA).
+   If it can be imported into MeshLab, we can read it!
  - A series of algorithms for generating point samples on meshes:
    - Poisson-Disk-Sampling of a mesh based on "[Parallel Poisson Disk Sampling with Spectrum Analysis on Surface](http://graphics.cs.umass.edu/pubs/sa_2010.pdf)".
-   - Sampling a mesh with [Lloyd's algorithm](https://en.wikipedia.org/wiki/Lloyd%27s_algorithm)
-   - Monte-Carlo sampling on a mesh
- - Normal estimation from point clouds
- - Very fast pairwise nearest neighbor between point clouds (based on [nanoflann](https://github.com/jlblancoc/nanoflann))
+   - Sampling a mesh with [Lloyd's algorithm](https://en.wikipedia.org/wiki/Lloyd%27s_algorithm).
+   - Monte-Carlo sampling on a mesh.
+ - Utilities for downsampling point clouds:
+   - To satisfy a blue noise distribution
+   - On a voxel grid
+ - Normal estimation from point clouds and triangle meshes
+ - Fast k-nearest-neighbor search between point clouds (based on [nanoflann](https://github.com/jlblancoc/nanoflann)).
  - Hausdorff distances between point-clouds.
  - Chamfer distnaces between point-clouds.
  - Approximate Wasserstein distances between point-clouds using the [Sinkhorn](https://arxiv.org/abs/1306.0895) method.
- - Pairwise distances between point clouds
- - Utility functions for reading and writing many common mesh formats (PLY, STL, OFF, OBJ, 3DS, VRML 2.0, X3D, COLLADA). 
-   If it can be imported into MeshLab, we can read it!
  
 ![Example of Poisson Disk Sampling](/img/blue_noise.png?raw=true "Example of Poisson Disk Sampling")
 
@@ -34,8 +36,140 @@ The following dependencies are required to install with `pip`:
 * A C++ compiler supporting C++14 or later
 * CMake 3.2 or later.
 * git
+* NumPy and SciPy
 
 # Examples
+
+### Loading meshes and point clouds
+Point-Cloud-Utils supports reading many common mesh formats (PLY, STL, OFF, OBJ, 3DS, VRML 2.0, X3D, COLLADA). 
+If it can be imported into MeshLab, we can read it! The type of file is inferred from its file extension.
+
+If you only need a few attributes of a point cloud or mesh, the quickest way to load a mesh is using one of 
+the `read_mesh_*` utility functions
+```python
+import point_cloud_utils as pcu
+
+# Load vertices and faces for a mesh
+v, f = pcu.load_mesh_vf("path/to/mesh")
+
+# Load vertices and per-vertex normals
+v, n = pcu.load_mesh_vn("path/to/mesh")
+
+# Load vertices, per-vertex normals, and per-vertex-colors
+v, n, c = pcu.load_mesh_vnc("path/to/mesh")
+
+# Load vertices, faces, and per-vertex normals
+v, f, n = pcu.load_mesh_vfn("path/to/mesh")
+
+# Load vertices, faces, per-vertex normals, and per-vertex colors
+v, f, n, c = pcu.load_mesh_vfnc("path/to/mesh")
+```
+
+For meshes and point clouds with more complex attributes, use `load_triangle_mesh` which returns a `TriangleMesh` 
+object. 
+
+```python
+import point_cloud_utils as pcu
+
+# mesh is a lightweight TriangleMesh container object holding mesh vertices, faces, and their attributes. 
+# Any attributes which aren't loaded (because they aren't present in the file) are set to None.
+# The data in TriangleMesh is layed out as follows (run help(pcu.TriangleMesh) for more details):
+# TriangleMesh:
+#   vertex_data:
+#       positions: [V, 3]-shaped numpy array of per-vertex positions
+#       normals: [V, 3]-shaped numpy array of per-vertex normals (or None)
+#       texcoords: [V, 2]-shaped numpy array of per-vertex uv coordinates (or None)
+#       tex_ids: [V,]-shaped numpy array of integer indices into TriangleMesh.textures indicating which texture to
+#                use at this vertex (or None)
+#       colors: [V, 4]-shaped numpy array of per-vertex RBGA colors in [0.0, 1.0] (or None)
+#       radius: [V,]-shaped numpy array of per-vertex curvature radii (or None)
+#       quality: [V,]-shaped numpy array of per-vertex quality measures (or None)
+#       flags: [V,]-shaped numpy array of 32-bit integer flags per vertex (or None)
+#   face_data:
+#       vertex_ids: [F, 3]-shaped numpy array of integer face indices into TrianglMesh.vertex_data.positions
+#       normals: [F, 3]-shaped numpy array of per-face normals (or None)
+#       colors: [F, 4]-shaped numpy array of per-face RBGA colors in [0.0, 1.0] (or None)
+#       quality: [F,]-shaped numpy array of per-face quality measures (or None)
+#       flags: [F,]-shaped numpy array of 32-bit integer flags per face (or None)
+# 
+#       wedge_colors: [F, 3, 4]-shaped numpy array of per-wedge RBGA colors in [0.0, 1.0] (or None)
+#       wedge_normals: [F, 3, 3]-shaped numpy array of per-wedge normals (or None)
+#       wedge_texcoords: [F, 3, 2]-shaped numpy array of per-wedge] uv coordinates (or None)
+#       wedge_tex_ids: [F, 3]-shaped numpy array of integer indices into TriangleMesh.textures indicating which
+#                      texture to use at this wedge (or None)
+#   textures: A list of paths to texture image files for this mesh
+#   normal_maps: A list of paths to texture image files for this mesh
+mesh = pcu.load_triangle_mesh("path/to/mesh")
+
+# You can also load a mesh directly using the TriangleMesh class
+mesh = pcu.TriangleMesh("path/to/mesh")
+```
+
+For meshes and point clouds with more complex attributes, use `save_triangle_mesh` which accepts a whole host of named
+arguments which control the attributes to save.
+```python
+# save_triangle_mesh accepts a path to save to (The type of mesh  saved is determined by the file extesion), 
+# an array of mesh vertices of shape [V, 3], and optional arguments specifying faces, per-mesh attributes, 
+# per-face attributes and per-wedge attributes:
+#   filename    : Path to the mesh to save. The type of file will be determined from the file extension.
+#   v           : [V, 3]-shaped numpy array of per-vertex positions
+#   f           : [F, 3]-shaped numpy array of integer face indices into TrianglMesh.vertex_data.positions (or None)
+#   vn          : [V, 3]-shaped numpy array of per-vertex normals (or None)
+#   vt          : [V, 2]-shaped numpy array of per-vertex uv coordinates (or None)
+#   vc          : [V, 4]-shaped numpy array of per-vertex RBGA colors in [0.0, 1.0] (or None)
+#   vq          : [V,]-shaped numpy array of per-vertex quality measures (or None)
+#   vr          : [V,]-shaped numpy array of per-vertex curvature radii (or None)
+#   vti         : [V,]-shaped numpy array of integer indices into TriangleMesh.textures indicating which texture to
+#                 use at this vertex (or None)
+#   vflags      : [V,]-shaped numpy array of 32-bit integer flags per vertex (or None)
+#   fn          : [F, 3]-shaped numpy array of per-face normals (or None)
+#   fc          : [F, 4]-shaped numpy array of per-face RBGA colors in [0.0, 1.0] (or None)
+#   fq          : [F,]-shaped numpy array of per-face quality measures (or None)
+#   fflags      : [F,]-shaped numpy array of 32-bit integer flags per face (or None)
+#   wc          : [F, 3, 4]-shaped numpy array of per-wedge RBGA colors in [0.0, 1.0] (or None)
+#   wn          : [F, 3, 3]-shaped numpy array of per-wedge normals (or None)
+#   wt          : [F, 3, 2]-shaped numpy array of per-wedge] uv coordinates (or None)
+#   wti         : [F, 3]-shaped numpy array of integer indices into TriangleMesh.textures indicating which
+#   textures    : A list of paths to texture image files for this mesh
+#   normal_maps : A list of paths to texture image files for this mesh
+pcu.save_triangle_mesh("path/to/mesh", v=v, f=f, vn=vertex_normals, vc=vertex_colors, fn=face_normals)
+
+# You can also directly save a pcu.TrianglMesh object
+mesh.save("path/to/mesh")
+```
+
+### Saving meshes and point clouds
+Point-Cloud-Utils supports writing many common mesh formats (PLY, STL, OFF, OBJ, 3DS, VRML 2.0, X3D, COLLADA).
+If it can be imported into MeshLab, we can read it! The type of file is inferred from its file extension.
+
+If you only need to write few attributes of a point cloud or mesh, the quickest way to use the `save_mesh_*` functions
+```python
+import point_cloud_utils as pcu
+
+# Assume v, f, n, c are numpy arrays
+# where 
+#   v are the mesh vertices of shape [V, 3]
+#   f are the mesh face indices into v of shape [F, 3]
+#   n are the mesh per-vertex normals of shape [V, 3]
+#   c are the mesh per-vertex colors of shape [V, 4]
+
+# Save mesh vertices and faces
+pcu.save_mesh_vf("path/to/mesh", v, f)
+
+# Save mesh vertices and per-vertex normals
+v, n = pcu.save_mesh_vn("path/to/mesh", v, n)
+
+# Save mesh vertices, per-vertex normals, and per-vertex-colors
+v, n, c = pcu.save_mesh_vnc("path/to/mesh", v, n, c)
+
+# Save mesh vertices, faces, and per-vertex normals
+v, f, n = pcu.save_mesh_vfn("path/to/mesh", v, f, n)
+
+# Save vertices, faces, per-vertex normals, and per-vertex colors
+v, f, n, c = pcu.save_mesh_vfnc("path/to/mesh", v, f, n, c)
+```
+
+
 
 ### Generating blue-noise samples on a mesh with Poisson-disk sampling
 Generate 10000 samples on a mesh with poisson disk samples

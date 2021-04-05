@@ -36,6 +36,8 @@ class TriangleMesh:
             wedge_texcoords: [F, 3, 2]-shaped numpy array of per-wedge] uv coordinates (or None)
             wedge_tex_ids: [F, 3]-shaped numpy array of integer indices into TriangleMesh.textures indicating which
                            texture to use at this wedge (or None)
+        textures: A list of paths to texture image files for this mesh
+        normal_maps: A list of paths to texture image files for this mesh
     """
     class VertexData:
         """
@@ -150,11 +152,13 @@ class TriangleMesh:
                     if v.size <= 0:
                         setattr(self, k, None)
 
-    def __init__(self):
+    def __init__(self, filename=None, dtype=np.float64):
         self.vertex_data = TriangleMesh.VertexData()
         self.face_data = TriangleMesh.FaceData()
         self.textures = []
         self.normal_maps = []
+        if filename is not None:
+            self.load(filename, dtype=dtype)
 
     @property
     def v(self):
@@ -169,6 +173,10 @@ class TriangleMesh:
         return self.vertex_data.normals
 
     @property
+    def vc(self):
+        return self.vertex_data.colors
+
+    @property
     def fn(self):
         return self.vertex_data.normals
 
@@ -176,20 +184,33 @@ class TriangleMesh:
     def fc(self):
         return self.face_data.colors
 
-    @property
-    def vc(self):
-        return self.vertex_data.colors
-
     def save(self, filename):
         from ._pcu_internal import save_mesh_internal
         dtype = np.float64
         self.vertex_data._reset_if_none()
         self.face_data._reset_if_none()
+
+        # Handle RBG colors by just concatenating alpha=1
+        vcolors = self.vertex_data.colors
+        if vcolors.shape[-1] == 3 and len(vcolors.shape) == 2:
+            vcolors = np.concatenate([np.ascontiguousarray(self.vertex_data.colors),
+                                      np.ones([vcolors.shape[0], 1], dtype=vcolors.dtype)], axis=-1)
+
+        fcolors = self.face_data.colors
+        if fcolors.shape[-1] == 3 and len(fcolors.shape) == 2:
+            fcolors = np.concatenate([np.ascontiguousarray(fcolors),
+                                      np.ones([fcolors.shape[0], 1], dtype=self.face_data.colors.dtype)], axis=-1)
+
+        wcolors = self.face_data.wedge_colors
+        if wcolors.shape[-1] == 3 and len(wcolors.shape) == 3:
+            wcolors = np.concatenate([np.ascontiguousarray(wcolors),
+                                      np.ones([wcolors.shape[0], wcolors.shape[1], 1], dtype=wcolors.dtype)], axis=-1)
+
         save_mesh_internal(filename,
                            np.ascontiguousarray(self.vertex_data.positions.astype(dtype)),
                            np.ascontiguousarray(self.vertex_data.normals.astype(dtype)),
                            np.ascontiguousarray(self.vertex_data.texcoords.astype(dtype)),
-                           np.ascontiguousarray(self.vertex_data.colors.astype(dtype)),
+                           np.ascontiguousarray(vcolors.astype(dtype)),
                            np.ascontiguousarray(self.vertex_data.quality.astype(dtype)),
                            np.ascontiguousarray(self.vertex_data.radius.astype(dtype)),
                            np.ascontiguousarray(self.vertex_data.tex_ids.astype(np.int32)),
@@ -197,11 +218,11 @@ class TriangleMesh:
 
                            np.ascontiguousarray(self.face_data.vertex_ids.astype(np.int32)),
                            np.ascontiguousarray(self.face_data.normals.astype(dtype)),
-                           np.ascontiguousarray(self.face_data.colors.astype(dtype)),
+                           np.ascontiguousarray(fcolors.astype(dtype)),
                            np.ascontiguousarray(self.face_data.quality.astype(dtype)),
                            np.ascontiguousarray(self.face_data.flags.astype(np.int32)),
 
-                           np.ascontiguousarray(self.face_data.wedge_colors.astype(dtype)),
+                           np.ascontiguousarray(wcolors.astype(dtype)),
                            np.ascontiguousarray(self.face_data.wedge_normals.astype(dtype)),
                            np.ascontiguousarray(self.face_data.wedge_texcoords.astype(dtype)),
                            np.ascontiguousarray(self.face_data.wedge_tex_ids.astype(np.int32)),
@@ -248,6 +269,38 @@ def save_triangle_mesh(filename, v, f=None,
                        vn=None, vt=None, vc=None, vq=None, vr=None, vti=None, vflags=None,
                        fn=None, fc=None, fq=None, fflags=None, wc=None, wn=None, wt=None, wti=None,
                        textures=[], normal_maps=[]):
+    """
+    Save a triangle mesh to a file with various per-vertex, per-face, and per-wedge attributes. Each argument (except v)
+    is optional and can be None.
+
+    Parameters
+    ----------
+    filename    : Path to the mesh to save. The type of file will be determined from the file extension.
+    v           : [V, 3]-shaped numpy array of per-vertex positions
+    f           : [F, 3]-shaped numpy array of integer face indices into TrianglMesh.vertex_data.positions (or None)
+    vn          : [V, 3]-shaped numpy array of per-vertex normals (or None)
+    vt          : [V, 2]-shaped numpy array of per-vertex uv coordinates (or None)
+    vc          : [V, 4]-shaped numpy array of per-vertex RBGA colors in [0.0, 1.0] (or None)
+    vq          : [V,]-shaped numpy array of per-vertex quality measures (or None)
+    vr          : [V,]-shaped numpy array of per-vertex curvature radii (or None)
+    vti         : [V,]-shaped numpy array of integer indices into TriangleMesh.textures indicating which texture to
+                  use at this vertex (or None)
+    vflags      : [V,]-shaped numpy array of 32-bit integer flags per vertex (or None)
+    fn          : [F, 3]-shaped numpy array of per-face normals (or None)
+    fc          : [F, 4]-shaped numpy array of per-face RBGA colors in [0.0, 1.0] (or None)
+    fq          : [F,]-shaped numpy array of per-face quality measures (or None)
+    fflags      : [F,]-shaped numpy array of 32-bit integer flags per face (or None)
+    wc          : [F, 3, 4]-shaped numpy array of per-wedge RBGA colors in [0.0, 1.0] (or None)
+    wn          : [F, 3, 3]-shaped numpy array of per-wedge normals (or None)
+    wt          : [F, 3, 2]-shaped numpy array of per-wedge] uv coordinates (or None)
+    wti         : [F, 3]-shaped numpy array of integer indices into TriangleMesh.textures indicating which
+    textures    : A list of paths to texture image files for this mesh
+    normal_maps : A list of paths to texture image files for this mesh
+
+    Returns
+    -------
+    None
+    """
     mesh = TriangleMesh()
     mesh.vertex_data.positions = v
     mesh.vertex_data.normals = vn
@@ -283,16 +336,27 @@ def save_mesh_vf(filename, v, f):
     save_triangle_mesh(filename, v=v, f=f)
 
 
-def save_mesh_vfn(filename, v, f, n):
-    save_triangle_mesh(filename, v=v, f=f, vn=n)
+def save_mesh_vn(filename, v, n):
+    save_triangle_mesh(filename, v=v, vn=n)
+
+
+def save_mesh_vc(filename, v, c):
+    save_triangle_mesh(filename, v=v, vc=c)
 
 
 def save_mesh_vnc(filename, v, n, c):
     save_triangle_mesh(filename, v=v, vn=n, vc=c)
 
 
+def save_mesh_vfn(filename, v, f, n):
+    save_triangle_mesh(filename, v=v, f=f, vn=n)
+
+
 def save_mesh_vfnc(filename, v, f, n, c):
     save_triangle_mesh(filename, v=v, f=f, vn=n, vc=c)
+
+
+
 
 
 def load_triangle_mesh(filename, dtype=np.float64):
@@ -310,14 +374,24 @@ def load_mesh_vf(filename, dtype=float):
     return ret.v, ret.f
 
 
-def load_mesh_vfn(filename, dtype=float):
+def load_mesh_vn(filename, dtype=float):
     ret = load_triangle_mesh(filename, dtype=dtype)
-    return ret.v, ret.f, ret.vn
+    return ret.v, ret.vn
+
+
+def load_mesh_vc(filename, dtype=float):
+    ret = load_triangle_mesh(filename, dtype=dtype)
+    return ret.v, ret.vc
 
 
 def load_mesh_vnc(filename, dtype=float):
     ret = load_triangle_mesh(filename, dtype=dtype)
-    return ret.v, ret.vn, ret.c
+    return ret.v, ret.vn, ret.vc
+
+
+def load_mesh_vfn(filename, dtype=float):
+    ret = load_triangle_mesh(filename, dtype=dtype)
+    return ret.v, ret.f, ret.vn
 
 
 def load_mesh_vfnc(filename, dtype=float):
