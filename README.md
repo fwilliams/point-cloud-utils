@@ -40,6 +40,18 @@ The following dependencies are required to install with `pip`:
 
 # Examples
 
+### List of examples
+- [Loading meshes and point clouds](#loading-meshes-and-point-clouds)
+- [Saving meshes and point clouds](#saving-meshes-and-point-clouds)
+- [Generating blue-noise samples on a mesh with Poisson-disk sampling](#generating-blue-noise-samples-on-a-mesh-with-poisson-disk-sampling)
+- [Generate random samples on a mesh](#generate-random-samples-on-a-mesh)
+- [Estimating normals from a point cloud](#estimating-normals-from-a-point-cloud)
+- [Approximate Wasserstein (Sinkhorn) distance between two point clouds](#approximate-wasserstein--sinkhorn--distance-between-two-point-clouds)
+- [Chamfer distance between two point clouds](#chamfer-distance-between-two-point-clouds)
+- [Hausdorff distance between two point clouds](#hausdorff-distance-between-two-point-clouds)
+- [K-nearest-neighbors between two point clouds](#k-nearest-neighbors-between-two-point-clouds)
+- [Generating point samples in the square and cube with Lloyd Relaxation](#generating-point-samples-in-the-square-and-cube-with-lloyd-relaxation)
+
 ### Loading meshes and point clouds
 Point-Cloud-Utils supports reading many common mesh formats (PLY, STL, OFF, OBJ, 3DS, VRML 2.0, X3D, COLLADA). 
 If it can be imported into MeshLab, we can read it! The type of file is inferred from its file extension.
