@@ -3,11 +3,10 @@ from ._pcu_internal import sample_mesh_poisson_disk, sample_mesh_random, \
     k_nearest_neighbors, one_sided_hausdorff_distance, \
     morton_encode, morton_decode, morton_knn, \
     lloyd_2d, lloyd_3d, voronoi_centroids_unit_cube, sample_mesh_lloyd, \
-    read_obj, write_obj, read_off, write_off, read_ply, write_ply, \
     remove_duplicate_points, remove_duplicate_mesh_vertices
 
 from ._sinkhorn import *
-# from ._mesh_io import * TODO: Merge in new mesh IO stuff
+from ._mesh_io import *
 import numpy as np
 
 
@@ -91,7 +90,7 @@ def downsample_point_cloud_voxel_grid(voxel_size, points, normals=None, colors=N
     A triple (v, n, c) of downsampled vertices, normals and colors. If no vertices or colors are passed in, then
     n and c are None.
     """
-    from ._pcu_internal import __internal_downsample_point_cloud_voxel_grid
+    from ._pcu_internal import downsample_point_cloud_voxel_grid_internal
 
     if np.isscalar(voxel_size):
         voxel_size = np.array([voxel_size] * 3)
@@ -122,11 +121,13 @@ def downsample_point_cloud_voxel_grid(voxel_size, points, normals=None, colors=N
     if np.any(max_bound - min_bound <= 0.0):
         raise ValueError("Invalid min_bound and max_bound. max_bound must be greater than min_bound in all dimensions")
 
-    ret_v, ret_n, ret_c = __internal_downsample_point_cloud_voxel_grid(points, normals, colors,
-                                                                       voxel_size[0], voxel_size[1], voxel_size[2],
-                                                                       min_bound[0], min_bound[1], min_bound[2],
-                                                                       max_bound[0], max_bound[1], max_bound[2],
-                                                                       min_points_per_voxel)
+    ret_v, ret_n, ret_c = downsample_point_cloud_voxel_grid_internal(points,
+                                                                     normals.astype(points.dtype),
+                                                                     colors.astype(points.dtype),
+                                                                     voxel_size[0], voxel_size[1], voxel_size[2],
+                                                                     min_bound[0], min_bound[1], min_bound[2],
+                                                                     max_bound[0], max_bound[1], max_bound[2],
+                                                                     min_points_per_voxel)
     ret = [ret_v, None, None]
     if has_normals:
         ret[1] = ret_n

@@ -14,7 +14,8 @@
  - Chamfer distnaces between point-clouds.
  - Approximate Wasserstein distances between point-clouds using the [Sinkhorn](https://arxiv.org/abs/1306.0895) method.
  - Pairwise distances between point clouds
- - Utility functions for reading and writing common mesh formats (OBJ, OFF, PLY)
+ - Utility functions for reading and writing many common mesh formats (PLY, STL, OFF, OBJ, 3DS, VRML 2.0, X3D, COLLADA). 
+   If it can be imported into MeshLab, we can read it!
  
 ![Example of Poisson Disk Sampling](/img/blue_noise.png?raw=true "Example of Poisson Disk Sampling")
 
@@ -36,7 +37,7 @@ The following dependencies are required to install with `pip`:
 
 # Examples
 
-### Poisson-Disk-Sampling
+### Generating blue-noise samples on a mesh with Poisson-disk sampling
 Generate 10000 samples on a mesh with poisson disk samples
 ```python
 import point_cloud_utils as pcu
@@ -45,7 +46,7 @@ import numpy as np
 # v is a nv by 3 NumPy array of vertices
 # f is an nf by 3 NumPy array of face indexes into v 
 # n is a nv by 3 NumPy array of vertex normals
-v, f, n, _ = pcu.read_ply("my_model.ply")
+v, f, n = pcu.load_mesh_vfn("my_model.ply")
 
 # Generate 10000 samples on a mesh with poisson disk samples
 # f_i are the face indices of each sample and bc are barycentric coordinates of the sample within a face
@@ -63,7 +64,7 @@ import numpy as np
 # v is a nv by 3 NumPy array of vertices
 # f is an nf by 3 NumPy array of face indexes into v 
 # n is a nv by 3 NumPy array of vertex normals
-v, f, n, _ = pcu.read_ply("my_model.ply")
+v, f, n = pcu.load_mesh_vfn("my_model.ply")
 
 
 # Generate samples on a mesh with poisson disk samples seperated by approximately 0.01 times 
@@ -80,7 +81,7 @@ n_poisson = (n[f[f_i]] * bc[:, np.newaxis]).sum(1)
     
 ```
 
-### Monte-Carlo Sampling on a mesh
+### Generate random samples on a mesh
 ```python
 import point_cloud_utils as pcu
 import numpy as np
@@ -88,7 +89,7 @@ import numpy as np
 # v is a nv by 3 NumPy array of vertices
 # f is an nf by 3 NumPy array of face indexes into v 
 # n is a nv by 3 NumPy array of vertex normals
-v, f, n, _ = pcu.read_ply("my_model.ply")
+v, f, n = pcu.load_mesh_vfn("my_model.ply")
 
 # Generate very dense random samples on the mesh (v, f, n)
 # f_i are the face indices of each sample and bc are barycentric coordinates of the sample within a face
@@ -99,37 +100,18 @@ v_dense = (v[f[f_idx]] * bc[:, np.newaxis]).sum(1)
 n_dense = (n[f[f_idx]] * bc[:, np.newaxis]).sum(1)
 ```
 
-### Lloyd Relaxation
+### Estimating normals from a point cloud
 ```python
 import point_cloud_utils as pcu
 
 # v is a nv by 3 NumPy array of vertices
-# f is an nf by 3 NumPy array of face indexes into v 
-v, f, _, _ = pcu.read_ply("my_model.ply")
-
-# Generate 1000 points on the mesh with Lloyd's algorithm
-samples = pcu.sample_mesh_lloyd(v, f, 1000)
-
-# Generate 100 points on the unit square with Lloyd's algorithm
-samples_2d = pcu.lloyd_2d(100)
-
-# Generate 100 points on the unit cube with Lloyd's algorithm
-samples_3d = pcu.lloyd_3d(100)
-```
-
-### Estimating Normals From a Point Cloud
-```python
-import point_cloud_utils as pcu
-
-# v is a nv by 3 NumPy array of vertices
-v, _, _, _ = pcu.read_ply("my_model.ply")
+v = pcu.load_mesh_v("my_model.ply")
 
 # Estimate a normal at each point (row of v) using its 16 nearest neighbors
 n = pcu.estimate_point_cloud_normals(n, k=16)
 ```
 
-### Approximate Wasserstein (Sinkhorn) Distance Between Point-Clouds
-
+### Approximate Wasserstein (Sinkhorn) distance between two point clouds
 ```python
 import point_cloud_utils as pcu
 import numpy as np
@@ -154,7 +136,7 @@ P = pcu.sinkhorn(w_a, w_b, M, eps=1e-3)
 sinkhorn_dist = (M*P).sum() 
 ```
 
-### Chamfer Distance Between Point-Clouds
+### Chamfer distance between two point clouds
 ```python
 import point_cloud_utils as pcu
 import numpy as np
@@ -167,7 +149,7 @@ b = np.random.rand(100, 3)
 chamfer_dist = pcu.chamfer_distance(a, b)
 ```
 
-### Hausdorff Distances Between Point-Clouds
+### Hausdorff distance between two point clouds
 ```python
 import point_cloud_utils as pcu
 import numpy as np
@@ -193,7 +175,7 @@ assert np.abs(np.sum((a[idx_a] - b[idx_b])**2) - hausdorff_dist) < 1e-5, "These 
 
 ```
 
-### K-Nearest-Neighbors Between Point Clouds
+### K-nearest-neighbors between two point clouds
 ```python
 import point_cloud_utils as pcu
 import numpy as np
@@ -207,4 +189,22 @@ b = np.random.rand(500, 3)
 # corrs_a_to_b is of shape (a.shape[0],) and contains the index into b of the 
 # closest point for each point in a
 dists_a_to_b, corrs_a_to_b = pcu.shortest_distance_pairs(a, b)
+```
+
+### Generating point samples in the square and cube with Lloyd Relaxation
+```python
+import point_cloud_utils as pcu
+
+# v is a nv by 3 NumPy array of vertices
+# f is an nf by 3 NumPy array of face indexes into v 
+v, f = pcu.load_mesh_vf("my_model.ply")
+
+# Generate 1000 points on the mesh with Lloyd's algorithm
+samples = pcu.sample_mesh_lloyd(v, f, 1000)
+
+# Generate 100 points on the unit square with Lloyd's algorithm
+samples_2d = pcu.lloyd_2d(100)
+
+# Generate 100 points on the unit cube with Lloyd's algorithm
+samples_3d = pcu.lloyd_3d(100)
 ```

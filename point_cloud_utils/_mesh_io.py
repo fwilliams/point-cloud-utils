@@ -1,8 +1,60 @@
 import numpy as np
+from contextlib import contextmanager
+import os
 
 
 class TriangleMesh:
+    """
+    A lightweight container class representing a triangle mesh with attributes stored at each vertex, wedge, and face,
+    where:
+        - A vertex is a 3D position
+        - A wedge is a vertex and its two adjacent edges
+        - A face is a triangle connecting 3 vertices (Each triangle has 3 vertices and 3 wedges).
+
+    The data in this class is represented as follows:
+
+    TriangleMesh:
+        vertex_data:
+            positions: [V, 3]-shaped numpy array of per-vertex positions
+            normals: [V, 3]-shaped numpy array of per-vertex normals (or None)
+            texcoords: [V, 2]-shaped numpy array of per-vertex uv coordinates (or None)
+            tex_ids: [V,]-shaped numpy array of integer indices into TriangleMesh.textures indicating which texture to
+                     use at this vertex (or None)
+            colors: [V, 4]-shaped numpy array of per-vertex RBGA colors in [0.0, 1.0] (or None)
+            radius: [V,]-shaped numpy array of per-vertex curvature radii (or None)
+            quality: [V,]-shaped numpy array of per-vertex quality measures (or None)
+            flags: [V,]-shaped numpy array of 32-bit integer flags per vertex (or None)
+        face_data:
+            vertex_ids: [F, 3]-shaped numpy array of integer face indices into TrianglMesh.vertex_data.positions
+            normals: [F, 3]-shaped numpy array of per-face normals (or None)
+            colors: [F, 4]-shaped numpy array of per-face RBGA colors in [0.0, 1.0] (or None)
+            quality: [F,]-shaped numpy array of per-face quality measures (or None)
+            flags: [F,]-shaped numpy array of 32-bit integer flags per face (or None)
+
+            wedge_colors: [F, 3, 4]-shaped numpy array of per-wedge RBGA colors in [0.0, 1.0] (or None)
+            wedge_normals: [F, 3, 3]-shaped numpy array of per-wedge normals (or None)
+            wedge_texcoords: [F, 3, 2]-shaped numpy array of per-wedge] uv coordinates (or None)
+            wedge_tex_ids: [F, 3]-shaped numpy array of integer indices into TriangleMesh.textures indicating which
+                           texture to use at this wedge (or None)
+    """
     class VertexData:
+        """
+        A lightweight container class representing per-vertex information within a TriangleMesh.
+
+        The data in this class is represented as follows:
+
+        VertexData:
+            positions: [V, 3]-shaped numpy array of per-vertex positions
+            normals: [V, 3]-shaped numpy array of per-vertex normals (or None)
+            texcoords: [V, 2]-shaped numpy array of per-vertex uv coordinates (or None)
+            tex_ids: [V,]-shaped numpy array of integer indices into TriangleMesh.textures indicating which texture to
+                     use at this vertex (or None)
+            colors: [V, 4]-shaped numpy array of per-vertex RBGA colors in [0.0, 1.0] (or None)
+            radius: [V,]-shaped numpy array of per-vertex curvature radii (or None)
+            quality: [V,]-shaped numpy array of per-vertex quality measures (or None)
+            flags: [V,]-shaped numpy array of 32-bit integer flags per vertex (or None)
+        """
+
         def __init__(self):
             self.positions = np.zeros([0, 3])
             self.normals = np.zeros([0, 3])
@@ -12,8 +64,52 @@ class TriangleMesh:
             self.radius = np.zeros([0])
             self.tex_ids = np.zeros([0], dtype=int)
             self.flags = np.zeros([0], dtype=int)
+            self._set_empty_to_none()
+
+        def _reset_if_none(self):
+            if self.positions is None:
+                self.positions = np.zeros([0, 3])
+            if self.normals is None:
+                self.normals = np.zeros([0, 3])
+            if self.texcoords is None:
+                self.texcoords = np.zeros([0, 2])
+            if self.colors is None:
+                self.colors = np.zeros([0, 4])
+            if self.quality is None:
+                self.quality = np.zeros([0])
+            if self.radius is None:
+                self.radius = np.zeros([0])
+            if self.tex_ids is None:
+                self.tex_ids = np.zeros([0], dtype=int)
+            if self.flags is None:
+                self.flags = np.zeros([0], dtype=int)
+
+        def _set_empty_to_none(self):
+            for k, v in self.__dict__.items():
+                if isinstance(v, np.ndarray):
+                    if v.size <= 0:
+                        setattr(self, k, None)
 
     class FaceData:
+        """
+        A lightweight container class representing per-face information within a TriangleMesh.
+
+        The data in this class is represented as follows:
+
+        FaceData:
+            vertex_ids: [F, 3]-shaped numpy array of integer face indices into TrianglMesh.vertex_data.positions
+            normals: [F, 3]-shaped numpy array of per-face normals (or None)
+            colors: [F, 4]-shaped numpy array of per-face RBGA colors in [0.0, 1.0] (or None)
+            quality: [F,]-shaped numpy array of per-face quality measures (or None)
+            flags: [F,]-shaped numpy array of 32-bit integer flags per face (or None)
+
+            wedge_colors: [F, 3, 4]-shaped numpy array of per-wedge RBGA colors in [0.0, 1.0] (or None)
+            wedge_normals: [F, 3, 3]-shaped numpy array of per-wedge normals (or None)
+            wedge_texcoords: [F, 3, 2]-shaped numpy array of per-wedge] uv coordinates (or None)
+            wedge_tex_ids: [F, 3]-shaped numpy array of integer indices into TriangleMesh.textures indicating which
+                           texture to use at this wedge (or None)
+        """
+
         def __init__(self):
             self.vertex_ids = np.zeros([0, 3], dtype=int)
             self.normals = np.zeros([0, 3])
@@ -25,6 +121,34 @@ class TriangleMesh:
             self.wedge_normals = np.zeros([0, 3, 3])
             self.wedge_texcoords = np.zeros([0, 3, 2])
             self.wedge_tex_ids = np.zeros([0, 3], dtype=int)
+            self._set_empty_to_none()
+
+        def _reset_if_none(self):
+            if self.vertex_ids is None:
+                self.vertex_ids = np.zeros([0, 3], dtype=int)
+            if self.normals is None:
+                self.normals = np.zeros([0, 3])
+            if self.colors is None:
+                self.colors = np.zeros([0, 4])
+            if self.quality is None:
+                self.quality = np.zeros([0])
+            if self.flags is None:
+                self.flags = np.zeros([0], dtype=int)
+
+            if self.wedge_colors is None:
+                self.wedge_colors = np.zeros([0, 3, 4])
+            if self.wedge_normals is None:
+                self.wedge_normals = np.zeros([0, 3, 3])
+            if self.wedge_texcoords is None:
+                self.wedge_texcoords = np.zeros([0, 3, 2])
+            if self.wedge_tex_ids is None:
+                self.wedge_tex_ids = np.zeros([0, 3], dtype=int)
+
+        def _set_empty_to_none(self):
+            for k, v in self.__dict__.items():
+                if isinstance(v, np.ndarray):
+                    if v.size <= 0:
+                        setattr(self, k, None)
 
     def __init__(self):
         self.vertex_data = TriangleMesh.VertexData()
@@ -32,44 +156,171 @@ class TriangleMesh:
         self.textures = []
         self.normal_maps = []
 
-        # Shortcuts to commonly accessed attributes
-        self.v = self.vertex_data.positions
-        self.f = self.face_data.vertex_ids
-        self.vn = self.vertex_data.normals
-        self.fn = self.face_data.normals
+    @property
+    def v(self):
+        return self.vertex_data.positions
+
+    @property
+    def f(self):
+        return self.face_data.vertex_ids
+
+    @property
+    def vn(self):
+        return self.vertex_data.normals
+
+    @property
+    def fn(self):
+        return self.vertex_data.normals
+
+    @property
+    def fc(self):
+        return self.face_data.colors
+
+    @property
+    def vc(self):
+        return self.vertex_data.colors
+
+    def save(self, filename):
+        from ._pcu_internal import save_mesh_internal
+        dtype = np.float64
+        self.vertex_data._reset_if_none()
+        self.face_data._reset_if_none()
+        save_mesh_internal(filename,
+                           np.ascontiguousarray(self.vertex_data.positions.astype(dtype)),
+                           np.ascontiguousarray(self.vertex_data.normals.astype(dtype)),
+                           np.ascontiguousarray(self.vertex_data.texcoords.astype(dtype)),
+                           np.ascontiguousarray(self.vertex_data.colors.astype(dtype)),
+                           np.ascontiguousarray(self.vertex_data.quality.astype(dtype)),
+                           np.ascontiguousarray(self.vertex_data.radius.astype(dtype)),
+                           np.ascontiguousarray(self.vertex_data.tex_ids.astype(np.int32)),
+                           np.ascontiguousarray(self.vertex_data.flags.astype(np.int32)),
+
+                           np.ascontiguousarray(self.face_data.vertex_ids.astype(np.int32)),
+                           np.ascontiguousarray(self.face_data.normals.astype(dtype)),
+                           np.ascontiguousarray(self.face_data.colors.astype(dtype)),
+                           np.ascontiguousarray(self.face_data.quality.astype(dtype)),
+                           np.ascontiguousarray(self.face_data.flags.astype(np.int32)),
+
+                           np.ascontiguousarray(self.face_data.wedge_colors.astype(dtype)),
+                           np.ascontiguousarray(self.face_data.wedge_normals.astype(dtype)),
+                           np.ascontiguousarray(self.face_data.wedge_texcoords.astype(dtype)),
+                           np.ascontiguousarray(self.face_data.wedge_tex_ids.astype(np.int32)),
+                           self.textures, self.normal_maps, dtype, np.int32)
+        self.vertex_data._set_empty_to_none()
+        self.face_data._set_empty_to_none()
+
+    def load(self, filename, dtype=np.float64):
+        from ._pcu_internal import load_mesh_internal
+        if not os.path.exists(filename):
+            raise FileNotFoundError(f"Invalid path {filename} does not exist")
+        mesh_root_path = os.path.dirname(filename)
+        if mesh_root_path.strip() == '':
+            mesh_root_path = '.'
+        mesh_filename = os.path.basename(filename)
+
+        @contextmanager
+        def pushd(new_dir):
+            previous_dir = os.getcwd()
+            os.chdir(new_dir)
+            try:
+                yield
+            finally:
+                os.chdir(previous_dir)
+
+        with pushd(mesh_root_path):
+            mesh_dict = load_mesh_internal(mesh_filename, dtype)
+
+        self.textures = mesh_dict["textures"]
+        self.normal_maps = mesh_dict["normal_maps"]
+        vret = mesh_dict["vertex_data"]
+        fret = mesh_dict["face_data"]
+        for k, v in vret.items():
+            assert hasattr(self.vertex_data, k)
+            setattr(self.vertex_data, k, v)
+        for k, v in fret.items():
+            assert hasattr(self.face_data, k)
+            setattr(self.face_data, k, v)
+        self.vertex_data._set_empty_to_none()
+        self.face_data._set_empty_to_none()
 
 
-def read_triangle_mesh(filename, dtype=float):
-    from ._pcu_internal import load_mesh
-    mesh_dict = load_mesh(filename, dtype)
+def save_triangle_mesh(filename, v, f=None,
+                       vn=None, vt=None, vc=None, vq=None, vr=None, vti=None, vflags=None,
+                       fn=None, fc=None, fq=None, fflags=None, wc=None, wn=None, wt=None, wti=None,
+                       textures=[], normal_maps=[]):
+    mesh = TriangleMesh()
+    mesh.vertex_data.positions = v
+    mesh.vertex_data.normals = vn
+    mesh.vertex_data.texcoords = vt
+    mesh.vertex_data.colors = vc
+    mesh.vertex_data.quality = vq
+    mesh.vertex_data.radius = vr
+    mesh.vertex_data.tex_ids = vti
+    mesh.vertex_data.flags = vflags
+
+    mesh.face_data.vertex_ids = f
+    mesh.face_data.normals = fn
+    mesh.face_data.colors = fc
+    mesh.face_data.quality = fq
+    mesh.face_data.flags = fflags
+
+    mesh.face_data.wedge_colors = wc
+    mesh.face_data.wedge_normals = wn
+    mesh.face_data.wedge_texcoords = wt
+    mesh.face_data.wedge_tex_ids = wti
+
+    mesh.textures = textures
+    mesh.normal_maps = normal_maps
+
+    mesh.save(filename)
+
+
+def save_mesh_v(filename, v):
+    save_triangle_mesh(filename, v=v)
+
+
+def save_mesh_vf(filename, v, f):
+    save_triangle_mesh(filename, v=v, f=f)
+
+
+def save_mesh_vfn(filename, v, f, n):
+    save_triangle_mesh(filename, v=v, f=f, vn=n)
+
+
+def save_mesh_vnc(filename, v, n, c):
+    save_triangle_mesh(filename, v=v, vn=n, vc=c)
+
+
+def save_mesh_vfnc(filename, v, f, n, c):
+    save_triangle_mesh(filename, v=v, f=f, vn=n, vc=c)
+
+
+def load_triangle_mesh(filename, dtype=np.float64):
     ret = TriangleMesh()
-    ret.textures = mesh_dict["textures"]
-    ret.normal_maps = mesh_dict["normal_maps"]
-    vret = mesh_dict["vertex_data"]
-    fret = mesh_dict["face_data"]
-    for k, v in vret.items():
-        assert hasattr(ret.vertex_data, k)
-        setattr(ret.vertex_data, k, v)
-    for k, v in fret.items():
-        assert hasattr(ret.face_data, k)
-        setattr(ret.face_data, k, v)
-    ret.v = ret.vertex_data.positions
-    ret.f = ret.face_data.vertex_ids
-    ret.vn = ret.vertex_data.normals
-    ret.fn = ret.face_data.normals
-
+    ret.load(filename, dtype=dtype)
     return ret
 
 
-def read_mesh_v(filename, dtype=float):
-    return read_triangle_mesh(filename, dtype=dtype).v
+def load_mesh_v(filename, dtype=float):
+    return load_triangle_mesh(filename, dtype=dtype).v
 
 
-def read_mesh_vf(filename, dtype=float):
-    ret = read_triangle_mesh(filename, dtype=dtype)
+def load_mesh_vf(filename, dtype=float):
+    ret = load_triangle_mesh(filename, dtype=dtype)
     return ret.v, ret.f
 
 
-def read_mesh_vfn(filename, dtype=float):
-    ret = read_triangle_mesh(filename, dtype=dtype)
+def load_mesh_vfn(filename, dtype=float):
+    ret = load_triangle_mesh(filename, dtype=dtype)
     return ret.v, ret.f, ret.vn
+
+
+def load_mesh_vnc(filename, dtype=float):
+    ret = load_triangle_mesh(filename, dtype=dtype)
+    return ret.v, ret.vn, ret.c
+
+
+def load_mesh_vfnc(filename, dtype=float):
+    ret = load_triangle_mesh(filename, dtype=dtype)
+    return ret.v, ret.f, ret.vn, ret.c
+
