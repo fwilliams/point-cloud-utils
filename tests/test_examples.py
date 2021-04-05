@@ -306,36 +306,50 @@ class TestDenseBindings(unittest.TestCase):
         import point_cloud_utils as pcu
         import numpy as np
 
-        # Generate two random point sets
-        a = np.random.rand(1000, 3)
-        b = np.random.rand(500, 3)
-        # dists_a_to_b is of shape (a.shape[0],) and contains the shortest squared distance
-        # between each point in a and the points in b
-        # corrs_a_to_b is of shape (a.shape[0],) and contains the index into b of the
-        # closest point for each point in a
-        k = np.random.randint(10)
-        dists_a_to_b, corrs_a_to_b = pcu.k_nearest_neighbors(a, b, k)
-        if k > 1:
-            self.assertEqual(dists_a_to_b.shape, (a.shape[0], k))
-            self.assertEqual(corrs_a_to_b.shape, (a.shape[0], k))
-        else:
-            self.assertEqual(dists_a_to_b.shape, (a.shape[0],))
-            self.assertEqual(corrs_a_to_b.shape, (a.shape[0],))
+        for i in range(3):
+            # Generate two random point sets
+            a = np.random.rand(1000, 3)
+            b = np.random.rand(500, 3)
+            # dists_a_to_b is of shape (a.shape[0],) and contains the shortest squared distance
+            # between each point in a and the points in b
+            # corrs_a_to_b is of shape (a.shape[0],) and contains the index into b of the
+            # closest point for each point in a
+            k = np.random.randint(10) + 1
+            dists_a_to_b, corrs_a_to_b = pcu.k_nearest_neighbors(a, b, k)
+            if k > 1:
+                self.assertEqual(dists_a_to_b.shape, (a.shape[0], k))
+                self.assertEqual(corrs_a_to_b.shape, (a.shape[0], k))
+            else:
+                self.assertEqual(dists_a_to_b.shape, (a.shape[0],))
+                self.assertEqual(corrs_a_to_b.shape, (a.shape[0],))
 
-        if k == 1:
-            dists_a_to_b = dists_a_to_b[:, np.newaxis]
-            corrs_a_to_b = corrs_a_to_b[:, np.newaxis]
+            if k == 1:
+                dists_a_to_b = dists_a_to_b[:, np.newaxis]
+                corrs_a_to_b = corrs_a_to_b[:, np.newaxis]
 
-        for i in range(dists_a_to_b.shape[1]):
-            b_map = b[corrs_a_to_b[:, i]]
-            dists = np.linalg.norm(a - b_map, axis=-1)
-            diff_dists = dists - dists_a_to_b[:, i]
+            for i in range(dists_a_to_b.shape[1]):
+                b_map = b[corrs_a_to_b[:, i]]
+                dists = np.linalg.norm(a - b_map, axis=-1)
+                diff_dists = dists - dists_a_to_b[:, i]
+                self.assertTrue(np.all(np.abs(diff_dists) < 1e-5))
+
+            b_map = b[corrs_a_to_b]
+            dists = np.linalg.norm(a[:, np.newaxis, :] - b_map, axis=-1)
+            diff_dists = dists - dists_a_to_b
             self.assertTrue(np.all(np.abs(diff_dists) < 1e-5))
 
-        b_map = b[corrs_a_to_b]
-        dists = np.linalg.norm(a[:, np.newaxis, :] - b_map, axis=-1)
-        diff_dists = dists - dists_a_to_b
-        self.assertTrue(np.all(np.abs(diff_dists) < 1e-5))
+        with self.assertRaises(ValueError):
+            a = np.random.rand(1000, 3)
+            b = np.random.rand(500, 3)
+            dists_a_to_b, corrs_a_to_b = pcu.k_nearest_neighbors(a, b, 0)
+
+        a = np.random.rand(100, 3)
+        b = np.random.rand(50, 3)
+        dists_a_to_b, corrs_a_to_b = pcu.k_nearest_neighbors(a, b, 3)
+        dists_a_to_b2, corrs_a_to_b2 = pcu.k_nearest_neighbors(a, b, 3, squared_distances=True)
+
+        self.assertTrue(np.all(corrs_a_to_b == corrs_a_to_b2))
+        self.assertTrue(np.all(np.abs(dists_a_to_b ** 2.0 - dists_a_to_b2) < 1e-5))
 
     def test_hausdorff(self):
         import point_cloud_utils as pcu

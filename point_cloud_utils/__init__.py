@@ -10,7 +10,7 @@ from ._mesh_io import *
 import numpy as np
 
 
-def hausdorff_distance(x, y, return_index=False):
+def hausdorff_distance(x, y, return_index=False, squared_distances=False, max_points_per_leaf=10):
     """
     Compute the Hausdorff distance between x and y
 
@@ -20,6 +20,10 @@ def hausdorff_distance(x, y, return_index=False):
     y : m by 3 array of representing a set of m points (each row is a point of dimension 3)
     return_index : Optionally return the index pair `(i, j)` into x and y such that
                    `x[i, :]` and `y[j, :]` are the two points with maximum shortest distance.
+    squared_distances : If set to True, then return squared L2 distances. Default is False.
+    max_points_per_leaf : The maximum number of points per leaf node in the KD tree used by this function.
+                          Default is 10.
+
     Returns
     -------
     The largest shortest distance, `d` between each point in `source` and the points in `target`.
@@ -27,8 +31,12 @@ def hausdorff_distance(x, y, return_index=False):
     and `(i, j)` are such that `source[i, :]` and `target[j, :]` are the two points with maximum shortest
     distance.
     """
-    hausdorff_x_to_y, idx_x1, idx_y1 = one_sided_hausdorff_distance(x, y, return_index=True)
-    hausdorff_y_to_x, idx_y2, idx_x2 = one_sided_hausdorff_distance(y, x, return_index=True)
+    hausdorff_x_to_y, idx_x1, idx_y1 = one_sided_hausdorff_distance(x, y, return_index=True,
+                                                                    squared_distances=squared_distances,
+                                                                    max_points_per_leaf=max_points_per_leaf)
+    hausdorff_y_to_x, idx_y2, idx_x2 = one_sided_hausdorff_distance(y, x, return_index=True,
+                                                                    squared_distances=squared_distances,
+                                                                    max_points_per_leaf=max_points_per_leaf)
 
     hausdorff = max(hausdorff_x_to_y, hausdorff_y_to_x)
     if return_index and hausdorff_x_to_y > hausdorff_y_to_x:
@@ -38,7 +46,7 @@ def hausdorff_distance(x, y, return_index=False):
     return hausdorff
 
 
-def chamfer_distance(x, y, return_index=False):
+def chamfer_distance(x, y, return_index=False, squared_distances=False, max_points_per_leaf=10):
     """
     Compute the chamfer distance between two point clouds x, and y
 
@@ -50,14 +58,21 @@ def chamfer_distance(x, y, return_index=False):
                   corrs_x_to_y[i] stores the index into y of the closest point to x[i]
                   (i.e. y[corrs_x_to_y[i]] is the nearest neighbor to x[i] in y).
                   corrs_y_to_x is similar to corrs_x_to_y but with x and y reversed.
+    squared_distances : If set to True, then return squared L2 distances. Default is False.
+    max_points_per_leaf : The maximum number of points per leaf node in the KD tree used by this function.
+                          Default is 10.
     Returns
     -------
     The chamfer distance between x an dy.
     If return_index is set, then this function returns a tuple (chamfer_dist, corrs_x_to_y, corrs_y_to_x) where
     corrs_x_to_y and corrs_y_to_x are described above.
     """
-    dists_x_to_y, corrs_x_to_y = k_nearest_neighbors(x, y, k=1)
-    dists_y_to_x, corrs_y_to_x = k_nearest_neighbors(x, y, k=1)
+    dists_x_to_y, corrs_x_to_y = k_nearest_neighbors(x, y, k=1,
+                                                     squared_distances=squared_distances,
+                                                     max_points_per_leaf=max_points_per_leaf)
+    dists_y_to_x, corrs_y_to_x = k_nearest_neighbors(x, y, k=1,
+                                                     squared_distances=squared_distances,
+                                                     max_points_per_leaf=max_points_per_leaf)
 
     cham_dist = np.mean(dists_x_to_y) + np.mean(dists_y_to_x)
 
