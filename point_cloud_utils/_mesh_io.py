@@ -212,7 +212,7 @@ class TriangleMesh:
     def load(self, filename, dtype=np.float64):
         from ._pcu_internal import load_mesh_internal
         if not os.path.exists(filename):
-            raise FileNotFoundError(f"Invalid path {filename} does not exist")
+            raise FileNotFoundError("Invalid path " + filename + " does not exist")
         mesh_root_path = os.path.dirname(filename)
         if mesh_root_path.strip() == '':
             mesh_root_path = '.'
