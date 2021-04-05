@@ -15,7 +15,7 @@ class TestDenseBindings(unittest.TestCase):
         # v is a nv by 3 NumPy array of vertices
         # f is an nf by 3 NumPy array of face indexes into v
         # n is a nv by 3 NumPy array of vertex normals if they are specified, otherwise an empty array
-        v, f, n = pcu.read_obj(os.path.join(self.test_path, "cube_twist.obj"))
+        v, f, n = pcu.load_mesh_vfn(os.path.join(self.test_path, "cube_twist.obj"))
         bbox = np.max(v, axis=0) - np.min(v, axis=0)
         bbox_diag = np.linalg.norm(bbox)
 
@@ -88,7 +88,7 @@ class TestDenseBindings(unittest.TestCase):
         # v is a nv by 3 NumPy array of vertices
         # f is an nf by 3 NumPy array of face indexes into v
         # n is a nv by 3 NumPy array of vertex normals if they are specified, otherwise an empty array
-        v, f, n = pcu.read_obj(os.path.join(self.test_path, "cube_twist.obj"))
+        v, f, n = pcu.load_mesh_vfn(os.path.join(self.test_path, "cube_twist.obj"))
         bbox = np.max(v, axis=0) - np.min(v, axis=0)
         bbox_diag = np.linalg.norm(bbox)
         vox_grid_size = 1.0 / 128.0
@@ -231,7 +231,7 @@ class TestDenseBindings(unittest.TestCase):
 
         # v is a nv by 3 NumPy array of vertices
         # f is an nf by 3 NumPy array of face indexes into v
-        v, f, n = pcu.read_obj(os.path.join(self.test_path, "cube_twist.obj"))
+        v, f, n = pcu.load_mesh_vfn(os.path.join(self.test_path, "cube_twist.obj"))
 
         # Generate 1000 points on the mesh with Lloyd's algorithm
         samples = pcu.sample_mesh_lloyd(v, f, 1000)
@@ -373,7 +373,7 @@ class TestDenseBindings(unittest.TestCase):
         # v is a nv by 3 NumPy array of vertices
         # f is an nf by 3 NumPy array of face indexes into v
         # n is a nv by 3 NumPy array of vertex normals if they are specified, otherwise an empty array
-        v, f, n = pcu.read_obj(os.path.join(self.test_path, "cube_twist.obj"))
+        v, f, n = pcu.load_mesh_vfn(os.path.join(self.test_path, "cube_twist.obj"))
 
         # Estimate normals for the point set, v using 12 nearest neighbors per point
         n = pcu.estimate_point_cloud_normals(v, k=12)
@@ -451,12 +451,26 @@ class TestDenseBindings(unittest.TestCase):
         import numpy as np
 
         # v is a nv by 3 NumPy array of vertices
-        v, _, _, _ = pcu.read_ply(os.path.join(self.test_path, "duplicated_pcloud.ply"))
+        v = pcu.load_mesh_v(os.path.join(self.test_path, "duplicated_pcloud.ply"))
 
         v2, idx_v_to_v2, idx_v2_to_v = pcu.remove_duplicate_points(v, 1e-11, return_index=True)
         self.assertLess(v2.shape[0], v.shape[0])
         self.assertTrue(np.all(np.equal(v2[idx_v2_to_v], v)))
         self.assertTrue(np.all(np.equal(v[idx_v_to_v2], v2)))
+
+    def test_downsample_mesh_voxel_grid(self):
+        import point_cloud_utils as pcu
+        import numpy as np
+
+        # v is a nv by 3 NumPy array of vertices
+        v = pcu.load_mesh_v(os.path.join(self.test_path, "duplicated_pcloud.ply"))
+
+        bbmin, bbmax = v.min(0), v.max(0)
+        bbsize = bbmax - bbmin
+
+        vdown, _, _ = pcu.downsample_point_cloud_voxel_grid(bbsize/128.0, v)
+
+        self.assertLess(vdown.shape[0], v.shape[0])
 
 
 if __name__ == '__main__':

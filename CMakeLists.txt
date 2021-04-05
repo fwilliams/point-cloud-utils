@@ -49,7 +49,8 @@ endif()
 # Create the python module
 npe_add_module(_pcu_internal
   BINDING_SOURCES
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/sample.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/sample_mesh.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/sample_point_cloud.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/point_cloud_distance.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/lloyd.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/meshio.cpp

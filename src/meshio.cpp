@@ -9,6 +9,7 @@
 
 #include <vcg/complex/complex.h>
 #include <wrap/io_trimesh/import.h>
+#include <wrap/io_trimesh/export.h>
 
 #include <npe.h>
 #include <npe_typedefs.h>
@@ -45,6 +46,39 @@ typedef CMesh::VertexIterator VertexIterator;
 typedef CMesh::FaceContainer FaceContainer;
 typedef CMesh::ScalarType ScalarType;
 
+
+bool assert_shape_and_dtype(const pybind11::array& arr, std::string name, pybind11::dtype dtype,
+                            const std::vector<ssize_t>& shape) {
+    if (!arr.dtype().is(dtype)) {
+        throw pybind11::value_error("Invalid dtype for argument '" + name + "'. Expected '" +
+                                    dtype.kind() + "' but got '" + arr.dtype().kind() + "'.");
+    }
+    if (shape.size() != arr.ndim()) {
+        throw pybind11::value_error("Invalid number of dimensions for argument '" + name + "'. Expected " +
+                                    std::to_string(shape.size()) + " but got " + std::to_string(arr.ndim()) + ".");
+    }
+    bool nonempty = true;
+    for (int i = 0; i < shape.size(); i++) {
+        if (arr.shape()[i] <= 0) {
+            nonempty = false;
+        }
+        if (shape[i] < 0) {
+            if (arr.shape()[i] == 0) {
+                continue;
+            } else if (arr.shape()[i] == -shape[i]) {
+                continue;
+            }
+        } else if (shape[i] == arr.shape()[i]) {
+            continue;
+        }
+
+        throw pybind11::value_error("Invalid  shape for argument '" + name + "' at dimension " +
+                                    std::to_string(i) + ". Expected " + std::to_string(shape[i]) +
+                                    " but got " + std::to_string(arr.shape()[i]) + ".");
+    }
+
+    return nonempty;
+}
 
 template <typename Scalar>
 void load_mesh_vcg(CMesh& m, int mask, std::unordered_map<std::string, pybind11::object>& ret) {
@@ -123,7 +157,7 @@ void load_mesh_vcg(CMesh& m, int mask, std::unordered_map<std::string, pybind11:
         if (has_v_texcoord) {
 //            std::cout << "has vertex texcoords" << std::endl;
             vertex_texcoord.resize(num_vertices, 2);
-            if (m.textures.size() > 0) {
+            if (m.textures.size() > 0 || m.normalmaps.size() > 0) {
                 vertex_texindex.resize(num_vertices, 1);
             }
         }
@@ -166,7 +200,7 @@ void load_mesh_vcg(CMesh& m, int mask, std::unordered_map<std::string, pybind11:
         if (has_w_texcoord) {
 //            std::cout << "has wedge texcoord" << std::endl;
             wedge_texcoords.resize(num_faces, 3 * 2);
-            if (m.textures.size() > 0) {
+            if (m.textures.size() > 0 || m.normalmaps.size() > 0) {
                 wedge_texindex.resize(num_faces, 3);
             }
         }
@@ -314,14 +348,211 @@ void load_mesh_vcg(CMesh& m, int mask, std::unordered_map<std::string, pybind11:
     //    }
 }
 
+
+template <typename ScalarF, typename ScalarI>
+void write_mesh_vcg(std::string filename, pybind11::array& v_positions, pybind11::array& v_normals,
+                    pybind11::array& v_texcoords, pybind11::array& v_colors, pybind11::array& v_quality,
+                    pybind11::array& v_radius, pybind11::array& v_texids, pybind11::array& v_flags,
+                    pybind11::array& f_vertex_ids, pybind11::array& f_normals, pybind11::array& f_colors,
+                    pybind11::array& f_quality, pybind11::array& f_flags,
+                    pybind11::array& w_colors, pybind11::array& w_normals, pybind11::array& w_texcoords,
+                    pybind11::array& w_texids,
+                    std::vector<std::string>& textures, std::vector<std::string>& normal_maps,
+                    pybind11::dtype dtype_f, pybind11::dtype dtype_i) {
+
+    ssize_t num_vertices = v_positions.shape()[0];
+    ssize_t num_faces = f_vertex_ids.shape()[0];
+
+    bool has_v_positions = assert_shape_and_dtype(v_positions, "v_positions", dtype_f, {-num_vertices, 3});
+    bool has_v_normals = assert_shape_and_dtype(v_normals, "v_normals", dtype_f, {-num_vertices, 3});
+    bool has_v_texcoords = assert_shape_and_dtype(v_texcoords, "v_texcoords", dtype_f, {-num_vertices, 2});
+    bool has_v_colors = assert_shape_and_dtype(v_colors, "v_colors", dtype_f, {-num_vertices, 4});
+    bool has_v_quality = assert_shape_and_dtype(v_quality, "v_quality", dtype_f, {-num_vertices});
+    bool has_v_radius = assert_shape_and_dtype(v_radius, "v_radius", dtype_f, {-num_vertices});
+    bool has_v_texids = assert_shape_and_dtype(v_texids, "v_texids", dtype_i, {-num_vertices});
+    bool has_v_flags = assert_shape_and_dtype(v_flags, "v_flags", dtype_i, {-num_vertices});
+
+    bool has_f_vertex_ids = assert_shape_and_dtype(f_vertex_ids, "f_vertex_ids", dtype_i, {-num_faces, 3});
+    bool has_f_normals = assert_shape_and_dtype(f_normals, "f_normals", dtype_f, {-num_faces, 3});
+    bool has_f_colors = assert_shape_and_dtype(f_colors, "f_colors", dtype_f, {-num_faces, 4});
+    bool has_f_quality = assert_shape_and_dtype(f_quality, "f_quality", dtype_f, {-num_faces});
+    bool has_f_flags = assert_shape_and_dtype(f_flags, "f_flags", dtype_i, {-num_faces});
+
+    bool has_w_normals = assert_shape_and_dtype(w_normals, "w_normals", dtype_f, {-num_faces, 3, 3});
+    bool has_w_colors = assert_shape_and_dtype(w_colors, "w_colors", dtype_f, {-num_faces, 3, 4});
+    bool has_w_texcoords = assert_shape_and_dtype(w_texcoords, "w_texcoords", dtype_f, {-num_faces, 3, 2});
+    bool has_w_texids = assert_shape_and_dtype(w_texids, "w_texids", dtype_i, {-num_faces, 3});
+
+    int mask = tri::io::Mask::IOM_NONE;
+    if (has_v_positions) {
+        mask |= tri::io::Mask::IOM_VERTCOORD;
+    }
+    if (has_v_normals) {
+        mask |= tri::io::Mask::IOM_VERTNORMAL;
+    }
+    if (has_v_texcoords) {
+        mask |= tri::io::Mask::IOM_VERTTEXCOORD;
+    }
+    if (has_v_colors) {
+        mask |= tri::io::Mask::IOM_VERTCOLOR;
+    }
+    if (has_v_quality) {
+        mask |= tri::io::Mask::IOM_VERTQUALITY;
+    }
+    if (has_v_radius) {
+        mask |= tri::io::Mask::IOM_VERTRADIUS;
+    }
+    if (has_v_flags) {
+        mask |= tri::io::Mask::IOM_VERTFLAGS;
+    }
+
+    if (has_f_vertex_ids) {
+        mask |= tri::io::Mask::IOM_FACEINDEX;
+    }
+    if (has_f_normals) {
+        mask |= tri::io::Mask::IOM_FACENORMAL;
+    }
+    if (has_f_colors) {
+        mask |= tri::io::Mask::IOM_FACECOLOR;
+    }
+    if (has_f_quality) {
+        mask |= tri::io::Mask::IOM_FACEQUALITY;
+    }
+    if (has_f_flags) {
+        mask |= tri::io::Mask::IOM_FACEFLAGS;
+    }
+
+    if (has_w_normals) {
+        mask |= tri::io::Mask::IOM_WEDGNORMAL;
+    }
+    if (has_w_colors) {
+        mask |= tri::io::Mask::IOM_WEDGCOLOR;
+    }
+    if (has_w_texcoords) {
+        mask |= tri::io::Mask::IOM_WEDGTEXCOORD;
+    }
+    if (has_w_texids) {
+        mask |= tri::io::Mask::IOM_WEDGTEXMULTI;
+    }
+
+
+    CMesh m;
+    CMesh::VertexIterator vi = vcg::tri::Allocator<CMesh>::AddVertices(m, num_vertices);
+    for (int i = 0; i < num_vertices; i++) {
+        if (has_v_positions) {
+            vi->P() = CMesh::CoordType(*((ScalarF*)v_positions.data(i, 0)),
+                                       *((ScalarF*)v_positions.data(i, 1)),
+                                       *((ScalarF*)v_positions.data(i, 2)));
+        }
+        if (has_v_normals) {
+            vi->N() = CMesh::VertexType::NormalType(*((ScalarF*)v_normals.data(i, 0)),
+                                                    *((ScalarF*)v_normals.data(i, 1)),
+                                                    *((ScalarF*)v_normals.data(i, 2)));
+        }
+        if (has_v_texcoords) {
+            vi->T() = CMesh::VertexType::TexCoordType(*((ScalarF*)v_texcoords.data(i, 0)),
+                                                      *((ScalarF*)v_texcoords.data(i, 1)));
+            if (has_v_texids) {
+                vi->T().N() = *((ScalarI*)v_texids.data(i));
+            }
+        }
+        if (has_v_colors) {
+            vi->C() = CMesh::VertexType::ColorType((unsigned char) (*((ScalarF*)v_colors.data(i, 0)) * 255.0),
+                                                   (unsigned char) (*((ScalarF*)v_colors.data(i, 1)) * 255.0),
+                                                   (unsigned char) (*((ScalarF*)v_colors.data(i, 2)) * 255.0),
+                                                       (unsigned char) (*((ScalarF*)v_colors.data(i, 3)) * 255.0));
+        }
+        if (has_v_quality) {
+            vi->Q() = CMesh::VertexType::QualityType(*((ScalarF*) v_quality.data(i)));
+        }
+        if (has_v_radius) {
+            vi->R() = CMesh::VertexType::QualityType(*((ScalarF*) v_radius.data(i)));
+        }
+        if (has_v_flags) {
+            vi->Flags() = int(*((ScalarI*) v_flags.data(i)));
+        }
+        ++vi;
+    }
+
+    CMesh::FaceIterator fi = vcg::tri::Allocator<CMesh>::AddFaces(m, num_faces);
+    for (int i = 0; i < num_faces; i++) {
+        if (has_f_vertex_ids) {
+            ScalarI fv1 = *((ScalarI*)f_vertex_ids.data(i, 0));
+            ScalarI fv2 = *((ScalarI*)f_vertex_ids.data(i, 1));
+            ScalarI fv3 = *((ScalarI*)f_vertex_ids.data(i, 2));
+            if (fv1 >= m.vert.size() || fv2 >= m.vert.size() || fv3 >= m.vert.size()) {
+                throw pybind11::value_error("Invalid face (" + std::to_string(fv1) + ", " + std::to_string(fv2) +
+                                            ", " + std::to_string(fv3) + ") at index " + std::to_string(i) +
+                                            " exceeds the number of vertices (" + std::to_string(num_vertices) + ").");
+            }
+
+            fi->V(0) = &(m.vert.at(fv1));
+            fi->V(1) = &(m.vert.at(fv2));
+            fi->V(2) = &(m.vert.at(fv3));
+        }
+        if (has_f_normals) {
+            fi->N() = CMesh::FaceType::NormalType(*((ScalarF*)f_normals.data(i, 0)),
+                                                  *((ScalarF*)f_normals.data(i, 1)),
+                                                  *((ScalarF*)f_normals.data(i, 2)));
+        }
+        if (has_f_colors) {
+            fi->C() = CMesh::FaceType::ColorType((unsigned char) (*((ScalarF*)f_colors.data(i, 0)) * 255.0),
+                                                 (unsigned char) (*((ScalarF*)f_colors.data(i, 1)) * 255.0),
+                                                 (unsigned char) (*((ScalarF*)f_colors.data(i, 2)) * 255.0),
+                                                 (unsigned char) (*((ScalarF*)f_colors.data(i, 3)) * 255.0));
+        }
+        if (has_f_quality) {
+            fi->Q() = CMesh::FaceType::QualityType(*((ScalarF*) f_quality.data(i)));
+        }
+        if (has_f_flags) {
+            fi->Flags() = int(*((ScalarI*) f_flags.data(i)));
+        }
+
+        if (has_w_colors) {
+            for (int j = 0; j < 3; j++) {
+                fi->WC(j) = CMesh::FaceType::ColorType((unsigned char) (*((ScalarF*)w_colors.data(i, j, 0)) * 255.0),
+                                                       (unsigned char) (*((ScalarF*)w_colors.data(i, j, 1)) * 255.0),
+                                                       (unsigned char) (*((ScalarF*)w_colors.data(i, j, 2)) * 255.0),
+                                                       (unsigned char) (*((ScalarF*)w_colors.data(i, j, 3)) * 255.0));
+            }
+        }
+        if (has_w_texcoords) {
+            for (int j = 0; j < 3; j++) {
+                fi->WT(j) = CMesh::FaceType::TexCoordType(*((ScalarF*)w_texcoords.data(i, j, 0)),
+                                                          *((ScalarF*)w_texcoords.data(i, j, 1)));
+                if (has_w_texids) {
+                    ScalarI texindex = *((ScalarI*)w_texids.data(i, j));
+                    fi->WT(j).N() = texindex;
+                }
+            }
+        }
+        if (has_w_normals) {
+            for (int j = 0; j < 3; j++) {
+                fi->WN(j) = CMesh::FaceType::NormalType(*((ScalarF*)w_normals.data(i, j, 0)),
+                                                        *((ScalarF*)w_normals.data(i, j, 1)),
+                                                        *((ScalarF*)w_normals.data(i, j, 2)));
+            }
+        }
+
+        ++fi;
+    }
+
+    int err = tri::io::Exporter<CMesh>::Save(m, filename.c_str(), mask);
+    if (err) {
+        throw pybind11::value_error("Error during loading " + filename + ": '" +
+                                    tri::io::Exporter<CMesh>::ErrorMsg(err) + "'");
+    }
+}
+
+
+
+
 }
 
 const char* ds_load_mesh = R"igl_Qu8mg5v7(
 Load a mesh
-
 )igl_Qu8mg5v7";
-
-npe_function(load_mesh)
+npe_function(load_mesh_internal)
 npe_doc(ds_load_mesh)
 npe_arg(filename, std::string)
 npe_default_arg(dtype, npe::dtype, "float64")
@@ -358,363 +589,63 @@ npe_begin_code()
 npe_end_code()
 
 
+
 const char* ds_save_mesh = R"igl_Qu8mg5v7(
-Load a mesh
-
+Save a mesh
 )igl_Qu8mg5v7";
-
-npe_function(save_mesh)
+npe_function(save_mesh_internal)
 npe_doc(ds_save_mesh)
 npe_arg(filename, std::string)
-npe_arg(mesh_dict, pybind11::dict)
+
+npe_arg(v_positions, pybind11::array)
+npe_arg(v_normals, pybind11::array)
+npe_arg(v_texcoords, pybind11::array)
+npe_arg(v_colors, pybind11::array)
+npe_arg(v_quality, pybind11::array)
+npe_arg(v_radius, pybind11::array)
+npe_arg(v_texids, pybind11::array)
+npe_arg(v_flags, pybind11::array)
+
+npe_arg(f_vertex_ids, pybind11::array)
+npe_arg(f_normals, pybind11::array)
+npe_arg(f_colors, pybind11::array)
+npe_arg(f_quality, pybind11::array)
+npe_arg(f_flags, pybind11::array)
+
+npe_arg(w_colors, pybind11::array)
+npe_arg(w_normals, pybind11::array)
+npe_arg(w_texcoords, pybind11::array)
+npe_arg(w_texids, pybind11::array)
+
+npe_arg(textures, std::vector<std::string>)
+npe_arg(normal_maps, std::vector<std::string>)
+
+npe_arg(dtype_f, npe::dtype)
+npe_arg(dtype_i, npe::dtype)
+
 npe_begin_code()
 {
-    CMesh m;
-    // Check for each dict entry and write into the corresponding mesh. Always assume double preci
+    write_mesh_vcg<double, int>(filename,
+                   v_positions,
+                   v_normals,
+                   v_texcoords,
+                   v_colors,
+                   v_quality,
+                   v_radius,
+                   v_texids,
+                   v_flags,
+                   f_vertex_ids,
+                   f_normals,
+                   f_colors,
+                   f_quality,
+                   f_flags,
+                   w_colors,
+                   w_normals,
+                   w_texcoords,
+                   w_texids,
+                   textures,
+                   normal_maps,
+                   dtype_f,
+                   dtype_i);
 }
-
-
-//const char* ds_read_obj = R"igl_Qu8mg5v7(
-//Read a mesh from an ascii obj file, filling in vertex positions, normals
-//and texture coordi%nates. Mesh may have faces of any number of degree.
-
-//Parameters
-//----------
-//filename : string, path to .obj file
-//dtype : data-type of the returned faces, texture coordinates and normals, optional. Default is `float64`.
-//        (returned faces always have type int32.)
-
-//Returns
-//-------
-//v : array of vertex positions #v by 3
-//tc : array of texture coordinats #tc by 2
-//n : array of corner normals #n by 3
-//f : #f array of face indices into vertex positions
-//ftc : #f array of face indices into vertex texture coordinates
-//fn : #f array of face indices into vertex normals
-
-//See also
-//--------
-
-//Notes
-//-----
-
-//Examples
-//--------
-//>>> v, f, n = read_obj("my_model.obj")
-
-//)igl_Qu8mg5v7";
-
-//npe_function(read_obj)
-//npe_doc(ds_read_obj)
-//npe_arg(filename, std::string)
-//npe_default_arg(dtype, npe::dtype, "float64")
-//npe_begin_code()
-
-//  if (dtype.type() == npe::type_f32) {
-//    EigenDenseF32 v, tc, n;
-//    EigenDenseI32 f, ftc, fn;
-//    bool ret = igl::readOBJ(filename, v, tc, n, f, ftc, fn);
-//    if (!ret) {
-//      throw std::invalid_argument("File '" + filename + "' not found.");
-//    }
-//    return std::make_tuple(npe::move(v), npe::move(f), npe::move(n));
-//  } else if (dtype.type() == npe::type_f64) {
-//    EigenDenseF64 v, tc, n;
-//    EigenDenseI64 f, ftc, fn;
-//    bool ret = igl::readOBJ(filename, v, tc, n, f, ftc, fn);
-//    if (!ret) {
-//      throw std::invalid_argument("File '" + filename + "' not found.");
-//    }
-//    return std::make_tuple(npe::move(v), npe::move(f), npe::move(n));
-//  } else {
-//    throw pybind11::type_error("Only float32 and float64 dtypes are supported.");
-//  }
-
-//npe_end_code()
-
-
-
-
-//const char* ds_write_obj = R"igl_Qu8mg5v7(
-//Write a mesh in an ascii obj file.
-
-//Parameters
-//----------
-//filename : path to outputfile
-//v : #v by 3 array of vertex positions
-//f : #f x 3 array of face indices into vertex positions
-//n : #v x 3 array of vertex normals
-
-//Returns
-//-------
-//ret : bool if output was successful
-
-//See also
-//--------
-//read_obj
-
-//Notes
-//-----
-//None
-
-//Examples
-//--------
-//# Mesh in (v, f, n)
-//>>> success = write_obj(v, f, n)
-//)igl_Qu8mg5v7";
-
-//npe_function(write_obj)
-//npe_doc(ds_write_obj)
-//npe_arg(filename, std::string)
-//npe_arg(v, dense_float, dense_double)
-//npe_arg(f, dense_int, dense_longlong, dense_uint, dense_ulonglong)
-//npe_arg(n, npe_matches(v))
-//npe_begin_code()
-
-//  EigenDense<unsigned int> fn;
-//  EigenDense<double> tc;
-//  EigenDense<unsigned int> ftc;
-//  return igl::writeOBJ(filename, v, f, n, fn, tc, ftc);
-
-//npe_end_code()
-
-
-
-
-//const char* ds_read_off = R"igl_Qu8mg5v7(
-//Read a mesh from an ascii OFF file, filling in vertex positions, normals
-//and texture coordinates. Mesh may have faces of any number of degree.
-
-//Parameters
-//----------
-//filename : string, path to .off file
-//read_normals : bool, determines whether normals are read. If false, returns []
-//dtype : data-type of the returned vertices, faces, and normals, optional. Default is `float64`.
-//        (returned faces always have type int32.)
-
-//Returns
-//-------
-//v : array of vertex positions #v by 3
-//f : #f list of face indices into vertex positions
-//n : list of vertex normals #v by 3
-
-//See also
-//--------
-//read_triangle_mesh, read_obj
-
-//Notes
-//-----
-//None
-
-//Examples
-//--------
-//>>> v, f, n = read_off("my_model.off")
-//)igl_Qu8mg5v7";
-
-//npe_function(read_off)
-//npe_doc(ds_read_off)
-//npe_arg(filename, std::string)
-//npe_default_arg(read_normals, bool, true)
-//npe_default_arg(dtype, npe::dtype, "float64")
-//npe_begin_code()
-
-//  if (dtype.type() == npe::type_f32) {
-//    EigenDenseF32 v, n;
-//    EigenDenseI32 f;
-//    bool ret;
-//    if (read_normals) {
-//      ret = igl::readOFF(filename, v, f, n);
-//    }
-//    else {
-//      ret = igl::readOFF(filename, v, f);
-//    }
-
-//    if (!ret) {
-//      throw std::invalid_argument("File '" + filename + "' not found.");
-//    }
-
-//    return std::make_tuple(npe::move(v), npe::move(f), npe::move(n));
-//  } else if (dtype.type() == npe::type_f64) {
-//    EigenDenseF64 v, n;
-//    EigenDenseI64 f;
-//    bool ret;
-//    if (read_normals) {
-//      ret = igl::readOFF(filename, v, f, n);
-//    }
-//    else {
-//      ret = igl::readOFF(filename, v, f);
-//    }
-
-//    if (!ret) {
-//      throw std::invalid_argument("File '" + filename + "' not found.");
-//    }
-
-//    return std::make_tuple(npe::move(v), npe::move(f), npe::move(n));
-//  } else {
-//    throw pybind11::type_error("Only float32 and float64 dtypes are supported.");
-//  }
-
-//npe_end_code()
-
-
-
-
-//const char* ds_read_ply = R"igl_Qu8mg5v7(
-//Read a mesh from a PLY file, filling in vertex positions, normals
-//and texture coordinates. Mesh may have faces of any number of degree.
-
-//Parameters
-//----------
-//filename : string, path to .off file
-//dtype : data-type of the returned vertices, faces, and normals, optional. Default is `float64`.
-//        (returned faces always have type int32.)
-
-//Returns
-//-------
-//v : array of vertex positions #v by 3
-//f : #f list of face indices into vertex positions
-//n : #v by 3 or empt list of vertex normals
-//uv : #v by 2 (or empty ) list of uv coordinates
-
-//See also
-//--------
-//read_off, read_obj
-
-//Notes
-//-----
-//None
-
-//Examples
-//--------
-//>>> v, f, n, uv = read_ply("my_model.ply")
-//)igl_Qu8mg5v7";
-
-//npe_function(read_ply)
-//npe_doc(ds_read_ply)
-//npe_arg(filename, std::string)
-//npe_default_arg(dtype, npe::dtype, "float64")
-//npe_begin_code()
-
-//  if (dtype.type() == npe::type_f32) {
-//    EigenDenseF32 v, n, uv;
-//    EigenDenseI32 f;
-//    bool ret = igl::readPLY(filename, v, f, n, uv);
-
-//    if (!ret) {
-//      throw std::runtime_error("Failed to read file '" + filename + "'");
-//    }
-
-//    return std::make_tuple(npe::move(v), npe::move(f), npe::move(n), npe::move(uv));
-//  } else if (dtype.type() == npe::type_f64) {
-//    EigenDenseF64 v, n, uv;
-//    EigenDenseI64 f;
-//    bool ret = igl::readPLY(filename, v, f, n, uv);
-
-//    if (!ret) {
-//      throw std::runtime_error("Failed to read file '" + filename + "'");
-//    }
-
-//    return std::make_tuple(npe::move(v), npe::move(f), npe::move(n), npe::move(uv));
-//  } else {
-//    throw pybind11::type_error("Only float32 and float64 dtypes are supported.");
-//  }
-
-//npe_end_code()
-
-
-
-//// FIXME: Compile errors that I'm too lazy to deal with right now
-//const char* ds_write_ply = R"igl_Qu8mg5v7(
-//Write a mesh to a .ply file.
-
-//Parameters
-//----------
-//filename : string, path to .off file
-//v : #v by 3 list of vertex positions
-//f : #f by 3 list of vertex positions
-//n : #v by 3 list of vertex normals (or empty for no normals)
-//uv : #v by 2 list of vertex texture coordinates (or empty for no texture coordinates)
-//ascii: if True, write an ascii instead of a binary PLY file (False by default)
-
-//Returns
-//-------
-//None
-
-//See also
-//--------
-//write_obj, write_off
-
-//Notes
-//-----
-//None
-
-//Examples
-//--------
-//>>> write_ply("my_model.ply", v, f, n, uv)
-//)igl_Qu8mg5v7";
-//npe_function(write_ply)
-//npe_doc(ds_write_ply)
-//npe_arg(filename, std::string)
-//npe_arg(v, dense_float, dense_double)
-//npe_arg(f, dense_int, dense_uint)
-//npe_arg(n, npe_matches(v))
-//npe_arg(uv, npe_matches(v))
-//npe_default_arg(ascii, bool, false)
-//npe_begin_code()
-
-//  if (!igl::writePLY(filename, v, f, n, uv, ascii)) {
-//    throw std::runtime_error("Failed to write PLY file '" + filename + "'");
-//  }
-
-//npe_end_code()
-
-
-
-
-//const char* ds_write_off = R"igl_Qu8mg5v7(
-//Write a mesh to a .off file.
-
-//Parameters
-//----------
-//filename : string, path to .off file
-//v : #v by 3 list of vertex positions
-//f : #f by 3 list of vertex positions
-//c : #v  list of vertex colors (or empty for no normals)
-
-//Returns
-//-------
-//None
-
-//See also
-//--------
-//write_obj, write_ply
-
-//Notes
-//-----
-//None
-
-//Examples
-//--------
-//>>> write_off("my_model.off", v, f, c)
-//)igl_Qu8mg5v7";
-//npe_function(write_off)
-//npe_doc(ds_write_off)
-//npe_arg(filename, std::string)
-//npe_arg(v, dense_float, dense_double)
-//npe_arg(f, dense_int, dense_longlong, dense_uint, dense_ulonglong)
-//npe_arg(c, npe_matches(v))
-//npe_begin_code()
-
-//  bool ret;
-//  if (c.rows() == 0 && c.cols() == 0) {
-//    ret = igl::writeOFF(filename, v, f);
-//  } else {
-//    ret = igl::writeOFF(filename, v, f, c);
-//  }
-
-//  if (!ret) {
-//    throw std::runtime_error("Failed to write OFF file '" + filename + "'");
-//  }
-
-//npe_end_code()
+npe_end_code()
