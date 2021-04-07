@@ -22,13 +22,13 @@
 ![Example of Poisson Disk Sampling](/img/blue_noise.png?raw=true "Example of Poisson Disk Sampling")
 
 # Installation Instructions
-### With `conda` (recommended)
+### With `conda`
 Simply run:
 ```
 conda install -c conda-forge point_cloud_utils
 ```
 
-### With `pip` (not recommended)
+### With `pip`
 ```
 pip install git+git://github.com/fwilliams/point-cloud-utils
 ```
