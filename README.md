@@ -45,6 +45,8 @@ The following dependencies are required to install with `pip`:
 - [Saving meshes and point clouds](#saving-meshes-and-point-clouds)
 - [Generating blue-noise samples on a mesh with Poisson-disk sampling](#generating-blue-noise-samples-on-a-mesh-with-poisson-disk-sampling)
 - [Generate random samples on a mesh](#generate-random-samples-on-a-mesh)
+- [Downsample a point cloud to have a blue noise distribution](#downsample-a-point-cloud-to-have-a-blue-noise-distribution)
+- [Downsample a point cloud on a voxel grid](#downsample-a-point-cloud-on-a-voxel-grid)
 - [Estimating normals from a point cloud](#estimating-normals-from-a-point-cloud)
 - [Approximate Wasserstein (Sinkhorn) distance between two point clouds](#approximate-wasserstein--sinkhorn--distance-between-two-point-clouds)
 - [Chamfer distance between two point clouds](#chamfer-distance-between-two-point-clouds)
@@ -150,6 +152,8 @@ pcu.save_triangle_mesh("path/to/mesh", v=v, f=f, vn=vertex_normals, vc=vertex_co
 mesh.save("path/to/mesh")
 ```
 
+
+
 ### Saving meshes and point clouds
 Point-Cloud-Utils supports writing many common mesh formats (PLY, STL, OFF, OBJ, 3DS, VRML 2.0, X3D, COLLADA).
 If it can be imported into MeshLab, we can read it! The type of file is inferred from its file extension.
@@ -203,7 +207,7 @@ v_poisson = (v[f[f_i]] * bc[:, np.newaxis]).sum(1)
 n_poisson = (n[f[f_i]] * bc[:, np.newaxis]).sum(1)
 ```
 
-Generate samples on a mesh with poisson disk samples seperated by approximately 0.01 times the boundinb box diagonal
+Generate blue noise samples on a mesh separated by approximately 0.01 times the bounding box diagonal
 ```python
 import point_cloud_utils as pcu
 import numpy as np
@@ -222,8 +226,8 @@ bbox_diag = np.linalg.norm(bbox)
 f_i, bc = pcu.sample_mesh_poisson_disk(v, f, n, 10000)
 
 # Use the face indices and barycentric coordinate to compute sample positions and normals
-v_poisson = (v[f[f_i]] * bc[:, np.newaxis]).sum(1)
-n_poisson = (n[f[f_i]] * bc[:, np.newaxis]).sum(1)
+v_sampled = (v[f[f_i]] * bc[:, np.newaxis]).sum(1)
+n_sampled = (n[f[f_i]] * bc[:, np.newaxis]).sum(1)
     
 ```
 
@@ -237,13 +241,117 @@ import numpy as np
 # n is a nv by 3 NumPy array of vertex normals
 v, f, n = pcu.load_mesh_vfn("my_model.ply")
 
-# Generate very dense random samples on the mesh (v, f, n)
-# f_i are the face indices of each sample and bc are barycentric coordinates of the sample within a face
+# Generate random samples on the mesh (v, f, n) 
+# f_idx are the face indices of each sample and bc are barycentric coordinates of the sample within a face
 f_idx, bc = pcu.sample_mesh_random(v, f, num_samples=v.shape[0] * 40)
 
 # Use the face indices and barycentric coordinate to compute sample positions and normals
-v_dense = (v[f[f_idx]] * bc[:, np.newaxis]).sum(1)
-n_dense = (n[f[f_idx]] * bc[:, np.newaxis]).sum(1)
+v_sampled = (v[f[f_idx]] * bc[:, np.newaxis]).sum(1)
+n_sampled = (n[f[f_idx]] * bc[:, np.newaxis]).sum(1)
+```
+
+
+### Downsample a point cloud to have a blue noise distribution
+```python
+import point_cloud_utils as pcu
+import numpy as np
+
+# v is a nv by 3 NumPy array of vertices
+# n is a nv by 3 NumPy array of vertex normals
+v, n = pcu.load_mesh_vn("my_model.ply")
+
+# Downsample a point cloud by approximately 50% so that the sampled points approximately
+# follow a blue noise distribution
+# idx is an array of integer indices into v indicating which samples to keep
+idx  = pcu.downsample_point_cloud_poisson_disk(v, num_samples=int(0.5*v.shape[0]))
+
+# Use the indices to get the sample positions and normals
+v_sampled = v[idx]
+n_sampled = n[idx]
+```
+
+### Downsample a point cloud on a voxel grid
+Simple downsampling within the bounding box of a point cloud
+```python
+import point_cloud_utils as pcu
+import numpy as np
+
+# v is a nv by 3 NumPy array of vertices
+# n is a nv by 3 NumPy array of vertex normals
+# n is a nv by 4 NumPy array of vertex colors
+v, n, c = pcu.load_mesh_vnc("my_model.ply")
+
+# We'll use a voxel grid with 128 voxels per axis
+num_voxels_per_axis = 128 
+
+# Size of the axis aligned bounding box of the point cloud
+bbox_size = v.max(0) - v.min(0)
+
+# The size per-axis of a single voxel
+sizeof_voxel = bbox_size / num_voxels_per_axis 
+
+# Downsample a point cloud on a voxel grid so there is at most one point per voxel. 
+# Multiple points, normals, and colors within a voxel cell are averaged together.
+v_sampled, n_sampled, c_sampled = pcu.downsample_point_cloud_voxel_grid(sizeof_voxel, v, n, c)
+```
+
+Specifying the location of the voxel grid in space (e.g. to only consider points wihtin a sub-region of the point cloud)
+```python
+import point_cloud_utils as pcu
+import numpy as np
+
+# v is a nv by 3 NumPy array of vertices
+# n is a nv by 3 NumPy array of vertex normals
+# n is a nv by 4 NumPy array of vertex colors
+v, n, c = pcu.load_mesh_vnc("my_model.ply")
+
+# We'll use a voxel grid with 128 voxels per axis
+num_voxels_per_axis = 128 
+
+# Size of the axis aligned bounding box of the point cloud
+bbox_size = v.max(0) - v.min(0)
+
+# Let's say we only want to consider points in the top right corner of the bounding box
+domain_min = v.min(0) + bbox_size / 2.0
+domain_max = v.min(0) + bbox_size
+
+# The size per-axis of a single voxel
+sizeof_voxel = bbox_size / num_voxels_per_axis 
+
+# Downsample a point cloud on a voxel grid so there is at most one point per voxel. 
+# Multiple points, normals, and colors within a voxel cell are averaged together.
+# min_bound and max_bound specify a bounding box in which we will downsample points
+v_sampled, n_sampled, c_sampled = pcu.downsample_point_cloud_voxel_grid(sizeof_voxel, v, n, c, 
+                                                                        min_bound=domain_min, max_bound=domain_max)
+```
+
+
+Discarding voxels with too few points
+```python
+import point_cloud_utils as pcu
+import numpy as np
+
+# v is a nv by 3 NumPy array of vertices
+# n is a nv by 3 NumPy array of vertex normals
+# n is a nv by 4 NumPy array of vertex colors
+v, n, c = pcu.load_mesh_vnc("my_model.ply")
+
+# We'll use a voxel grid with 128 voxels per axis
+num_voxels_per_axis = 128 
+
+# Size of the axis aligned bounding box of the point cloud
+bbox_size = v.max(0) - v.min(0)
+
+# The size per-axis of a single voxel
+sizeof_voxel = bbox_size / num_voxels_per_axis 
+
+# We will throw away points within voxel cells containing fewer than 3 points
+min_points_per_voxel = 3
+
+# Downsample a point cloud on a voxel grid so there is at most one point per voxel. 
+# Multiple points, normals, and colors within a voxel cell are averaged together.
+v_sampled, n_sampled, c_sampled = pcu.downsample_point_cloud_voxel_grid(sizeof_voxel, v, n, c, 
+                                                                        min_points_per_voxel=min_points_per_voxel)
 ```
 
 ### Estimating normals from a point cloud
@@ -256,6 +364,7 @@ v = pcu.load_mesh_v("my_model.ply")
 # Estimate a normal at each point (row of v) using its 16 nearest neighbors
 n = pcu.estimate_point_cloud_normals(n, k=16)
 ```
+
 
 ### Approximate Wasserstein (Sinkhorn) distance between two point clouds
 ```python
