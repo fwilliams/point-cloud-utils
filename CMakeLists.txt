@@ -14,7 +14,7 @@ set(EXTERNAL_DEP_DIR ${CMAKE_CURRENT_SOURCE_DIR}/external)
 include(DownloadExternalDeps)
 download_dep(numpyeigen
   GIT_REPOSITORY https://github.com/fwilliams/numpyeigen.git
-  GIT_TAG 96c6356102a9f6c6eca5dd5446c4513552c12da9
+  GIT_TAG 7252ee0d8ae51414bbca3e0445ecfc285930b285
 )
 list(APPEND CMAKE_MODULE_PATH ${EXTERNAL_DEP_DIR}/numpyeigen/cmake)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
@@ -46,6 +46,8 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
   endif()
 endif()
 
+#pybind11_add_module(_pcu_internal_2 ${CMAKE_CURRENT_SOURCE_DIR}/src/octree.cpp)
+
 # Create the python module
 npe_add_module(_pcu_internal
   BINDING_SOURCES
@@ -57,7 +59,12 @@ npe_add_module(_pcu_internal
   ${CMAKE_CURRENT_SOURCE_DIR}/src/normals.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/misc.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/morton.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/remove_duplicates.cpp)
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/remove_duplicates.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/octree.cpp
+
+  EXTRA_MODULE_FUNCTIONS
+  hack_extra_bindings
+  )
 target_sources(_pcu_internal PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/geogram_utils.cpp)
 target_sources(_pcu_internal PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/external/vcglib/wrap/ply/plylib.cpp)
 target_include_directories(_pcu_internal PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/external/vcglib)
