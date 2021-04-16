@@ -84,7 +84,8 @@ npe_begin_code()
     std::vector<pybind11::tuple> ret_info(points.rows());
     std::vector<pybind11::list> ret_idxs(points.rows());
 
-    #pragma omp parallel_for
+    #pragma omp parallel
+    #pragma omp for
     for (int i = 0; i < points.rows(); i += 1) {
         auto ret_i = octree->LocateLeafNode(points.row(i).template cast<double>());
         if (ret_i.second == nullptr) {
@@ -115,7 +116,8 @@ npe_begin_code()
 {
     Eigen::VectorXi ret_depth(points.rows());
 
-    #pragma omp parallel_for
+    #pragma omp parallel
+    #pragma omp for
     for (int i = 0; i < points.rows(); i += 1) {
         auto ret_i = octree->LocateLeafNode(points.row(i).template cast<double>());
         if (ret_i.second == nullptr) {
