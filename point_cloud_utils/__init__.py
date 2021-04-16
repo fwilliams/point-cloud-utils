@@ -8,7 +8,7 @@ from ._pcu_internal import sample_mesh_poisson_disk, sample_mesh_random, \
 from ._sinkhorn import *
 from ._mesh_io import *
 import numpy as np
-
+from ._octree import *
 
 def hausdorff_distance(x, y, return_index=False, squared_distances=False, max_points_per_leaf=10):
     """
