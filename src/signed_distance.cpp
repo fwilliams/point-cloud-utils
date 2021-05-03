@@ -20,7 +20,7 @@ Returns
 A tuple (s, i, c) where
     s is a (#p,) shaped array of signed distance values for each point in p
     i is a (#p,) shaped array of indices to the closest face for each point in p
-    c is a (#p,) shaped array of the closest point on the mesh for each point in p
+    c is a (#p, 3) shaped array of the closest point on the mesh for each point in p
 )igl_Qu8mg5v7";
 npe_function(signed_distance)
 npe_arg(p, dense_float, dense_double)
