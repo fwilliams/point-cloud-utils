@@ -18,7 +18,7 @@
  - Hausdorff distances between point-clouds.
  - Chamfer distnaces between point-clouds.
  - Approximate Wasserstein distances between point-clouds using the [Sinkhorn](https://arxiv.org/abs/1306.0895) method.
- 
+ - Compute signed distances between a point cloud and a mesh using [Fast Winding Numbers](https://www.dgp.toronto.edu/projects/fast-winding-numbers/)
 ![Example of Poisson Disk Sampling](/img/blue_noise.png?raw=true "Example of Poisson Disk Sampling")
 
 # Installation Instructions
@@ -53,6 +53,7 @@ The following dependencies are required to install with `pip`:
 - [Hausdorff distance between two point clouds](#hausdorff-distance-between-two-point-clouds)
 - [K-nearest-neighbors between two point clouds](#k-nearest-neighbors-between-two-point-clouds)
 - [Generating point samples in the square and cube with Lloyd Relaxation](#generating-point-samples-in-the-square-and-cube-with-lloyd-relaxation)
+- [Compute shortest signed distances to a triangle mesh with [Fast Winding Numbers](https://www.dgp.toronto.edu/projects/fast-winding-numbers/)](#compute-shortest-signed-distances-to-a-triangle-mesh-with--fast-winding-numbers--https---wwwdgptorontoedu-projects-fast-winding-numbers--)
 
 ### Loading meshes and point clouds
 Point-Cloud-Utils supports reading many common mesh formats (PLY, STL, OFF, OBJ, 3DS, VRML 2.0, X3D, COLLADA). 
@@ -463,3 +464,20 @@ samples_2d = pcu.lloyd_2d(100)
 # Generate 100 points on the unit cube with Lloyd's algorithm
 samples_3d = pcu.lloyd_3d(100)
 ```
+
+### Compute shortest signed distances to a triangle mesh with [Fast Winding Numbers](https://www.dgp.toronto.edu/projects/fast-winding-numbers/)
+```python
+import point_cloud_utils as pcu
+
+# v is a nv by 3 NumPy array of vertices
+# f is an nf by 3 NumPy array of face indexes into v 
+v, f = pcu.load_mesh_vf("my_model.ply")
+
+# Generate 1000 points in the volume around the mesh. We'll compute the signed distance to the mesh at each of these points
+pts = np.random.rand(1000, 3) * (v.max(0) - v.min(0)) + v.min(0) 
+
+# Compute the sdf, the index of the closest face in the mesh, and the closest point on the mesh, for each point in pts
+sdfs, face_ids, closest_points = pcu.signed_distance(pts, v, f)
+```
+
+
