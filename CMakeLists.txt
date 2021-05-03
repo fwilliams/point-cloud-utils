@@ -46,8 +46,6 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
   endif()
 endif()
 
-#pybind11_add_module(_pcu_internal_2 ${CMAKE_CURRENT_SOURCE_DIR}/src/octree.cpp)
-
 # Create the python module
 npe_add_module(_pcu_internal
   BINDING_SOURCES
@@ -61,6 +59,7 @@ npe_add_module(_pcu_internal
   ${CMAKE_CURRENT_SOURCE_DIR}/src/morton.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/remove_duplicates.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/octree.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/signed_distance.cpp
 
   EXTRA_MODULE_FUNCTIONS
   hack_extra_bindings
@@ -75,7 +74,6 @@ target_link_libraries(_pcu_internal PRIVATE geogram)
 set_target_properties(_pcu_internal PROPERTIES COMPILE_FLAGS "-fvisibility=hidden -msse3")
 find_package(OpenMP)
 if(OpenMP_CXX_FOUND)
-  # message(STATUS "!!!!!!!!!! OPENMP FOUND !!!!!!!!!")
   target_link_libraries(_pcu_internal PUBLIC OpenMP::OpenMP_CXX)
 endif()
 

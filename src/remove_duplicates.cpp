@@ -67,6 +67,10 @@ x_new : #x_new x 3 Point cloud with duplicates removed
 if return indices is set, this function also returns:
     svi : #x x 1 indices so that x_new = x[svi]
     svj : #x_new x 1 indices so that x = x_new[svj]
+
+See also
+--------
+remove_duplicate_points
 )igl_Qu8mg5v7";
 npe_function(remove_duplicate_mesh_vertices)
 npe_doc(remove_duplicate_mesh_vertices_doc)
