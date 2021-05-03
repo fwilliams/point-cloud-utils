@@ -48,7 +48,7 @@ The following dependencies are required to install with `pip`:
 - [Downsample a point cloud to have a blue noise distribution](#downsample-a-point-cloud-to-have-a-blue-noise-distribution)
 - [Downsample a point cloud on a voxel grid](#downsample-a-point-cloud-on-a-voxel-grid)
 - [Estimating normals from a point cloud](#estimating-normals-from-a-point-cloud)
-- [Approximate Wasserstein (Sinkhorn) distance between two point clouds](#approximate-wasserstein--sinkhorn--distance-between-two-point-clouds)
+- [Approximate Wasserstein (Sinkhorn) distance between two point clouds](approximate-wasserstein-sinkhorn-distance-between-two-point-clouds)
 - [Chamfer distance between two point clouds](#chamfer-distance-between-two-point-clouds)
 - [Hausdorff distance between two point clouds](#hausdorff-distance-between-two-point-clouds)
 - [K-nearest-neighbors between two point clouds](#k-nearest-neighbors-between-two-point-clouds)
