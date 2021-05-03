@@ -52,8 +52,8 @@ The following dependencies are required to install with `pip`:
 - [Chamfer distance between two point clouds](#chamfer-distance-between-two-point-clouds)
 - [Hausdorff distance between two point clouds](#hausdorff-distance-between-two-point-clouds)
 - [K-nearest-neighbors between two point clouds](#k-nearest-neighbors-between-two-point-clouds)
-- [Generating point samples in the square and cube with Lloyd Relaxation](#generating-point-samples-in-the-square-and-cube-with-lloyd-relaxation)
-- [Compute shortest signed distances to a triangle mesh with Fast Winding Numbers](#compute-shortest-signed-distances-to-a-triangle-mesh-with-fast-winding-numbers)
+- [Generating point samples in the square and cube with Lloyd relaxation](#generating-point-samples-in-the-square-and-cube-with-lloyd-relaxation)
+- [Compute shortest signed distances to a triangle mesh with fast winding numbers](#compute-shortest-signed-distances-to-a-triangle-mesh-with-fast-winding-numbers)
 
 ### Loading meshes and point clouds
 Point-Cloud-Utils supports reading many common mesh formats (PLY, STL, OFF, OBJ, 3DS, VRML 2.0, X3D, COLLADA). 
@@ -447,7 +447,7 @@ b = np.random.rand(500, 3)
 dists_a_to_b, corrs_a_to_b = pcu.shortest_distance_pairs(a, b)
 ```
 
-### Generating point samples in the square and cube with Lloyd Relaxation
+### Generating point samples in the square and cube with Lloyd relaxation
 ```python
 import point_cloud_utils as pcu
 
@@ -465,7 +465,7 @@ samples_2d = pcu.lloyd_2d(100)
 samples_3d = pcu.lloyd_3d(100)
 ```
 
-### Compute shortest signed distances to a triangle mesh with [Fast Winding Numbers](https://www.dgp.toronto.edu/projects/fast-winding-numbers/)
+### Compute shortest signed distances to a triangle mesh with [fast winding numbers](https://www.dgp.toronto.edu/projects/fast-winding-numbers/)
 ```python
 import point_cloud_utils as pcu
 
