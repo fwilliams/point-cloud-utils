@@ -53,7 +53,7 @@ The following dependencies are required to install with `pip`:
 - [Hausdorff distance between two point clouds](#hausdorff-distance-between-two-point-clouds)
 - [K-nearest-neighbors between two point clouds](#k-nearest-neighbors-between-two-point-clouds)
 - [Generating point samples in the square and cube with Lloyd Relaxation](#generating-point-samples-in-the-square-and-cube-with-lloyd-relaxation)
-- [Compute shortest signed distances to a triangle mesh with [Fast Winding Numbers](https://www.dgp.toronto.edu/projects/fast-winding-numbers/)](#compute-shortest-signed-distances-to-a-triangle-mesh-with--fast-winding-numbers--https---wwwdgptorontoedu-projects-fast-winding-numbers--)
+- [Compute shortest signed distances to a triangle mesh with Fast Winding Numbers](#compute-shortest-signed-distances-to-a-triangle-mesh-with-fast-winding-numbers)
 
 ### Loading meshes and point clouds
 Point-Cloud-Utils supports reading many common mesh formats (PLY, STL, OFF, OBJ, 3DS, VRML 2.0, X3D, COLLADA). 
