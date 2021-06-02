@@ -378,7 +378,7 @@ d, fi, bc = pcu.closest_points_on_mesh(p, v, f)
 closest_points = (v[f[fi]] * bc[:, :, np.newaxis]).sum(1)
 ```
 
-# Estimate a normal at each point (row of v) using its 16 nearest neighbors
+### Estimate a normal at each point (row of v) using its 16 nearest neighbors
 n = pcu.estimate_point_cloud_normals(n, k=16)
 ```
 
