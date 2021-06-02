@@ -17,7 +17,7 @@
  - Normal estimation from point clouds and triangle meshes
  - Fast k-nearest-neighbor search between point clouds (based on [nanoflann](https://github.com/jlblancoc/nanoflann)).
  - Hausdorff distances between point-clouds.
- - Chamfer distnaces between point-clouds.
+ - Chamfer distances between point-clouds.
  - Approximate Wasserstein distances between point-clouds using the [Sinkhorn](https://arxiv.org/abs/1306.0895) method.
  - Compute signed distances between a point cloud and a mesh using [Fast Winding Numbers](https://www.dgp.toronto.edu/projects/fast-winding-numbers/)
 ![Example of Poisson Disk Sampling](/img/blue_noise.png?raw=true "Example of Poisson Disk Sampling")
