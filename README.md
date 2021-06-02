@@ -379,9 +379,6 @@ closest_points = (v[f[fi]] * bc[:, :, np.newaxis]).sum(1)
 ```
 
 ### Estimating normals from a point cloud
-```
-
-### Estimating normals from a point cloud
 ```python
 import point_cloud_utils as pcu
 
