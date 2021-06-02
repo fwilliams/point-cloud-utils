@@ -486,6 +486,27 @@ class TestDenseBindings(unittest.TestCase):
 
         self.assertLess(vdown.shape[0], v.shape[0])
 
+    def test_closest_points_on_mesh(self):
+        import point_cloud_utils as pcu
+        import numpy as np
+
+        v, f = pcu.load_mesh_vf(os.path.join(self.test_path, "cube_twist.obj"))
+
+        v -= v.min(0)
+        v /= v.max(0)
+        v -= 0.5
+        v *= 2.0
+
+        p = np.random.rand(1000, 3)
+
+        d, fi, bc = pcu.closest_points_on_mesh(p, v, f)
+
+        closest_points = (v[f[fi]] * bc[:, :, np.newaxis]).sum(1)
+        d2 = np.linalg.norm(p - closest_points, axis=-1)
+
+        self.assertAlmostEqual(np.max(d - d2), 0.0)
+
+
 
 if __name__ == '__main__':
     unittest.main()

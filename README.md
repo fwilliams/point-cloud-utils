@@ -13,6 +13,7 @@
  - Utilities for downsampling point clouds:
    - To satisfy a blue noise distribution
    - On a voxel grid
+ - Closest points between a point cloud and a mesh
  - Normal estimation from point clouds and triangle meshes
  - Fast k-nearest-neighbor search between point clouds (based on [nanoflann](https://github.com/jlblancoc/nanoflann)).
  - Hausdorff distances between point-clouds.
@@ -47,6 +48,7 @@ The following dependencies are required to install with `pip`:
 - [Generate random samples on a mesh](#generate-random-samples-on-a-mesh)
 - [Downsample a point cloud to have a blue noise distribution](#downsample-a-point-cloud-to-have-a-blue-noise-distribution)
 - [Downsample a point cloud on a voxel grid](#downsample-a-point-cloud-on-a-voxel-grid)
+- [Compute closest points on a mesh](#compute-closest-points-on-a-mesh)
 - [Estimating normals from a point cloud](#estimating-normals-from-a-point-cloud)
 - [Approximate Wasserstein (Sinkhorn) distance between two point clouds](#approximate-wasserstein-sinkhorn-distance-between-two-point-clouds)
 - [Chamfer distance between two point clouds](#chamfer-distance-between-two-point-clouds)
@@ -204,8 +206,8 @@ v, f, n = pcu.load_mesh_vfn("my_model.ply")
 f_i, bc = pcu.sample_mesh_poisson_disk(v, f, n, 10000)
 
 # Use the face indices and barycentric coordinate to compute sample positions and normals
-v_poisson = (v[f[f_i]] * bc[:, np.newaxis]).sum(1)
-n_poisson = (n[f[f_i]] * bc[:, np.newaxis]).sum(1)
+v_poisson = (v[f[f_i]] * bc[:, :, np.newaxis]).sum(1)
+n_poisson = (n[f[f_i]] * bc[:, :, np.newaxis]).sum(1)
 ```
 
 Generate blue noise samples on a mesh separated by approximately 0.01 times the bounding box diagonal
@@ -227,8 +229,8 @@ bbox_diag = np.linalg.norm(bbox)
 f_i, bc = pcu.sample_mesh_poisson_disk(v, f, n, 10000)
 
 # Use the face indices and barycentric coordinate to compute sample positions and normals
-v_sampled = (v[f[f_i]] * bc[:, np.newaxis]).sum(1)
-n_sampled = (n[f[f_i]] * bc[:, np.newaxis]).sum(1)
+v_sampled = (v[f[f_i]] * bc[:, :, np.newaxis]).sum(1)
+n_sampled = (n[f[f_i]] * bc[:, :, np.newaxis]).sum(1)
     
 ```
 
@@ -247,10 +249,9 @@ v, f, n = pcu.load_mesh_vfn("my_model.ply")
 f_idx, bc = pcu.sample_mesh_random(v, f, num_samples=v.shape[0] * 40)
 
 # Use the face indices and barycentric coordinate to compute sample positions and normals
-v_sampled = (v[f[f_idx]] * bc[:, np.newaxis]).sum(1)
-n_sampled = (n[f[f_idx]] * bc[:, np.newaxis]).sum(1)
+v_sampled = (v[f[f_idx]] * bc[:, :, np.newaxis]).sum(1)
+n_sampled = (n[f[f_idx]] * bc[:, :, np.newaxis]).sum(1)
 ```
-
 
 ### Downsample a point cloud to have a blue noise distribution
 ```python
@@ -353,6 +354,32 @@ min_points_per_voxel = 3
 # Multiple points, normals, and colors within a voxel cell are averaged together.
 v_sampled, n_sampled, c_sampled = pcu.downsample_point_cloud_voxel_grid(sizeof_voxel, v, n, c, 
                                                                         min_points_per_voxel=min_points_per_voxel)
+```
+
+### Compute closest points on a mesh
+```python
+import point_cloud_utils as pcu
+
+# v is a nv by 3 NumPy array of vertices
+v, f = pcu.load_mesh_vf("my_model.ply")
+
+# Generate 1000 random query points. We will find the closest point on the mesh for each of these
+p = np.random.rand(1000, 3)
+
+# For each query point, find the closest point on the mesh.
+# Here:
+#  - d is an array of closest distances for each query point with shape (1000,)
+#  - fi is an array of closest face indices for each point with shape (1000,)
+#  - bc is an array of barycentric coordinates within each face (shape (1000, 3)
+#    of the closest point for each query point
+d, fi, bc = pcu.closest_points_on_mesh(p, v, f)
+
+# Convert barycentric coordinates to 3D positions
+closest_points = (v[f[fi]] * bc[:, :, np.newaxis]).sum(1)
+```
+
+# Estimate a normal at each point (row of v) using its 16 nearest neighbors
+n = pcu.estimate_point_cloud_normals(n, k=16)
 ```
 
 ### Estimating normals from a point cloud
