@@ -20,10 +20,12 @@
  - Chamfer distances between point-clouds.
  - Approximate Wasserstein distances between point-clouds using the [Sinkhorn](https://arxiv.org/abs/1306.0895) method.
  - Compute signed distances between a point cloud and a mesh using [Fast Winding Numbers](https://www.dgp.toronto.edu/projects/fast-winding-numbers/)
+ - Compute closest points on a mesh to a point cloud
+ - Deduplicating point clouds and mesh vertices
 ![Example of Poisson Disk Sampling](/img/blue_noise.png?raw=true "Example of Poisson Disk Sampling")
 
 # Installation Instructions
-### ⚠️⚠️⚠️ WARNING: Currently Points to Outdated Version) ⚠️⚠️⚠️ With `conda`
+### !!!WARNING: Currently Points to Outdated Version)!!! With `conda`
 Simply run:
 ```
 conda install -c conda-forge point_cloud_utils
@@ -46,7 +48,6 @@ The following dependencies are required to install with `pip`:
 - [Generate random samples on a mesh](#generate-random-samples-on-a-mesh)
 - [Downsample a point cloud to have a blue noise distribution](#downsample-a-point-cloud-to-have-a-blue-noise-distribution)
 - [Downsample a point cloud on a voxel grid](#downsample-a-point-cloud-on-a-voxel-grid)
-- [Compute closest points on a mesh](#compute-closest-points-on-a-mesh)
 - [Estimating normals from a point cloud](#estimating-normals-from-a-point-cloud)
 - [Approximate Wasserstein (Sinkhorn) distance between two point clouds](#approximate-wasserstein-sinkhorn-distance-between-two-point-clouds)
 - [Chamfer distance between two point clouds](#chamfer-distance-between-two-point-clouds)
@@ -54,6 +55,8 @@ The following dependencies are required to install with `pip`:
 - [K-nearest-neighbors between two point clouds](#k-nearest-neighbors-between-two-point-clouds)
 - [Generating point samples in the square and cube with Lloyd relaxation](#generating-point-samples-in-the-square-and-cube-with-lloyd-relaxation)
 - [Compute shortest signed distances to a triangle mesh with fast winding numbers](#compute-shortest-signed-distances-to-a-triangle-mesh-with-fast-winding-numbers)
+- [Compute closest points on a mesh](#compute-closest-points-on-a-mesh)
+- [Deduplicating point clouds and meshes](#deduplicating-point-clouds-and-meshes)
 
 ### Loading meshes and point clouds
 Point-Cloud-Utils supports reading many common mesh formats (PLY, STL, OFF, OBJ, 3DS, VRML 2.0, X3D, COLLADA).
@@ -204,8 +207,8 @@ v, f, n = pcu.load_mesh_vfn("my_model.ply")
 f_i, bc = pcu.sample_mesh_poisson_disk(v, f, n, 10000)
 
 # Use the face indices and barycentric coordinate to compute sample positions and normals
-v_poisson = (v[f[f_i]] * bc[:, :, np.newaxis]).sum(1)
-n_poisson = (n[f[f_i]] * bc[:, :, np.newaxis]).sum(1)
+v_poisson = pcu.interpolate_barycentric_coords(f, fi, bc, v)
+n_poisson = pcu.interpolate_barycentric_coords(f, fi, bc, n)
 ```
 
 Generate blue noise samples on a mesh separated by approximately 0.01 times the bounding box diagonal
@@ -227,9 +230,8 @@ bbox_diag = np.linalg.norm(bbox)
 f_i, bc = pcu.sample_mesh_poisson_disk(v, f, n, 10000)
 
 # Use the face indices and barycentric coordinate to compute sample positions and normals
-v_sampled = (v[f[f_i]] * bc[:, :, np.newaxis]).sum(1)
-n_sampled = (n[f[f_i]] * bc[:, :, np.newaxis]).sum(1)
-
+v_sampled = pcu.interpolate_barycentric_coords(f, fi, bc, v)
+n_sampled = pcu.interpolate_barycentric_coords(f, fi, bc, n)
 ```
 
 ### Generate random samples on a mesh
@@ -247,8 +249,8 @@ v, f, n = pcu.load_mesh_vfn("my_model.ply")
 f_idx, bc = pcu.sample_mesh_random(v, f, num_samples=v.shape[0] * 40)
 
 # Use the face indices and barycentric coordinate to compute sample positions and normals
-v_sampled = (v[f[f_idx]] * bc[:, :, np.newaxis]).sum(1)
-n_sampled = (n[f[f_idx]] * bc[:, :, np.newaxis]).sum(1)
+v_sampled = pcu.interpolate_barycentric_coords(f, fi, bc, v)
+n_sampled = pcu.interpolate_barycentric_coords(f, fi, bc, n)
 ```
 
 ### Downsample a point cloud to have a blue noise distribution
@@ -263,7 +265,7 @@ v, n = pcu.load_mesh_vn("my_model.ply")
 # Downsample a point cloud by approximately 50% so that the sampled points approximately
 # follow a blue noise distribution
 # idx is an array of integer indices into v indicating which samples to keep
-idx  = pcu.downsample_point_cloud_poisson_disk(v, num_samples=int(0.5*v.shape[0]))
+idx = pcu.downsample_point_cloud_poisson_disk(v, num_samples=int(0.5*v.shape[0]))
 
 # Use the indices to get the sample positions and normals
 v_sampled = v[idx]
@@ -373,7 +375,7 @@ p = np.random.rand(1000, 3)
 d, fi, bc = pcu.closest_points_on_mesh(p, v, f)
 
 # Convert barycentric coordinates to 3D positions
-closest_points = (v[f[fi]] * bc[:, :, np.newaxis]).sum(1)
+closest_points = pcu.interpolate_barycentric_coords(f, fi, bc, v)
 ```
 
 ### Estimating normals from a point cloud
@@ -494,11 +496,49 @@ import point_cloud_utils as pcu
 # f is an nf by 3 NumPy array of face indexes into v
 v, f = pcu.load_mesh_vf("my_model.ply")
 
-# Generate 1000 points in the volume around the mesh. We'll compute the signed distance to the mesh at each of these points
+# Generate 1000 points in the volume around the mesh. We'll compute the signed distance to the
+# mesh at each of these points
 pts = np.random.rand(1000, 3) * (v.max(0) - v.min(0)) + v.min(0)
 
-# Compute the sdf, the index of the closest face in the mesh, and the closest point on the mesh, for each point in pts
-sdfs, face_ids, closest_points = pcu.signed_distance(pts, v, f)
+# Compute the sdf, the index of the closest face in the mesh, and the barycentric coordinates of
+# closest point on the mesh, for each point in pts
+sdfs, face_ids, barycentric_coords = pcu.signed_distance_to_mesh(pts, v, f)
 ```
+
+
+### Deduplicating Point Clouds and Meshes
+#### Point Clouds:
+```python
+import point_cloud_utils as pcu
+
+# p is a (n, 3)-shaped array of points (one per row)
+# p is a (n, 3)-shaped array of normals at each point
+p, n = pcu.load_mesh_vn("my_pcloud.ply")
+
+# Treat any points closer than 1e-7 apart as the same point
+# idx_i is an array of indices such that p_dedup = p[idx_i]
+# idx_j is an array of indices such that p = p_dedup[idx_j]
+p_dedup, idx_i, idx_j  = deduplicate_point_cloud(p, 1e-7)
+
+# Use idx_i to deduplicate the normals
+n_dedup = n[idx_i]
+```
+
+#### Meshes:
+```python
+# v is a (nv, 3)-shaped NumPy array of vertices
+# f is an (nf, 3)-shaped NumPy array of face indexes into v
+# c is a (nv, 4)-shaped numpy array of per-vertex colors
+v, f, c = pcu.load_mesh_vfc("my_model.ply")
+
+# Treat any points closer than 1e-7 apart as the same point
+# idx_i is an array of indices such that v_dedup = v[idx_i]
+# idx_j is an array of indices such that v = v_dedup[idx_j]
+v_dedup, f_dedup, idx_i, idx_j = pcu.deduplicate_mesh_vertices(v, f, 1e-7)
+
+# Use idx_i to deduplicate the colors
+c_dedup = c[idx_i]
+```
+
 
 

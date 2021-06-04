@@ -23,13 +23,13 @@ if return indices is set, this function also returns:
 
 See also
 --------
-remove_duplicate_mesh_vertices
+deduplicate_mesh_vertices
 )igl_Qu8mg5v7";
-npe_function(remove_duplicate_points)
+npe_function(deduplicate_point_cloud)
 npe_doc(remove_duplicate_points_doc)
 npe_arg(points, dense_float, dense_double)
 npe_arg(epsilon, double)
-npe_default_arg(return_index, bool, false)
+npe_default_arg(return_index, bool, true)
 npe_begin_code()
 {
     validate_point_cloud(points);
@@ -70,14 +70,14 @@ if return indices is set, this function also returns:
 
 See also
 --------
-remove_duplicate_points
+deduplicate_point_cloud
 )igl_Qu8mg5v7";
-npe_function(remove_duplicate_mesh_vertices)
+npe_function(deduplicate_mesh_vertices)
 npe_doc(remove_duplicate_mesh_vertices_doc)
 npe_arg(v, dense_float, dense_double)
 npe_arg(f, dense_int, dense_longlong, dense_uint, dense_ulonglong)
 npe_arg(epsilon, double)
-npe_default_arg(return_index, bool, false)
+npe_default_arg(return_index, bool, true)
 npe_begin_code()
 {
     validate_mesh(v, f);
