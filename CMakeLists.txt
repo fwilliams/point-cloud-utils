@@ -61,6 +61,7 @@ npe_add_module(_pcu_internal
   ${CMAKE_CURRENT_SOURCE_DIR}/src/octree.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/signed_distance.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/closest_point_on_mesh.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/connected_components.cpp
   EXTRA_MODULE_FUNCTIONS
   hack_extra_bindings
   )

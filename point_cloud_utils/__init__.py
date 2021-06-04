@@ -3,8 +3,8 @@ from ._pcu_internal import sample_mesh_poisson_disk, sample_mesh_random, \
     k_nearest_neighbors, one_sided_hausdorff_distance, \
     morton_encode, morton_decode, morton_knn, \
     lloyd_2d, lloyd_3d, voronoi_centroids_unit_cube, sample_mesh_lloyd, \
-    remove_duplicate_points, remove_duplicate_mesh_vertices, signed_distance, \
-    closest_points_on_mesh
+    deduplicate_point_cloud, deduplicate_mesh_vertices, signed_distance_to_mesh, \
+    closest_points_on_mesh, connected_components
 
 from ._sinkhorn import *
 from ._mesh_io import *

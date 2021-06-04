@@ -17,12 +17,13 @@ upper_bound: The maximum distance value possible (use this to clamp SDF values).
 
 Returns
 -------
-A tuple (s, i, c) where
-    s is a (#p,) shaped array of signed distance values for each point in p
-    i is a (#p,) shaped array of indices to the closest face for each point in p
-    c is a (#p, 3) shaped array of the closest point on the mesh for each point in p
+A tuple (s, fi, bc) where:
+  - s is a (#p,) shaped array of signed distance values for each query point in p
+  - fi is a (#p,) shaped array of indices to the closest face for each query point in p
+  - bc is a (#p, 3) shaped array of barycentric coordinates for the closest point on
+    the mesh to each query point in p
 )igl_Qu8mg5v7";
-npe_function(signed_distance)
+npe_function(signed_distance_to_mesh)
 npe_arg(p, dense_float, dense_double)
 npe_arg(v, npe_matches(p))
 npe_arg(f, dense_int, dense_long, dense_longlong)
@@ -34,7 +35,7 @@ npe_begin_code()
     validate_point_cloud(p, false /* allow_0 */);
 
     EigenDense<npe_Scalar_p> s;
-    EigenDense<int> i;
+    EigenDense<int> fi;
     EigenDense<npe_Scalar_p> c;
     EigenDense<npe_Scalar_p> n;
 
@@ -42,8 +43,17 @@ npe_begin_code()
     EigenDense<npe_Scalar_p> v_cp = v.template cast<npe_Scalar_p>();
     EigenDense<int> f_cp = f.template cast<int>(); // FIXME: LibIGL only works with int
     igl::signed_distance(p_cp, v_cp, f_cp, igl::SignedDistanceType::SIGNED_DISTANCE_TYPE_FAST_WINDING_NUMBER,
-                         (npe_Scalar_p) lower_bound, (npe_Scalar_p) upper_bound, s, i, c, n);
+                         (npe_Scalar_p) lower_bound, (npe_Scalar_p) upper_bound, s, fi, c, n);
 
-    return std::make_tuple(npe::move(s), npe::move(i), npe::move(c));
+    npe_Matrix_p v_a(p.rows(), 3), v_b(p.rows(), 3), v_c(p.rows(), 3);
+    npe_Matrix_p barycentric_coords;
+    for (int i = 0; i < fi.rows(); i++) {
+        v_a.row(i) = v.row(f(fi(i), 0));
+        v_b.row(i) = v.row(f(fi(i), 1));
+        v_c.row(i) = v.row(f(fi(i), 2));
+    }
+    igl::barycentric_coordinates(c, v_a, v_b, v_c, barycentric_coords);
+
+    return std::make_tuple(npe::move(s), npe::move(fi), npe::move(barycentric_coords));
 }
 npe_end_code()
