@@ -209,8 +209,8 @@ v, f, n = pcu.load_mesh_vfn("my_model.ply")
 f_i, bc = pcu.sample_mesh_poisson_disk(v, f, n, 10000)
 
 # Use the face indices and barycentric coordinate to compute sample positions and normals
-v_poisson = (v[f[f_i]] * bc[:, :, np.newaxis]).sum(1)
-n_poisson = (n[f[f_i]] * bc[:, :, np.newaxis]).sum(1)
+v_poisson = pcu.interpolate_barycentric_coords(f, fi, bc, v)
+n_poisson = pcu.interpolate_barycentric_coords(f, fi, bc, n)
 ```
 
 Generate blue noise samples on a mesh separated by approximately 0.01 times the bounding box diagonal
@@ -232,8 +232,8 @@ bbox_diag = np.linalg.norm(bbox)
 f_i, bc = pcu.sample_mesh_poisson_disk(v, f, n, 10000)
 
 # Use the face indices and barycentric coordinate to compute sample positions and normals
-v_sampled = (v[f[f_i]] * bc[:, :, np.newaxis]).sum(1)
-n_sampled = (n[f[f_i]] * bc[:, :, np.newaxis]).sum(1)
+v_sampled = pcu.interpolate_barycentric_coords(f, fi, bc, v)
+n_sampled = pcu.interpolate_barycentric_coords(f, fi, bc, n)
     
 ```
 
@@ -252,8 +252,8 @@ v, f, n = pcu.load_mesh_vfn("my_model.ply")
 f_idx, bc = pcu.sample_mesh_random(v, f, num_samples=v.shape[0] * 40)
 
 # Use the face indices and barycentric coordinate to compute sample positions and normals
-v_sampled = (v[f[f_idx]] * bc[:, :, np.newaxis]).sum(1)
-n_sampled = (n[f[f_idx]] * bc[:, :, np.newaxis]).sum(1)
+v_sampled = pcu.interpolate_barycentric_coords(f, fi, bc, v)
+n_sampled = pcu.interpolate_barycentric_coords(f, fi, bc, n)
 ```
 
 ### Downsample a point cloud to have a blue noise distribution
@@ -268,7 +268,7 @@ v, n = pcu.load_mesh_vn("my_model.ply")
 # Downsample a point cloud by approximately 50% so that the sampled points approximately
 # follow a blue noise distribution
 # idx is an array of integer indices into v indicating which samples to keep
-idx  = pcu.downsample_point_cloud_poisson_disk(v, num_samples=int(0.5*v.shape[0]))
+idx = pcu.downsample_point_cloud_poisson_disk(v, num_samples=int(0.5*v.shape[0]))
 
 # Use the indices to get the sample positions and normals
 v_sampled = v[idx]
@@ -378,7 +378,7 @@ p = np.random.rand(1000, 3)
 d, fi, bc = pcu.closest_points_on_mesh(p, v, f)
 
 # Convert barycentric coordinates to 3D positions
-closest_points = (v[f[fi]] * bc[:, :, np.newaxis]).sum(1)
+closest_points = pcu.interpolate_barycentric_coords(f, fi, bc, v)
 ```
 
 ### Estimating normals from a point cloud
@@ -499,11 +499,13 @@ import point_cloud_utils as pcu
 # f is an nf by 3 NumPy array of face indexes into v 
 v, f = pcu.load_mesh_vf("my_model.ply")
 
-# Generate 1000 points in the volume around the mesh. We'll compute the signed distance to the mesh at each of these points
+# Generate 1000 points in the volume around the mesh. We'll compute the signed distance to the
+# mesh at each of these points
 pts = np.random.rand(1000, 3) * (v.max(0) - v.min(0)) + v.min(0)
 
-# Compute the sdf, the index of the closest face in the mesh, and the closest point on the mesh, for each point in pts
-sdfs, face_ids, closest_points = pcu.signed_distance_to_mesh(pts, v, f)
+# Compute the sdf, the index of the closest face in the mesh, and the barycentric coordinates of
+# closest point on the mesh, for each point in pts
+sdfs, face_ids, barycentric_coords = pcu.signed_distance_to_mesh(pts, v, f)
 ```
 
 
