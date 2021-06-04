@@ -91,7 +91,7 @@ def main():
         long_description=long_description,
         long_description_content_type="text/markdown",
         url="https://github.com/fwilliams/py-sample-mesh",
-        packages=setuptools.find_packages(),
+        packages=setuptools.find_packages(exclude=["tests"]),
         classifiers=[
             "Programming Language :: C++",
             "Programming Language :: Python :: 3",
