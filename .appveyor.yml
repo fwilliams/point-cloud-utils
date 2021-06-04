@@ -18,9 +18,6 @@ install:
   - "SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%"
   - "python --version"
   - "python -c \"import struct; print(struct.calcsize('P') * 8)\""
-  - "python -m pip install numpy"
-  - "python -m pip install scipy"
-  - "python -c \"import numpy as np;import sys;print(np.get_include())\""
 # init:
   # - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 # on_finish:
@@ -31,9 +28,12 @@ build_script:
   - "SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%"
   - cd c:\projects\point-cloud-utils
   - python --version
-  - "python setup.py build install"
+  # allows build system config to manage build dependencies
+  - pip install .
 
 test_script:
   - cd c:\projects\point-cloud-utils
   - "SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%"
-  - "python setup.py test"
+  # unless you cd, it will try to load the local rather than built/installed version
+  - cd tests
+  - python -m unittest --verbose

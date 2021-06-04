@@ -1,4 +1,4 @@
-  
+
 language: python
 python:
   - "2.7"
@@ -20,11 +20,10 @@ addons:
     - g++-7
     - libsuitesparse-dev
 env:
-  - CC=gcc-7 && CXX=g++-7
+  - CC=gcc-7 && CXX=g++-7 && PCU_DEBUG=true
   # - CC=clang CXX=clang++ CXXFLAGS="-stdlib=libc++"
 install:
-  - pip install numpy
-  - pip install scipy
+  - pip install .
 script:
-  - python setup.py build --debug install
-  - python tests/test_examples.py
+  - cd tests
+  - python -m unittest --verbose

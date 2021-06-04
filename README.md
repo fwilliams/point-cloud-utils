@@ -37,9 +37,7 @@ pip install git+git://github.com/fwilliams/point-cloud-utils
 ```
 The following dependencies are required to install with `pip`:
 * A C++ compiler supporting C++14 or later
-* CMake 3.2 or later.
 * git
-* NumPy and SciPy
 
 # Examples
 
@@ -61,10 +59,10 @@ The following dependencies are required to install with `pip`:
 - [Deduplicating point clouds and meshes](#deduplicating-point-clouds-and-meshes)
 
 ### Loading meshes and point clouds
-Point-Cloud-Utils supports reading many common mesh formats (PLY, STL, OFF, OBJ, 3DS, VRML 2.0, X3D, COLLADA). 
+Point-Cloud-Utils supports reading many common mesh formats (PLY, STL, OFF, OBJ, 3DS, VRML 2.0, X3D, COLLADA).
 If it can be imported into MeshLab, we can read it! The type of file is inferred from its file extension.
 
-If you only need a few attributes of a point cloud or mesh, the quickest way to load a mesh is using one of 
+If you only need a few attributes of a point cloud or mesh, the quickest way to load a mesh is using one of
 the `read_mesh_*` utility functions
 ```python
 import point_cloud_utils as pcu
@@ -85,13 +83,13 @@ v, f, n = pcu.load_mesh_vfn("path/to/mesh")
 v, f, n, c = pcu.load_mesh_vfnc("path/to/mesh")
 ```
 
-For meshes and point clouds with more complex attributes, use `load_triangle_mesh` which returns a `TriangleMesh` 
-object. 
+For meshes and point clouds with more complex attributes, use `load_triangle_mesh` which returns a `TriangleMesh`
+object.
 
 ```python
 import point_cloud_utils as pcu
 
-# mesh is a lightweight TriangleMesh container object holding mesh vertices, faces, and their attributes. 
+# mesh is a lightweight TriangleMesh container object holding mesh vertices, faces, and their attributes.
 # Any attributes which aren't loaded (because they aren't present in the file) are set to None.
 # The data in TriangleMesh is layed out as follows (run help(pcu.TriangleMesh) for more details):
 # TriangleMesh:
@@ -111,7 +109,7 @@ import point_cloud_utils as pcu
 #       colors: [F, 4]-shaped numpy array of per-face RBGA colors in [0.0, 1.0] (or None)
 #       quality: [F,]-shaped numpy array of per-face quality measures (or None)
 #       flags: [F,]-shaped numpy array of 32-bit integer flags per face (or None)
-# 
+#
 #       wedge_colors: [F, 3, 4]-shaped numpy array of per-wedge RBGA colors in [0.0, 1.0] (or None)
 #       wedge_normals: [F, 3, 3]-shaped numpy array of per-wedge normals (or None)
 #       wedge_texcoords: [F, 3, 2]-shaped numpy array of per-wedge] uv coordinates (or None)
@@ -128,8 +126,8 @@ mesh = pcu.TriangleMesh("path/to/mesh")
 For meshes and point clouds with more complex attributes, use `save_triangle_mesh` which accepts a whole host of named
 arguments which control the attributes to save.
 ```python
-# save_triangle_mesh accepts a path to save to (The type of mesh  saved is determined by the file extesion), 
-# an array of mesh vertices of shape [V, 3], and optional arguments specifying faces, per-mesh attributes, 
+# save_triangle_mesh accepts a path to save to (The type of mesh  saved is determined by the file extesion),
+# an array of mesh vertices of shape [V, 3], and optional arguments specifying faces, per-mesh attributes,
 # per-face attributes and per-wedge attributes:
 #   filename    : Path to the mesh to save. The type of file will be determined from the file extension.
 #   v           : [V, 3]-shaped numpy array of per-vertex positions
@@ -169,7 +167,7 @@ If you only need to write few attributes of a point cloud or mesh, the quickest 
 import point_cloud_utils as pcu
 
 # Assume v, f, n, c are numpy arrays
-# where 
+# where
 #   v are the mesh vertices of shape [V, 3]
 #   f are the mesh face indices into v of shape [F, 3]
 #   n are the mesh per-vertex normals of shape [V, 3]
@@ -200,7 +198,7 @@ import point_cloud_utils as pcu
 import numpy as np
 
 # v is a nv by 3 NumPy array of vertices
-# f is an nf by 3 NumPy array of face indexes into v 
+# f is an nf by 3 NumPy array of face indexes into v
 # n is a nv by 3 NumPy array of vertex normals
 v, f, n = pcu.load_mesh_vfn("my_model.ply")
 
@@ -218,12 +216,12 @@ Generate blue noise samples on a mesh separated by approximately 0.01 times the 
 import point_cloud_utils as pcu
 import numpy as np
 # v is a nv by 3 NumPy array of vertices
-# f is an nf by 3 NumPy array of face indexes into v 
+# f is an nf by 3 NumPy array of face indexes into v
 # n is a nv by 3 NumPy array of vertex normals
 v, f, n = pcu.load_mesh_vfn("my_model.ply")
 
 
-# Generate samples on a mesh with poisson disk samples seperated by approximately 0.01 times 
+# Generate samples on a mesh with poisson disk samples seperated by approximately 0.01 times
 # the length of the bounding box diagonal
 bbox = np.max(v, axis=0) - np.min(v, axis=0)
 bbox_diag = np.linalg.norm(bbox)
@@ -234,7 +232,6 @@ f_i, bc = pcu.sample_mesh_poisson_disk(v, f, n, 10000)
 # Use the face indices and barycentric coordinate to compute sample positions and normals
 v_sampled = pcu.interpolate_barycentric_coords(f, fi, bc, v)
 n_sampled = pcu.interpolate_barycentric_coords(f, fi, bc, n)
-    
 ```
 
 ### Generate random samples on a mesh
@@ -243,11 +240,11 @@ import point_cloud_utils as pcu
 import numpy as np
 
 # v is a nv by 3 NumPy array of vertices
-# f is an nf by 3 NumPy array of face indexes into v 
+# f is an nf by 3 NumPy array of face indexes into v
 # n is a nv by 3 NumPy array of vertex normals
 v, f, n = pcu.load_mesh_vfn("my_model.ply")
 
-# Generate random samples on the mesh (v, f, n) 
+# Generate random samples on the mesh (v, f, n)
 # f_idx are the face indices of each sample and bc are barycentric coordinates of the sample within a face
 f_idx, bc = pcu.sample_mesh_random(v, f, num_samples=v.shape[0] * 40)
 
@@ -287,15 +284,15 @@ import numpy as np
 v, n, c = pcu.load_mesh_vnc("my_model.ply")
 
 # We'll use a voxel grid with 128 voxels per axis
-num_voxels_per_axis = 128 
+num_voxels_per_axis = 128
 
 # Size of the axis aligned bounding box of the point cloud
 bbox_size = v.max(0) - v.min(0)
 
 # The size per-axis of a single voxel
-sizeof_voxel = bbox_size / num_voxels_per_axis 
+sizeof_voxel = bbox_size / num_voxels_per_axis
 
-# Downsample a point cloud on a voxel grid so there is at most one point per voxel. 
+# Downsample a point cloud on a voxel grid so there is at most one point per voxel.
 # Multiple points, normals, and colors within a voxel cell are averaged together.
 v_sampled, n_sampled, c_sampled = pcu.downsample_point_cloud_voxel_grid(sizeof_voxel, v, n, c)
 ```
@@ -311,7 +308,7 @@ import numpy as np
 v, n, c = pcu.load_mesh_vnc("my_model.ply")
 
 # We'll use a voxel grid with 128 voxels per axis
-num_voxels_per_axis = 128 
+num_voxels_per_axis = 128
 
 # Size of the axis aligned bounding box of the point cloud
 bbox_size = v.max(0) - v.min(0)
@@ -321,12 +318,12 @@ domain_min = v.min(0) + bbox_size / 2.0
 domain_max = v.min(0) + bbox_size
 
 # The size per-axis of a single voxel
-sizeof_voxel = bbox_size / num_voxels_per_axis 
+sizeof_voxel = bbox_size / num_voxels_per_axis
 
-# Downsample a point cloud on a voxel grid so there is at most one point per voxel. 
+# Downsample a point cloud on a voxel grid so there is at most one point per voxel.
 # Multiple points, normals, and colors within a voxel cell are averaged together.
 # min_bound and max_bound specify a bounding box in which we will downsample points
-v_sampled, n_sampled, c_sampled = pcu.downsample_point_cloud_voxel_grid(sizeof_voxel, v, n, c, 
+v_sampled, n_sampled, c_sampled = pcu.downsample_point_cloud_voxel_grid(sizeof_voxel, v, n, c,
                                                                         min_bound=domain_min, max_bound=domain_max)
 ```
 
@@ -342,20 +339,20 @@ import numpy as np
 v, n, c = pcu.load_mesh_vnc("my_model.ply")
 
 # We'll use a voxel grid with 128 voxels per axis
-num_voxels_per_axis = 128 
+num_voxels_per_axis = 128
 
 # Size of the axis aligned bounding box of the point cloud
 bbox_size = v.max(0) - v.min(0)
 
 # The size per-axis of a single voxel
-sizeof_voxel = bbox_size / num_voxels_per_axis 
+sizeof_voxel = bbox_size / num_voxels_per_axis
 
 # We will throw away points within voxel cells containing fewer than 3 points
 min_points_per_voxel = 3
 
-# Downsample a point cloud on a voxel grid so there is at most one point per voxel. 
+# Downsample a point cloud on a voxel grid so there is at most one point per voxel.
 # Multiple points, normals, and colors within a voxel cell are averaged together.
-v_sampled, n_sampled, c_sampled = pcu.downsample_point_cloud_voxel_grid(sizeof_voxel, v, n, c, 
+v_sampled, n_sampled, c_sampled = pcu.downsample_point_cloud_voxel_grid(sizeof_voxel, v, n, c,
                                                                         min_points_per_voxel=min_points_per_voxel)
 ```
 
@@ -398,7 +395,7 @@ n = pcu.estimate_point_cloud_normals(n, k=16)
 import point_cloud_utils as pcu
 import numpy as np
 
-# a and b are arrays where each row contains a point 
+# a and b are arrays where each row contains a point
 # Note that the point sets can have different sizes (e.g [100, 3], [111, 3])
 a = np.random.rand(100, 3)
 b = np.random.rand(100, 3)
@@ -410,12 +407,12 @@ M = pcu.pairwise_distances(a, b)
 w_a = np.ones(a.shape[0])
 w_b = np.ones(b.shape[0])
 
-# P is the transport matrix between a and b, eps is a regularization parameter, smaller epsilons lead to 
+# P is the transport matrix between a and b, eps is a regularization parameter, smaller epsilons lead to
 # better approximation of the true Wasserstein distance at the expense of slower convergence
 P = pcu.sinkhorn(w_a, w_b, M, eps=1e-3)
 
 # To get the distance as a number just compute the frobenius inner product <M, P>
-sinkhorn_dist = (M*P).sum() 
+sinkhorn_dist = (M*P).sum()
 ```
 
 ### Chamfer distance between two point clouds
@@ -423,7 +420,7 @@ sinkhorn_dist = (M*P).sum()
 import point_cloud_utils as pcu
 import numpy as np
 
-# a and b are arrays where each row contains a point 
+# a and b are arrays where each row contains a point
 # Note that the point sets can have different sizes (e.g [100, 3], [111, 3])
 a = np.random.rand(100, 3)
 b = np.random.rand(100, 3)
@@ -466,9 +463,9 @@ import numpy as np
 a = np.random.rand(1000, 3)
 b = np.random.rand(500, 3)
 
-# dists_a_to_b is of shape (a.shape[0],) and contains the shortest squared distance 
+# dists_a_to_b is of shape (a.shape[0],) and contains the shortest squared distance
 # between each point in a and the points in b
-# corrs_a_to_b is of shape (a.shape[0],) and contains the index into b of the 
+# corrs_a_to_b is of shape (a.shape[0],) and contains the index into b of the
 # closest point for each point in a
 dists_a_to_b, corrs_a_to_b = pcu.shortest_distance_pairs(a, b)
 ```
@@ -478,7 +475,7 @@ dists_a_to_b, corrs_a_to_b = pcu.shortest_distance_pairs(a, b)
 import point_cloud_utils as pcu
 
 # v is a nv by 3 NumPy array of vertices
-# f is an nf by 3 NumPy array of face indexes into v 
+# f is an nf by 3 NumPy array of face indexes into v
 v, f = pcu.load_mesh_vf("my_model.ply")
 
 # Generate 1000 points on the mesh with Lloyd's algorithm
@@ -496,7 +493,7 @@ samples_3d = pcu.lloyd_3d(100)
 import point_cloud_utils as pcu
 
 # v is a nv by 3 NumPy array of vertices
-# f is an nf by 3 NumPy array of face indexes into v 
+# f is an nf by 3 NumPy array of face indexes into v
 v, f = pcu.load_mesh_vf("my_model.ply")
 
 # Generate 1000 points in the volume around the mesh. We'll compute the signed distance to the
