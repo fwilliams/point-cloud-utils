@@ -78,11 +78,8 @@ def chamfer_distance(x, y, return_index=False, p_norm=2, max_points_per_leaf=10)
                                                      squared_distances=False,
                                                      max_points_per_leaf=max_points_per_leaf)
 
-    if float(p_norm) == 2.0:
-        dists_x_to_y, dists_y_to_x = dists_x_to_y, dists_y_to_x
-    else:
-        dists_x_to_y = np.linalg.norm(x[y_to_x] - y, axis=-1, ord=p_norm).mean()
-        dists_y_to_x = np.linalg.norm(y[x_to_y] - x, axis=-1, ord=p_norm).mean()
+    dists_x_to_y = np.linalg.norm(x[corrs_y_to_x] - y, axis=-1, ord=p_norm).mean()
+    dists_y_to_x = np.linalg.norm(y[corrs_x_to_y] - x, axis=-1, ord=p_norm).mean()
 
     cham_dist = np.mean(dists_x_to_y) + np.mean(dists_y_to_x)
 
