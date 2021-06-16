@@ -48,7 +48,7 @@ def hausdorff_distance(x, y, return_index=False, squared_distances=False, max_po
     return hausdorff
 
 
-def chamfer_distance(x, y, return_index=False, squared_distances=False, max_points_per_leaf=10):
+def chamfer_distance(x, y, return_index=False, p_norm=2, max_points_per_leaf=10):
     """
     Compute the chamfer distance between two point clouds x, and y
 
@@ -60,21 +60,29 @@ def chamfer_distance(x, y, return_index=False, squared_distances=False, max_poin
                   corrs_x_to_y[i] stores the index into y of the closest point to x[i]
                   (i.e. y[corrs_x_to_y[i]] is the nearest neighbor to x[i] in y).
                   corrs_y_to_x is similar to corrs_x_to_y but with x and y reversed.
-    squared_distances : If set to True, then return squared L2 distances. Default is False.
     max_points_per_leaf : The maximum number of points per leaf node in the KD tree used by this function.
                           Default is 10.
+    p_norm : Which norm to use. p_norm can be any real number, inf (for the max norm) -inf (for the min norm),
+             0 (for sum(x != 0))
     Returns
     -------
     The chamfer distance between x an dy.
     If return_index is set, then this function returns a tuple (chamfer_dist, corrs_x_to_y, corrs_y_to_x) where
     corrs_x_to_y and corrs_y_to_x are described above.
     """
+
     dists_x_to_y, corrs_x_to_y = k_nearest_neighbors(x, y, k=1,
-                                                     squared_distances=squared_distances,
+                                                     squared_distances=False,
                                                      max_points_per_leaf=max_points_per_leaf)
-    dists_y_to_x, corrs_y_to_x = k_nearest_neighbors(x, y, k=1,
-                                                     squared_distances=squared_distances,
+    dists_y_to_x, corrs_y_to_x = k_nearest_neighbors(y, x, k=1,
+                                                     squared_distances=False,
                                                      max_points_per_leaf=max_points_per_leaf)
+
+    if float(p_norm) == 2.0:
+        dists_x_to_y, dists_y_to_x = dists_x_to_y, dists_y_to_x
+    else:
+        dists_x_to_y = np.linalg.norm(x[y_to_x] - y, axis=-1, ord=p_norm).mean()
+        dists_y_to_x = np.linalg.norm(y[x_to_y] - x, axis=-1, ord=p_norm).mean()
 
     cham_dist = np.mean(dists_x_to_y) + np.mean(dists_y_to_x)
 
