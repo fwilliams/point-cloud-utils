@@ -95,7 +95,7 @@ Notes
 Examples
 --------
 )igl_Qu8mg5v7";
-npe_function(estimate_mesh_normals_doc)
+npe_function(estimate_mesh_normals)
 npe_doc(estimate_mesh_normals_doc)
 npe_arg(v, dense_float, dense_double)
 npe_arg(f, dense_int, dense_longlong, dense_uint, dense_ulonglong)
