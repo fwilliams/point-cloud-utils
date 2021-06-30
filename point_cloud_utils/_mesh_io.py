@@ -396,5 +396,5 @@ def load_mesh_vfn(filename, dtype=float):
 
 def load_mesh_vfnc(filename, dtype=float):
     ret = load_triangle_mesh(filename, dtype=dtype)
-    return ret.v, ret.f, ret.vn, ret.c
+    return ret.v, ret.f, ret.vn, ret.vc
 
