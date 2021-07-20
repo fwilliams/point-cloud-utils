@@ -198,13 +198,17 @@ class TriangleMesh:
 
         fcolors = self.face_data.colors
         if fcolors.shape[-1] == 3 and len(fcolors.shape) == 2:
+            # vcglib face colors have an inverted alpha channel (so 1 = transparent, 0 = opaque)
             fcolors = np.concatenate([np.ascontiguousarray(fcolors),
-                                      np.ones([fcolors.shape[0], 1], dtype=self.face_data.colors.dtype)], axis=-1)
+                                      np.zeros([fcolors.shape[0], 1], dtype=self.face_data.colors.dtype)], axis=-1)
+        elif fcolors.shape[-1] == 4 and len(fcolors.shape) == 3:
+            fcolors[:, -1] = 1.0 - fcolors[:, -1]
 
         wcolors = self.face_data.wedge_colors
         if wcolors.shape[-1] == 3 and len(wcolors.shape) == 3:
             wcolors = np.concatenate([np.ascontiguousarray(wcolors),
                                       np.ones([wcolors.shape[0], wcolors.shape[1], 1], dtype=wcolors.dtype)], axis=-1)
+
 
         save_mesh_internal(filename,
                            np.ascontiguousarray(self.vertex_data.positions.astype(dtype)),
