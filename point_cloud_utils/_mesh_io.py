@@ -201,7 +201,7 @@ class TriangleMesh:
             # vcglib face colors have an inverted alpha channel (so 1 = transparent, 0 = opaque)
             fcolors = np.concatenate([np.ascontiguousarray(fcolors),
                                       np.zeros([fcolors.shape[0], 1], dtype=self.face_data.colors.dtype)], axis=-1)
-        elif fcolors.shape[-1] == 4 and len(fcolors.shape) == 3:
+        elif fcolors.shape[-1] == 4 and len(fcolors.shape) == 2:
             fcolors[:, -1] = 1.0 - fcolors[:, -1]
 
         wcolors = self.face_data.wedge_colors
@@ -209,6 +209,15 @@ class TriangleMesh:
             wcolors = np.concatenate([np.ascontiguousarray(wcolors),
                                       np.ones([wcolors.shape[0], wcolors.shape[1], 1], dtype=wcolors.dtype)], axis=-1)
 
+        if fcolors.shape[0] > 0:
+            if fcolors.max() > 1.0 or fcolors.min() < 0.0:
+                raise ValueError("Invalid values for face colors, must be between 0 and 1 (inclusive)")
+        if vcolors.shape[0] > 0:
+            if vcolors.max() > 1.0 or vcolors.min() < 0.0:
+                raise ValueError("Invalid values for vertex colors, must be between 0 and 1 (inclusive)")
+        if wcolors.shape[0] > 0:
+            if wcolors.max() > 1.0 or wcolors.min() < 0.0:
+                raise ValueError("Invalid values for wedge colors, must be between 0 and 1 (inclusive)")
 
         save_mesh_internal(filename,
                            np.ascontiguousarray(self.vertex_data.positions.astype(dtype)),
