@@ -507,6 +507,47 @@ class TestDenseBindings(unittest.TestCase):
         self.assertAlmostEqual(np.max(d - d2), 0.0)
 
 
+    def test_ray_mesh_intersection(self):
+        import point_cloud_utils as pcu
+        import numpy as np
+
+        v, f = pcu.load_mesh_vf(os.path.join(self.test_path, "cube_twist.obj"))
+
+        v -= v.min(0)
+        v /= v.max(0)
+        v -= 0.5
+        v *= 2.0
+
+        d = np.concatenate([
+                np.stack([a.ravel() for a in np.mgrid[-0.1:0.1:64j, -0.1:0.1:64j]], axis=-1),
+                0.1 * np.ones([64 ** 2, 1])],
+            axis=-1)
+        d /= np.linalg.norm(d, axis=-1, keepdims=True)
+
+        o1 = np.array([0., 0., -2.])
+        fid1, bc1, t1 = pcu.ray_mesh_intersection(v, f, o1, d)
+        mask1 = np.isfinite(t1)
+        self.assertTrue(mask1.sum() > 0)
+
+        p11 = pcu.interpolate_barycentric_coords(f, fid1[mask1], bc1[mask1], v)
+        p12 = o1 + t1[mask1, np.newaxis] * d[mask1]
+        self.assertTrue(np.allclose(p11, p12, atol=1e-5))
+
+        o2 = np.stack([o1]*d.shape[0])
+        fid2, bc2, t2 = pcu.ray_mesh_intersection(v, f, o2, d)
+        mask2 = np.isfinite(t2)
+        self.assertTrue(mask2.sum() > 0)
+
+        p21 = pcu.interpolate_barycentric_coords(f, fid2[mask2], bc2[mask2], v)
+        p22 = o2[mask2] + t2[mask2, np.newaxis] * d[mask2]
+        self.assertTrue(np.allclose(p21, p22, atol=1e-5))
+
+        self.assertTrue(np.alltrue(mask1 == mask2))
+        self.assertTrue(np.alltrue(fid2 == fid1))
+        self.assertTrue(np.allclose(bc2, bc1))
+        self.assertTrue(np.allclose(t1, t2))
+
+
 
 if __name__ == '__main__':
     unittest.main()

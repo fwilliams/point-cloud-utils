@@ -29,6 +29,33 @@ include(numpyeigen) # This will define Eigen3::Eigen if we enabled NPE_WITH_EIGE
 #  target_compile_definitions(Eigen3::Eigen INTERFACE EIGEN_USE_MKL_ALL)
 #endif(${EIGEN_WITH_MKL})
 
+# Embree
+set(EMBREE_DIR "${EXTERNAL_DEP_DIR}/embree")
+if(NOT TARGET embree)
+  download_dep(embree
+    GIT_REPOSITORY https://github.com/embree/embree.git
+    GIT_TAG        v3.12.1
+  )
+
+  # Note: On macOS, building embree as a static lib can only be done with a single ISA target.
+  set(EMBREE_MAX_ISA "DEFAULT" CACHE STRING "Selects highest ISA to support.")
+  set(EMBREE_TESTING_INTENSITY 0 CACHE STRING "")
+  set(EMBREE_ISPC_SUPPORT OFF CACHE BOOL " ")
+  set(EMBREE_TASKING_SYSTEM "INTERNAL" CACHE BOOL " ")
+  set(EMBREE_TUTORIALS OFF CACHE BOOL " ")
+  set(EMBREE_STATIC_LIB ON CACHE BOOL " ")
+  if(MSVC)
+    set(EMBREE_STATIC_RUNTIME CACHE BOOL "Use the static version of the C/C++ runtime library.")
+  endif()
+
+  add_subdirectory("${EMBREE_DIR}" "embree" EXCLUDE_FROM_ALL)
+endif()
+#compile_igl_module("embree")
+#target_link_libraries(igl_embree INTERFACE embree)
+#target_include_directories(igl_embree INTERFACE ${EMBREE_DIR}/include)
+#target_compile_definitions(igl_embree INTERFACE -DEMBREE_STATIC_LIB)
+
+
 # Build geogram
 set(THIRD_PARTY_DIR ${EXTERNAL_DEP_DIR})
 include(geogram)
@@ -46,6 +73,8 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
   endif()
 endif()
 
+
+
 # Create the python module
 npe_add_module(_pcu_internal
   BINDING_SOURCES
@@ -62,6 +91,7 @@ npe_add_module(_pcu_internal
   ${CMAKE_CURRENT_SOURCE_DIR}/src/signed_distance.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/closest_point_on_mesh.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/connected_components.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/ray_mesh_intersection.cpp
   EXTRA_MODULE_FUNCTIONS
   hack_extra_bindings
   )
@@ -71,6 +101,8 @@ target_include_directories(_pcu_internal PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/ext
 target_include_directories(_pcu_internal PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
 target_include_directories(_pcu_internal PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/external/nanoflann)
 target_include_directories(_pcu_internal PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/external)
+target_include_directories(_pcu_internal PRIVATE ${EMBREE_DIR}/include)
+target_link_libraries(_pcu_internal PRIVATE embree)
 target_link_libraries(_pcu_internal PRIVATE geogram)
 set_target_properties(_pcu_internal PROPERTIES COMPILE_FLAGS "-fvisibility=hidden -msse3")
 find_package(OpenMP)

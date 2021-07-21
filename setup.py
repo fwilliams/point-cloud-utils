@@ -84,7 +84,7 @@ def main():
 
     setuptools.setup(
         name="point-cloud-utils",
-        version="0.18.4",
+        version="0.19.0",
         author="Francis Williams",
         author_email="francis@fwilliams.info",
         description="A Python Library of utilities for point clouds",

@@ -42,8 +42,8 @@ npe_begin_code()
         c_f(i, 0) = face_component;
         f_counts(face_component, 0) += 1;
     }
-    pybind11::print("f.shape " + std::to_string(f.rows()) + " " + std::to_string(f.cols()));
-    pybind11::print("A.shape " + std::to_string(A.rows()) + " " + std::to_string(A.cols()));
+//    pybind11::print("f.shape " + std::to_string(f.rows()) + " " + std::to_string(f.cols()));
+//    pybind11::print("A.shape " + std::to_string(A.rows()) + " " + std::to_string(A.cols()));
     return std::make_tuple(npe::move(c_v), npe::move(v_counts), npe::move(c_f), npe::move(f_counts));
 }
 npe_end_code()
