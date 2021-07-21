@@ -15,6 +15,8 @@ v : #v by 3 array of vertex positions (each row is a vertex)
 f : #f by 3 Matrix of face (triangle) indices
 ray_o : array of shape (#rays, 3) of ray origins (one per row) or a single array of shape (3,) to use
 ray_d : array of shape (#rays, 3) of ray directions (one per row)
+ray_near : an optional floating point value indicating the distance along each ray to start searching (default 0.0)
+ray_far : an optional floating point value indicating the maximum distance along each ray to search (default inf)
 
 Returns
 -------
@@ -29,6 +31,8 @@ npe_arg(v, dense_float, dense_double)
 npe_arg(f, dense_int, dense_longlong)
 npe_arg(ray_o, npe_matches(v))
 npe_arg(ray_d, npe_matches(v))
+npe_default_arg(ray_near, double, 0.0)
+npe_default_arg(ray_far, double, std::numeric_limits<double>::infinity())
 npe_doc(ray_mesh_intersection_doc)
 npe_begin_code()
 {
@@ -72,7 +76,7 @@ npe_begin_code()
         Eigen::RowVector3f d_i((float)ray_d(i, 0), (float)ray_d(i, 1), (float)ray_d(i, 2));
         igl::Hit hit;
 
-        bool is_hit = isector.intersectRay(o_i, d_i, hit);
+        bool is_hit = isector.intersectRay(o_i, d_i, hit, ray_near, ray_far);
         if (is_hit) {
             ret_fid(i, 0) = (npe_Scalar_f) hit.id;
             ret_bc(i, 0) = 1.0 - hit.u - hit.v;
