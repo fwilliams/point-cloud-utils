@@ -44,9 +44,9 @@ if(NOT TARGET embree)
   set(EMBREE_TASKING_SYSTEM "INTERNAL" CACHE BOOL " ")
   set(EMBREE_TUTORIALS OFF CACHE BOOL " ")
   set(EMBREE_STATIC_LIB ON CACHE BOOL " ")
-#  if(MSVC)
-#    set(EMBREE_STATIC_RUNTIME CACHE BOOL "Use the static version of the C/C++ runtime library.")
-#  endif()
+  if(MSVC)
+    set(EMBREE_STATIC_RUNTIME CACHE BOOL "Use the static version of the C/C++ runtime library.")
+  endif()
 
   add_subdirectory("${EMBREE_DIR}" "embree" EXCLUDE_FROM_ALL)
 endif()
@@ -119,6 +119,7 @@ if(MSVC)
     /wd4996 # this function or variable may be unsafe
     # This one is when using bools in adjacency matrices
     /wd4804 #'+=': unsafe use of type 'bool' in operation
+    /MT
   )
 endif()
 
