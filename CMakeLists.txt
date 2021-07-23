@@ -45,8 +45,7 @@ if(NOT TARGET embree)
   set(EMBREE_TUTORIALS OFF CACHE BOOL " ")
   set(EMBREE_STATIC_LIB ON CACHE BOOL " ")
   if(MSVC)
-    set(EMBREE_STATIC_RUNTIME CACHE BOOL "Use the static version of the C/C++ runtime library.")
-    set(EMBREE_LIB_TYPE STATIC)
+    set(EMBREE_STATIC_RUNTIME ON CACHE BOOL "Use the static version of the C/C++ runtime library.")
   endif()
 
   add_subdirectory("${EMBREE_DIR}" "embree" EXCLUDE_FROM_ALL)
@@ -121,7 +120,6 @@ if(MSVC)
     # This one is when using bools in adjacency matrices
     /wd4804 #'+=': unsafe use of type 'bool' in operation
   )
-  set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MT")
 endif()
 
 find_package(OpenMP)
