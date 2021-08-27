@@ -92,6 +92,7 @@ npe_add_module(_pcu_internal
   ${CMAKE_CURRENT_SOURCE_DIR}/src/closest_point_on_mesh.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/connected_components.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/ray_mesh_intersection.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/smooth.cpp
   EXTRA_MODULE_FUNCTIONS
   hack_extra_bindings
   )

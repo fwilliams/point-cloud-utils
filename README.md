@@ -22,6 +22,7 @@
  - Compute signed distances between a point cloud and a mesh using [Fast Winding Numbers](https://www.dgp.toronto.edu/projects/fast-winding-numbers/)
  - Compute closest points on a mesh to a point cloud
  - Deduplicating point clouds and mesh vertices
+ - Mesh smoothing
 ![Example of Poisson Disk Sampling](/img/blue_noise.png?raw=true "Example of Poisson Disk Sampling")
 
 # Installation Instructions
@@ -57,6 +58,8 @@ The following dependencies are required to install with `pip`:
 - [Compute shortest signed distances to a triangle mesh with fast winding numbers](#compute-shortest-signed-distances-to-a-triangle-mesh-with-fast-winding-numbers)
 - [Compute closest points on a mesh](#compute-closest-points-on-a-mesh)
 - [Deduplicating point clouds and meshes](#deduplicating-point-clouds-and-meshes)
+- [Smoothing a mesh](#smoothing-a-mesh)
+
 
 ### Loading meshes and point clouds
 Point-Cloud-Utils supports reading many common mesh formats (PLY, STL, OFF, OBJ, 3DS, VRML 2.0, X3D, COLLADA).
@@ -541,4 +544,17 @@ c_dedup = c[idx_i]
 ```
 
 
+### Smoothing a Mesh
+```python
+import point_cloud_utils as pcu
 
+# v is a nv by 3 NumPy array of vertices
+# f is an nf by 3 NumPy array of face indexes into v
+v, f = pcu.load_mesh_vf("my_model.ply")
+
+num_iters = 3  # Number of smoothing iterations
+use_cotan_weights = True  # Whether to use cotangent weighted laplacian
+
+# vsmooth contains the vertices of the smoothed mesh (the new mesh has the same face indices f)
+vsmooth = pcu.laplacian_smooth_mesh(v, f, num_iters, use_cotan_weights=use_cotan_weights)
+```

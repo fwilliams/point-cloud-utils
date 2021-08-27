@@ -548,6 +548,19 @@ class TestDenseBindings(unittest.TestCase):
         self.assertTrue(np.allclose(t1, t2))
 
 
+    def test_laplacian_smoothing(self):
+        import point_cloud_utils as pcu
+        import numpy as np
+
+        v, f = pcu.load_mesh_vf(os.path.join(self.test_path, "cube_twist.obj"))
+
+        vsmooth1 = pcu.laplacian_smooth_mesh(v, f, 3)
+        self.assertEqual(vsmooth1.shape, v.shape)
+
+        vsmooth2 = pcu.laplacian_smooth_mesh(v, f, 3, use_cotan_weights=True)
+        self.assertEqual(vsmooth2.shape, v.shape)
+
+
 
 if __name__ == '__main__':
     unittest.main()
