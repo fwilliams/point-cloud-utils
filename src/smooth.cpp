@@ -57,8 +57,11 @@ npe_default_arg(use_cotan_weights, bool, false)
 npe_begin_code()
 {
     validate_mesh(v, f);
-    if (num_iters <= 0) {
-        throw pybind11::value_error("Invalid value for argument num_iters in smooth_mesh_laplacian. Must be a positive integer");
+    if (num_iters < 0) {
+        throw pybind11::value_error("Invalid value for argument num_iters in smooth_mesh_laplacian. Must be a positive integer or 0.");
+    }
+    if (num_iters == 0) {  // No-op for 0
+        return npe::move(v);
     }
 
     VCGMesh m;

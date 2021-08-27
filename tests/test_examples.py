@@ -560,6 +560,9 @@ class TestDenseBindings(unittest.TestCase):
         vsmooth2 = pcu.laplacian_smooth_mesh(v, f, 3, use_cotan_weights=True)
         self.assertEqual(vsmooth2.shape, v.shape)
 
+        vsmooth3 = pcu.laplacian_smooth_mesh(v, f, 0, use_cotan_weights=True)
+        self.assertEqual(vsmooth2.shape, v.shape)
+
 
 
 if __name__ == '__main__':
