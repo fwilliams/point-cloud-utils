@@ -29,6 +29,7 @@ npe_arg(v, npe_matches(p))
 npe_arg(f, dense_int, dense_long, dense_longlong)
 npe_default_arg(lower_bound, float, -std::numeric_limits<float>::infinity())
 npe_default_arg(upper_bound, float, std::numeric_limits<float>::infinity())
+npe_doc(signed_distance_doc)
 npe_begin_code()
 {
     validate_mesh(v, f);

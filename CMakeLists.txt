@@ -20,6 +20,33 @@ list(APPEND CMAKE_MODULE_PATH ${EXTERNAL_DEP_DIR}/numpyeigen/cmake)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 include(numpyeigen) # This will define Eigen3::Eigen if we enabled NPE_WITH_EIGEN
 
+# Build manifold as a static lib
+download_dep(manifold
+  GIT_REPOSITORY https://github.com/hjwdzh/Manifold.git
+  GIT_TAG 81fd342e578e29fc15fb75d2b4d1e3c821fe33cb
+)
+set(MANIFOLD_SRC_DIR ${EXTERNAL_DEP_DIR}/manifold/src)
+set(
+    manifold_SRC
+    ${MANIFOLD_SRC_DIR}/BVH.cpp
+    ${MANIFOLD_SRC_DIR}/BVH.h
+    ${MANIFOLD_SRC_DIR}/Intersection.cpp
+    ${MANIFOLD_SRC_DIR}/Intersection.h
+    ${MANIFOLD_SRC_DIR}/main.cpp
+    ${MANIFOLD_SRC_DIR}/Model_OBJ.cpp
+    ${MANIFOLD_SRC_DIR}/Model_OBJ.h
+    ${MANIFOLD_SRC_DIR}/Octree.h
+)
+add_library(manifold STATIC ${manifold_SRC})
+set_target_properties(manifold PROPERTIES LINKER_LANGUAGE CXX)
+target_include_directories(manifold PUBLIC ${MANIFOLD_SRC_DIR})
+target_include_directories(manifold PRIVATE ${EXTERNAL_DEP_DIR}/manifold/3rd)
+if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+    target_compile_options(manifold PRIVATE "${CMAKE_CXX_FLAGS} -Wall -pthread -DWITH_OMP  -Wno-int-in-bool-context -Wsign-compare -fsanitize=address")
+else()
+    target_compile_options(manifold PRIVATE "${CMAKE_CXX_FLAGS} -Wall -pthread -O3 -DWITH_OMP  -Wno-int-in-bool-context -Wsign-compare")
+endif()
+
 # FIXME: MKL Support is totally broken
 # Optionally build Eigen with the MKL backend
 #if (${EIGEN_WITH_MKL})
@@ -93,6 +120,7 @@ npe_add_module(_pcu_internal
   ${CMAKE_CURRENT_SOURCE_DIR}/src/connected_components.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/ray_mesh_intersection.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/smooth.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/manifold.cpp
   EXTRA_MODULE_FUNCTIONS
   hack_extra_bindings
   )
@@ -105,6 +133,7 @@ target_include_directories(_pcu_internal PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/ext
 target_include_directories(_pcu_internal PRIVATE ${EMBREE_DIR}/include)
 target_link_libraries(_pcu_internal PRIVATE embree)
 target_link_libraries(_pcu_internal PRIVATE geogram)
+target_link_libraries(_pcu_internal PRIVATE manifold)
 set_target_properties(_pcu_internal PROPERTIES COMPILE_FLAGS "-fvisibility=hidden -msse3")
 
 if(MSVC)
