@@ -23,6 +23,7 @@
  - Compute closest points on a mesh to a point cloud
  - Deduplicating point clouds and mesh vertices
  - Mesh smoothing
+ - Making a mesh watertight (based on the [Watertight Manifold](https://github.com/hjwdzh/Manifold) algorithm)
 ![Example of Poisson Disk Sampling](/img/blue_noise.png?raw=true "Example of Poisson Disk Sampling")
 
 # Installation Instructions
@@ -59,6 +60,7 @@ The following dependencies are required to install with `pip`:
 - [Compute closest points on a mesh](#compute-closest-points-on-a-mesh)
 - [Deduplicating point clouds and meshes](#deduplicating-point-clouds-and-meshes)
 - [Smoothing a mesh](#smoothing-a-mesh)
+- [Making a mesh watertight](#making-a-mesh-watertight)
 
 
 ### Loading meshes and point clouds
@@ -557,4 +559,19 @@ use_cotan_weights = True  # Whether to use cotangent weighted laplacian
 
 # vsmooth contains the vertices of the smoothed mesh (the new mesh has the same face indices f)
 vsmooth = pcu.laplacian_smooth_mesh(v, f, num_iters, use_cotan_weights=use_cotan_weights)
+```
+
+
+### Making a Mesh Watertight
+```python
+import point_cloud_utils as pcu
+
+# v is a nv by 3 NumPy array of vertices
+# f is an nf by 3 NumPy array of face indexes into v
+v, f = pcu.load_mesh_vf("my_model.ply")
+
+# Optional resolution parameter (default is 20_000).
+# See https://github.com/hjwdzh/Manifold for details
+resolution = 20_000  
+v_watertight, f_watertight = pcu.make_mesh_watertight(v, f, resolution=resolution)
 ```
