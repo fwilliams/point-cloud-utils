@@ -105,12 +105,8 @@ endif()
 # Create the python module
 npe_add_module(_pcu_internal
   BINDING_SOURCES
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/sample_mesh.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/sample_point_cloud.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/point_cloud_distance.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/lloyd.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/meshio.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/normals.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/misc.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/morton.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/remove_duplicates.cpp
@@ -119,14 +115,11 @@ npe_add_module(_pcu_internal
   ${CMAKE_CURRENT_SOURCE_DIR}/src/closest_point_on_mesh.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/connected_components.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/ray_mesh_intersection.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/smooth.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/manifold.cpp
   EXTRA_MODULE_FUNCTIONS
   hack_extra_bindings
   )
 target_sources(_pcu_internal PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/geogram_utils.cpp)
-target_sources(_pcu_internal PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/external/vcglib/wrap/ply/plylib.cpp)
-target_include_directories(_pcu_internal PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/external/vcglib)
 target_include_directories(_pcu_internal PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
 target_include_directories(_pcu_internal PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/external/nanoflann)
 target_include_directories(_pcu_internal PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/external)
