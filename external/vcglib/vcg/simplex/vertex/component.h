@@ -508,6 +508,9 @@ template <class TT> class Radiusf: public Radius<float, TT> {
 public: static void Name(std::vector<std::string> & name){name.push_back(std::string("Radiusf"));TT::Name(name);}
 };
 
+template <class TT> class Radiusd: public Radius<double, TT> {
+public: static void Name(std::vector<std::string> & name){name.push_back(std::string("Radiusd"));TT::Name(name);}
+};
 
 /*----------------------------- VEADJ ------------------------------*/
 /*! \brief \em Component: Per vertex \b Vertex-Edge adjacency relation

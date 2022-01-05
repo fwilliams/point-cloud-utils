@@ -47,6 +47,21 @@ else()
     target_compile_options(manifold PRIVATE "${CMAKE_CXX_FLAGS} -Wall -pthread -O3 -DWITH_OMP  -Wno-int-in-bool-context -Wsign-compare")
 endif()
 
+
+
+# set(
+#     mls_utils_SRC
+#     ${CMAKE_CURRENT_SOURCE_DIR}/src/mls_utils/balltree.cpp
+# )
+# add_library(mls_utils STATIC ${mls_utils_SRC})
+# set_target_properties(mls_utils PROPERTIES LINKER_LANGUAGE CXX)
+# target_include_directories(mls_utils PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/external)
+# target_include_directories(mls_utils PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/external/vcglib)
+# target_include_directories(mls_utils PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+# target_include_directories(mls_utils PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/external/numpyeigen/external/eigen)
+
+
+
 # FIXME: MKL Support is totally broken
 # Optionally build Eigen with the MKL backend
 #if (${EIGEN_WITH_MKL})
@@ -121,6 +136,7 @@ npe_add_module(_pcu_internal
   ${CMAKE_CURRENT_SOURCE_DIR}/src/ray_mesh_intersection.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/smooth.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/manifold.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/curvature.cpp
   EXTRA_MODULE_FUNCTIONS
   hack_extra_bindings
   )
@@ -134,6 +150,7 @@ target_include_directories(_pcu_internal PRIVATE ${EMBREE_DIR}/include)
 target_link_libraries(_pcu_internal PRIVATE embree)
 target_link_libraries(_pcu_internal PRIVATE geogram)
 target_link_libraries(_pcu_internal PRIVATE manifold)
+# target_link_libraries(_pcu_internal PRIVATE mls_utils)
 set_target_properties(_pcu_internal PROPERTIES COMPILE_FLAGS "-fvisibility=hidden -msse3")
 
 if(MSVC)

@@ -5,7 +5,7 @@ from ._pcu_internal import sample_mesh_poisson_disk, sample_mesh_random, \
     lloyd_2d, lloyd_3d, voronoi_centroids_unit_cube, sample_mesh_lloyd, \
     deduplicate_point_cloud, deduplicate_mesh_vertices, signed_distance_to_mesh, \
     closest_points_on_mesh, connected_components, ray_mesh_intersection, laplacian_smooth_mesh, \
-    make_mesh_watertight
+    make_mesh_watertight, mesh_principal_curvatures, mesh_mean_and_gaussian_curvatures
 
 from ._sinkhorn import *
 from ._mesh_io import *
