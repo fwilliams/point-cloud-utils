@@ -125,7 +125,8 @@ npe_add_module(_pcu_internal
   ${CMAKE_CURRENT_SOURCE_DIR}/src/point_cloud_distance.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/lloyd.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/meshio.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/normals.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/mesh_normals.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/point_cloud_normals.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/misc.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/morton.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/remove_duplicates.cpp

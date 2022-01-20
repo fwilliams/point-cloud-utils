@@ -390,8 +390,11 @@ import point_cloud_utils as pcu
 # v is a nv by 3 NumPy array of vertices
 v = pcu.load_mesh_v("my_model.ply")
 
-# Estimate a normal at each point (row of v) using its k nearest neighbors
-n = pcu.estimate_point_cloud_normals(n, k=16)
+# Estimate a normal at each point (row of v) using its 16 nearest neighbors
+n = pcu.estimate_pointcloud_normals_knn(v, 16)
+
+# Estimate a normal at each point (row of v) using its neighbors within a 0.1-radius ball
+n = pcu.estimate_pointcloud_normals_ball(v, 0.1)
 ```
 
 
