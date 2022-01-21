@@ -1,7 +1,7 @@
 import numpy as np
 
 
-def estimate_pointcloud_normals_knn(points, num_neighbors, view_directions=None,
+def estimate_point_cloud_normals_knn(points, num_neighbors, view_directions=None,
                                     drop_angle_threshold=np.deg2rad(90.0),
                                     max_points_per_leaf=10, num_threads=-1):
     """
@@ -61,10 +61,10 @@ def estimate_pointcloud_normals_knn(points, num_neighbors, view_directions=None,
     return points, normals
 
 
-def estimate_pointcloud_normals_ball(points, ball_radius, min_pts_per_ball=0,
+def estimate_point_cloud_normals_ball(points, ball_radius, min_pts_per_ball=0,
                                      weight_function="rbf",
                                      view_directions=None,
-                                     drop_angle_threshold=np.deg2rad(90.0),
+                                      drop_angle_threshold=np.deg2rad(90.0),
                                      max_points_per_leaf=10, num_threads=-1):
     """
     Estimate normals for a point cloud by locally fitting a plane to all points within a radius of each point

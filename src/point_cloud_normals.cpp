@@ -228,7 +228,7 @@ void estimate_normals_parallel(const InPointsType& points, const InViewDirsType&
     }
 
     filtered_points.resize(points.rows(), 3);
-    filtered_normals.resize(view_dirs.rows(), 3);
+    filtered_normals.resize(points.rows(), 3);
     int num_filtered_points = 0;
     for (int i = 0; i < points.rows(); i++) {
         if (mask[i]) {
@@ -249,8 +249,8 @@ void estimate_normals_single_thread(const InPointsType& points, const InViewDirs
                                     OutPointsType& filtered_points, OutNormalsType& filtered_normals,
                                     std::function<std::tuple<bool, Eigen::RowVector3d>(int)> estimator)
 {
-    filtered_points.resize(view_dirs.rows(), 3);
-    filtered_normals.resize(view_dirs.rows(), 3);
+    filtered_points.resize(points.rows(), 3);
+    filtered_normals.resize(points.rows(), 3);
     int num_filtered_points = 0;
     for (int i = 0; i < points.rows(); i++) {
         std::tuple<bool, Eigen::RowVector3d> res = estimator(i);
@@ -338,7 +338,7 @@ npe_begin_code()
     };
 
     // Estimate the normals at every point (possibly in parallel)
-    EigenDenseLike<npe_Matrix_view_dirs> filtered_points;
+    EigenDenseLike<npe_Matrix_points> filtered_points;
     EigenDenseLike<npe_Matrix_view_dirs> filtered_normals;
     estimate_normals(points, view_dirs, filtered_points, filtered_normals, normal_estimator, num_threads);
 
@@ -376,7 +376,7 @@ npe_begin_code()
         return estimate_local_normal_knn(tree, points, view_dirs, pt_index, num_neighbors, drop_angle_threshold);
     };
 
-    EigenDenseLike<npe_Matrix_view_dirs> filtered_points;
+    EigenDenseLike<npe_Matrix_points> filtered_points;
     EigenDenseLike<npe_Matrix_view_dirs> filtered_normals;
     estimate_normals(points, view_dirs, filtered_points, filtered_normals, normal_estimator, num_threads);
 

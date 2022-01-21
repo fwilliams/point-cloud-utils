@@ -390,7 +390,11 @@ class TestDenseBindings(unittest.TestCase):
         v, f, n = pcu.load_mesh_vfn(os.path.join(self.test_path, "cube_twist.obj"))
 
         # Estimate normals for the point set, v using 12 nearest neighbors per point
-        n = pcu.estimate_point_cloud_normals(v, k=12)
+        _, n = pcu.estimate_point_cloud_normals_knn(v, 12)
+        self.assertEqual(n.shape, v.shape)
+
+        # Estimate normals for the point set, v using 12 nearest neighbors per point
+        _, n = pcu.estimate_point_cloud_normals_ball(v, 0.2)
         self.assertEqual(n.shape, v.shape)
 
     def skip_test_morton_coding_big_data(self):
