@@ -1,94 +1,94 @@
-#
-#name: Build and upload to PyPI
-#
-## Build on every branch push, tag push, and pull request change:
-#on: [push, pull_request]
-## Alternatively, to publish when a (published) GitHub Release is created, use the following:
-## on:
-##   push:
-##   pull_request:
-##   release:
-##     types:
-##       - published
-#
-#jobs:
-#  build_wheels:
-#    name: Build wheels on ${{ matrix.os }}
-#    runs-on: ${{ matrix.os }}
-#    strategy:
-#      matrix:
-#        os: [ubuntu-20.04, windows-2019, macos-10.15]
-#
-#    steps:
-#      - uses: actions/checkout@v2
-#
-#      - name: Build wheels
-#        uses: pypa/cibuildwheel@v2.3.1
-#
-#      - uses: actions/upload-artifact@v2
-#        with:
-#          path: ./wheelhouse/*.whl
-#
-#  build_sdist:
-#    name: Build source distribution
-#    runs-on: ubuntu-latest
-#    steps:
-#      - uses: actions/checkout@v2
-#
-#      - name: Build sdist
-#        run: pipx run build --sdist
-#
-#      - uses: actions/upload-artifact@v2
-#        with:
-#          path: dist/*.tar.gz
-#
-#  upload_pypi:
-#    needs: [build_wheels, build_sdist]
-#    runs-on: ubuntu-latest
-#    # upload to PyPI on every tag starting with 'v'
-#    if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/v')
-#    # alternatively, to publish when a GitHub Release is created, use the following rule:
-#    # if: github.event_name == 'release' && github.event.action == 'published'
-#    steps:
-#      - uses: actions/download-artifact@v2
-#        with:
-#          name: artifact
-#          path: dist
-#
-#      - uses: pypa/gh-action-pypi-publish@v1.4.2
-#        with:
-#          user: ${{ secrets.PYPI_USERNAME }}
-#          password: ${{ secrets.PYPI_PASSWORD }}
-#          # To test: repository_url: https://test.pypi.org/legacy/
 
-name: Publish Python 🐍 distributions 📦 to PyPI and TestPyPI
-on: push
+name: Build and upload to PyPI
+
+# Build on every branch push, tag push, and pull request change:
+on: [push, pull_request]
+# Alternatively, to publish when a (published) GitHub Release is created, use the following:
+# on:
+#   push:
+#   pull_request:
+#   release:
+#     types:
+#       - published
+
 jobs:
-  build-n-publish:
-    name: Build and publish Python 🐍 distributions 📦 to PyPI and TestPyPI
+  build_wheels:
+    name: Build wheels on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-20.04, windows-2019, macos-10.15]
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Build wheels
+        uses: pypa/cibuildwheel@v2.3.1
+
+      - uses: actions/upload-artifact@v2
+        with:
+          path: ./wheelhouse/*.whl
+
+  build_sdist:
+    name: Build source distribution
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout main branch
-        uses: actions/checkout@master
+      - uses: actions/checkout@v2
 
-      - name: Set up Python
-        uses: actions/setup-python@v1
+      - name: Build sdist
+        run: pipx run build --sdist
+
+      - uses: actions/upload-artifact@v2
         with:
-          python-version: 3.9
+          path: dist/*.tar.gz
 
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install twine
-
-      - name: Build manylinux wheels
-        uses: RalfG/python-wheels-manylinux-build@v0.4.2
+  upload_pypi:
+    needs: [build_wheels, build_sdist]
+    runs-on: ubuntu-latest
+    # upload to PyPI on every tag starting with 'v'
+    if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/v')
+    # alternatively, to publish when a GitHub Release is created, use the following rule:
+    # if: github.event_name == 'release' && github.event.action == 'published'
+    steps:
+      - uses: actions/download-artifact@v2
         with:
-          python-versions: 'cp36-cp36m cp37-cp37m cp38-cp38 cp39-cp39 cp310-cp310'
+          name: artifact
+          path: dist
 
-      - name: Publish wheels to test PyPI
-        env:
-          TWINE_USERNAME: ${{ secrets.TEST_PYPI_USERNAME }}
-          TWINE_PASSWORD: ${{ secrets.TEST_PYPI_PASSWORD }}
-        run: |
-          twine upload --repository testpypi dist/*-manylinux*.whl
+      - uses: pypa/gh-action-pypi-publish@v1.4.2
+        with:
+          user: ${{ secrets.PYPI_USERNAME }}
+          password: ${{ secrets.PYPI_PASSWORD }}
+          # To test: repository_url: https://test.pypi.org/legacy/
+
+#name: Publish Python 🐍 distributions 📦 to PyPI and TestPyPI
+#on: push
+#jobs:
+#  build-n-publish:
+#    name: Build and publish Python 🐍 distributions 📦 to PyPI and TestPyPI
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Checkout main branch
+#        uses: actions/checkout@master
+#
+#      - name: Set up Python
+#        uses: actions/setup-python@v1
+#        with:
+#          python-version: 3.9
+#
+#      - name: Install dependencies
+#        run: |
+#          python -m pip install --upgrade pip
+#          pip install twine
+#
+#      - name: Build manylinux wheels
+#        uses: RalfG/python-wheels-manylinux-build@v0.4.2
+#        with:
+#          python-versions: 'cp36-cp36m cp37-cp37m cp38-cp38 cp39-cp39 cp310-cp310'
+#
+#      - name: Publish wheels to test PyPI
+#        env:
+#          TWINE_USERNAME: ${{ secrets.TEST_PYPI_USERNAME }}
+#          TWINE_PASSWORD: ${{ secrets.TEST_PYPI_PASSWORD }}
+#        run: |
+#          twine upload --repository testpypi dist/*-manylinux*.whl
