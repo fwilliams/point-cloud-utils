@@ -3,9 +3,22 @@ on: push
 jobs:
   build-n-publish:
     name: Build and publish Python 🐍 distributions 📦 to PyPI and TestPyPI
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
+      - name: Checkout main branch
       - uses: actions/checkout@master
+
+      - name: Set up Python
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.9
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install twine
+
+      - name: Build manylinux wheels
       - uses: RalfG/python-wheels-manylinux-build@v0.4.2
         with:
           python-versions: 'cp36-cp36m cp37-cp37m cp38-cp38m cp39-cp39m cp310-cp310m'
@@ -14,3 +27,10 @@ jobs:
           # pre-build-command: 'sh pre-build-script.sh'
           # package-path: ''
           # pip-wheel-args: '-w ./dist --no-deps'
+
+      - name: Publish wheels to test PyPI
+        env:
+          TWINE_USERNAME: ${{ secrets.TEST_PYPI_USERNAME }}
+          TWINE_PASSWORD: ${{ secrets.TEST_PYPI_PASSWORD }}
+        run: | 
+          twine upload --repository testpypi dist/*-manylinux*.whl
