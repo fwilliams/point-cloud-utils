@@ -5,6 +5,7 @@ jobs:
     name: Build and publish Python 🐍 distributions 📦 to PyPI and TestPyPI
     runs-on: ubuntu-20.04
     steps:
+      - uses: actions/checkout@master
       - uses: RalfG/python-wheels-manylinux-build@v0.4.2
         with:
           python-versions: 'cp36-cp36m cp37-cp37m cp38-cp38m cp39-cp39m cp310-cp310m'
