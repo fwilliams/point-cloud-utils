@@ -6,7 +6,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout main branch
-      - uses: actions/checkout@master
+        uses: actions/checkout@master
 
       - name: Set up Python
         uses: actions/setup-python@v1
@@ -19,7 +19,7 @@ jobs:
           pip install twine
 
       - name: Build manylinux wheels
-      - uses: RalfG/python-wheels-manylinux-build@v0.4.2
+        uses: RalfG/python-wheels-manylinux-build@v0.4.2
         with:
           python-versions: 'cp38-cp38m'
 
