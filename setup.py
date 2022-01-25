@@ -58,7 +58,7 @@ class CMakeBuild(build_ext):
                     print("64 bit!")
                 else:
                     print("32 bit!")
-                    cmake_args += ['-A', 'x32']
+                    cmake_args += ['-A', 'Win32']
                 build_args += ['--', '/m']
         else:
             cmake_args += ['-DCMAKE_BUILD_TYPE=' + cfg]
