@@ -55,6 +55,10 @@ class CMakeBuild(build_ext):
             if os.environ.get('CMAKE_GENERATOR') != "NMake Makefiles":
                 if sys.maxsize > 2 ** 32 and not ext.exclude_arch:
                     cmake_args += ['-A', 'x64']
+                    print("64 bit!")
+                else:
+                    print("32 bit!")
+                    cmake_args += ['-A', 'x32']
                 build_args += ['--', '/m']
         else:
             cmake_args += ['-DCMAKE_BUILD_TYPE=' + cfg]
