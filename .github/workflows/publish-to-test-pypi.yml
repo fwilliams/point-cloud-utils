@@ -22,10 +22,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Update pip
-        run: |
-          python -m pip install --upgrade pip
-
       - name: Build wheels
         env:
           # Skip 32-bit builds and pypy
