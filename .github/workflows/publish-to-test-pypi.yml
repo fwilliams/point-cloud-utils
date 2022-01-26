@@ -25,8 +25,8 @@ jobs:
       - name: Build wheels
         env:
           # Skip 32-bit builds and pypy
-          CIBW_SKIP: "*-win32 *-manylinux_i686 pp*"
-          CIBW_BEFORE_BUILD_LINUX: yum install gcc-gfortran lapack-devel blas-devel
+          CIBW_SKIP: "*-win32 *-manylinux_i686"
+          CIBW_BEFORE_BUILD_LINUX: yum -y install gcc-gfortran lapack-devel blas-devel
         uses: pypa/cibuildwheel@v2.3.1
 
       - uses: actions/upload-artifact@v2
