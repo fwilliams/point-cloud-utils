@@ -61,8 +61,8 @@ jobs:
 
       - uses: pypa/gh-action-pypi-publish@v1.4.2
         with:
-          user: ${{ secrets.PYPI_USERNAME }}
-          password: ${{ secrets.PYPI_PASSWORD }}
+          user: __token__
+          password: ${{ secrets.PYPI_API_TOKEN }}
           # To test: repository_url: https://test.pypi.org/legacy/
 
 #name: Publish Python 🐍 distributions 📦 to PyPI and TestPyPI
