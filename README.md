@@ -1,4 +1,4 @@
-# Point Cloud Utils (pcu) - A Python library for common tasks on 3D point clouds
+# Python Point Cloud Utils (pypcu) - A Python library for common tasks on 3D point clouds
 
 [![Build Status](https://travis-ci.com/fwilliams/point-cloud-utils.svg?branch=master)](https://travis-ci.com/fwilliams/point-cloud-utils)
 [![Build status](https://ci.appveyor.com/api/projects/status/ujv44lqbeosgl9ij/branch/master?svg=true)](https://ci.appveyor.com/project/fwilliams/point-cloud-utils/branch/master)
