@@ -87,19 +87,18 @@ def main():
         sys.argv.remove('--exclude-arch')
 
     setuptools.setup(
-        name="point-cloud-utils",
+        name="pypcu",
         version="0.21.3",
         author="Francis Williams",
         author_email="francis@fwilliams.info",
         description="A Python Library of utilities for point clouds",
         long_description=long_description,
         long_description_content_type="text/markdown",
-        url="https://github.com/fwilliams/py-sample-mesh",
+        url="https://github.com/fwilliams/point-cloud-utils",
         packages=setuptools.find_packages(exclude=["tests"]),
         classifiers=[
             "Programming Language :: C++",
             "Programming Language :: Python :: 3",
-            "Programming Language :: Python :: 2.7",
             "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
         ],
         ext_modules=[CMakeExtension('point_cloud_utils', cmake_args=cmake_args, exclude_arch=exclude_arch)],
