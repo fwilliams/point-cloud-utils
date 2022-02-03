@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.com/fwilliams/point-cloud-utils.svg?branch=master)](https://travis-ci.com/fwilliams/point-cloud-utils)
 [![Build status](https://ci.appveyor.com/api/projects/status/ujv44lqbeosgl9ij/branch/master?svg=true)](https://ci.appveyor.com/project/fwilliams/point-cloud-utils/branch/master)
 
-**Point Cloud Utils (pcu)** is a utility library providing the following functionality. See the [Examples section](#Examples) for documentation on how to use these:
+**Python Point Cloud Utils (pypcu)** is a utility library providing the following functionality. See the [Examples section](#Examples) for documentation on how to use these:
  - Utility functions for reading and writing many common mesh formats (PLY, STL, OFF, OBJ, 3DS, VRML 2.0, X3D, COLLADA).
    If it can be imported into MeshLab, we can read it!
  - A series of algorithms for generating point samples on meshes:
@@ -26,13 +26,18 @@
  - Making a mesh watertight (based on the [Watertight Manifold](https://github.com/hjwdzh/Manifold) algorithm)
 ![Example of Poisson Disk Sampling](/img/blue_noise.png?raw=true "Example of Poisson Disk Sampling")
 
-# Installation Instructions
-### With `conda`
+# Installation
+<!-- ### With `conda`
 Simply run:
 ```
 conda install -c conda-forge point_cloud_utils
+``` -->
+
+```
+pip install pypcu
 ```
 
+<!--
 ### With `pip`
 ```
 pip install git+git://github.com/fwilliams/point-cloud-utils
@@ -40,6 +45,7 @@ pip install git+git://github.com/fwilliams/point-cloud-utils
 The following dependencies are required to install with `pip`:
 * A C++ compiler supporting C++14 or later
 * git
+-->
 
 # Examples
 
