@@ -198,91 +198,119 @@ std::tuple<bool, Eigen::RowVector3d> estimate_local_normal_knn(const KdTreeType&
     return std::make_tuple(true, normal);
 }
 
-template <typename InPointsType, typename InViewDirsType, typename OutPointsType, typename OutNormalsType>
+template <typename InPointsType, typename InViewDirsType, typename OutIndexType, typename OutNormalsType>
 void estimate_normals_parallel(const InPointsType& points, const InViewDirsType& view_dirs,
-                               OutPointsType& filtered_points, OutNormalsType& filtered_normals,
+                               OutIndexType& filtered_indices, OutNormalsType& filtered_normals,
                                std::function<std::tuple<bool, Eigen::RowVector3d>(int)> estimator, int num_threads)
 {
 
-    #if defined(_OPENMP)
-    if (num_threads < 0) {
-        const auto processor_count = std::thread::hardware_concurrency();
-        omp_set_num_threads(processor_count / 2);
-        // std::cout << "PROCESSOR COUNT " << processor_count << std::endl;
-    } else {
-        omp_set_num_threads(num_threads);
-    }
-    // std::cout << "OPENMP NUMBER OF THREADS: " << omp_get_num_threads() << " / " << omp_get_max_threads() << std::endl;
-    #endif
+    auto set_parallel = OmpSetParallelism(num_threads);
 
-    std::vector<bool> mask(points.rows());
-    std::vector<Eigen::RowVector3d> estimated_normals(points.rows());
-
-    #if defined(_OPENMP)
-    #pragma omp parallel for
-    #endif
-    for (int i = 0; i < points.rows(); i++) {
-        std::tuple<bool, Eigen::RowVector3d> res = estimator(i);
-        mask[i] = std::get<0>(res);
-        estimated_normals[i] = std::get<1>(res);
-    }
-
-    filtered_points.resize(points.rows(), 3);
+    filtered_indices.resize(points.rows(), 1);
     filtered_normals.resize(points.rows(), 3);
-    int num_filtered_points = 0;
-    for (int i = 0; i < points.rows(); i++) {
-        if (mask[i]) {
-            const Eigen::RowVector3d n_i = estimated_normals[i];
-            for (int j = 0; j < 3; j++) {
-                filtered_normals(num_filtered_points, j) = n_i[j];
-                filtered_points(num_filtered_points, j) = points(i, j);
+    int num_inserted = 0;
+
+    bool threw_exception = false;
+
+    #if defined(_OPENMP)
+    #pragma omp parallel
+    #endif
+    {
+        using index_t = typename OutIndexType::Scalar;
+        std::vector<index_t> selected_indices;
+        std::vector<Eigen::RowVector3d> estimated_normals;
+
+        #if defined(_OPENMP)
+        #pragma omp for nowait
+        #endif
+        for (int i = 0; i < points.rows(); i++) {
+            if (PyErr_CheckSignals() != 0) {
+                #if defined(_OPENMP)
+                    if (threw_exception) {
+                        continue;
+                    }
+                    #pragma omp critical
+                    {
+                        threw_exception = true;
+                    }
+                    // This doesn't work on Windows :(
+                    //#pragma omp cancel for
+                #else
+                    threw_exception = true;
+                    break;
+                #endif
             }
-            num_filtered_points += 1;
+
+            std::tuple<bool, Eigen::RowVector3d> res = estimator(i);
+            if (std::get<0>(res)) {
+                selected_indices.push_back(i);
+                estimated_normals.push_back(std::get<1>(res));
+            }
+        }
+
+        #if defined(_OPENMP)
+        #pragma omp critical
+        #endif
+        {
+            if (!threw_exception) {
+                for (int i = 0; i < selected_indices.size(); i++) {
+                    filtered_indices(num_inserted, 0) = selected_indices[i];
+                    for (int j = 0; j < 3; j++) {
+                        filtered_normals(num_inserted, j) = estimated_normals[i][j];
+                    }
+                    num_inserted += 1;
+                }
+            }
         }
     }
-    filtered_points.conservativeResize(num_filtered_points, 3);
-    filtered_normals.conservativeResize(num_filtered_points, 3);
+
+    if (threw_exception) {
+        throw pybind11::error_already_set();
+    }
+    filtered_indices.conservativeResize(num_inserted, 1);
+    filtered_normals.conservativeResize(num_inserted, 3);
 }
 
-template <typename InPointsType, typename InViewDirsType, typename OutPointsType, typename OutNormalsType>
+template <typename InPointsType, typename InViewDirsType, typename OutIndexType, typename OutNormalsType>
 void estimate_normals_single_thread(const InPointsType& points, const InViewDirsType& view_dirs,
-                                    OutPointsType& filtered_points, OutNormalsType& filtered_normals,
+                                    OutIndexType& filtered_indices, OutNormalsType& filtered_normals,
                                     std::function<std::tuple<bool, Eigen::RowVector3d>(int)> estimator)
 {
-    filtered_points.resize(points.rows(), 3);
+    filtered_indices.resize(points.rows(), 1);
     filtered_normals.resize(points.rows(), 3);
     int num_filtered_points = 0;
     for (int i = 0; i < points.rows(); i++) {
+        if (PyErr_CheckSignals() != 0) { throw pybind11::error_already_set(); }
         std::tuple<bool, Eigen::RowVector3d> res = estimator(i);
         if (std::get<0>(res)) {
             Eigen::RowVector3d normal = std::get<1>(res);
+            filtered_indices(num_filtered_points, 0) = i;
             for (int j = 0; j < 3; j++) {
                 filtered_normals(num_filtered_points, j) = normal[j];
-                filtered_points(num_filtered_points, j) = points(i, j);
             }
             num_filtered_points += 1;
         }
     }
 
-    filtered_points.conservativeResize(num_filtered_points, 3);
+    filtered_indices.conservativeResize(num_filtered_points, 1);
     filtered_normals.conservativeResize(num_filtered_points, 3);
 }
 
 
-template <typename InPointsType, typename InViewDirsType, typename OutPointsType, typename OutNormalsType>
+template <typename InPointsType, typename InViewDirsType, typename OutIndexType, typename OutNormalsType>
 void estimate_normals(const InPointsType& points, const InViewDirsType& view_dirs,
-                      OutPointsType& filtered_points, OutNormalsType& filtered_normals,
+                      OutIndexType& filtered_indices, OutNormalsType& filtered_normals,
                       std::function<std::tuple<bool, Eigen::RowVector3d>(int)> estimator, int num_threads)
 {
     #ifdef _OPENMP
     const int MIN_PARALLEL_INPUT_SIZE = 1000000;
     if (num_threads != 0 && num_threads != 1 && points.rows() > MIN_PARALLEL_INPUT_SIZE) {
-        estimate_normals_parallel(points, view_dirs, filtered_points, filtered_normals, estimator, num_threads);
+        estimate_normals_parallel(points, view_dirs, filtered_indices, filtered_normals, estimator, num_threads);
     } else {
-        estimate_normals_single_thread(points, view_dirs, filtered_points, filtered_normals, estimator);
+        estimate_normals_single_thread(points, view_dirs, filtered_indices, filtered_normals, estimator);
     }
     #else
-        estimate_normals_single_thread(points, view_dirs, filtered_points, filtered_normals, estimator);
+        estimate_normals_single_thread(points, view_dirs, filtered_indices, filtered_normals, estimator);
     #endif
 }
 } // namespace
@@ -338,11 +366,11 @@ npe_begin_code()
     };
 
     // Estimate the normals at every point (possibly in parallel)
-    EigenDenseLike<npe_Matrix_points> filtered_points;
+    Eigen::Matrix<long, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> filtered_indices;
     EigenDenseLike<npe_Matrix_view_dirs> filtered_normals;
-    estimate_normals(points, view_dirs, filtered_points, filtered_normals, normal_estimator, num_threads);
+    estimate_normals(points, view_dirs, filtered_indices, filtered_normals, normal_estimator, num_threads);
 
-    return std::make_tuple(npe::move(filtered_points), npe::move(filtered_normals));
+    return std::make_tuple(npe::move(filtered_indices), npe::move(filtered_normals));
 }
 npe_end_code()
 
@@ -376,11 +404,11 @@ npe_begin_code()
         return estimate_local_normal_knn(tree, points, view_dirs, pt_index, num_neighbors, drop_angle_threshold);
     };
 
-    EigenDenseLike<npe_Matrix_points> filtered_points;
+    Eigen::Matrix<long, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> filtered_indices;
     EigenDenseLike<npe_Matrix_view_dirs> filtered_normals;
-    estimate_normals(points, view_dirs, filtered_points, filtered_normals, normal_estimator, num_threads);
+    estimate_normals(points, view_dirs, filtered_indices, filtered_normals, normal_estimator, num_threads);
 
     // Estimate the normals at every point (possibly in parallel)
-    return std::make_tuple(npe::move(filtered_points), npe::move(filtered_normals));
+    return std::make_tuple(npe::move(filtered_indices), npe::move(filtered_normals));
 }
 npe_end_code()

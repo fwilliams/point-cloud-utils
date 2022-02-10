@@ -59,9 +59,15 @@ void shortest_distances_nanoflann(Source& query_mat,
         for(int i = 0; i < query_mat.rows(); ++i) {
             if (PyErr_CheckSignals() != 0) {
                 #if defined(_OPENMP)
+                    if (threw_exception) {
+                        continue;
+                    }
                     #pragma omp critical
-                    threw_exception = true;
-                    #pragma omp cancel for
+                    {
+                        threw_exception = true;
+                    }
+                    // This doesn't work on Windows :(
+                    //#pragma omp cancel for
                 #else
                     threw_exception = true;
                     break;
