@@ -1001,6 +1001,7 @@ class KDTreeBaseClass
     NodePtr divideTree(
         Derived& obj, const Offset left, const Offset right, BoundingBox& bbox)
     {
+        if (PyErr_CheckSignals() != 0) { throw pybind11::error_already_set(); }
         NodePtr node = obj.pool.template allocate<Node>();  // allocate memory
 
         /* If too few exemplars remain, then make this a leaf node. */

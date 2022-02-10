@@ -1,4 +1,10 @@
+#include <pybind11/pybind11.h>
 #include <Eigen/Core>
+
+#if defined(_OPENMP)
+#include <thread>
+#include <omp.h>
+#endif
 
 #ifndef COMMON_H
 #define COMMON_H
@@ -117,5 +123,38 @@ void validate_mesh(const TV& v, const TF& f, const TN& n) {
       throw pybind11::value_error(ss.str());
   }
 }
+
+
+class OmpSetParallelism {
+private:
+    int old_num_threads;
+    bool is_nop;
+public:
+    OmpSetParallelism(int num_threads, bool use_parallel=true) {
+        #if defined(_OPENMP)
+        is_nop = !use_parallel;
+        if (is_nop) {
+            return;
+        }
+        old_num_threads = omp_get_num_threads();
+        if (num_threads < 0) {  // Use all processors if you pass in -1 for number of threads
+            const auto processor_count = std::thread::hardware_concurrency();
+            omp_set_num_threads(processor_count);
+            // std::cout << "PROCESSOR COUNT " << processor_count << std::endl;
+        } else { // Otherwise, set the number of threads explicitly
+            omp_set_num_threads(num_threads);
+        }
+        #endif
+    }
+
+    ~OmpSetParallelism() {
+        #if defined(_OPENMP)
+        if (is_nop) {
+            return;
+        }
+        omp_set_num_threads(old_num_threads);
+        #endif
+    }
+};
 
 #endif // COMMON_H
