@@ -114,7 +114,7 @@ k      : the number of nearest neighbors to query per point.
 squared_distances : If set to True, then return squared L2 distances. Default is False.
 max_points_per_leaf : The maximum number of points per leaf node in the KD tree used by this function.
                       Default is 10.
-num_threads : Number of threads to use. If set to -1, will use all available CPUs. If set to 0, will run in serial. Default is -1
+num_threads : Number of threads to use. If set to -1, will use all available CPUs. If set to 0, will run in serial. Default is -1.
 
 Returns
 -------

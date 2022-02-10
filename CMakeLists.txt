@@ -138,6 +138,7 @@ npe_add_module(_pcu_internal
   ${CMAKE_CURRENT_SOURCE_DIR}/src/smooth.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/manifold.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/curvature.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/marching_cubes.cpp
   EXTRA_MODULE_FUNCTIONS
   hack_extra_bindings
   )
