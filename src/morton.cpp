@@ -316,6 +316,7 @@ an [n, 3] shaped array of 3D points
 npe_function(morton_decode)
 npe_arg(codes, dense_uint, dense_ulong, dense_ulonglong)
 npe_doc(morton_decode)
+npe_default_arg(num_threads, int, -1)
 npe_begin_code()
 {
     if (codes.rows() <= 0) {
@@ -324,6 +325,10 @@ npe_begin_code()
     if (codes.cols() != 1) {
         throw pybind11::value_error("pts must be an array of shape [n] but got an invalid number of columns");
     }
+
+    const int MIN_PARALLEL_INPUT_SIZE = 10000;
+    const bool run_parallel = codes.rows() >= MIN_PARALLEL_INPUT_SIZE && num_threads != 0;
+    auto set_parallel = OmpSetParallelism(num_threads, run_parallel);
 
     Eigen::Matrix<int32_t, Eigen::Dynamic, 3, Eigen::RowMajor> pts(codes.rows(), 3);
 
