@@ -238,7 +238,7 @@ Parameters
 ----------
 pts: an [n, 3] array of 3D points
 sort: (optional, default to false) sort the points
-
+num_threads : Number of threads to use. If set to -1, will use all available CPUs. If set to 0, will run in serial. Default is -1.
 Returns
 -------
 an [n] shaped array of morton encoded points
@@ -247,7 +247,7 @@ an [n] shaped array of morton encoded points
 npe_function(morton_encode)
 npe_arg(pts, dense_int, dense_long, dense_longlong)
 npe_default_arg(sort, bool, false)
-npe_default_arg(parallel, bool, true)
+npe_default_arg(num_threads, int, -1)
 npe_doc(morton_encode)
 npe_begin_code()
 {
@@ -260,19 +260,41 @@ npe_begin_code()
 
     Eigen::Matrix<uint64_t, Eigen::Dynamic, 1> codes(pts.rows(), 1);
 
-    if (parallel) {
-        #pragma omp parallel for
+    const int MIN_PARALLEL_INPUT_SIZE = 10000;
+    const bool run_parallel = pts.rows() >= MIN_PARALLEL_INPUT_SIZE && num_threads != 0;
+    auto set_parallel = OmpSetParallelism(num_threads, run_parallel);
+
+    bool threw_exception = false;
+    #if defined(_OPENMP)
+    #pragma omp parallel if (run_parallel)
+    #endif
+    {
+        #if defined(_OPENMP)
+        #pragma omp for
+        #endif
         for(int i = 0; i < pts.rows(); i += 1) {
+            if (PyErr_CheckSignals() != 0) {
+                #if defined(_OPENMP)
+                    if (threw_exception) {
+                        continue;
+                    }
+                    #pragma omp critical
+                    {
+                        threw_exception = true;
+                    }
+                #else
+                    threw_exception = true;
+                    break;
+                #endif
+            }
+
             int32_t px = pts(i, 0), py = pts(i, 1), pz = pts(i, 2);
             MortonCode64 code(px, py, pz);
             codes[i] = code.get_data();
         }
-    } else {
-        for(int i = 0; i < pts.rows(); i += 1) {
-            int32_t px = pts(i, 0), py = pts(i, 1), pz = pts(i, 2);
-            MortonCode64 code(px, py, pz);
-            codes[i] = code.get_data();
-        }
+    }
+    if (threw_exception) {
+        throw pybind11::error_already_set();
     }
 
     if (sort) {
@@ -310,15 +332,39 @@ npe_begin_code()
 
     Eigen::Matrix<int32_t, Eigen::Dynamic, 3, Eigen::RowMajor> pts(codes.rows(), 3);
 
-#pragma omp parallel for
-    for(int i = 0; i < codes.rows(); i += 1) {
-        int32_t px, py, pz;
-        MortonCode64(codes(i, 0)).decode(px, py, pz);
-        pts(i, 0) = px;
-        pts(i, 1) = py;
-        pts(i, 2) = pz;
+    bool threw_exception = false;
+    #if defined(_OPENMP)
+    #pragma omp parallel if (run_parallel)
+    #endif
+    {
+        #if defined(_OPENMP)
+        #pragma omp for
+        #endif
+        for(int i = 0; i < codes.rows(); i += 1) {
+            if (PyErr_CheckSignals() != 0) {
+                #if defined(_OPENMP)
+                    if (threw_exception) {
+                        continue;
+                    }
+                    #pragma omp critical
+                    {
+                        threw_exception = true;
+                    }
+                #else
+                    threw_exception = true;
+                    break;
+                #endif
+            }
+            int32_t px, py, pz;
+            MortonCode64(codes(i, 0)).decode(px, py, pz);
+            pts(i, 0) = px;
+            pts(i, 1) = py;
+            pts(i, 2) = pz;
+        }
     }
-
+    if (threw_exception) {
+        throw pybind11::error_already_set();
+    }
     return npe::move(pts);
 }
 npe_end_code()
@@ -369,6 +415,9 @@ npe_begin_code()
 
     //#pragma omp parallel for
     for(int i = 0; i < qcodes.rows(); i += 1) {
+        if (PyErr_CheckSignals() != 0) {
+            throw pybind11::error_already_set();
+        }
         npe_Scalar_codes* code_ptr = std::lower_bound(codes.data(), codes.data() + codes.rows(), qcodes(i, 0));
         std::ptrdiff_t idx = code_ptr - codes.data();
 
