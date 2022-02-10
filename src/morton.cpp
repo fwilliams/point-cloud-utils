@@ -237,7 +237,6 @@ Encode n 3D points using Morton coding, possibly sorting them
 Parameters
 ----------
 pts: an [n, 3] array of 3D points
-sort: (optional, default to false) sort the points
 num_threads : Number of threads to use. If set to -1, will use all available CPUs. If set to 0, will run in serial. Default is -1.
 Returns
 -------
@@ -246,7 +245,6 @@ an [n] shaped array of morton encoded points
 )Qu8mg5v7";
 npe_function(morton_encode)
 npe_arg(pts, dense_int, dense_long, dense_longlong)
-npe_default_arg(sort, bool, false)
 npe_default_arg(num_threads, int, -1)
 npe_doc(morton_encode)
 npe_begin_code()
@@ -297,9 +295,6 @@ npe_begin_code()
         throw pybind11::error_already_set();
     }
 
-    if (sort) {
-        std::sort(codes.data(), codes.data() + codes.rows());
-    }
     return npe::move(codes);
 }
 npe_end_code()
