@@ -3,7 +3,7 @@
 #include <tuple>
 #include <numeric>
 
-#include "common.h"
+#include "common/common.h"
 
 
 const char* ray_mesh_intersection_doc = R"Qu8mg5v7(

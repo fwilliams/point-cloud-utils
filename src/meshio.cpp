@@ -15,7 +15,7 @@
 #include <npe_typedefs.h>
 #include <pybind11/stl.h>
 
-#include "common.h"
+#include "common/common.h"
 
 namespace {
 

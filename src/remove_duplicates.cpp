@@ -2,7 +2,7 @@
 
 #include <igl/remove_duplicate_vertices.h>
 
-#include "common.h"
+#include "common/common.h"
 
 const char* remove_duplicate_points_doc = R"igl_Qu8mg5v7(
 Removes duplicated points from a point cloud where two points are considered the same if their distance is below

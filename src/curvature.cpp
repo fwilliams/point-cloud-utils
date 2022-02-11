@@ -3,9 +3,9 @@
 #include <vcg/complex/algorithms/update/curvature.h>
 #include <string>
 
-#include "vcg_utils.h"
+#include "common/vcg_utils.h"
 //#include "mls_utils/apss.h"
-#include "common.h"
+#include "common/common.h"
 
 
 namespace {

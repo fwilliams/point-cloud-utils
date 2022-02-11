@@ -3,7 +3,7 @@
 //
 #include <npe.h>
 #include <npe_typedefs.h>
-#include "common.h"
+#include "common/common.h"
 #include <vector>
 #include <tuple>
 

@@ -2,7 +2,7 @@
 #include <igl/signed_distance.h>
 #include <numeric>
 
-#include "common.h"
+#include "common/common.h"
 
 const char* signed_distance_doc = R"igl_Qu8mg5v7(
 Computes signed distances of a point cloud with respect to a Mesh using Fast Winding Numbers

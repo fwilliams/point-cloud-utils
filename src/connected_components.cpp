@@ -3,7 +3,7 @@
 #include <igl/connected_components.h>
 #include <numeric>
 
-#include "common.h"
+#include "common/common.h"
 
 const char* connected_components_doc = R"igl_Qu8mg5v7(
 Determine the connected components of a mesh

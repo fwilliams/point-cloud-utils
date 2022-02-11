@@ -12,7 +12,7 @@
 #endif
 
 #include "nanoflann.hpp"
-#include "common.h"
+#include "common/common.h"
 
 
 namespace {

@@ -3,7 +3,7 @@
 #include <igl/point_mesh_squared_distance.h>
 #include <igl/barycentric_coordinates.h>
 
-#include "common.h"
+#include "common/common.h"
 
 
 const char* closest_points_on_mesh_doc = R"Qu8mg5v7(

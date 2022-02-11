@@ -4,8 +4,8 @@
 #include <igl/per_vertex_normals.h>
 #include <string>
 
-#include "vcg_utils.h"
-#include "common.h"
+#include "common/vcg_utils.h"
+#include "common/common.h"
 
 
 namespace {

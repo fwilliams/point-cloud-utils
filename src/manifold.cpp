@@ -1,7 +1,7 @@
 #include <npe.h>
 #include "Model_OBJ.h"
 #include "glm/glm.hpp"
-#include "common.h"
+#include "common/common.h"
 
 
 const char* make_mesh_watertight_doc = R"igl_Qu8mg5v7(

@@ -4,7 +4,7 @@
 #include <igl/per_vertex_normals.h>
 #include <string>
 
-#include "common.h"
+#include "common/common.h"
 
 
 //#include "vcg_utils.h"

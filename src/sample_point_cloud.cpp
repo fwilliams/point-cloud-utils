@@ -7,8 +7,8 @@
 #include <iostream>
 #include <functional>
 
-#include "common.h"
-#include "vcg_utils.h"
+#include "common/common.h"
+#include "common/vcg_utils.h"
 
 
 namespace {

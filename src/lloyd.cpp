@@ -24,8 +24,8 @@
 #include <npe.h>
 #include <pybind11/stl.h>
 
-#include "common.h"
-#include "geogram_utils.h"
+#include "common/common.h"
+#include "common/geogram_utils.h"
 
 
 namespace {

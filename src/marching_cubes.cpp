@@ -3,7 +3,42 @@
 #include <tuple>
 #include <numeric>
 
-#include "common.h"
+#include "common/common.h"
+
+//npe_function(subdivide_sparse_voxel_grid)
+//npe_arg(grid_coordinates, dense_int, dense_long_dense_longlong)
+//npe_arg(cube_indices, dense_int, dense_long, dense_longlong)
+//npe_arg(num_subdivs, int)
+//npe_begin_code()
+//{
+//
+//    if (cube_indices.rows() <= 0) {
+//        throw pybind11::value_error("Invalid cube_indices has zero rows!");
+//    }
+//    if (cube_vertices.rows() <= 0) {
+//        throw pybind11::value_error("Invalid cube_vertices has zero rows!");
+//    }
+//    if(cube_vertices.rows() <= 0 || cube_vertices.cols() != 3) {
+//        throw pybind11::value_error(std::string("Invalid shape for cube_vertices must have shape (N, 3) but got (") +
+//                                    std::to_string(grid_vertices.rows()) + ", " +
+//                                    std::to_string(grid_vertices.cols()) + ")");
+//    }
+//
+//    using index_t = npe_Scalar_cube_indices;
+//    for (int c_i = 0; c_i < cube_indices.rows(); c_i++) {
+//        index_t c000 = cube_indices(c_i, 0),
+//                c100 = cube_indices(c_i, 1),
+//                c110 = cube_indices(c_i, 2),
+//                c010 = cube_indices(c_i, 3),
+//                c001 = cube_indices(c_i, 4),
+//                c101 = cube_indices(c_i, 5),
+//                c111 = cube_indices(c_i, 6),
+//                c011 = cube_indices(c_i, 7);
+//
+//    }
+//}
+//npe_end_code()
+
 
 npe_function(sparse_marching_cubes)
 npe_arg(grid_vertices, dense_float, dense_double)

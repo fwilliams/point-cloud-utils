@@ -5,7 +5,7 @@
 
 #include <npe.h>
 
-#include "common.h"
+#include "common/common.h"
 
 namespace {
 //Represents a three-dimensional 64-bit Morton Code.
