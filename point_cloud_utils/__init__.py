@@ -6,7 +6,7 @@ from ._pcu_internal import sample_mesh_poisson_disk, sample_mesh_random, \
     deduplicate_point_cloud, deduplicate_mesh_vertices, signed_distance_to_mesh, \
     closest_points_on_mesh, connected_components, ray_mesh_intersection, laplacian_smooth_mesh, \
     make_mesh_watertight, mesh_principal_curvatures, mesh_mean_and_gaussian_curvatures, \
-    sparse_marching_cubes
+    sparse_marching_cubes, morton_add, morton_subtract
 
 from ._sinkhorn import *
 from ._mesh_io import *

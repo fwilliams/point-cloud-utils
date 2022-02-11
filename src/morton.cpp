@@ -11,6 +11,168 @@
 
 
 
+const char* morton_add = R"Qu8mg5v7(
+Add morton codes together (corresponding to adding the vectors they encode)
+
+Parameters
+----------
+codes_1: an [n,] array of morton codes
+codes_2 : an [n,] array of morton codes
+num_threads : Number of threads to use. If set to -1, will use all available CPUs. If set to 0, will run in serial. Default is -1.
+Returns
+-------
+an [n,] shaped array of added morton codes
+
+)Qu8mg5v7";
+npe_function(morton_add)
+npe_arg(codes_1, dense_ulonglong)
+npe_arg(codes_2, dense_ulonglong)
+npe_default_arg(num_threads, int, -1)
+npe_doc(morton_add)
+npe_begin_code()
+{
+    if (codes_1.rows() <= 0) {
+        throw pybind11::value_error("codes_1 must be an array of shape [n,] but got an empty array");
+    }
+    if (codes_1.cols() != 1) {
+        throw pybind11::value_error("codes_1 must be an array of shape [n,] but got an invalid number of columns");
+    }
+    if (codes_2.rows() <= 0) {
+        throw pybind11::value_error("codes_2 must be an array of shape [n,] but got an empty array");
+    }
+    if (codes_2.cols() != 1) {
+        throw pybind11::value_error("codes_2 must be an array of shape [n,] but got an invalid number of columns");
+    }
+    if (codes_1.rows() != codes_1.rows()) {
+        throw pybind11::value_error("codes_1 and codes_2  must have the same number of entries.");
+    }
+
+
+    Eigen::Matrix<uint64_t, Eigen::Dynamic, 1> codes(codes_1.rows(), 1);
+
+    const int MIN_PARALLEL_INPUT_SIZE = 10000;
+    const bool run_parallel = codes_1.rows() >= MIN_PARALLEL_INPUT_SIZE && num_threads != 0;
+    auto set_parallel = OmpSetParallelism(num_threads, run_parallel);
+
+    bool threw_exception = false;
+    #if defined(_OPENMP)
+    #pragma omp parallel if (run_parallel)
+    #endif
+    {
+        #if defined(_OPENMP)
+        #pragma omp for
+        #endif
+        for(int i = 0; i < codes_1.rows(); i += 1) {
+            if (PyErr_CheckSignals() != 0) {
+                #if defined(_OPENMP)
+                    if (threw_exception) {
+                        continue;
+                    }
+                    #pragma omp critical
+                    {
+                        threw_exception = true;
+                    }
+                #else
+                    threw_exception = true;
+                    break;
+                #endif
+            }
+
+            MortonCode64 c1 = MortonCode64(codes_1(i, 0));
+            MortonCode64 c2 = MortonCode64(codes_2(i, 0));
+            codes(i, 0) = (c1 + c2).get_data();
+        }
+    }
+    if (threw_exception) {
+        throw pybind11::error_already_set();
+    }
+
+    return npe::move(codes);
+}
+npe_end_code()
+
+
+const char* morton_subtract = R"Qu8mg5v7(
+Subtract morton codes from each other (corresponding to adding the vectors they encode)
+
+Parameters
+----------
+codes_1: an [n,] array of morton codes
+codes_2 : an [n,] array of morton codes
+num_threads : Number of threads to use. If set to -1, will use all available CPUs. If set to 0, will run in serial. Default is -1.
+Returns
+-------
+an [n,] shaped array of added morton codes
+
+)Qu8mg5v7";
+npe_function(morton_subtract)
+npe_arg(codes_1, dense_ulonglong)
+npe_arg(codes_2, dense_ulonglong)
+npe_default_arg(num_threads, int, -1)
+npe_doc(morton_subtract)
+npe_begin_code()
+{
+    if (codes_1.rows() <= 0) {
+        throw pybind11::value_error("codes_1 must be an array of shape [n,] but got an empty array");
+    }
+    if (codes_1.cols() != 1) {
+        throw pybind11::value_error("codes_1 must be an array of shape [n,] but got an invalid number of columns");
+    }
+    if (codes_2.rows() <= 0) {
+        throw pybind11::value_error("codes_2 must be an array of shape [n,] but got an empty array");
+    }
+    if (codes_2.cols() != 1) {
+        throw pybind11::value_error("codes_2 must be an array of shape [n,] but got an invalid number of columns");
+    }
+    if (codes_1.rows() != codes_1.rows()) {
+        throw pybind11::value_error("codes_1 and codes_2  must have the same number of entries.");
+    }
+
+
+    Eigen::Matrix<uint64_t, Eigen::Dynamic, 1> codes(codes_1.rows(), 1);
+
+    const int MIN_PARALLEL_INPUT_SIZE = 10000;
+    const bool run_parallel = codes_1.rows() >= MIN_PARALLEL_INPUT_SIZE && num_threads != 0;
+    auto set_parallel = OmpSetParallelism(num_threads, run_parallel);
+
+    bool threw_exception = false;
+    #if defined(_OPENMP)
+    #pragma omp parallel if (run_parallel)
+    #endif
+    {
+        #if defined(_OPENMP)
+        #pragma omp for
+        #endif
+        for(int i = 0; i < codes_1.rows(); i += 1) {
+            if (PyErr_CheckSignals() != 0) {
+                #if defined(_OPENMP)
+                    if (threw_exception) {
+                        continue;
+                    }
+                    #pragma omp critical
+                    {
+                        threw_exception = true;
+                    }
+                #else
+                    threw_exception = true;
+                    break;
+                #endif
+            }
+
+            MortonCode64 c1 = MortonCode64(codes_1(i, 0));
+            MortonCode64 c2 = MortonCode64(codes_2(i, 0));
+            codes(i, 0) = (c1 - c2).get_data();
+        }
+    }
+    if (threw_exception) {
+        throw pybind11::error_already_set();
+    }
+
+    return npe::move(codes);
+}
+npe_end_code()
+
+
 const char* morton_encode = R"Qu8mg5v7(
 Encode n 3D points using Morton coding, possibly sorting them
 
