@@ -142,6 +142,9 @@ npe_add_module(_pcu_internal
   EXTRA_MODULE_FUNCTIONS
   hack_extra_bindings
   )
+
+# TODO: Make common into its own library that we link statically
+target_sources(_pcu_internal PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/common/morton_code.cpp)
 target_sources(_pcu_internal PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/common/geogram_utils.cpp)
 target_sources(_pcu_internal PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/external/vcglib/wrap/ply/plylib.cpp)
 target_include_directories(_pcu_internal PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/external/vcglib)
