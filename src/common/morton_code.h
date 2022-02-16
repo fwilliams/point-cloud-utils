@@ -44,10 +44,10 @@ public:
 
     uint64_t get_data() const { return data; }
 
-    static const MortonCode64 Zero;
-    static const MortonCode64 UnitX;
-    static const MortonCode64 UnitY;
-    static const MortonCode64 UnitZ;
+//    static const MortonCode64 Zero;
+//    static const MortonCode64 UnitX;
+//    static const MortonCode64 UnitY;
+//    static const MortonCode64 UnitZ;
 
 private:
     uint64_t data;

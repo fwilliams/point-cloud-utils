@@ -3,12 +3,13 @@
 #include <cinttypes>
 #include <cassert>
 
-const MortonCode64 MortonCode64::Zero(0u, 0u, 0u);
-const MortonCode64 MortonCode64::UnitX(1u, 0u, 0u);
-const MortonCode64 MortonCode64::UnitY(0u, 1u, 0u);
-const MortonCode64 MortonCode64::UnitZ(0u, 0u, 1u);
+//const MortonCode64 MortonCode64::Zero(0u, 0u, 0u);
+//const MortonCode64 MortonCode64::UnitX(1u, 0u, 0u);
+//const MortonCode64 MortonCode64::UnitY(0u, 1u, 0u);
+//const MortonCode64 MortonCode64::UnitZ(0u, 0u, 1u);
 
 
+namespace {
 uint64_t SplitBy3Bits21(int32_t x)
 {
     //int64_t r = r & 0x1fffff;
@@ -36,6 +37,7 @@ int32_t CompactBy3Bits21(uint64_t x)
     d = (d & 0x100000 ? d | 0xffe00000 : d);
 
     return (int32_t)d;
+}
 }
 
 MortonCode64::MortonCode64()

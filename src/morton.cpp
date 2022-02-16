@@ -25,8 +25,8 @@ an [n,] shaped array of added morton codes
 
 )Qu8mg5v7";
 npe_function(morton_add)
-npe_arg(codes_1, dense_ulonglong)
-npe_arg(codes_2, dense_ulonglong)
+npe_arg(codes_1, dense_int, dense_long, dense_longlong)
+npe_arg(codes_2, dense_int, dense_long, dense_longlong)
 npe_default_arg(num_threads, int, -1)
 npe_doc(morton_add)
 npe_begin_code()
@@ -106,8 +106,8 @@ an [n,] shaped array of added morton codes
 
 )Qu8mg5v7";
 npe_function(morton_subtract)
-npe_arg(codes_1, dense_ulonglong)
-npe_arg(codes_2, dense_ulonglong)
+npe_arg(codes_1, dense_int, dense_long, dense_longlong)
+npe_arg(codes_2, dense_int, dense_long, dense_longlong)
 npe_default_arg(num_threads, int, -1)
 npe_doc(morton_subtract)
 npe_begin_code()
