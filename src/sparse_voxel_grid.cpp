@@ -378,12 +378,12 @@ npe_end_code()
 
 npe_function(sparse_voxel_grid_to_hex_mesh_internal)
 npe_arg(grid_coordinates, dense_int, dense_long, dense_longlong)
-npe_arg(gx, double)
-npe_arg(gy, double)
-npe_arg(gz, double)
-npe_arg(ox, double)
-npe_arg(oy, double)
-npe_arg(oz, double)
+npe_arg(gx, double)  // voxel size along x
+npe_arg(gy, double)  // voxel size along y
+npe_arg(gz, double)  // voxel size along z
+npe_arg(ox, double)  // origin x coordinate
+npe_arg(oy, double)  // origin y coordinate
+npe_arg(oz, double)  // origin z coordinate
 npe_begin_code()
 {
     const std::array<MortonCode64, 8> vertex_offsets = {
@@ -413,9 +413,8 @@ npe_begin_code()
 
     sort_deduplicate(vertex_codes);
 
-    Eigen::Matrix<std::ptrdiff_t, Eigen::Dynamic, 8, Eigen::RowMajor> ret_cubes(grid_coordinates.rows(), 8);
+    Eigen::Matrix<std::ptrdiff_t, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> ret_cubes(grid_coordinates.rows(), 8);
     for (int i = 0; i < grid_coordinates.rows(); i+= 1) {
-
         // No need to safe_cast here since safe_cast succeeded above for the same inputs
         const int32_t vx = grid_coordinates(i, 0);
         const int32_t vy = grid_coordinates(i, 1);
@@ -424,11 +423,14 @@ npe_begin_code()
 
         for (int o = 0; o < vertex_offsets.size(); o += 1) {
             const std::ptrdiff_t idx = vector_binsearch(corner_code + vertex_offsets[o], vertex_codes);
+            if (idx < 0) {
+                throw std::runtime_error("Internal error. Neighbor lookup failed. This shouldn't happen! Please file an issue.");
+            }
             ret_cubes(i, o) = idx;
         }
     }
 
-    Eigen::Matrix<double, Eigen::Dynamic, 3, Eigen::RowMajor> ret_vertices(vertex_codes.size(), 3);
+    Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> ret_vertices(vertex_codes.size(), 3);
     for (int i = 0; i < vertex_codes.size(); i += 1) {
         int32_t vx, vy, vz;
         vertex_codes[i].decode(vx, vy, vz);
@@ -507,81 +509,3 @@ npe_begin_code()
 npe_end_code()
 
 
-const char* marching_cubes_sparse_voxel_grid_doc = R"Qu8mg5v7(
-Run marching cubes on a hex mesh representing a sparse voxel grid (see also sparse_voxel_grid_to_hex_mesh)
-
-Parameters
-----------
-grid_scalars: An (n,) shaped array of scalar values at each hex mesh vertex
-grid_coordinates: An (n, 3) shaped array of hex mesh vertices
-cube_indices: An (m, 8) shaped array of indices into grid_coordinates where cube_indices[i, :] are the indices of
-              the 8 points forming the i^th cube
-              Note the cube indices must be ordered as:
-              [[0, 0, 0],
-               [1, 0, 0],
-               [1, 1, 0],
-               [0, 1, 0],
-               [0, 0, 1],
-               [1, 0, 1],
-               [1, 1, 1],
-               [0, 1, 1]]
-              where [i, j, k] indicates the offset along the (x, y, z) axes from the bottom, back, left
-              corner of the cube
-isovalue: Which level set to extract
-
-Returns
--------
-v: A (#v, 3) array of triangle mesh vertices
-f: A (#f, 3) array of indices into v where f[i, :] are the indices into vof the 3 points forming the i^th triangle
-
-See Also
---------
-sparse_voxel_grid_to_hex_mesh
-)Qu8mg5v7";
-npe_function(marching_cubes_sparse_voxel_grid)
-npe_arg(grid_scalars, dense_float, dense_double)
-npe_arg(grid_coordinates, npe_matches(grid_scalars))
-npe_arg(cube_indices, dense_int, dense_long, dense_longlong)
-npe_arg(isovalue, double)
-npe_doc(marching_cubes_sparse_voxel_grid_doc)
-npe_begin_code()
-{
-    if (grid_coordinates.rows() <= 0) {
-        throw pybind11::value_error("Invalid grid_coordinates has zero rows!");
-    }
-    if(grid_coordinates.rows() <= 0 || grid_coordinates.cols() != 3) {
-        throw pybind11::value_error(std::string("Invalid shape for grid_coordinates must have shape (N, 3) but got (") +
-                                    std::to_string(grid_coordinates.rows()) + ", " +
-                                    std::to_string(grid_coordinates.cols()) + ")");
-    }
-    if (grid_scalars.cols() != 1) {
-        throw pybind11::value_error(std::string("Invalid shape for grid_scalars must have shape (N,) or (N, 1) but got (") +
-                                std::to_string(grid_scalars.rows()) + ", " +
-                                std::to_string(grid_scalars.cols()) + ")");
-    }
-    if (grid_scalars.rows() != grid_coordinates.rows()) {
-        throw pybind11::value_error(std::string("grid_coordinates and grid_scalars must have the same number of rows but got ") +
-                                    std::string("grid_coordinates.shape = (") +
-                                    std::to_string(grid_coordinates.rows()) + ", " +
-                                    std::to_string(grid_coordinates.cols()) + std::string("), and grid_scalars.shape = (") +
-                                    std::to_string(grid_coordinates.rows()) + ", " +
-                                    std::to_string(grid_coordinates.cols()) + ")");
-    }
-    if (cube_indices.rows() == 0) {
-        throw pybind11::value_error("Invalid cube_indices has zero rows!");
-    }
-    if (cube_indices.cols() != 8) {
-            throw pybind11::value_error(std::string("Invalid shape for cube_indices must have shape (N, 8) but got (") +
-                                std::to_string(cube_indices.rows()) + ", " +
-                                std::to_string(cube_indices.cols()) + ")");
-    }
-
-    EigenDenseLike<npe_Matrix_grid_coordinates> v;
-    EigenDenseLike<npe_Matrix_cube_indices> f;
-    EigenDenseLike<npe_Matrix_grid_scalars> gs_copy;
-    igl::marching_cubes(gs_copy, grid_coordinates, cube_indices, (npe_Scalar_grid_scalars) isovalue, v, f);
-
-    return std::make_tuple(npe::move(v), npe::move(f));
-
-}
-npe_end_code()
