@@ -88,7 +88,7 @@ def main():
 
     setuptools.setup(
         name="pypcu",
-        version="0.21.6",
+        version="0.21.7",
         author="Francis Williams",
         author_email="francis@fwilliams.info",
         description="A Python Library of utilities for point clouds",
