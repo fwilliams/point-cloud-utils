@@ -50,6 +50,9 @@ template <typename T>
 void morton_encode_eigen_matrix_and_sort(T& mat, std::vector<MortonCode64>& codes) {
     using scalar_t = typename T::Scalar;
     for (int i = 0; i < mat.rows(); i++) {
+        if (PyErr_CheckSignals() != 0) {
+            throw pybind11::error_already_set();
+        }
         const int32_t sx = safe_cast<scalar_t, int32_t>(mat(i, 0));
         const int32_t sy = safe_cast<scalar_t, int32_t>(mat(i, 1));
         const int32_t sz = safe_cast<scalar_t, int32_t>(mat(i, 2));
@@ -363,6 +366,9 @@ npe_begin_code()
 
     EigenDenseLike<npe_Matrix_grid_coordinates> ret(new_vox_codes.size(), 3);
     for (int i = 0; i < ret.rows(); i += 1) {
+        if (PyErr_CheckSignals() != 0) {
+            throw pybind11::error_already_set();
+        }
         int32_t vx, vy, vz;
         new_vox_codes[i].decode(vx, vy, vz);
         ret(i, 0) = vx;
@@ -401,6 +407,9 @@ npe_begin_code()
     vertex_codes.reserve(8*grid_coordinates.rows());
 
     for (int i = 0; i < grid_coordinates.rows(); i++) {
+        if (PyErr_CheckSignals() != 0) {
+            throw pybind11::error_already_set();
+        }
         const int32_t vx = safe_cast<npe_Scalar_grid_coordinates, int32_t>(grid_coordinates(i, 0));
         const int32_t vy = safe_cast<npe_Scalar_grid_coordinates, int32_t>(grid_coordinates(i, 1));
         const int32_t vz = safe_cast<npe_Scalar_grid_coordinates, int32_t>(grid_coordinates(i, 2));
@@ -415,6 +424,9 @@ npe_begin_code()
 
     Eigen::Matrix<std::ptrdiff_t, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> ret_cubes(grid_coordinates.rows(), 8);
     for (int i = 0; i < grid_coordinates.rows(); i+= 1) {
+        if (PyErr_CheckSignals() != 0) {
+            throw pybind11::error_already_set();
+        }
         // No need to safe_cast here since safe_cast succeeded above for the same inputs
         const int32_t vx = grid_coordinates(i, 0);
         const int32_t vy = grid_coordinates(i, 1);
@@ -432,6 +444,9 @@ npe_begin_code()
 
     Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> ret_vertices(vertex_codes.size(), 3);
     for (int i = 0; i < vertex_codes.size(); i += 1) {
+        if (PyErr_CheckSignals() != 0) {
+            throw pybind11::error_already_set();
+        }
         int32_t vx, vy, vz;
         vertex_codes[i].decode(vx, vy, vz);
 
