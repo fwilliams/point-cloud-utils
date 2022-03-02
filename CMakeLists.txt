@@ -142,6 +142,7 @@ npe_add_module(_pcu_internal
   ${CMAKE_CURRENT_SOURCE_DIR}/src/marching_cubes.cpp
   EXTRA_MODULE_FUNCTIONS
   hack_extra_bindings
+  hack_extra_ray_mesh_bindings
   )
 
 # TODO: Make common into its own library that we link statically
