@@ -336,10 +336,8 @@ npe_begin_code()
     // Build kdtree
     using namespace nanoflann;
     using MatrixType = EigenDenseLike<npe_Matrix_points>;
-    using KdTreeType = nanoflann::KDTreeEigenMatrixAdaptor<MatrixType, 3, nanoflann::metric_L2_Simple>;
-    EigenDenseLike<npe_Matrix_points> pts = points;  // nanoflann doesn't work with Eigen::map so copy :(
-    KdTreeType tree(3, std::cref(pts), max_points_per_leaf /* max leaf */);
-    tree.index->buildIndex();
+    using KdTreeType = nanoflann::KDTreeEigenMatrixAdaptor<decltype(points), 3, nanoflann::metric_L2_Simple>;
+    KdTreeType tree(3, std::cref(points), max_points_per_leaf /* max leaf */);
 
     // Create a callback function which estimates the normal of the i^th point in the input point cloud
     auto wendland_rbf = [](double d, double rad) {
@@ -394,10 +392,8 @@ npe_begin_code()
     // Build kdtree
     using namespace nanoflann;
     using MatrixType = EigenDenseLike<npe_Matrix_points>;
-    using KdTreeType = nanoflann::KDTreeEigenMatrixAdaptor<MatrixType, 3, nanoflann::metric_L2_Simple>;
-    EigenDenseLike<npe_Matrix_points> pts = points;  // nanoflann doesn't work with Eigen::map so copy :(
-    KdTreeType tree(3, std::cref(pts), max_points_per_leaf /* max leaf */);
-    tree.index->buildIndex();
+    using KdTreeType = nanoflann::KDTreeEigenMatrixAdaptor<decltype(points), 3, nanoflann::metric_L2_Simple>;
+    KdTreeType tree(3, std::cref(points), max_points_per_leaf /* max leaf */);
 
     // Create a callback function which estimates the normal of the i^th point in the input point cloud
     auto normal_estimator = [&](int pt_index) {
