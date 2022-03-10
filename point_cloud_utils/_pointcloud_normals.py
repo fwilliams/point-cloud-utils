@@ -2,8 +2,8 @@ import numpy as np
 
 
 def estimate_point_cloud_normals_knn(points, num_neighbors, view_directions=None,
-                                    drop_angle_threshold=np.deg2rad(90.0),
-                                    max_points_per_leaf=10, num_threads=-1):
+                                     drop_angle_threshold=np.deg2rad(90.0),
+                                     max_points_per_leaf=10, num_threads=-1):
     """
     Estimate normals for a point cloud by locally fitting a plane to the k nearest neighbors of each point.
 
@@ -21,7 +21,8 @@ def estimate_point_cloud_normals_knn(points, num_neighbors, view_directions=None
     max_points_per_leaf: Maximum number of points in each leaf node of the KD-tree used for nearest neighbor queries.
                           Tuning this can potentially improve performance on large point clouds.
     num_threads: Number of threads used to parallelize computation. If set to 0 ir 1, will run in single threaded mode.
-                 If set to -1, will use #processors/2 threads for inputs greater than 1 million points.
+                 If set to a positive number t > 1, will use t threads.
+                 If set to -1, will use #processors threads for inputs greater than 1 million points.
 
     Returns
     -------
@@ -61,11 +62,11 @@ def estimate_point_cloud_normals_knn(points, num_neighbors, view_directions=None
     return points, normals
 
 
-def estimate_point_cloud_normals_ball(points, ball_radius, min_pts_per_ball=0,
-                                     weight_function="rbf",
-                                     view_directions=None,
+def estimate_point_cloud_normals_ball(points, ball_radius, view_directions=None,
                                       drop_angle_threshold=np.deg2rad(90.0),
-                                     max_points_per_leaf=10, num_threads=-1):
+                                      min_pts_per_ball=3,
+                                      weight_function="rbf",
+                                      max_points_per_leaf=10, num_threads=-1):
     """
     Estimate normals for a point cloud by locally fitting a plane to all points within a radius of each point
     (possibly weighted by a radial basis function).
@@ -77,18 +78,19 @@ def estimate_point_cloud_normals_ball(points, ball_radius, min_pts_per_ball=0,
     ----------
     points: (n, 3)-shaped NumPy array of point positions (each row is a point)
     ball_radius: The radius of each neighborhood used to estimate normals
-    min_pts_per_ball: Discard points whose neighborhood contains fewer than min_pts_per_ball points.
-    weight_function: Weighting function for points in a neighborhood. Must be one of 'constant' or 'rbf' where:
-      - 'rbf' weights points as (1 - d/r)^4 * (4* d/r + 1) where d = distance to the center point and r = ball_radius
-      - 'constant' weights points as 1.0 for every point
     view_directions: (n, 3)-shaped NumPy array or None, representing the unit direction to the sensor for each point.
                       This parameter is used to align the normals and compute neighborhoods of similar facing points.
     drop_angle_threshold: If view_directions is passed in, drop points whose angle between the normal and view direction
                           exceeds drop_angle_threshold (in radians). Useful for filtering out low quality points.
+    min_pts_per_ball: Discard points whose neighborhood contains fewer than min_pts_per_ball points.
+    weight_function: Weighting function for points in a neighborhood. Must be one of 'constant' or 'rbf' where:
+      - 'rbf' weights points as (1 - d/r)^4 * (4* d/r + 1) where d = distance to the center point and r = ball_radius
+      - 'constant' weights points as 1.0 for every point
     max_points_per_leaf: Maximum number of points in each leaf node of the KD-tree used for nearest neighbor queries.
                           Tuning this can potentially improve performance on large point clouds.
     num_threads: Number of threads used to parallelize computation. If set to 0 ir 1, will run in single threaded mode.
-                 If set to -1, will use #processors/2 threads for inputs greater than 1 million points.
+                 If set to a positive number t > 1, will use t threads.
+                 If set to -1, will use #processors threads for inputs greater than 1 million points.
 
     Returns
     -------

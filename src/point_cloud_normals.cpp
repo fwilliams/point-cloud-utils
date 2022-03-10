@@ -74,33 +74,14 @@ std::tuple<bool, Eigen::RowVector3d> estimate_local_normal_rbf(const KdTreeType&
         return std::make_tuple(false, Eigen::RowVector3d(0., 0., 0.));
     }
 
-    int num_valid = 0;
     Eigen::MatrixXd neighbors(founds, 3);
     for (int i = 0; i < founds; i++) {
         const int nbr_idx = out_nbrs[i].first;
         const double nbr_dist = out_nbrs[i].second;
         const double weight = weighting_function(sqrt(nbr_dist), ball_radius);
 
-        if (has_view_directions) {
-            // Add neighboring point if its view direction has the same sign as this point
-            Eigen::RowVector3d d_i(view_dirs(nbr_idx, 0), view_dirs(nbr_idx, 1), view_dirs(nbr_idx, 2));
-            if (d_i.dot(dir) > 0.0) {
-                for (int j = 0; j < 3; j++) { neighbors(num_valid, j) = points(nbr_idx, j) * weight; }
-                num_valid += 1;
-            }
-        } else {
-            // If we don't have view directions, just add the whole neighborhood
-            for (int j = 0; j < 3; j++) { neighbors(num_valid, j) = points(nbr_idx, j) * weight; }
-            num_valid += 1;
-        }
+        for (int j = 0; j < 3; j++) { neighbors(i, j) = (points(nbr_idx, j) - query_point[j]) * weight; }
     }
-
-    // Filter point/normal if it does not have enought neighbors
-    if (num_valid < min_pts_per_ball) {
-        return std::make_tuple(false, Eigen::RowVector3d(0., 0., 0.));
-    }
-
-    neighbors.conservativeResize(num_valid, 3);
 
     // Estimate the normal at this point by fitting a plane to its neighborhood
     Eigen::RowVector3d normal;
@@ -146,36 +127,22 @@ std::tuple<bool, Eigen::RowVector3d> estimate_local_normal_knn(const KdTreeType&
     const std::array<ScalarType, 3> query_point =
         { points(point_index, 0), points(point_index, 1), points(point_index, 2) };
 
-    std::vector<IndexType> out_indices(2 * num_neighbors);
-    std::vector<ScalarType> out_dists_sqr(2 * num_neighbors);
-    const size_t founds = tree.index->knnSearch(query_point.data(), 2 * num_neighbors,
-                                                     out_indices.data(), out_dists_sqr.data());
-    int num_valid = 0;
-    Eigen::MatrixXd neighbors(founds, 3);
-    for (int i = 0; i < founds; i++) {
-        const int nbr_idx = out_indices[i];
-        const double nbr_dist = out_dists_sqr[i];
+    std::vector<IndexType> out_indices(num_neighbors);
+    std::vector<ScalarType> out_dists_sqr(num_neighbors);
+    const size_t founds = tree.index->knnSearch(query_point.data(), num_neighbors,
+                                                out_indices.data(), out_dists_sqr.data());
 
-        if (has_view_directions) {
-            // Add neighboring point if its view direction has the same sign as this point
-            Eigen::RowVector3d d_i(view_dirs(nbr_idx, 0), view_dirs(nbr_idx, 1), view_dirs(nbr_idx, 2));
-            if (d_i.dot(dir) > 0.0) {
-                for (int j = 0; j < 3; j++) { neighbors(num_valid, j) = points(nbr_idx, j); }
-                num_valid += 1;
-            }
-        } else {
-            // If we don't have view directions, just add the whole neighborhood
-            for (int j = 0; j < 3; j++) { neighbors(num_valid, j) = points(nbr_idx, j); }
-            num_valid += 1;
-        }
-    }
-
-    // If we don't have enough neighbors facing in the same direction, then discard this point
-    if (num_valid < num_neighbors) {
+    // If we don't have enough neighbors, then discard this point
+    if (founds < num_neighbors) {
         return std::make_tuple(false, Eigen::RowVector3d(0., 0., 0.));
     }
 
-    neighbors.conservativeResize(num_neighbors, 3);
+    Eigen::MatrixXd neighbors(founds, 3);
+    for (int i = 0; i < founds; i++) {
+        const int nbr_idx = out_indices[i];
+
+        for (int j = 0; j < 3; j++) { neighbors(i, j) = points(nbr_idx, j) - query_point[j]; }
+    }
 
     // Estimate the normal at this point by fitting a plane to its neighborhood
     Eigen::RowVector3d normal;
@@ -330,6 +297,10 @@ npe_begin_code()
     // Check that the inputs are good
     if (radius <= 0.0) {
         throw pybind11::value_error("Invalid radius (" + std::to_string(radius) + ") must be greater than 0.");
+    }
+    if (min_pts_per_ball < 3) {
+        throw pybind11::value_error("Invalid min_pts_per_ball (" + std::to_string(min_pts_per_ball) +
+                                    ") must be greater than 3.");
     }
     validate_input(points, view_dirs);
 
