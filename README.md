@@ -1,5 +1,5 @@
 ![Point Cloud Utils Logo](docs/docs/imgs/logo_solarized_tint.png)
-<h4 align="center"><i>A Python library for common tasks on 3D point clouds</i></h4>
+<h4 align="center"><i>A Python library for common tasks on 3D point clouds and meshes</i></h4>
 
 --------------------------
 
@@ -7,7 +7,7 @@
 <!-- [![Build Status](https://travis-ci.com/fwilliams/point-cloud-utils.svg?branch=master)](https://travis-ci.com/fwilliams/point-cloud-utils) -->
 <!-- [![Build status](https://ci.appveyor.com/api/projects/status/ujv44lqbeosgl9ij/branch/master?svg=true)](https://ci.appveyor.com/project/fwilliams/point-cloud-utils/branch/master) -->
 
-**Point Cloud Utils (pcu)** is a utility library providing the following functionality. See the [Examples section](#Examples) for documentation on how to use these:
+**Point Cloud Utils (pcu)** is a utility library providing the following functionality for 3D processing point clouds and triangle meshes. See the [Examples section](#Examples) for documentation on how to use these:
  - Utility functions for reading and writing many common mesh formats (PLY, STL, OFF, OBJ, 3DS, VRML 2.0, X3D, COLLADA).
    If it can be imported into MeshLab, we can read it!
  - A series of algorithms for generating point samples on meshes:
