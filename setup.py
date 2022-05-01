@@ -87,7 +87,7 @@ def main():
         sys.argv.remove('--exclude-arch')
 
     setuptools.setup(
-        name="pypcu",
+        name="point-cloud-utils",
         version="0.22.0",
         author="Francis Williams",
         author_email="francis@fwilliams.info",

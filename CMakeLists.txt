@@ -36,7 +36,7 @@ set(
     ${MANIFOLD_SRC_DIR}/Model_OBJ.cpp
     ${MANIFOLD_SRC_DIR}/Model_OBJ.h
     ${MANIFOLD_SRC_DIR}/Octree.h
-)
+        src/common/embree_intersector.h src/common/embree_intersector.cpp)
 add_library(manifold STATIC ${manifold_SRC})
 set_target_properties(manifold PROPERTIES LINKER_LANGUAGE CXX)
 target_include_directories(manifold PUBLIC ${MANIFOLD_SRC_DIR})
@@ -44,7 +44,7 @@ target_include_directories(manifold PRIVATE ${EXTERNAL_DEP_DIR}/manifold/3rd)
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
     target_compile_options(manifold PRIVATE "${CMAKE_CXX_FLAGS} -Wall -pthread -DWITH_OMP  -Wno-int-in-bool-context -Wsign-compare -fsanitize=address")
 else()
-    target_compile_options(manifold PRIVATE "${CMAKE_CXX_FLAGS} -Wall -pthread -O3 -DWITH_OMP  -Wno-int-in-bool-context -Wsign-compare")
+    target_compile_options(manifold PRIVATE "${CMAKE_CXX_FLAGS} -DWITH_OMP ")
 endif()
 
 
@@ -148,6 +148,7 @@ npe_add_module(_pcu_internal
 # TODO: Make common into its own library that we link statically
 target_sources(_pcu_internal PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/common/morton_code.cpp)
 target_sources(_pcu_internal PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/common/geogram_utils.cpp)
+target_sources(_pcu_internal PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/common/embree_intersector.cpp)
 target_sources(_pcu_internal PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/external/vcglib/wrap/ply/plylib.cpp)
 target_include_directories(_pcu_internal PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/external/vcglib)
 target_include_directories(_pcu_internal PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
