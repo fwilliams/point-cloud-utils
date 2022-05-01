@@ -255,7 +255,7 @@ EmbreeIntersector
     // This epsilon is directly correleated to the number of missed hits, smaller
     // means more accurate and slower
     //const double eps = DOUBLE_EPS;
-    const double eps = FLOAT_EPS;
+    const double eps = igl::FLOAT_EPS;
     double min_t = tnear;
     bool large_hits_warned = false;
     RTCRayHit ray; // EMBREE_FIXME: use RTCRay for occlusion rays
