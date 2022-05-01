@@ -39,7 +39,7 @@ conda install -c conda-forge point_cloud_utils
 ``` -->
 
 ```
-pip install pypcu
+pip install point-cloud-utils
 ```
 
 <!--
