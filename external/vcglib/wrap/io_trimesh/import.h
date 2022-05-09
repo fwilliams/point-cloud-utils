@@ -68,8 +68,9 @@ Initial Update
 #include <wrap/io_trimesh/import_ply.h>
 #include <wrap/io_trimesh/import_stl.h>
 #include <wrap/io_trimesh/import_off.h>
+#ifndef __APPLE__
 #include <wrap/io_trimesh/import_vmi.h>
-
+#endif
 #include <locale>
 
 namespace vcg {
@@ -85,7 +86,12 @@ template <class OpenMeshType>
 class Importer
 {
 private:
-  enum KnownTypes { KT_UNKNOWN, KT_PLY, KT_STL, KT_OFF, KT_OBJ, KT_VMI };
+  enum KnownTypes { KT_UNKNOWN, KT_PLY, KT_STL, KT_OFF, KT_OBJ,
+
+#ifndef __APPLE__
+          KT_VMI
+#endif
+  };
 static int &LastType()
 {
   static int lastType= KT_UNKNOWN;
@@ -135,11 +141,13 @@ static int Open(OpenMeshType &m, const char *filename, int &loadmask, CallBackPo
 		err = ImporterOBJ<OpenMeshType>::Open(m, filename, loadmask, cb);
 		LastType()=KT_OBJ;
 	}
+#ifndef __APPLE__
     else if(FileExtension(filename,"vmi"))
     {
         err = ImporterVMI<OpenMeshType>::Open(m, filename, loadmask, cb);
         LastType()=KT_VMI;
     }
+#endif
   else {
 		err=1;
 		LastType()=KT_UNKNOWN;
@@ -169,7 +177,9 @@ static const char *ErrorMsg(int error)
     case KT_STL : return ImporterSTL<OpenMeshType>::ErrorMsg(error); break;
     case KT_OFF : return ImporterOFF<OpenMeshType>::ErrorMsg(error); break;
     case KT_OBJ : return ImporterOBJ<OpenMeshType>::ErrorMsg(error); break;
+#ifndef __APPLE__
     case KT_VMI : return ImporterVMI<OpenMeshType>::ErrorMsg(error); break;
+#endif
   }
   return "Unknown type";
 }
