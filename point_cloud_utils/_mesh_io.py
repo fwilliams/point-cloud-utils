@@ -212,9 +212,8 @@ class TriangleMesh:
     def fc(self):
         return self.face_data.colors
 
-    def save(self, filename):
+    def save(self, filename, dtype=np.float32):
         from ._pcu_internal import save_mesh_internal
-        dtype = np.float64
         self.vertex_data._reset_if_none()
         self.face_data._reset_if_none()
 
@@ -238,12 +237,18 @@ class TriangleMesh:
                                       np.ones([wcolors.shape[0], wcolors.shape[1], 1], dtype=wcolors.dtype)], axis=-1)
 
         if fcolors.shape[0] > 0:
+            if fcolors.dtype == np.uint8:
+                fcolors = fcolors.astype(dtype) / 255.0
             if fcolors.max() > 1.0 or fcolors.min() < 0.0:
                 raise ValueError("Invalid values for face colors, must be between 0 and 1 (inclusive)")
         if vcolors.shape[0] > 0:
+            if vcolors.dtype == np.uint8:
+                vcolors = vcolors.astype(dtype) / 255.0
             if vcolors.max() > 1.0 or vcolors.min() < 0.0:
                 raise ValueError("Invalid values for vertex colors, must be between 0 and 1 (inclusive)")
         if wcolors.shape[0] > 0:
+            if wcolors.dtype == np.uint8:
+                wcolors = wcolors.astype(dtype) / 255.0
             if wcolors.max() > 1.0 or wcolors.min() < 0.0:
                 raise ValueError("Invalid values for wedge colors, must be between 0 and 1 (inclusive)")
 
@@ -315,7 +320,7 @@ class TriangleMesh:
 def save_triangle_mesh(filename, v, f=None,
                        vn=None, vt=None, vc=None, vq=None, vr=None, vti=None, vflags=None,
                        fn=None, fc=None, fq=None, fflags=None, wc=None, wn=None, wt=None, wti=None,
-                       textures=[], normal_maps=[]):
+                       textures=[], normal_maps=[], dtype=np.float32):
     """
     Save a triangle mesh to a file with various per-vertex, per-face, and per-wedge attributes. Each argument (except v)
     is optional and can be None.
@@ -372,38 +377,35 @@ def save_triangle_mesh(filename, v, f=None,
     mesh.textures = textures
     mesh.normal_maps = normal_maps
 
-    mesh.save(filename)
+    mesh.save(filename, dtype=dtype)
 
 
-def save_mesh_v(filename, v):
-    save_triangle_mesh(filename, v=v)
+def save_mesh_v(filename, v, dtype=np.float32):
+    save_triangle_mesh(filename, v=v, dtype=dtype)
 
 
-def save_mesh_vf(filename, v, f):
-    save_triangle_mesh(filename, v=v, f=f)
+def save_mesh_vf(filename, v, f, dtype=np.float32):
+    save_triangle_mesh(filename, v=v, f=f, dtype=dtype)
 
 
-def save_mesh_vn(filename, v, n):
-    save_triangle_mesh(filename, v=v, vn=n)
+def save_mesh_vn(filename, v, n, dtype=np.float32):
+    save_triangle_mesh(filename, v=v, vn=n, dtype=dtype)
 
 
-def save_mesh_vc(filename, v, c):
-    save_triangle_mesh(filename, v=v, vc=c)
+def save_mesh_vc(filename, v, c, dtype=np.float32):
+    save_triangle_mesh(filename, v=v, vc=c, dtype=dtype)
 
 
-def save_mesh_vnc(filename, v, n, c):
-    save_triangle_mesh(filename, v=v, vn=n, vc=c)
+def save_mesh_vnc(filename, v, n, c, dtype=np.float32):
+    save_triangle_mesh(filename, v=v, vn=n, vc=c, dtype=dtype)
 
 
-def save_mesh_vfn(filename, v, f, n):
-    save_triangle_mesh(filename, v=v, f=f, vn=n)
+def save_mesh_vfn(filename, v, f, n, dtype=np.float32):
+    save_triangle_mesh(filename, v=v, f=f, vn=n, dtype=dtype)
 
 
-def save_mesh_vfnc(filename, v, f, n, c):
-    save_triangle_mesh(filename, v=v, f=f, vn=n, vc=c)
-
-
-
+def save_mesh_vfnc(filename, v, f, n, c, dtype=np.float32):
+    save_triangle_mesh(filename, v=v, f=f, vn=n, vc=c, dtype=dtype)
 
 
 def load_triangle_mesh(filename, dtype=np.float64):
