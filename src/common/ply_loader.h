@@ -1,4 +1,5 @@
-#pragma once
+#ifndef PLY_LOADER_H
+#define PLY_LOADER_H
 
 #include <unordered_map>
 #include <fstream>
@@ -9,6 +10,7 @@
 #include <pybind11/stl.h>
 
 #include "common/strutil.h"
+#include "common/numpy_utils.h"
 
 
 pybind11::dtype ply_type_to_dtype(const std::shared_ptr<tinyply::PlyData> data) {
@@ -40,8 +42,29 @@ pybind11::dtype ply_type_to_dtype(const std::shared_ptr<tinyply::PlyData> data) 
         default: {
             throw std::runtime_error("Internal PLY loading error. Cannot determine type.");
         }
+    }
+}
 
-    };
+tinyply::Type dtype_to_ply_type(pybind11::dtype dtype) {
+    if (dtype.equal(pybind11::dtype::of<std::float_t>())) {
+        return tinyply::Type::FLOAT32;
+    } else if (dtype.equal(pybind11::dtype::of<std::double_t>())) {
+        return tinyply::Type::FLOAT64;
+    } else if (dtype.equal(pybind11::dtype::of<std::int8_t>())) {
+        return tinyply::Type::INT8;
+    } else if (dtype.equal(pybind11::dtype::of<std::int16_t>())) {
+        return tinyply::Type::INT16;
+    } else if (dtype.equal(pybind11::dtype::of<std::int32_t>())) {
+        return tinyply::Type::INT32;
+    } else if (dtype.equal(pybind11::dtype::of<std::uint8_t>())) {
+        return tinyply::Type::UINT8;
+    } else if (dtype.equal(pybind11::dtype::of<std::uint16_t>())) {
+        return tinyply::Type::UINT16;
+    } else if (dtype.equal(pybind11::dtype::of<std::uint32_t>())) {
+        return tinyply::Type::UINT32;
+    } else {
+        throw std::runtime_error("Internal PLY loading error. Cannot determine type.");
+    }
 }
 
 
@@ -289,3 +312,181 @@ void load_mesh_ply(const std::string& filename, std::unordered_map<std::string, 
     ret["normal_maps"] = ret_normalmaps;
 }
 
+
+void save_mesh_ply(std::string filename,
+                   pybind11::array& v_positions, pybind11::array& v_normals,
+                   pybind11::array& v_texcoords, pybind11::array& v_colors, pybind11::array& v_quality,
+                   pybind11::array& v_radius, pybind11::array& v_texids, pybind11::array& v_flags,
+                   pybind11::array& f_vertex_ids, pybind11::array& f_normals, pybind11::array& f_colors,
+                   pybind11::array& f_quality, pybind11::array& f_flags,
+                   pybind11::array& w_colors, pybind11::array& w_normals, pybind11::array& w_texcoords,
+                   pybind11::array& w_texids,
+                   pybind11::dict& custom_v_attribs,
+                   pybind11::dict& custom_f_attribs,
+                   std::vector<std::string>& textures, std::vector<std::string>& normal_maps,
+                   pybind11::dtype dtype_f, pybind11::dtype dtype_i) {
+    ssize_t num_vertices = v_positions.shape()[0];
+    ssize_t num_faces = f_vertex_ids.shape()[0];
+
+    bool has_v_positions = assert_shape_and_dtype(v_positions, "v_positions", dtype_f, {-num_vertices, 3});
+    bool has_v_normals = assert_shape_and_dtype(v_normals, "v_normals", dtype_f, {-num_vertices, 3});
+    bool has_v_texcoords = assert_shape_and_dtype(v_texcoords, "v_texcoords", dtype_f, {-num_vertices, 2});
+    bool has_v_colors = assert_shape_and_dtype(v_colors, "v_colors", dtype_f, {-num_vertices, 4});
+    bool has_v_quality = assert_shape_and_dtype(v_quality, "v_quality", dtype_f, {-num_vertices});
+    bool has_v_radius = assert_shape_and_dtype(v_radius, "v_radius", dtype_f, {-num_vertices});
+    bool has_v_texids = assert_shape_and_dtype(v_texids, "v_texids", dtype_i, {-num_vertices});
+    bool has_v_flags = assert_shape_and_dtype(v_flags, "v_flags", dtype_i, {-num_vertices});
+
+    bool has_f_vertex_ids = assert_shape_and_dtype(f_vertex_ids, "f_vertex_ids", dtype_i, {-num_faces, 3});
+    bool has_f_normals = assert_shape_and_dtype(f_normals, "f_normals", dtype_f, {-num_faces, 3});
+    bool has_f_colors = assert_shape_and_dtype(f_colors, "f_colors", dtype_f, {-num_faces, 4});
+    bool has_f_quality = assert_shape_and_dtype(f_quality, "f_quality", dtype_f, {-num_faces});
+    bool has_f_flags = assert_shape_and_dtype(f_flags, "f_flags", dtype_i, {-num_faces});
+
+//    bool has_w_normals = assert_shape_and_dtype(w_normals, "w_normals", dtype_f, {-num_faces, 3, 3});
+//    bool has_w_colors = assert_shape_and_dtype(w_colors, "w_colors", dtype_f, {-num_faces, 3, 4});
+    bool has_w_texcoords = assert_shape_and_dtype(w_texcoords, "w_texcoords", dtype_f, {-num_faces, 3, 2});
+    bool has_w_texids = assert_shape_and_dtype(w_texids, "w_texids", dtype_i, {-num_faces, 1});
+
+    tinyply::PlyFile plyf;
+    tinyply::Type ply_type_f;
+    tinyply::Type ply_type_i = tinyply::Type::INT32;
+
+    if (dtype_f.equal(pybind11::dtype::of<std::float_t>())) {
+        ply_type_f = tinyply::Type::FLOAT32;
+    } else if (dtype_f.equal(pybind11::dtype::of<std::double_t>())) {
+        ply_type_f = tinyply::Type::FLOAT64;
+    }
+
+    if (has_w_texcoords) {
+        plyf.add_properties_to_element(
+                "face", { "texcoords" }, ply_type_f, num_faces,
+                reinterpret_cast<std::uint8_t*>(w_texcoords.mutable_data()), tinyply::Type::UINT8, 6);
+    }
+    if (has_w_texids) {
+        plyf.add_properties_to_element(
+                "face", { "texnumber" }, ply_type_i, num_faces,
+                reinterpret_cast<std::uint8_t*>(w_texcoords.mutable_data()), tinyply::Type::INVALID, 0);
+    }
+
+
+    if (has_f_vertex_ids) {
+        plyf.add_properties_to_element(
+                "face", { "vertex_indices" }, ply_type_i, num_faces,
+                reinterpret_cast<std::uint8_t*>(f_vertex_ids.mutable_data()), tinyply::Type::UINT8, 3);
+    }
+    if (has_f_normals) {
+        plyf.add_properties_to_element(
+                "face", { "nx", "ny", "z" }, ply_type_f, num_faces,
+                reinterpret_cast<std::uint8_t*>(f_normals.mutable_data()), tinyply::Type::INVALID, 0);
+    }
+    if (has_f_colors) {
+        plyf.add_properties_to_element(
+                "face", { "red", "green", "blue", "alpha" }, ply_type_f, num_faces,
+                reinterpret_cast<std::uint8_t*>(f_colors.mutable_data()), tinyply::Type::INVALID, 0);
+    }
+    if (has_f_quality) {
+        plyf.add_properties_to_element(
+                "face", { "quality" }, ply_type_f, num_faces,
+                reinterpret_cast<std::uint8_t*>(f_quality.mutable_data()), tinyply::Type::INVALID, 0);
+    }
+    if (has_f_flags) {
+        plyf.add_properties_to_element(
+                "face", { "flags" }, ply_type_i, num_faces,
+                reinterpret_cast<std::uint8_t*>(f_flags.mutable_data()), tinyply::Type::INVALID, 0);
+    }
+    for (auto kv = custom_f_attribs.begin(); kv != custom_f_attribs.end(); kv++) {
+        pybind11::str key = (pybind11::str) kv->first;
+        pybind11::array value = pybind11::array::ensure(kv->second);
+        if (value.shape(0) != num_vertices) {
+            throw pybind11::value_error("Invalid face attribute " + std::string(key) + ". Must have same number of rows as faces.");
+        }
+        size_t num_cols = 1;
+        for (int i = 1; i < value.ndim(); i += 1) {
+            num_cols *= value.shape(i);
+        }
+        if (num_cols == 0) {
+            throw pybind11::value_error("Invalid face attribute " + std::string(key) + " has zero elements.");
+        }
+        try {
+            tinyply::Type ply_dtype = dtype_to_ply_type(value.dtype());
+            plyf.add_properties_to_element(
+                    "face", { key }, ply_dtype, num_vertices,
+                    reinterpret_cast<std::uint8_t*>(value.mutable_data()), tinyply::Type::UINT8, num_cols);
+        } catch (const std::runtime_error& e) {
+            throw pybind11::value_error("Invalid dtype for custom face attribute "+ std::string(key) + ".");
+        }
+    }
+
+    if (has_v_positions) {
+        plyf.add_properties_to_element(
+                "vertex", { "x", "y", "z" }, ply_type_f, num_vertices,
+                reinterpret_cast<std::uint8_t*>(v_positions.mutable_data()), tinyply::Type::INVALID, 0);
+    }
+    if (has_v_normals) {
+        plyf.add_properties_to_element(
+                "vertex", { "nx", "ny", "nz" }, ply_type_f, num_vertices,
+                reinterpret_cast<std::uint8_t*>(v_normals.mutable_data()), tinyply::Type::INVALID, 0);
+    }
+    if (has_v_texcoords) {
+        plyf.add_properties_to_element(
+                "vertex", { "s", "t" }, ply_type_f, num_vertices,
+                reinterpret_cast<std::uint8_t*>(v_texcoords.mutable_data()), tinyply::Type::INVALID, 0);
+    }
+    if (has_v_colors) {
+        plyf.add_properties_to_element(
+                "vertex", { "red", "green", "blue", "alpha" }, ply_type_f, num_vertices,
+                reinterpret_cast<std::uint8_t*>(v_colors.mutable_data()), tinyply::Type::INVALID, 0);
+    }
+    if (has_v_quality) {
+        plyf.add_properties_to_element(
+                "vertex", { "quality" }, ply_type_f, num_vertices,
+                reinterpret_cast<std::uint8_t*>(v_quality.mutable_data()), tinyply::Type::INVALID, 0);
+    }
+    if (has_v_radius) {
+        plyf.add_properties_to_element(
+                "vertex", { "radius" }, ply_type_f, num_vertices,
+                reinterpret_cast<std::uint8_t*>(v_radius.mutable_data()), tinyply::Type::INVALID, 0);
+    }
+    if (has_v_texids) {
+        plyf.add_properties_to_element(
+                "vertex", { "texnumber" }, ply_type_i, num_vertices,
+                reinterpret_cast<std::uint8_t*>(v_texids.mutable_data()), tinyply::Type::INVALID, 0);
+    }
+    if (has_v_flags) {
+        plyf.add_properties_to_element(
+                "vertex", { "flags" }, ply_type_i, num_vertices,
+                reinterpret_cast<std::uint8_t*>(v_flags.mutable_data()), tinyply::Type::INVALID, 0);
+    }
+    for (auto kv = custom_v_attribs.begin(); kv != custom_v_attribs.end(); kv++) {
+        pybind11::str key = (pybind11::str) kv->first;
+        pybind11::array value = pybind11::array::ensure(kv->second);
+        if (value.shape(0) != num_vertices) {
+            throw pybind11::value_error("Invalid vertex attribute " + std::string(key) + ". Must have same number of rows as vertices.");
+        }
+        size_t num_cols = 1;
+        for (int i = 1; i < value.ndim(); i += 1) {
+            num_cols *= value.shape(i);
+        }
+        if (num_cols == 0) {
+            throw pybind11::value_error("Invalid vertex attribute " + std::string(key) + " has zero elements.");
+        }
+        try {
+            tinyply::Type ply_dtype = dtype_to_ply_type(value.dtype());
+            plyf.add_properties_to_element(
+                    "vertex", { key }, ply_dtype, num_vertices,
+                    reinterpret_cast<std::uint8_t*>(value.mutable_data()), tinyply::Type::UINT8, num_cols);
+        } catch (const std::runtime_error& e) {
+            throw pybind11::value_error("Invalid dtype for custom vertex attribute "+ std::string(key) + ".");
+        }
+    }
+
+
+    std::filebuf fb_binary;
+    fb_binary.open(filename, std::ios::out | std::ios::binary);
+    std::ostream outstream_binary(&fb_binary);
+    if (outstream_binary.fail()) throw std::runtime_error("failed to open " + filename);
+    plyf.write(outstream_binary, true);
+}
+
+#endif // PLY_LOADER_H

@@ -16,7 +16,8 @@
  ******************************************************************************
  */
 
-#pragma once
+#ifndef STRUTIL_H
+#define STRUTIL_H
 
 #include <algorithm>
 #include <cctype>
@@ -607,3 +608,6 @@ namespace strutil
         return strs;
     }
 }
+
+
+#endif  // STRUTIL_H
