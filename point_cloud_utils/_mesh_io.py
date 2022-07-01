@@ -51,7 +51,7 @@ class TriangleMesh:
             texcoords: [V, 2]-shaped numpy array of per-vertex uv coordinates (or None)
             tex_ids: [V,]-shaped numpy array of integer indices into TriangleMesh.textures indicating which texture to
                      use at this vertex (or None)
-            colors: [V, 4]-shaped numpy array of per-vertex RBGA colors in [0.0, 1.0] (or None)
+            colors: [V, 4]-shaped numpy array of per-vertex RBGA colors in [0.0, 1.0] or [0, 255] (or None)
             radius: [V,]-shaped numpy array of per-vertex curvature radii (or None)
             quality: [V,]-shaped numpy array of per-vertex quality measures (or None)
             flags: [V,]-shaped numpy array of 32-bit integer flags per vertex (or None)
@@ -66,6 +66,7 @@ class TriangleMesh:
             self.radius = np.zeros([0])
             self.tex_ids = np.zeros([0], dtype=int)
             self.flags = np.zeros([0], dtype=int)
+            self.custom_attributes = dict()
             self._set_empty_to_none()
 
         def _reset_if_none(self):
@@ -86,6 +87,25 @@ class TriangleMesh:
             if self.flags is None:
                 self.flags = np.zeros([0], dtype=int)
 
+        def _set_color(self, key, clr_array):
+            if not isinstance(self.colors, np.ndarray):
+                self.colors = np.ndarray([clr_array.shape[0], 4], dtype=clr_array.dtype)
+            else:
+                assert clr_array.dtype == self.colors.dtype
+            self.colors = self.colors.reshape([clr_array.shape[0], 4])
+            if key == "alpha":
+                self.colors[:, -1] = np.squeeze(clr_array)
+            elif key == "colors":
+                if clr_array.shape[1] == 3:
+                    self.colors[:, :-1] = clr_array
+                elif clr_array.shape[1] == 4:
+                    self.colors = clr_array
+                else:
+                    raise ValueError("Invalid shape for vertex colors must be "
+                                     "(n, 3) or (n, 4) but got " + str(clr_array.shape))
+            else:
+                assert False
+
         def _set_empty_to_none(self):
             for k, v in self.__dict__.items():
                 if isinstance(v, np.ndarray):
@@ -101,7 +121,7 @@ class TriangleMesh:
         FaceData:
             vertex_ids: [F, 3]-shaped numpy array of integer face indices into TrianglMesh.vertex_data.positions
             normals: [F, 3]-shaped numpy array of per-face normals (or None)
-            colors: [F, 4]-shaped numpy array of per-face RBGA colors in [0.0, 1.0] (or None)
+            colors: [F, 4]-shaped numpy array of per-face RBGA colors in [0.0, 1.0] or [0, 255] (or None)
             quality: [F,]-shaped numpy array of per-face quality measures (or None)
             flags: [F,]-shaped numpy array of 32-bit integer flags per face (or None)
 
@@ -123,6 +143,7 @@ class TriangleMesh:
             self.wedge_normals = np.zeros([0, 3, 3])
             self.wedge_texcoords = np.zeros([0, 3, 2])
             self.wedge_tex_ids = np.zeros([0, 3], dtype=int)
+            self.custom_attributes = dict()
             self._set_empty_to_none()
 
         def _reset_if_none(self):
@@ -145,6 +166,25 @@ class TriangleMesh:
                 self.wedge_texcoords = np.zeros([0, 3, 2])
             if self.wedge_tex_ids is None:
                 self.wedge_tex_ids = np.zeros([0, 3], dtype=int)
+
+        def _set_color(self, key, clr_array):
+            if not isinstance(self.colors, np.ndarray):
+                self.colors = np.ndarray([clr_array.shape[0], 4], dtype=clr_array.dtype)
+            else:
+                assert clr_array.dtype == self.colors.dtype
+            self.colors = self.colors.reshape([clr_array.shape[0], 4])
+            if key == "alpha":
+                self.colors[:, -1] = np.squeeze(clr_array)
+            elif key == "colors":
+                if clr_array.shape[1] == 3:
+                    self.colors[:, :-1] = clr_array
+                elif clr_array.shape[1] == 4:
+                    self.colors = clr_array
+                else:
+                    raise ValueError("Invalid shape for face colors must be "
+                                     "(n, 3) or (n, 4) but got " + str(clr_array.shape))
+            else:
+                assert False
 
         def _set_empty_to_none(self):
             for k, v in self.__dict__.items():
@@ -184,9 +224,8 @@ class TriangleMesh:
     def fc(self):
         return self.face_data.colors
 
-    def save(self, filename):
+    def save(self, filename, dtype=np.float32):
         from ._pcu_internal import save_mesh_internal
-        dtype = np.float64
         self.vertex_data._reset_if_none()
         self.face_data._reset_if_none()
 
@@ -210,12 +249,18 @@ class TriangleMesh:
                                       np.ones([wcolors.shape[0], wcolors.shape[1], 1], dtype=wcolors.dtype)], axis=-1)
 
         if fcolors.shape[0] > 0:
+            if fcolors.dtype == np.uint8:
+                fcolors = fcolors.astype(dtype) / 255.0
             if fcolors.max() > 1.0 or fcolors.min() < 0.0:
                 raise ValueError("Invalid values for face colors, must be between 0 and 1 (inclusive)")
         if vcolors.shape[0] > 0:
+            if vcolors.dtype == np.uint8:
+                vcolors = vcolors.astype(dtype) / 255.0
             if vcolors.max() > 1.0 or vcolors.min() < 0.0:
                 raise ValueError("Invalid values for vertex colors, must be between 0 and 1 (inclusive)")
         if wcolors.shape[0] > 0:
+            if wcolors.dtype == np.uint8:
+                wcolors = wcolors.astype(dtype) / 255.0
             if wcolors.max() > 1.0 or wcolors.min() < 0.0:
                 raise ValueError("Invalid values for wedge colors, must be between 0 and 1 (inclusive)")
 
@@ -239,6 +284,8 @@ class TriangleMesh:
                            np.ascontiguousarray(self.face_data.wedge_normals.astype(dtype)),
                            np.ascontiguousarray(self.face_data.wedge_texcoords.astype(dtype)),
                            np.ascontiguousarray(self.face_data.wedge_tex_ids.astype(np.int32)),
+                           {k: np.ascontiguousarray(v) if isinstance(v, np.ndarray) else v for (k, v) in self.vertex_data.custom_attributes.items()},
+                           {k: np.ascontiguousarray(v) if isinstance(v, np.ndarray) else v for (k, v) in self.face_data.custom_attributes.items()},
                            self.textures, self.normal_maps, dtype, np.int32)
         self.vertex_data._set_empty_to_none()
         self.face_data._set_empty_to_none()
@@ -269,11 +316,17 @@ class TriangleMesh:
         vret = mesh_dict["vertex_data"]
         fret = mesh_dict["face_data"]
         for k, v in vret.items():
-            assert hasattr(self.vertex_data, k)
-            setattr(self.vertex_data, k, v)
+            if k in ("alpha", "colors"):
+                self.vertex_data._set_color(k, v)
+            else:
+                assert hasattr(self.vertex_data, k), "vertex_data doesn't have attribute " + str(k)
+                setattr(self.vertex_data, k, v)
         for k, v in fret.items():
-            assert hasattr(self.face_data, k)
-            setattr(self.face_data, k, v)
+            if k in ("alpha", "colors"):
+                self.face_data._set_color(k, v)
+            else:
+                assert hasattr(self.face_data, k), "face_data doesn't have attribute " + str(k)
+                setattr(self.face_data, k, v)
         self.vertex_data._set_empty_to_none()
         self.face_data._set_empty_to_none()
 
@@ -281,7 +334,7 @@ class TriangleMesh:
 def save_triangle_mesh(filename, v, f=None,
                        vn=None, vt=None, vc=None, vq=None, vr=None, vti=None, vflags=None,
                        fn=None, fc=None, fq=None, fflags=None, wc=None, wn=None, wt=None, wti=None,
-                       textures=[], normal_maps=[]):
+                       textures=[], normal_maps=[], dtype=np.float32):
     """
     Save a triangle mesh to a file with various per-vertex, per-face, and per-wedge attributes. Each argument (except v)
     is optional and can be None.
@@ -338,38 +391,35 @@ def save_triangle_mesh(filename, v, f=None,
     mesh.textures = textures
     mesh.normal_maps = normal_maps
 
-    mesh.save(filename)
+    mesh.save(filename, dtype=dtype)
 
 
-def save_mesh_v(filename, v):
-    save_triangle_mesh(filename, v=v)
+def save_mesh_v(filename, v, dtype=np.float32):
+    save_triangle_mesh(filename, v=v, dtype=dtype)
 
 
-def save_mesh_vf(filename, v, f):
-    save_triangle_mesh(filename, v=v, f=f)
+def save_mesh_vf(filename, v, f, dtype=np.float32):
+    save_triangle_mesh(filename, v=v, f=f, dtype=dtype)
 
 
-def save_mesh_vn(filename, v, n):
-    save_triangle_mesh(filename, v=v, vn=n)
+def save_mesh_vn(filename, v, n, dtype=np.float32):
+    save_triangle_mesh(filename, v=v, vn=n, dtype=dtype)
 
 
-def save_mesh_vc(filename, v, c):
-    save_triangle_mesh(filename, v=v, vc=c)
+def save_mesh_vc(filename, v, c, dtype=np.float32):
+    save_triangle_mesh(filename, v=v, vc=c, dtype=dtype)
 
 
-def save_mesh_vnc(filename, v, n, c):
-    save_triangle_mesh(filename, v=v, vn=n, vc=c)
+def save_mesh_vnc(filename, v, n, c, dtype=np.float32):
+    save_triangle_mesh(filename, v=v, vn=n, vc=c, dtype=dtype)
 
 
-def save_mesh_vfn(filename, v, f, n):
-    save_triangle_mesh(filename, v=v, f=f, vn=n)
+def save_mesh_vfn(filename, v, f, n, dtype=np.float32):
+    save_triangle_mesh(filename, v=v, f=f, vn=n, dtype=dtype)
 
 
-def save_mesh_vfnc(filename, v, f, n, c):
-    save_triangle_mesh(filename, v=v, f=f, vn=n, vc=c)
-
-
-
+def save_mesh_vfnc(filename, v, f, n, c, dtype=np.float32):
+    save_triangle_mesh(filename, v=v, f=f, vn=n, vc=c, dtype=dtype)
 
 
 def load_triangle_mesh(filename, dtype=np.float64):
