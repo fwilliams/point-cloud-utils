@@ -398,7 +398,7 @@ void save_mesh_ply(std::string filename,
     for (auto kv = custom_f_attribs.begin(); kv != custom_f_attribs.end(); kv++) {
         pybind11::str key = (pybind11::str) kv->first;
         pybind11::array value = pybind11::array::ensure(kv->second);
-        if (value.shape(0) != num_vertices) {
+        if (value.shape(0) != num_faces) {
             throw pybind11::value_error("Invalid face attribute " + std::string(key) + ". Must have same number of rows as faces.");
         }
         size_t num_cols = 1;

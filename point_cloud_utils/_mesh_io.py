@@ -272,8 +272,8 @@ class TriangleMesh:
                            np.ascontiguousarray(self.face_data.wedge_normals.astype(dtype)),
                            np.ascontiguousarray(self.face_data.wedge_texcoords.astype(dtype)),
                            np.ascontiguousarray(self.face_data.wedge_tex_ids.astype(np.int32)),
-                           {k: np.ascontiguousarray(v) if isinstance(v, np.array) else v for (k, v) in self.vertex_data.custom_attributes.items()},
-                           {k: np.ascontiguousarray(v) if isinstance(v, np.array) else v for (k, v) in self.face_data.custom_attributes.items()},
+                           {k: np.ascontiguousarray(v) if isinstance(v, np.ndarray) else v for (k, v) in self.vertex_data.custom_attributes.items()},
+                           {k: np.ascontiguousarray(v) if isinstance(v, np.ndarray) else v for (k, v) in self.face_data.custom_attributes.items()},
                            self.textures, self.normal_maps, dtype, np.int32)
         self.vertex_data._set_empty_to_none()
         self.face_data._set_empty_to_none()
