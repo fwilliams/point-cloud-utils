@@ -16,6 +16,9 @@
 #include <pybind11/stl.h>
 
 #include "common/common.h"
+#include "common/strutil.h"
+#include "common/ply_loader.h"
+
 
 namespace {
 
@@ -558,6 +561,11 @@ npe_arg(filename, std::string)
 npe_default_arg(dtype, npe::dtype, "float64")
 npe_begin_code()
 {
+    if (strutil::ends_with(strutil::to_lower(strutil::trim_copy(filename)), "ply")) {
+        std::unordered_map<std::string, pybind11::object> ret;
+        load_mesh_ply(filename, ret);
+        return ret;
+    }
     CMesh m;
     int mask = 0;
     tri::io::Importer<CMesh>::LoadMask(filename.c_str(), mask);

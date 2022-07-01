@@ -51,7 +51,7 @@ class TriangleMesh:
             texcoords: [V, 2]-shaped numpy array of per-vertex uv coordinates (or None)
             tex_ids: [V,]-shaped numpy array of integer indices into TriangleMesh.textures indicating which texture to
                      use at this vertex (or None)
-            colors: [V, 4]-shaped numpy array of per-vertex RBGA colors in [0.0, 1.0] (or None)
+            colors: [V, 4]-shaped numpy array of per-vertex RBGA colors in [0.0, 1.0] or [0, 255] (or None)
             radius: [V,]-shaped numpy array of per-vertex curvature radii (or None)
             quality: [V,]-shaped numpy array of per-vertex quality measures (or None)
             flags: [V,]-shaped numpy array of 32-bit integer flags per vertex (or None)
@@ -66,6 +66,7 @@ class TriangleMesh:
             self.radius = np.zeros([0])
             self.tex_ids = np.zeros([0], dtype=int)
             self.flags = np.zeros([0], dtype=int)
+            self.custom_attributes = dict()
             self._set_empty_to_none()
 
         def _reset_if_none(self):
@@ -86,6 +87,19 @@ class TriangleMesh:
             if self.flags is None:
                 self.flags = np.zeros([0], dtype=int)
 
+        def _set_color(self, key, clr_array):
+            if not isinstance(self.colors, np.ndarray):
+                self.colors = np.ndarray([clr_array.shape[0], 4], dtype=clr_array.dtype)
+            else:
+                assert clr_array.dtype == self.colors.dtype
+            self.colors = self.colors.reshape([clr_array.shape[0], 4])
+            if key == "alpha":
+                self.colors[:, -1] = np.squeeze(clr_array)
+            elif key == "colors":
+                self.colors[:, :-1] = clr_array
+            else:
+                assert False
+
         def _set_empty_to_none(self):
             for k, v in self.__dict__.items():
                 if isinstance(v, np.ndarray):
@@ -101,7 +115,7 @@ class TriangleMesh:
         FaceData:
             vertex_ids: [F, 3]-shaped numpy array of integer face indices into TrianglMesh.vertex_data.positions
             normals: [F, 3]-shaped numpy array of per-face normals (or None)
-            colors: [F, 4]-shaped numpy array of per-face RBGA colors in [0.0, 1.0] (or None)
+            colors: [F, 4]-shaped numpy array of per-face RBGA colors in [0.0, 1.0] or [0, 255] (or None)
             quality: [F,]-shaped numpy array of per-face quality measures (or None)
             flags: [F,]-shaped numpy array of 32-bit integer flags per face (or None)
 
@@ -123,6 +137,7 @@ class TriangleMesh:
             self.wedge_normals = np.zeros([0, 3, 3])
             self.wedge_texcoords = np.zeros([0, 3, 2])
             self.wedge_tex_ids = np.zeros([0, 3], dtype=int)
+            self.custom_attributes = dict()
             self._set_empty_to_none()
 
         def _reset_if_none(self):
@@ -145,6 +160,19 @@ class TriangleMesh:
                 self.wedge_texcoords = np.zeros([0, 3, 2])
             if self.wedge_tex_ids is None:
                 self.wedge_tex_ids = np.zeros([0, 3], dtype=int)
+
+        def _set_color(self, key, clr_array):
+            if not isinstance(self.colors, np.ndarray):
+                self.colors = np.ndarray([clr_array.shape[0], 4], dtype=clr_array.dtype)
+            else:
+                assert clr_array.dtype == self.colors.dtype
+            self.colors = self.colors.reshape([clr_array.shape[0], 4])
+            if key == "alpha":
+                self.colors[:, -1] = np.squeeze(clr_array)
+            elif key == "colors":
+                self.colors[:, :-1] = clr_array
+            else:
+                assert False
 
         def _set_empty_to_none(self):
             for k, v in self.__dict__.items():
@@ -269,11 +297,17 @@ class TriangleMesh:
         vret = mesh_dict["vertex_data"]
         fret = mesh_dict["face_data"]
         for k, v in vret.items():
-            assert hasattr(self.vertex_data, k)
-            setattr(self.vertex_data, k, v)
+            if k in ("alpha", "colors"):
+                self.vertex_data._set_color(k, v)
+            else:
+                assert hasattr(self.vertex_data, k), "vertex_data doesn't have attribute " + str(k)
+                setattr(self.vertex_data, k, v)
         for k, v in fret.items():
-            assert hasattr(self.face_data, k)
-            setattr(self.face_data, k, v)
+            if k in ("alpha", "colors"):
+                self.face_data._set_color(k, v)
+            else:
+                assert hasattr(self.face_data, k), "face_data doesn't have attribute " + str(k)
+                setattr(self.face_data, k, v)
         self.vertex_data._set_empty_to_none()
         self.face_data._set_empty_to_none()
 
