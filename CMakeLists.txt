@@ -40,7 +40,7 @@ set(
     ${MANIFOLD_SRC_DIR}/main.cpp
     ${MANIFOLD_SRC_DIR}/Model_OBJ.cpp
     ${MANIFOLD_SRC_DIR}/Model_OBJ.h
-    ${MANIFOLD_SRC_DIR}/Octree.h src/common/ply_loader.h)
+    ${MANIFOLD_SRC_DIR}/Octree.h)
 add_library(manifold STATIC ${manifold_SRC})
 set_target_properties(manifold PROPERTIES LINKER_LANGUAGE CXX)
 target_include_directories(manifold PUBLIC ${MANIFOLD_SRC_DIR})
