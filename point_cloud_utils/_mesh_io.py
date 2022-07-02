@@ -96,7 +96,13 @@ class TriangleMesh:
             if key == "alpha":
                 self.colors[:, -1] = np.squeeze(clr_array)
             elif key == "colors":
-                self.colors[:, :-1] = clr_array
+                if clr_array.shape[1] == 3:
+                    self.colors[:, :-1] = clr_array
+                elif clr_array.shape[1] == 4:
+                    self.colors = clr_array
+                else:
+                    raise ValueError("Invalid shape for vertex colors must be "
+                                     "(n, 3) or (n, 4) but got " + str(clr_array.shape))
             else:
                 assert False
 
@@ -170,7 +176,13 @@ class TriangleMesh:
             if key == "alpha":
                 self.colors[:, -1] = np.squeeze(clr_array)
             elif key == "colors":
-                self.colors[:, :-1] = clr_array
+                if clr_array.shape[1] == 3:
+                    self.colors[:, :-1] = clr_array
+                elif clr_array.shape[1] == 4:
+                    self.colors = clr_array
+                else:
+                    raise ValueError("Invalid shape for face colors must be "
+                                     "(n, 3) or (n, 4) but got " + str(clr_array.shape))
             else:
                 assert False
 
