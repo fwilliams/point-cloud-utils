@@ -1,10 +1,3 @@
-#include <igl/readOBJ.h>
-#include <igl/readPLY.h>
-#include <igl/readOFF.h>
-#include <igl/writeOBJ.h>
-#include <igl/writePLY.h>
-#include <igl/writeOFF.h>
-
 #include <unordered_map>
 
 #include <vcg/complex/complex.h>

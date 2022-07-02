@@ -4,6 +4,7 @@
 #include <unordered_map>
 #include <fstream>
 
+#define TINYPLY_IMPLEMENTATION
 #include <tinyply/source/tinyply.h>
 #include <npe.h>
 #include <npe_typedefs.h>
