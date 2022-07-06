@@ -22,7 +22,7 @@ def _validate_point_radius_internal(p, r):
     return r
 
 
-def surfel_geometry(p, n, r=0.1, subdivs=4):
+def surfel_geometry(p, n, r=0.1, subdivs=7):
     """
     Generate geometry for a point cloud encoded as surfels (i.e. circular patches centered at each point and oriented
     perpendicularly to each normal)
@@ -81,7 +81,7 @@ class RaySurfelIntersector:
     Class used to find the intersection between rays and a point cloud converted to surfels (i.e. a point cloud
     represented as circles centered at each point and oriented perpendicularly to each normal).
     """
-    def __init__(self, p, n, r=0.1, subdivs=4):
+    def __init__(self, p, n, r=0.1, subdivs=7):
         """
         Construct a RayPointCloudIntersector which can be used to compute the intersection between a set of rays and a
         point cloud converted to circular patches oriented with the point normals
