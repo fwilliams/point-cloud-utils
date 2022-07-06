@@ -26,6 +26,8 @@
  - Compute signed distances between a point cloud and a mesh using [Fast Winding Numbers](https://www.dgp.toronto.edu/projects/fast-winding-numbers/)
  - Compute closest points on a mesh to a point cloud
  - Deduplicating point clouds and mesh vertices
+ - Fast ray/mesh intersection using [embree](https://www.embree.org/)
+ - Fast ray/surfel intersection using [embree](https://www.embree.org/)
  - Mesh smoothing
  - Making a mesh watertight (based on the [Watertight Manifold](https://github.com/hjwdzh/Manifold) algorithm)
  
@@ -72,6 +74,8 @@ The following dependencies are required to install with `pip`:
 - [Deduplicating point clouds and meshes](#deduplicating-point-clouds-and-meshes)
 - [Smoothing a mesh](#smoothing-a-mesh)
 - [Making a mesh watertight](#making-a-mesh-watertight)
+- [Ray/Mesh intersection](#ray-mesh-intersection)
+- [Ray/Surfel intersection](#ray-surfel-intersection)
 
 
 ### Loading meshes and point clouds
@@ -588,4 +592,62 @@ v, f = pcu.load_mesh_vf("my_model.ply")
 # See https://github.com/hjwdzh/Manifold for details
 resolution = 20_000  
 v_watertight, f_watertight = pcu.make_mesh_watertight(v, f, resolution=resolution)
+```
+
+
+# Ray/Mesh Intersection
+```python
+import point_cloud_utils as pcu
+import numpy as np
+
+# v is a #v by 3 NumPy array of vertices
+# f is an #f by 3 NumPy array of face indexes into v
+# c is a #v by 4 array of vertex colors
+v, f, c = pcu.load_mesh_vfc("my_model.ply")
+
+# Generate rays on an image grid
+uv = np.stack([a.ravel() for a in np.mgrid[-1:1:128j, -1.:1.:128j]], axis=-1)
+ray_d = np.concatenate([uv, np.ones([uv.shape[0], 1])], axis=-1)
+ray_d = ray_d / np.linalg.norm(ray_d, axis=-1, keepdims=True)
+ray_o = np.array([[2.5, 0, -55.0] for _ in range(d.shape[0])])
+
+# Intersect rays with geometry
+intersector = pcu.RayMeshIntersector(v, f)
+
+# fid is the index of each face intersected (-1 for ray miss)
+# bc are the barycentric coordinates of each intersected ray
+# t are the distances from the ray origin to the intersection for each ray (inf for ray miss)
+fid, bc, t = intersector.intersect_rays(ray_o, ray_d)
+
+# Get intersection positions and colors by interpolating on the faces
+hit_mask = np.isfinite(t)
+hit_pos = pcu.interpolate_barycentric_coords(f, fid[hit_mask], bc[hit_mask], v)
+hit_clr = pcu.interpolate_barycentric_coords(f, fid[hit_mask], bc[hit_mask], c)
+```
+
+# Ray/Surfel Intersection
+```python
+import point_cloud_utils as pcu
+import numpy as np
+
+# v is a #v by 3 NumPy array of vertices
+# n is a #v by 3 NumPy array of vertex normals
+v, n = pcu.load_mesh_vn("my_model.ply")
+
+# Generate rays on an image grid
+uv = np.stack([a.ravel() for a in np.mgrid[-1:1:128j, -1.:1.:128j]], axis=-1)
+ray_d = np.concatenate([uv, np.ones([uv.shape[0], 1])], axis=-1)
+ray_d = ray_d / np.linalg.norm(ray_d, axis=-1, keepdims=True)
+ray_o = np.array([[2.5, 0, -55.0] for _ in range(d.shape[0])])
+
+# Intersect rays with surfels with fixed radius 0.55
+intersector = pcu.RaySurfelIntersector(v, n, r=0.55)
+
+# pid is the index of each point intersected by a ray
+# t are the distances from the ray origin to the intersection for each ray (inf for ray miss)
+pid, t = intersector.intersect_rays(ray_o, ray_d)
+
+# Get points intersected by rays
+hit_mask = pid >= 0
+intersected_points = v[pid[hit_mask]]
 ```
