@@ -73,6 +73,41 @@ void validate_point_cloud(const TV& v, bool allow_0=true) {
     }
 }
 
+template <typename TV, typename TN>
+//void validate_mesh(const Eigen::MatrixBase<TV>& v, const Eigen::MatrixBase<TF>& f) {
+void validate_point_cloud_normals(const TV& v, const TN& n, bool allow_0=true) {
+    if (!allow_0) {
+        if (v.rows() == 0) {
+            std::stringstream ss;
+            ss << "Invalid input point cloud with zero points: points must have shape (n, 3) (n > 0). "
+               << "Got points.shape =(" << v.rows() << ", " << v.cols() << ").";
+            throw pybind11::value_error(ss.str());
+        }
+    }
+
+    if (v.cols() != 3) {
+        std::stringstream ss;
+        ss << "Only 3D inputs are supported: v must have shape (n, 3) (n > 0). "
+           << "Got points.shape =(" << v.rows() << ", " << v.cols() << ").";
+        throw pybind11::value_error(ss.str());
+    }
+
+    if (n.cols() != 3) {
+        std::stringstream ss;
+        ss << "Invalid shape for normals: must have shape (n, 3) (n > 0). "
+           << "Got normals.shape =(" << n.rows() << ", " << n.cols() << ").";
+        throw pybind11::value_error(ss.str());
+    }
+
+    if (n.rows() != v.rows()) {
+        std::stringstream ss;
+        ss << "Invalid input point cloud. Number of normals must match number of points. "
+           << "Got points.shape =(" << v.rows() << ", " << v.cols() << ") and normals.shape = "
+           << n.rows() << ", " << n.cols();
+        throw pybind11::value_error(ss.str());
+    }
+}
+
 
 template <typename TV, typename TF>
 //void validate_mesh(const Eigen::MatrixBase<TV>& v, const Eigen::MatrixBase<TF>& f) {

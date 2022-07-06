@@ -134,6 +134,7 @@ npe_add_module(_pcu_internal
   ${CMAKE_CURRENT_SOURCE_DIR}/src/closest_point_on_mesh.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/connected_components.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/ray_mesh_intersection.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/ray_point_cloud_intersection.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/smooth.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/manifold.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/curvature.cpp

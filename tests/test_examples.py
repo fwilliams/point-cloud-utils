@@ -510,7 +510,6 @@ class TestDenseBindings(unittest.TestCase):
 
         self.assertAlmostEqual(np.max(d - d2), 0.0)
 
-
     def test_ray_mesh_intersection(self):
         import point_cloud_utils as pcu
         import numpy as np
@@ -551,6 +550,25 @@ class TestDenseBindings(unittest.TestCase):
         self.assertTrue(np.allclose(bc2, bc1))
         self.assertTrue(np.allclose(t1, t2))
 
+    def test_ray_surfel_intersection(self):
+        import point_cloud_utils as pcu
+        import numpy as np
+
+        p, n = pcu.load_mesh_vn(os.path.join(self.test_path, "cube_twist.obj"))
+        uv = np.stack([a.ravel() for a in np.mgrid[-1:1:128j, -1.:1.:128j]], axis=-1)
+        d = np.concatenate([uv, np.ones([uv.shape[0], 1])], axis=-1)
+        d = d / np.linalg.norm(d, axis=-1, keepdims=True)
+        o = np.array([[2, 0, -7.0] for _ in range(d.shape[0])])
+
+        pid1, t1 = pcu.ray_surfel_intersection(p, n, o, d, r=0.5, subdivs=11)
+        t1[np.isinf(t1)] = -1.0
+
+        isector = pcu.RaySurfelIntersector(p, n, r=0.5, subdivs=11)
+        pid2, t2 = isector.intersect_rays(o, d)
+        t2[np.isinf(t2)] = -1.0
+
+        self.assertTrue(np.all(pid1 == pid2))
+        self.assertTrue(np.all(np.abs(t1 - t2) < 1e-7))
 
     def test_laplacian_smoothing(self):
         import point_cloud_utils as pcu
@@ -566,7 +584,6 @@ class TestDenseBindings(unittest.TestCase):
 
         vsmooth3 = pcu.laplacian_smooth_mesh(v, f, 0, use_cotan_weights=True)
         self.assertEqual(vsmooth2.shape, v.shape)
-
 
 
 if __name__ == '__main__':

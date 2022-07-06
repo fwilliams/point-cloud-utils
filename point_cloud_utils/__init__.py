@@ -14,6 +14,7 @@ from ._mesh_io import *
 from ._octree import *
 from ._pointcloud_normals import estimate_point_cloud_normals_knn, estimate_point_cloud_normals_ball
 from ._ray_mesh_intersector import RayMeshIntersector
+from ._ray_point_cloud_intersector import ray_surfel_intersection, surfel_geometry, RaySurfelIntersector
 
 
 def hausdorff_distance(x, y, return_index=False, squared_distances=False, max_points_per_leaf=10):
