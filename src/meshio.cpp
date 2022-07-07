@@ -1,10 +1,3 @@
-#include <igl/readOBJ.h>
-#include <igl/readPLY.h>
-#include <igl/readOFF.h>
-#include <igl/writeOBJ.h>
-#include <igl/writePLY.h>
-#include <igl/writeOFF.h>
-
 #include <unordered_map>
 
 #include <vcg/complex/complex.h>
@@ -16,6 +9,10 @@
 #include <pybind11/stl.h>
 
 #include "common/common.h"
+#include "common/strutil.h"
+#include "common/ply_loader.h"
+#include "common/numpy_utils.h"
+
 
 namespace {
 
@@ -46,39 +43,6 @@ typedef CMesh::VertexIterator VertexIterator;
 typedef CMesh::FaceContainer FaceContainer;
 typedef CMesh::ScalarType ScalarType;
 
-
-bool assert_shape_and_dtype(const pybind11::array& arr, std::string name, pybind11::dtype dtype,
-                            const std::vector<ssize_t>& shape) {
-    if (!arr.dtype().is(dtype)) {
-        throw pybind11::value_error("Invalid dtype for argument '" + name + "'. Expected '" +
-                                    dtype.kind() + "' but got '" + arr.dtype().kind() + "'.");
-    }
-    if (shape.size() != arr.ndim()) {
-        throw pybind11::value_error("Invalid number of dimensions for argument '" + name + "'. Expected " +
-                                    std::to_string(shape.size()) + " but got " + std::to_string(arr.ndim()) + ".");
-    }
-    bool nonempty = true;
-    for (int i = 0; i < shape.size(); i++) {
-        if (arr.shape()[i] <= 0) {
-            nonempty = false;
-        }
-        if (shape[i] < 0) {
-            if (arr.shape()[i] == 0) {
-                continue;
-            } else if (arr.shape()[i] == -shape[i]) {
-                continue;
-            }
-        } else if (shape[i] == arr.shape()[i]) {
-            continue;
-        }
-
-        throw pybind11::value_error("Invalid  shape for argument '" + name + "' at dimension " +
-                                    std::to_string(i) + ". Expected " + std::to_string(shape[i]) +
-                                    " but got " + std::to_string(arr.shape()[i]) + ".");
-    }
-
-    return nonempty;
-}
 
 template <typename Scalar>
 void load_mesh_vcg(CMesh& m, int mask, std::unordered_map<std::string, pybind11::object>& ret) {
@@ -558,6 +522,11 @@ npe_arg(filename, std::string)
 npe_default_arg(dtype, npe::dtype, "float64")
 npe_begin_code()
 {
+    if (strutil::ends_with(strutil::to_lower(strutil::trim_copy(filename)), "ply")) {
+        std::unordered_map<std::string, pybind11::object> ret;
+        load_mesh_ply(filename, ret);
+        return ret;
+    }
     CMesh m;
     int mask = 0;
     tri::io::Importer<CMesh>::LoadMask(filename.c_str(), mask);
@@ -617,6 +586,9 @@ npe_arg(w_normals, pybind11::array)
 npe_arg(w_texcoords, pybind11::array)
 npe_arg(w_texids, pybind11::array)
 
+npe_arg(custom_v_attribs, pybind11::dict)
+npe_arg(custom_f_attribs, pybind11::dict)
+
 npe_arg(textures, std::vector<std::string>)
 npe_arg(normal_maps, std::vector<std::string>)
 
@@ -625,27 +597,83 @@ npe_arg(dtype_i, npe::dtype)
 
 npe_begin_code()
 {
-    write_mesh_vcg<double, int>(filename,
-                   v_positions,
-                   v_normals,
-                   v_texcoords,
-                   v_colors,
-                   v_quality,
-                   v_radius,
-                   v_texids,
-                   v_flags,
-                   f_vertex_ids,
-                   f_normals,
-                   f_colors,
-                   f_quality,
-                   f_flags,
-                   w_colors,
-                   w_normals,
-                   w_texcoords,
-                   w_texids,
-                   textures,
-                   normal_maps,
-                   dtype_f,
-                   dtype_i);
+    if (strutil::ends_with(strutil::to_lower(strutil::trim_copy(filename)), "ply")) {
+        save_mesh_ply(filename,
+                      v_positions,
+                      v_normals,
+                      v_texcoords,
+                      v_colors,
+                      v_quality,
+                      v_radius,
+                      v_texids,
+                      v_flags,
+                      f_vertex_ids,
+                      f_normals,
+                      f_colors,
+                      f_quality,
+                      f_flags,
+                      w_colors,
+                      w_normals,
+                      w_texcoords,
+                      w_texids,
+                      custom_v_attribs,
+                      custom_f_attribs,
+                      textures,
+                      normal_maps,
+                      dtype_f,
+                      dtype_i);
+        return;
+    }
+
+    if (dtype_f.equal(pybind11::dtype::of<std::float_t>())) {
+        write_mesh_vcg<float, int>(filename,
+                                   v_positions,
+                                   v_normals,
+                                   v_texcoords,
+                                   v_colors,
+                                   v_quality,
+                                   v_radius,
+                                   v_texids,
+                                   v_flags,
+                                   f_vertex_ids,
+                                   f_normals,
+                                   f_colors,
+                                   f_quality,
+                                   f_flags,
+                                   w_colors,
+                                   w_normals,
+                                   w_texcoords,
+                                   w_texids,
+                                   textures,
+                                   normal_maps,
+                                   dtype_f,
+                                   dtype_i);
+    } else if (dtype_f.equal(pybind11::dtype::of<std::double_t>())) {
+        write_mesh_vcg<double, int>(filename,
+                                    v_positions,
+                                    v_normals,
+                                    v_texcoords,
+                                    v_colors,
+                                    v_quality,
+                                    v_radius,
+                                    v_texids,
+                                    v_flags,
+                                    f_vertex_ids,
+                                    f_normals,
+                                    f_colors,
+                                    f_quality,
+                                    f_flags,
+                                    w_colors,
+                                    w_normals,
+                                    w_texcoords,
+                                    w_texids,
+                                    textures,
+                                    normal_maps,
+                                    dtype_f,
+                                    dtype_i);
+    } else {
+        throw pybind11::value_error("Invalid dtype in save_mesh");
+    }
+
 }
 npe_end_code()
