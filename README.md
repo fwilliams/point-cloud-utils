@@ -469,11 +469,11 @@ hausdorff_dist = pcu.hausdorff_distance(a, b)
 
 # Find the index pairs of the two points with maximum shortest distancce
 hausdorff_b_to_a, idx_b, idx_a = pcu.one_sided_hausdorff_distance(b, a, return_index=True)
-assert np.abs(np.sum((a[idx_a] - b[idx_b])**2) - hausdorff_b_to_a) < 1e-5, "These values should be almost equal"
+assert np.abs(np.sum((a[idx_a] - b[idx_b])**2) - hausdorff_b_to_a**2) < 1e-5, "These values should be almost equal"
 
 # Find the index pairs of the two points with maximum shortest distancce
 hausdorff_dist, idx_b, idx_a = pcu.hausdorff_distance(b, a, return_index=True)
-assert np.abs(np.sum((a[idx_a] - b[idx_b])**2) - hausdorff_dist) < 1e-5, "These values should be almost equal"
+assert np.abs(np.sum((a[idx_a] - b[idx_b])**2) - hausdorff_dist**2) < 1e-5, "These values should be almost equal"
 
 ```
 
