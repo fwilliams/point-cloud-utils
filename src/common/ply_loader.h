@@ -347,7 +347,7 @@ void save_mesh_ply(std::string filename,
 //    bool has_w_normals = assert_shape_and_dtype(w_normals, "w_normals", dtype_f, {-num_faces, 3, 3});
 //    bool has_w_colors = assert_shape_and_dtype(w_colors, "w_colors", dtype_f, {-num_faces, 3, 4});
     bool has_w_texcoords = assert_shape_and_dtype(w_texcoords, "w_texcoords", dtype_f, {-num_faces, 3, 2});
-    bool has_w_texids = assert_shape_and_dtype(w_texids, "w_texids", dtype_i, {-num_faces, 1});
+    bool has_w_texids = assert_shape_and_dtype(w_texids, "w_texids", dtype_i, {-num_faces, 3});
 
     tinyply::PlyFile plyf;
     tinyply::Type ply_type_f;

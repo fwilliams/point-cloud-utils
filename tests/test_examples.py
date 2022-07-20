@@ -585,6 +585,11 @@ class TestDenseBindings(unittest.TestCase):
         vsmooth3 = pcu.laplacian_smooth_mesh(v, f, 0, use_cotan_weights=True)
         self.assertEqual(vsmooth2.shape, v.shape)
 
+    def test_ply_load_save(self):
+        import point_cloud_utils as pcu
+        v, f = pcu.load_mesh_vf(os.path.join(self.test_path, "duplicated_pcloud.ply"))
+        pcu.save_mesh_vf("test.ply", v, f)
+
 
 if __name__ == '__main__':
     unittest.main()
