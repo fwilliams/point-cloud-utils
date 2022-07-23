@@ -26,6 +26,7 @@ A tuple (cv, nv, cf, nf) where:
     component j
 )igl_Qu8mg5v7";
 npe_function(connected_components)
+npe_doc(connected_components_doc)
 npe_arg(v, dense_float, dense_double)
 npe_arg(f, dense_int, dense_long, dense_longlong)
 npe_begin_code()

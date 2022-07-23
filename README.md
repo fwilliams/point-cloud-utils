@@ -29,6 +29,9 @@
  - Fast ray/mesh intersection using [embree](https://www.embree.org/)
  - Fast ray/surfel intersection using [embree](https://www.embree.org/)
  - Mesh smoothing
+ - Mesh connected components
+ - Mesh decimation
+ - Removing duplicate/unreferenced vertices in point clouds and meshes
  - Making a mesh watertight (based on the [Watertight Manifold](https://github.com/hjwdzh/Manifold) algorithm)
  
 <!-- ![Example of Poisson Disk Sampling](/img/blue_noise.png?raw=true "Example of Poisson Disk Sampling") -->
@@ -72,7 +75,10 @@ The following dependencies are required to install with `pip`:
 - [Compute shortest signed distances to a triangle mesh with fast winding numbers](#compute-shortest-signed-distances-to-a-triangle-mesh-with-fast-winding-numbers)
 - [Compute closest points on a mesh](#compute-closest-points-on-a-mesh)
 - [Deduplicating point clouds and meshes](#deduplicating-point-clouds-and-meshes)
+- [Removing unreferenced mesh verrtices](#removing-unreferenced-mesh-vertices)
 - [Smoothing a mesh](#smoothing-a-mesh)
+- [Computing connected componentes](#computing-connected-components)
+- [Decimating a triangle mesh](#decimating-a-triangle-mesh)
 - [Making a mesh watertight](#making-a-mesh-watertight)
 - [Ray/Mesh intersection](#ray-mesh-intersection)
 - [Ray/Surfel intersection](#ray-surfel-intersection)
@@ -549,6 +555,7 @@ n_dedup = n[idx_i]
 
 #### Meshes:
 ```python
+import point_cloud_utils as pcu
 # v is a (nv, 3)-shaped NumPy array of vertices
 # f is an (nf, 3)-shaped NumPy array of face indexes into v
 # c is a (nv, 4)-shaped numpy array of per-vertex colors
@@ -561,6 +568,22 @@ v_dedup, f_dedup, idx_i, idx_j = pcu.deduplicate_mesh_vertices(v, f, 1e-7)
 
 # Use idx_i to deduplicate the colors
 c_dedup = c[idx_i]
+```
+
+### Removing unreferenced mesh vertices
+```python
+import point_cloud_utils as pcu
+# v is a (nv, 3)-shaped NumPy array of vertices
+# f is an (nf, 3)-shaped NumPy array of face indexes into v
+# c is a (nv, 4)-shaped numpy array of per-vertex colors
+v, f, c = pcu.load_mesh_vfc("my_model.ply")
+
+# Treat any points closer than 1e-7 apart as the same point
+# idx_v is an array of indices mapping each vertex in the output mesh to its index in the input
+# idx_f is an array of indices mapping each face in the output mesh to its index in the input
+v_clean, f_clean, idx_v, idx_f = pcu.deduplicate_mesh_vertices(v, f)
+
+c_clean = c[idx_v]
 ```
 
 
@@ -579,6 +602,39 @@ use_cotan_weights = True  # Whether to use cotangent weighted laplacian
 vsmooth = pcu.laplacian_smooth_mesh(v, f, num_iters, use_cotan_weights=use_cotan_weights)
 ```
 
+### Computing connected components
+```python
+import point_cloud_utils as pcu
+import numpy as np
+
+# v is a nv by 3 NumPy array of vertices
+# f is an nf by 3 NumPy array of face indexes into v
+v, f = pcu.load_mesh_vf("my_model.ply")
+
+# cv is the index of the connected component of each vertex
+# nv is the number of vertices per component
+# cf is the index of the connected component of each face
+# nf is the number of faces per connected component
+cv, nv, cf, nf = pcu.connected_components(v, f)
+
+# Extract mesh of connected component with most faces
+comp_max = np.argmax(nf)
+v_max, f_max, _, _ = pcu.remove_unreferenced_mesh_vertices(v, f[cf == comp_max])
+```
+
+### Decimating a triangle mesh
+```python
+import point_cloud_utils as pcu
+
+v, f = pcu.load_mesh_vf("mymesh.ply")
+target_num_faces = f.shape[0] // 10  # Downsample by a factor of 10
+
+# v_decimate, f_decimate are the vertices/faces of the decimated mesh
+# v_correspondence, f_correspondence are the vertices and faces in the dense mesh which generated each
+# downsampled vertex/face
+v_decimate, f_decimate, v_correspondence, f_correspondence = pcu.decimate_triangle_mesh(v, f, target_num_faces)
+pcu.save_mesh_vf("decimated.ply", v_decimate, f_decimate)
+```
 
 ### Making a Mesh Watertight
 ```python

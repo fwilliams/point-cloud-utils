@@ -145,6 +145,8 @@ npe_add_module(_pcu_internal
   ${CMAKE_CURRENT_SOURCE_DIR}/src/curvature.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/sparse_voxel_grid.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/marching_cubes.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/decimate_mesh.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/remove_unreferenced_mesh_vertices.cpp
   EXTRA_MODULE_FUNCTIONS
   hack_extra_bindings
   hack_extra_ray_mesh_bindings

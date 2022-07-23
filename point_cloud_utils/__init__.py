@@ -7,7 +7,8 @@ from ._pcu_internal import sample_mesh_poisson_disk, sample_mesh_random, \
     closest_points_on_mesh, connected_components, ray_mesh_intersection, laplacian_smooth_mesh, \
     make_mesh_watertight, mesh_principal_curvatures, mesh_mean_and_gaussian_curvatures, \
     morton_add, morton_subtract, \
-    sparse_voxel_grid_boundary, marching_cubes_sparse_voxel_grid
+    sparse_voxel_grid_boundary, marching_cubes_sparse_voxel_grid, decimate_triangle_mesh, \
+    remove_unreferenced_mesh_vertices
 
 from ._sinkhorn import *
 from ._mesh_io import *
