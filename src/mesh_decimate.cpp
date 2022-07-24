@@ -1,6 +1,5 @@
 #include <npe.h>
 #include <igl/decimate.h>
-#include <igl/remove_unreferenced.h>
 
 
 #include "common/common.h"
@@ -63,7 +62,7 @@ npe_begin_code()
         out_face_correspondences = out_f_corr_copy.template cast<npe_Scalar_f>();
         out_vertex_correspondences = out_v_corr_copy.template cast<npe_Scalar_f>();
 
-        return std::make_tuple(npe::move(out_v), npe::move(out_f), npe::move(out_face_correspondences), npe::move(out_vertex_correspondences));
+        return std::make_tuple(npe::move(out_v), npe::move(out_f), npe::move(out_vertex_correspondences), npe::move(out_face_correspondences));
     } else {
         throw pybind11::value_error("Invalid decimation heuristic, must be 'shortest_edge'. Others will be implemented"
                                     " in future versions of Point Cloud Utils.");

@@ -81,44 +81,44 @@ npe_begin_code()
 npe_end_code()
 
 
-const char* mesh_mean_and_gaussian_curvatures_doc = R"Qu8mg5v7(
-Estimate mean and Gaussian curvatures for a mesh
-
-Parameters
-----------
-v : #v by 3 Matrix of mesh vertex 3D positions
-f : #f by 3 Matrix of face (triangle) indices
-
-Returns
--------
-A tuple (kg, kh, d1, d2) where:
-  kg is an array of shape (#v,) of per-vertex Gaussian curvatures
-  kh is an array of shape (#v,) of per-vertex mean curvatures
-)Qu8mg5v7";
-npe_function(mesh_mean_and_gaussian_curvatures)
-npe_arg(v, dense_float, dense_double)
-npe_arg(f, dense_int, dense_long, dense_longlong)
-npe_doc(mesh_mean_and_gaussian_curvatures_doc)
-npe_begin_code()
-{
-    VCGMesh m;
-    vcg_mesh_from_vf(v, f, m);
-	tri::UpdateTopology<VCGMesh>::FaceFace(m);
-	tri::UpdateTopology<VCGMesh>::VertexFace(m);
-    tri::UpdateCurvature<VCGMesh>::MeanAndGaussian(m);
-
-    npe_Matrix_v kg(m.vn, 1), kh(m.vn, 1);
-
-    int vcount = 0;
-    for (VCGMesh::VertexIterator vit = m.vert.begin(); vit != m.vert.end(); vit++) {
-        kg(vcount, 0) = vit->cKg();
-        kh(vcount, 0) = vit->cKh();
-        vcount += 1;
-    }
-
-    return std::make_tuple(npe::move(kg), npe::move(kh));
-}
-npe_end_code()
+//const char* mesh_mean_and_gaussian_curvatures_doc = R"Qu8mg5v7(
+//Estimate mean and Gaussian curvatures for a mesh
+//
+//Parameters
+//----------
+//v : #v by 3 Matrix of mesh vertex 3D positions
+//f : #f by 3 Matrix of face (triangle) indices
+//
+//Returns
+//-------
+//A tuple (kg, kh, d1, d2) where:
+//  kg is an array of shape (#v,) of per-vertex Gaussian curvatures
+//  kh is an array of shape (#v,) of per-vertex mean curvatures
+//)Qu8mg5v7";
+//npe_function(mesh_mean_and_gaussian_curvatures)
+//npe_arg(v, dense_float, dense_double)
+//npe_arg(f, dense_int, dense_long, dense_longlong)
+//npe_doc(mesh_mean_and_gaussian_curvatures_doc)
+//npe_begin_code()
+//{
+//    VCGMesh m;
+//    vcg_mesh_from_vf(v, f, m);
+//	tri::UpdateTopology<VCGMesh>::FaceFace(m);
+//	tri::UpdateTopology<VCGMesh>::VertexFace(m);
+//    tri::UpdateCurvature<VCGMesh>::MeanAndGaussian(m);
+//
+//    npe_Matrix_v kg(m.vn, 1), kh(m.vn, 1);
+//
+//    int vcount = 0;
+//    for (VCGMesh::VertexIterator vit = m.vert.begin(); vit != m.vert.end(); vit++) {
+//        kg(vcount, 0) = vit->cKg();
+//        kh(vcount, 0) = vit->cKh();
+//        vcount += 1;
+//    }
+//
+//    return std::make_tuple(npe::move(kg), npe::move(kh));
+//}
+//npe_end_code()
 
 
 //const char* pointcloud_apss_curvature_doc = R"Qu8mg5v7(

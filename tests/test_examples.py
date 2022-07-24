@@ -590,6 +590,28 @@ class TestDenseBindings(unittest.TestCase):
         v, f = pcu.load_mesh_vf(os.path.join(self.test_path, "duplicated_pcloud.ply"))
         pcu.save_mesh_vf("test.ply", v, f)
 
+    def test_mesh_curvature(self):
+        import point_cloud_utils as pcu
+        import numpy as np
+        v, f = pcu.load_mesh_vf(os.path.join(self.test_path, "bunny.ply"))
+        k1, k2, d1, d2 = pcu.mesh_principal_curvatures(v, f)
+        kh, kg = pcu.mesh_mean_and_gaussian_curvatures(v, f)
+
+        self.assertTrue(np.allclose(0.5 * (k1 + k2), kh))
+        self.assertTrue(np.allclose((k1 * k2), kg))
+
+    def test_mesh_decimation(self):
+        import point_cloud_utils as pcu
+        v, f = pcu.load_mesh_vf(os.path.join(self.test_path, "bunny.ply"))
+        target_num_faces = f.shape[0] // 4
+
+        v_decimate, f_decimate, v_correspondence, f_correspondence = pcu.decimate_triangle_mesh(v, f, target_num_faces)
+        birth_v, birth_f = v[v_correspondence], f[f_correspondence]
+
+        self.assertLess(v_correspondence.max(), v.shape[0])
+        self.assertLess(f_correspondence.max(), f.shape[0])
+        self.assertLessEqual(f_decimate.shape[0], target_num_faces)
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -92,6 +92,7 @@ The following dependencies are required to install with `pip`:
 - [Making a mesh watertight](#making-a-mesh-watertight)
 - [Ray/Mesh intersection](#ray-mesh-intersection)
 - [Ray/Surfel intersection](#ray-surfel-intersection)
+- [Computing curvature on a mesh](#computing-curvature-on-a-mesh)
 
 
 ### Loading meshes and point clouds
@@ -162,6 +163,8 @@ mesh = pcu.TriangleMesh("path/to/mesh")
 For meshes and point clouds with more complex attributes, use `save_triangle_mesh` which accepts a whole host of named
 arguments which control the attributes to save.
 ```python
+import point_cloud_utils as pcu
+
 # save_triangle_mesh accepts a path to save to (The type of mesh  saved is determined by the file extesion),
 # an array of mesh vertices of shape [V, 3], and optional arguments specifying faces, per-mesh attributes,
 # per-face attributes and per-wedge attributes:
@@ -231,7 +234,6 @@ v, f, n, c = pcu.save_mesh_vfnc("path/to/mesh", v, f, n, c)
 Generate 10000 samples on a mesh with poisson disk samples
 ```python
 import point_cloud_utils as pcu
-import numpy as np
 
 # v is a nv by 3 NumPy array of vertices
 # f is an nf by 3 NumPy array of face indexes into v
@@ -243,8 +245,8 @@ v, f, n = pcu.load_mesh_vfn("my_model.ply")
 f_i, bc = pcu.sample_mesh_poisson_disk(v, f, n, 10000)
 
 # Use the face indices and barycentric coordinate to compute sample positions and normals
-v_poisson = pcu.interpolate_barycentric_coords(f, fi, bc, v)
-n_poisson = pcu.interpolate_barycentric_coords(f, fi, bc, n)
+v_poisson = pcu.interpolate_barycentric_coords(f, f_i, bc, v)
+n_poisson = pcu.interpolate_barycentric_coords(f, f_i, bc, n)
 ```
 
 Generate blue noise samples on a mesh separated by approximately 0.01 times the bounding box diagonal
@@ -266,8 +268,8 @@ bbox_diag = np.linalg.norm(bbox)
 f_i, bc = pcu.sample_mesh_poisson_disk(v, f, n, 10000)
 
 # Use the face indices and barycentric coordinate to compute sample positions and normals
-v_sampled = pcu.interpolate_barycentric_coords(f, fi, bc, v)
-n_sampled = pcu.interpolate_barycentric_coords(f, fi, bc, n)
+v_sampled = pcu.interpolate_barycentric_coords(f, f_i, bc, v)
+n_sampled = pcu.interpolate_barycentric_coords(f, f_i, bc, n)
 ```
 
 ### Generate random samples on a mesh
@@ -281,12 +283,12 @@ import numpy as np
 v, f, n = pcu.load_mesh_vfn("my_model.ply")
 
 # Generate random samples on the mesh (v, f, n)
-# f_idx are the face indices of each sample and bc are barycentric coordinates of the sample within a face
-f_idx, bc = pcu.sample_mesh_random(v, f, num_samples=v.shape[0] * 40)
+# f_i are the face indices of each sample and bc are barycentric coordinates of the sample within a face
+f_i, bc = pcu.sample_mesh_random(v, f, num_samples=v.shape[0] * 40)
 
 # Use the face indices and barycentric coordinate to compute sample positions and normals
-v_sampled = pcu.interpolate_barycentric_coords(f, fi, bc, v)
-n_sampled = pcu.interpolate_barycentric_coords(f, fi, bc, n)
+v_sampled = pcu.interpolate_barycentric_coords(f, f_i, bc, v)
+n_sampled = pcu.interpolate_barycentric_coords(f, f_i, bc, n)
 ```
 
 ### Downsample a point cloud to have a blue noise distribution
@@ -395,6 +397,7 @@ v_sampled, n_sampled, c_sampled = pcu.downsample_point_cloud_voxel_grid(sizeof_v
 ### Compute closest points on a mesh
 ```python
 import point_cloud_utils as pcu
+import numpy as np
 
 # v is a nv by 3 NumPy array of vertices
 v, f = pcu.load_mesh_vf("my_model.ply")
@@ -499,14 +502,16 @@ import point_cloud_utils as pcu
 import numpy as np
 
 # Generate two random point sets
-a = np.random.rand(1000, 3)
-b = np.random.rand(500, 3)
+pts_a = np.random.rand(1000, 3)
+pts_b = np.random.rand(500, 3)
 
-# dists_a_to_b is of shape (a.shape[0],) and contains the shortest squared distance
-# between each point in a and the points in b
-# corrs_a_to_b is of shape (a.shape[0],) and contains the index into b of the
-# closest point for each point in a
-dists_a_to_b, corrs_a_to_b = pcu.shortest_distance_pairs(a, b)
+k = 10
+
+# dists_a_to_b is of shape (pts_a.shape[0], k) and contains the (sorted) distances 
+# to the k nearest points in pts_b
+# corrs_a_to_b is of shape (a.shape[0], k) and contains the index into pts_b of the 
+# k closest points for each point in pts_a 
+dists_a_to_b, corrs_a_to_b = pcu.k_nearest_neighbors(pts_a, pts_b, k)
 ```
 
 ### Generating point samples in the square and cube with Lloyd relaxation
@@ -530,6 +535,7 @@ samples_3d = pcu.lloyd_3d(100)
 ### Compute shortest signed distances to a triangle mesh with [fast winding numbers](https://www.dgp.toronto.edu/projects/fast-winding-numbers/)
 ```python
 import point_cloud_utils as pcu
+import numpy as np
 
 # v is a nv by 3 NumPy array of vertices
 # f is an nf by 3 NumPy array of face indexes into v
@@ -557,7 +563,7 @@ p, n = pcu.load_mesh_vn("my_pcloud.ply")
 # Treat any points closer than 1e-7 apart as the same point
 # idx_i is an array of indices such that p_dedup = p[idx_i]
 # idx_j is an array of indices such that p = p_dedup[idx_j]
-p_dedup, idx_i, idx_j  = deduplicate_point_cloud(p, 1e-7)
+p_dedup, idx_i, idx_j  = pcu.deduplicate_point_cloud(p, 1e-7)
 
 # Use idx_i to deduplicate the normals
 n_dedup = n[idx_i]
@@ -661,7 +667,7 @@ v_watertight, f_watertight = pcu.make_mesh_watertight(v, f, resolution=resolutio
 ```
 
 
-# Ray/Mesh Intersection
+### Ray/Mesh Intersection
 ```python
 import point_cloud_utils as pcu
 import numpy as np
@@ -675,7 +681,7 @@ v, f, c = pcu.load_mesh_vfc("my_model.ply")
 uv = np.stack([a.ravel() for a in np.mgrid[-1:1:128j, -1.:1.:128j]], axis=-1)
 ray_d = np.concatenate([uv, np.ones([uv.shape[0], 1])], axis=-1)
 ray_d = ray_d / np.linalg.norm(ray_d, axis=-1, keepdims=True)
-ray_o = np.array([[2.5, 0, -55.0] for _ in range(d.shape[0])])
+ray_o = np.array([[2.5, 0, -55.0] for _ in range(ray_d.shape[0])])
 
 # Intersect rays with geometry
 intersector = pcu.RayMeshIntersector(v, f)
@@ -691,7 +697,7 @@ hit_pos = pcu.interpolate_barycentric_coords(f, fid[hit_mask], bc[hit_mask], v)
 hit_clr = pcu.interpolate_barycentric_coords(f, fid[hit_mask], bc[hit_mask], c)
 ```
 
-# Ray/Surfel Intersection
+### Ray/Surfel Intersection
 ```python
 import point_cloud_utils as pcu
 import numpy as np
@@ -704,7 +710,7 @@ v, n = pcu.load_mesh_vn("my_model.ply")
 uv = np.stack([a.ravel() for a in np.mgrid[-1:1:128j, -1.:1.:128j]], axis=-1)
 ray_d = np.concatenate([uv, np.ones([uv.shape[0], 1])], axis=-1)
 ray_d = ray_d / np.linalg.norm(ray_d, axis=-1, keepdims=True)
-ray_o = np.array([[2.5, 0, -55.0] for _ in range(d.shape[0])])
+ray_o = np.array([[2.5, 0, -55.0] for _ in range(ray_d.shape[0])])
 
 # Intersect rays with surfels with fixed radius 0.55
 intersector = pcu.RaySurfelIntersector(v, n, r=0.55)
@@ -716,4 +722,28 @@ pid, t = intersector.intersect_rays(ray_o, ray_d)
 # Get points intersected by rays
 hit_mask = pid >= 0
 intersected_points = v[pid[hit_mask]]
+```
+
+### Computing curvature on a mesh
+```python
+import point_cloud_utils as pcu
+
+# v is a #v by 3 NumPy array of vertices
+# f is an #f by 3 NumPy array of face indexes into v
+v, f = pcu.load_mesh_vfc("my_model.ply")
+
+# Compute principal min/max curvature magnitudes (k1, k2) and directions (d1, d2) 
+# using the one ring of each vertex
+k1, k2, d1, d2 = pcu.mesh_principal_curvatures(v, f)
+
+# Compute principal min/max curvature magnitudes (k1, k2) and directions (d1, d2) 
+# using a radius. This method is much more robust but requires tuning the radius
+k1, k2, d1, d2 = pcu.mesh_principal_curvatures(v, f, r=0.1)
+
+# Compute Mean (kh) and Gaussian (kg) curvatures using the one ring of each vertex
+kh, kg = pcu.mesh_mean_and_gaussian_curvatures(v, f)
+
+# Compute Mean (kh) and Gaussian (kg) curvatures using using a radius.
+# This method is much more robust but requires tuning the radius
+kh, kg = pcu.mesh_mean_and_gaussian_curvatures(v, f, r=0.1)
 ```
