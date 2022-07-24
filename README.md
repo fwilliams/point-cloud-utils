@@ -4,7 +4,7 @@
 --------------------------
 ![build workflow](https://github.com/fwilliams/point-cloud-utils/actions/workflows/build-wheels-and-publish-to-pipy.yml/badge.svg)
 
-Author: [Francis Williams](https://fwilliams.info)
+Author: [Francis Williams](https://www.fwilliams.info)
 
 If Point Cloud Utils contributes to an academic publication, cite it as:
 ```
