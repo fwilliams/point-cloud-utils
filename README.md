@@ -211,6 +211,7 @@ import point_cloud_utils as pcu
 #   f are the mesh face indices into v of shape [F, 3]
 #   n are the mesh per-vertex normals of shape [V, 3]
 #   c are the mesh per-vertex colors of shape [V, 4]
+v, f, n, c = pcu.load_mesh_vfnc("input_mesh.ply")
 
 # Save mesh vertices and faces
 pcu.save_mesh_vf("path/to/mesh", v, f)
