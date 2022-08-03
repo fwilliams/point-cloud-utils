@@ -70,7 +70,8 @@
         "typeindex": "cpp",
         "typeinfo": "cpp",
         "valarray": "cpp",
-        "variant": "cpp"
+        "variant": "cpp",
+        "geometry": "cpp"
     },
     "python.linting.enabled": true,
     "python.linting.pylintEnabled": true
