@@ -1,0 +1,44 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "${workspaceFolder}/external/numpyeigen/src",
+                "${workspaceFolder}/external/numpyeigen/external/pybind11/include",
+                "${workspaceFolder}/external/numpyeigen/external/eigen",
+                "${workspaceFolder}/external/vcglib",
+                "${workspaceFolder}/external/nanoflann",
+                "${workspaceFolder}/external/manifold/src",
+                "${workspaceFolder}/external/igl",
+                "${workspaceFolder}/external/glm",
+                "${workspaceFolder}/external/embree/include",
+                "${workspaceFolder}/external/geogram/src/lib",
+                "${workspaceFolder}/src",
+                "${workspaceFolder}/external",
+                "/home/fwilliams/miniconda3/envs/featurevdb/include/python3.9"
+            ],
+            "macFrameworkPath": [
+                "${default}"
+            ],
+            "defines": [
+                "${default}"
+            ],
+            "forcedInclude": [
+                "${default}"
+            ],
+            "compileCommands": "${default}",
+            "browse": {
+                "limitSymbolsToIncludedHeaders": true,
+                "databaseFilename": "${default}",
+                "path": [
+                    "${default}"
+                ]
+            },
+            "intelliSenseMode": "${default}",
+            "cppStandard": "c++20",
+            "compilerPath": "${default}",
+            "configurationProvider": "ms-vscode.cmake-tools"
+        }
+    ],
+    "version": 4
+}
