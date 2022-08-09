@@ -11,3 +11,5 @@ __pycache__
 *.so
 dist
 .cache
+.eggs
+.idea

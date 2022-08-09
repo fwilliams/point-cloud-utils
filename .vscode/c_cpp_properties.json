@@ -15,7 +15,7 @@
                 "${workspaceFolder}/external/geogram/src/lib",
                 "${workspaceFolder}/src",
                 "${workspaceFolder}/external",
-                "/home/fwilliams/miniconda3/envs/featurevdb/include/python3.9"
+                "/home/fwilliams/bin/miniconda3/envs/featurevdb/include/python3.9"
             ],
             "macFrameworkPath": [
                 "${default}"
