@@ -86,6 +86,7 @@ The following dependencies are required to install with `pip`:
 - [Compute closest points on a mesh](#compute-closest-points-on-a-mesh)
 - [Deduplicating point clouds and meshes](#deduplicating-point-clouds-and-meshes)
 - [Removing unreferenced mesh verrtices](#removing-unreferenced-mesh-vertices)
+- [Calculating face areas of a mesh](#calculating-face-areas-of-a-mesh)
 - [Smoothing a mesh](#smoothing-a-mesh)
 - [Computing connected componentes](#computing-connected-components)
 - [Decimating a triangle mesh](#decimating-a-triangle-mesh)
@@ -598,9 +599,24 @@ v, f, c = pcu.load_mesh_vfc("my_model.ply")
 # Treat any points closer than 1e-7 apart as the same point
 # idx_v is an array of indices mapping each vertex in the output mesh to its index in the input
 # idx_f is an array of indices mapping each face in the output mesh to its index in the input
-v_clean, f_clean, idx_v, idx_f = pcu.deduplicate_mesh_vertices(v, f)
+v_clean, f_clean, idx_v, idx_f = pcu.remove_unreferenced_mesh_vertices(v, f)
 
 c_clean = c[idx_v]
+```
+
+
+### Calculating face areas of a mesh
+```python
+import point_cloud_utils as pcu
+# v is a (nv, 3)-shaped NumPy array of vertices
+# f is an (nf, 3)-shaped NumPy array of face indexes into v
+v, f = pcu.load_mesh_vf("my_model.ply")
+
+# Compute areas of each face, face_areas[i] is the area of face f[i]
+face_areas = pcu.mesh_face_areas
+
+# Remove faces with small areas
+f_new = f[face_areas < 1e-4]
 ```
 
 

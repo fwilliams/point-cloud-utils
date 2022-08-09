@@ -16,7 +16,7 @@ Returns
 -------
 A numpy array, areas, of shape (#faces,) where areas[i] is the area of the face f[i] 
 )Qu8mg5v7";
-npe_function(triangle_mesh_face_areas)
+npe_function(mesh_face_areas)
 npe_arg(v, dense_float, dense_double)
 npe_arg(f, dense_int, dense_long, dense_longlong)
 npe_default_arg(num_threads, int, -1)

@@ -612,6 +612,32 @@ class TestDenseBindings(unittest.TestCase):
         self.assertLess(f_correspondence.max(), f.shape[0])
         self.assertLessEqual(f_decimate.shape[0], target_num_faces)
 
+    def test_mesh_face_areas(self):
+        import point_cloud_utils as pcu
+        import numpy as np
+
+        v = np.array([
+            [0., 0., 0.],
+            [0., 1., 0.],
+            [1., 0., 0.]
+        ])
+        f = np.array([[0, 1, 2]])
+        a = pcu.mesh_face_areas(v, f)
+        self.assertAlmostEqual(float(a), 0.5)
+
+        v, f = pcu.load_mesh_vf(os.path.join(self.test_path, "bunny.ply"))
+        a = pcu.mesh_face_areas(v, f)
+
+        f2 = f[::2]
+        a2 = pcu.mesh_face_areas(v, f2)
+        self.assertTrue(np.all(a2 == a[::2]))
+        
+        with self.assertRaises(ValueError):
+            pcu.mesh_face_areas(v, np.zeros([0, 3], dtype=int))
+
+        with self.assertRaises(ValueError):
+            pcu.mesh_face_areas(v, np.random.randint(0, v.shape[0] - 1, size=[100, 2], dtype=int))
+
 
 if __name__ == '__main__':
     unittest.main()
