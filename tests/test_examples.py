@@ -606,7 +606,7 @@ class TestDenseBindings(unittest.TestCase):
         mesh = pcu.load_triangle_mesh('test.ply')
         self.assertTrue(np.all(mesh.vertex_data.positions == v))
         self.assertTrue(np.all(mesh.face_data.vertex_ids == f))
-        loaded_scalar_attrib = mesh.vertex_data.custom_attributes['scalar'].squeeze()
+        loaded_scalar_attrib = mesh.vertex_data.custom_attributes['scalar']
         loaded_vector_attrib = mesh.vertex_data.custom_attributes['vector']
         self.assertTrue(np.all(loaded_scalar_attrib == scalar_attrib))
         self.assertTrue(np.all(loaded_vector_attrib == vector_attrib))

@@ -84,9 +84,16 @@ pybind11::array ply_data_to_array(std::shared_ptr<tinyply::PlyData> attrib) {
     if (attrib->buffer.size_bytes() != num_rows * num_cols * bytes_per_scalar) {
         throw std::runtime_error("PLY loading internal error");
     }
-    pybind11::array attrib_array(attrib_dtype, std::vector<size_t>({num_rows, num_cols}));
-    std::memcpy(attrib_array.mutable_data(), attrib->buffer.get(), attrib->buffer.size_bytes());
-    return attrib_array;
+    if (num_cols == 1) {
+        pybind11::array attrib_array(attrib_dtype, std::vector<size_t>({num_rows}));
+        std::memcpy(attrib_array.mutable_data(), attrib->buffer.get(), attrib->buffer.size_bytes());
+        return attrib_array;
+    } else {
+        pybind11::array attrib_array(attrib_dtype, std::vector<size_t>({num_rows, num_cols}));
+        std::memcpy(attrib_array.mutable_data(), attrib->buffer.get(), attrib->buffer.size_bytes());
+        return attrib_array;
+    }
+
 }
 
 std::shared_ptr<tinyply::PlyData> request_properties_from_element(
