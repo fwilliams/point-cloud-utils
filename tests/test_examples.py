@@ -590,6 +590,27 @@ class TestDenseBindings(unittest.TestCase):
         v, f = pcu.load_mesh_vf(os.path.join(self.test_path, "duplicated_pcloud.ply"))
         pcu.save_mesh_vf("test.ply", v, f)
 
+    def test_ply_with_custom_attributes(self):
+        import point_cloud_utils as pcu
+        import numpy as np
+        v, f = pcu.load_mesh_vf(os.path.join(self.test_path, "bunny.ply"))
+        scalar_attrib = np.random.rand(v.shape[0])
+        vector_attrib = np.random.rand(*v.shape)
+        mesh = pcu.TriangleMesh()
+        mesh.vertex_data.positions = v
+        mesh.vertex_data.custom_attributes['scalar'] = scalar_attrib
+        mesh.vertex_data.custom_attributes['vector'] = vector_attrib
+        mesh.face_data.vertex_ids = f
+        mesh.save("test.ply")
+        del mesh
+        mesh = pcu.load_triangle_mesh('test.ply')
+        self.assertTrue(np.all(mesh.vertex_data.positions == v))
+        self.assertTrue(np.all(mesh.face_data.vertex_ids == f))
+        loaded_scalar_attrib = mesh.vertex_data.custom_attributes['scalar'].squeeze()
+        loaded_vector_attrib = mesh.vertex_data.custom_attributes['vector']
+        self.assertTrue(np.all(loaded_scalar_attrib == scalar_attrib))
+        self.assertTrue(np.all(loaded_vector_attrib == vector_attrib))
+
     def test_mesh_curvature(self):
         import point_cloud_utils as pcu
         import numpy as np
