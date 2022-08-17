@@ -94,6 +94,7 @@ The following dependencies are required to install with `pip`:
 - [Ray/Mesh intersection](#ray-mesh-intersection)
 - [Ray/Surfel intersection](#ray-surfel-intersection)
 - [Computing curvature on a mesh](#computing-curvature-on-a-mesh)
+- [Computing a consistent inside/outside for a triangle soup](#computing-a-consistent-inside-and-outside-for-a-triangle-soup)
 
 
 ### Loading meshes and point clouds
@@ -763,4 +764,18 @@ kh, kg = pcu.mesh_mean_and_gaussian_curvatures(v, f)
 # Compute Mean (kh) and Gaussian (kg) curvatures using using a radius.
 # This method is much more robust but requires tuning the radius
 kh, kg = pcu.mesh_mean_and_gaussian_curvatures(v, f, r=0.1)
+```
+
+### Computing a consistent inside and outside for a triangle soup
+```python
+import point_cloud_utils as pcu
+import numpy as np
+
+v, f = pcu.load_mesh_vf("my_model.ply")
+
+# We're going to evaluate the inside/outside sign of 1000 points
+p = np.random.rand(1000, 3)
+
+# w has shape (1000,) where w[i] is the sign (positive for outside, negative for inside) of p[i]
+w = pcu.triangle_soup_fast_winding_number(v, f, p.astype(v.dtype))
 ```

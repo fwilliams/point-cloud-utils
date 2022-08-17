@@ -148,6 +148,7 @@ npe_add_module(_pcu_internal
   ${CMAKE_CURRENT_SOURCE_DIR}/src/mesh_decimate.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/remove_unreferenced_mesh_vertices.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/face_areas.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/fast_winding_numbers.cpp
   EXTRA_MODULE_FUNCTIONS
   hack_extra_bindings
   hack_extra_ray_mesh_bindings

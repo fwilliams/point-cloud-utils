@@ -659,6 +659,29 @@ class TestDenseBindings(unittest.TestCase):
         with self.assertRaises(ValueError):
             pcu.mesh_face_areas(v, np.random.randint(0, v.shape[0] - 1, size=[100, 2], dtype=int))
 
+    def test_connected_components(self):
+        import point_cloud_utils as pcu
+        import numpy as np
+
+        v, f = pcu.load_mesh_vf(os.path.join(self.test_path, "bunny.ply"))
+
+        f = np.concatenate([f, f + v.shape[0]])
+        v = np.concatenate([v, v + 1.0])
+
+        cv, nv, cf, nf = pcu.connected_components(v, f)
+        self.assertEqual(nv.sum(), v.shape[0])
+        self.assertEqual(nf.sum(), f.shape[0])
+
+
+    def test_triangle_soup_fast_winding_number(self):
+        import point_cloud_utils as pcu
+        import numpy as np
+
+        v, f = pcu.load_mesh_vf(os.path.join(self.test_path, "bunny.ply"))
+
+        p = np.random.rand(1000, 3)
+        w = pcu.triangle_soup_fast_winding_number(v, f, p.astype(v.dtype))
+
 
 if __name__ == '__main__':
     unittest.main()
