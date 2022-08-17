@@ -74,5 +74,8 @@
         "geometry": "cpp"
     },
     "python.linting.enabled": true,
-    "python.linting.pylintEnabled": true
+    "python.linting.pylintEnabled": true,
+    "cmake.environment": {
+        "PATH": "${env:CONDA_PREFIX}/envs/point_cloud_utils/bin:${env:PATH}"
+    }
 }
