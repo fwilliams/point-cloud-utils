@@ -79,6 +79,7 @@ The following dependencies are required to install with `pip`:
 - [Estimating normals from a point cloud](#estimating-normals-from-a-point-cloud)
 - [Computing mesh normals per vertex](#computing-mesh-normals-per-vertex)
 - [Computing mesh normals per face](#computing-mesh-normals-per-face)
+- [Consistently orienting faces of a mesh](#consistently-orienting-faces-of-a-mesh)
 - [Approximate Wasserstein (Sinkhorn) distance between two point clouds](#approximate-wasserstein-sinkhorn-distance-between-two-point-clouds)
 - [Chamfer distance between two point clouds](#chamfer-distance-between-two-point-clouds)
 - [Hausdorff distance between two point clouds](#hausdorff-distance-between-two-point-clouds)
@@ -462,6 +463,22 @@ v, f = pcu.load_mesh_vf("my_model.ply")
 # Estimate per-face normal using the average of adjacent face normals
 # n is a NumPy array of shape [nf, 3] where n[i] is the normal of face f[i]
 n = pcu.estimate_mesh_face_normals(v, f)
+```
+
+
+### Consistently orienting faces of a mesh
+```python
+import point_cloud_utils as pcu
+
+# v is a nv by 3 NumPy array of vertices
+# f is an nf by 3 NumPy array of face indexes into v
+v, f = pcu.load_mesh_vf("my_model.ply")
+
+# Re-orient faces in a mesh so they are consistent within each connected component
+# f_orient is a (nf, 3)-shaped array of re-oriented faces indexes into v
+# f_comp_ids is a (nf,)-shaped array of component ids for each face
+#    i.e. f_comp_ids[i] is the connected component id of face f[i] (and f_orient[i])
+f_oriented, f_comp_ids = pcu.orient_mesh_faces(f)
 ```
 
 

@@ -3,7 +3,7 @@ from warnings import warn
 
 from ._pcu_internal import sample_mesh_poisson_disk, sample_mesh_random, \
     downsample_point_cloud_poisson_disk, estimate_mesh_vertex_normals, \
-    estimate_mesh_face_normals, \
+    estimate_mesh_face_normals, orient_mesh_faces, \
     k_nearest_neighbors, one_sided_hausdorff_distance, \
     morton_encode, morton_decode, morton_knn, \
     lloyd_2d, lloyd_3d, voronoi_centroids_unit_cube, sample_mesh_lloyd, \

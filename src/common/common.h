@@ -108,6 +108,25 @@ void validate_point_cloud_normals(const TV& v, const TN& n, bool allow_0=true) {
     }
 }
 
+template <typename TF>
+//void validate_mesh(const Eigen::MatrixBase<TV>& v, const Eigen::MatrixBase<TF>& f) {
+void validate_mesh_faces(const TF& f) {
+  if (f.rows() == 0) {
+    std::stringstream ss;
+    ss << "Invalid input faces with zero elements: f must have shape (n, 3) where n > 0. Got f.shape =("
+       << f.rows() << ", " << f.cols() << ").";
+    throw pybind11::value_error(ss.str());
+  }
+
+  if (f.cols() != 3) {
+    std::stringstream ss;
+    ss << "Only triangle inputs are supported: f must have shape (n, 3) where n > 0. Got f.shape =("
+       << f.rows() << ", " << f.cols() << ").";
+    throw pybind11::value_error(ss.str());
+  }
+}
+
+
 
 template <typename TV, typename TF>
 //void validate_mesh(const Eigen::MatrixBase<TV>& v, const Eigen::MatrixBase<TF>& f) {

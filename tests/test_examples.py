@@ -696,7 +696,15 @@ class TestDenseBindings(unittest.TestCase):
         nf = pcu.estimate_mesh_face_normals(v, f)
         self.assertEqual(nf.shape, f.shape)
 
+    def test_orient_mesh_faces(self):
+        import point_cloud_utils as pcu
+        import numpy as np
 
+        v, f = pcu.load_mesh_vf(os.path.join(self.test_path, "bunny.ply"))
+        f_oriented, f_comp_ids = pcu.orient_mesh_faces(f)
+        self.assertEqual(f_oriented.shape, f.shape)
+        self.assertTrue(np.all(f_oriented == f))
+        self.assertTrue(np.all(f_comp_ids == 0))
 
 if __name__ == '__main__':
     unittest.main()

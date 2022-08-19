@@ -1,8 +1,8 @@
 #include <npe.h>
-#include <vcg/complex/complex.h>
-#include <vcg/complex/algorithms/pointcloud_normal.h>
+
 #include <igl/per_vertex_normals.h>
 #include <igl/per_face_normals.h>
+
 #include <string>
 
 #include "common/common.h"
@@ -14,13 +14,13 @@ Compute vertex normals of a mesh from its vertices and faces using face area wei
 
 Parameters
 ----------
-v : #v by 3 Matrix of mesh vertex 3D positions
-f : #f by 3 Matrix of face (triangle) indices
+v : (#v, 3)-shaped NumPy array of mesh vertex 3D positions
+f : (#f, 3)-shaped NumPy array of face (triangle) indices
 weighting_type : Weighting type must be one of 'uniform', 'angle', or 'area' (default is 'uniform')
 
 Returns
 -------
-n : list of vertex normals of shape #v by 3
+n : (#v, 3)-shaped NumPy array of vertex normals (i.e. n[i] is the normal at vertex v[i])
 
 See also
 --------
@@ -62,12 +62,13 @@ Compute vertex normals of a mesh from its vertices and faces using face area wei
 
 Parameters
 ----------
-v : #v by 3 Matrix of mesh vertex 3D positions
-f : #f by 3 Matrix of face (triangle) indices
+v : (#v, 3)-shaped NumPy array of mesh vertex 3D positions
+f : (#f, 3)-shaped NumPy array of face (triangle) indices
 
 Returns
 -------
-n : list of face normals of shape #f by 3. Note that any degenerate faces will have a zero normal.
+n : (#f, 3)-shaped NumPy array of face normals (i.e. n[i] is the normal at face f[i]). 
+    Note that any degenerate faces will have a zero normal.
 
 See also
 --------
@@ -78,7 +79,6 @@ npe_function(estimate_mesh_face_normals)
 npe_doc(estimate_mesh_face_normals_doc)
 npe_arg(v, dense_float, dense_double)
 npe_arg(f, dense_int, dense_longlong, dense_uint, dense_ulonglong)
-npe_default_arg(weighting_type, std::string, std::string("uniform"))
 npe_begin_code()
 {
     validate_mesh(v, f);
