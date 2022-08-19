@@ -682,6 +682,21 @@ class TestDenseBindings(unittest.TestCase):
         p = np.random.rand(1000, 3)
         w = pcu.triangle_soup_fast_winding_number(v, f, p.astype(v.dtype))
 
+    def test_per_vertex_normals(self):
+        import point_cloud_utils as pcu
+        import numpy as np
+        v, f = pcu.load_mesh_vf(os.path.join(self.test_path, "bunny.ply"))
+        nv = pcu.estimate_mesh_vertex_normals(v, f)
+        self.assertEqual(nv.shape, v.shape)
+    
+    def test_per_face_normals(self):
+        import point_cloud_utils as pcu
+        import numpy as np
+        v, f = pcu.load_mesh_vf(os.path.join(self.test_path, "bunny.ply"))
+        nf = pcu.estimate_mesh_face_normals(v, f)
+        self.assertEqual(nf.shape, f.shape)
+
+
 
 if __name__ == '__main__':
     unittest.main()

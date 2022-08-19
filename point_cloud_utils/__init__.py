@@ -1,5 +1,9 @@
+from warnings import warn
+
+
 from ._pcu_internal import sample_mesh_poisson_disk, sample_mesh_random, \
-    downsample_point_cloud_poisson_disk, estimate_mesh_normals, \
+    downsample_point_cloud_poisson_disk, estimate_mesh_vertex_normals, \
+    estimate_mesh_face_normals, \
     k_nearest_neighbors, one_sided_hausdorff_distance, \
     morton_encode, morton_decode, morton_knn, \
     lloyd_2d, lloyd_3d, voronoi_centroids_unit_cube, sample_mesh_lloyd, \
@@ -16,6 +20,32 @@ from ._octree import *
 from ._pointcloud_normals import estimate_point_cloud_normals_knn, estimate_point_cloud_normals_ball
 from ._ray_mesh_intersector import RayMeshIntersector
 from ._ray_point_cloud_intersector import ray_surfel_intersection, surfel_geometry, RaySurfelIntersector
+
+
+def estimate_mesh_normals(v, f, weighting_type):
+    """
+    WARNING: This function is deprecated. Use estimate_mesh_vertex_normals instead!
+
+    Compute vertex normals of a mesh from its vertices and faces using face area weighting
+
+    Parameters
+    ----------
+    v : #v by 3 Matrix of mesh vertex 3D positions
+    f : #f by 3 Matrix of face (triangle) indices
+    weighting_type : Weighting type must be one of 'uniform', 'angle', or 'area' (default is 'uniform')
+
+    Returns
+    -------
+    n : list of vertex normals of shape #v by 3
+
+    See also
+    --------
+    estimate_mesh_face_normals
+
+    """
+    warn('estimate_mesh_normals is deprecated. Use estimate_mesh_vertex_normals instead', 
+         DeprecationWarning, stacklevel=2)
+    return estimate_mesh_vertex_normals(v, f, weighting_type)
 
 
 def mesh_mean_and_gaussian_curvatures(v, f, r=-1.0):

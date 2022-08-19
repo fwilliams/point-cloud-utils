@@ -77,6 +77,8 @@ The following dependencies are required to install with `pip`:
 - [Downsample a point cloud to have a blue noise distribution](#downsample-a-point-cloud-to-have-a-blue-noise-distribution)
 - [Downsample a point cloud on a voxel grid](#downsample-a-point-cloud-on-a-voxel-grid)
 - [Estimating normals from a point cloud](#estimating-normals-from-a-point-cloud)
+- [Computing mesh normals per vertex](#computing-mesh-normals-per-vertex)
+- [Computing mesh normals per face](#computing-mesh-normals-per-face)
 - [Approximate Wasserstein (Sinkhorn) distance between two point clouds](#approximate-wasserstein-sinkhorn-distance-between-two-point-clouds)
 - [Chamfer distance between two point clouds](#chamfer-distance-between-two-point-clouds)
 - [Hausdorff distance between two point clouds](#hausdorff-distance-between-two-point-clouds)
@@ -321,7 +323,7 @@ import numpy as np
 
 # v is a nv by 3 NumPy array of vertices
 # n is a nv by 3 NumPy array of vertex normals
-# n is a nv by 4 NumPy array of vertex colors
+# c is a nv by 4 NumPy array of vertex colors
 v, n, c = pcu.load_mesh_vnc("my_model.ply")
 
 # We'll use a voxel grid with 128 voxels per axis
@@ -345,7 +347,7 @@ import numpy as np
 
 # v is a nv by 3 NumPy array of vertices
 # n is a nv by 3 NumPy array of vertex normals
-# n is a nv by 4 NumPy array of vertex colors
+# c is a nv by 4 NumPy array of vertex colors
 v, n, c = pcu.load_mesh_vnc("my_model.ply")
 
 # We'll use a voxel grid with 128 voxels per axis
@@ -376,7 +378,7 @@ import numpy as np
 
 # v is a nv by 3 NumPy array of vertices
 # n is a nv by 3 NumPy array of vertex normals
-# n is a nv by 4 NumPy array of vertex colors
+# c is a nv by 4 NumPy array of vertex colors
 v, n, c = pcu.load_mesh_vnc("my_model.ply")
 
 # We'll use a voxel grid with 128 voxels per axis
@@ -432,6 +434,34 @@ n = pcu.estimate_point_cloud_normals_knn(v, 16)
 
 # Estimate a normal at each point (row of v) using its neighbors within a 0.1-radius ball
 n = pcu.estimate_point_cloud_normals_ball(v, 0.1)
+```
+
+
+### Computing mesh normals per vertex
+```python
+import point_cloud_utils as pcu
+
+# v is a nv by 3 NumPy array of vertices
+# f is an nf by 3 NumPy array of face indexes into v
+v, f = pcu.load_mesh_vf("my_model.ply")
+
+# Estimate per-vertex normal using the average of adjacent face normals
+# n is a NumPy array of shape [nv, 3] where n[i] is the normal of vertex v[i]
+n = pcu.estimate_mesh_vertex_normals(v, f)
+```
+
+
+### Computing mesh normals per face
+```python
+import point_cloud_utils as pcu
+
+# v is a nv by 3 NumPy array of vertices
+# f is an nf by 3 NumPy array of face indexes into v
+v, f = pcu.load_mesh_vf("my_model.ply")
+
+# Estimate per-face normal using the average of adjacent face normals
+# n is a NumPy array of shape [nf, 3] where n[i] is the normal of face f[i]
+n = pcu.estimate_mesh_face_normals(v, f)
 ```
 
 
