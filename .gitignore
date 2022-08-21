@@ -14,3 +14,10 @@ dist
 .eggs
 .idea
 test.ply
+cmake-build-debug/
+cmake-build-release/
+external/embree/
+external/manifold/
+external/simde/
+external/tinyply/
+external/numpyeigen/

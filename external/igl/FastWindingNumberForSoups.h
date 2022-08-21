@@ -371,7 +371,16 @@ static inline fpreal64 SYSabs(fpreal64 a) { return ::fabs(a); }
 #define CPU_HAS_SIMD_INSTR	1
 #define VM_SSE_STYLE		1
 
+#ifdef NO_NATIVE_SSE
+/*
+ * NATIVE_ALIASES shouldn't really be used for true multiplatform development, or any development really,
+ * but since we are switching out the headers completely and only use sse2.h on platforms without SSE, this should be fine.
+ */
+#define SIMDE_ENABLE_NATIVE_ALIASES
+#include "../simde/simde/x86/sse2.h"
+#else
 #include <emmintrin.h>
+#endif
 
 #if defined(__SSE4_1__)
 #define VM_SSE41_STYLE		1

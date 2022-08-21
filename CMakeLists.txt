@@ -6,8 +6,15 @@ set(CMAKE_BUILD_TYPE "Release")
 option(GEOGRAM_WITH_HLBFGS "Non-linear solver (Yang Liu's HLBFGS)"             ON)
 #option(NPE_WITH_EIGEN      "Whether to use the bundled version of Eigen"       ON)
 option(EIGEN_WITH_MKL      "Whether to build Eigen with intel MKL or not"      OFF)
+# Turn this off if you want to build on Arm.
+option(NATIVE_SSE "Weather to use the default optimization setup" OFF)
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
+
+if(NOT NATIVE_SSE)
+  # set this to empty so it is not later set to -msse<version>
+  set(FLAGS_SSE2 " ")
+endif()
 
 # Download NumpyEigen if we haven't already
 set(EXTERNAL_DEP_DIR ${CMAKE_CURRENT_SOURCE_DIR}/external)
@@ -24,6 +31,14 @@ download_dep(tinyply
         GIT_REPOSITORY https://github.com/fwilliams/tinyply.git
         GIT_TAG point_cloud_utils
 )
+
+if(NOT NATIVE_SSE)
+  # igl has sse hardcoded, so use simde to redirect to the platforms native simd instructions.
+  download_dep(simde
+          GIT_REPOSITORY https://github.com/simd-everywhere/simde.git
+  )
+endif()
+
 
 # Build manifold as a static lib
 download_dep(manifold
@@ -80,7 +95,7 @@ set(EMBREE_DIR "${EXTERNAL_DEP_DIR}/embree")
 if(NOT TARGET embree)
   download_dep(embree
     GIT_REPOSITORY https://github.com/embree/embree.git
-    GIT_TAG        v3.12.1
+    GIT_TAG        v3.13.4
   )
 
   # Note: On macOS, building embree as a static lib can only be done with a single ISA target.
@@ -105,8 +120,13 @@ endif()
 # Build geogram
 set(THIRD_PARTY_DIR ${EXTERNAL_DEP_DIR})
 include(geogram)
+
 if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-  SET_TARGET_PROPERTIES(geogram PROPERTIES COMPILE_FLAGS -fopenmp LINK_FLAGS -fopenmp)
+  if(NATIVE_SSE)
+    SET_TARGET_PROPERTIES(geogram PROPERTIES COMPILE_FLAGS -fopenmp LINK_FLAGS -fopenmp)
+  else()
+    SET_TARGET_PROPERTIES(geogram PROPERTIES COMPILE_FLAGS -fopenmp -fNO_NATIVE_SSE LINK_FLAGS -fopenmp)
+  endif()
   target_compile_options(geogram PUBLIC    -fopenmp)
   SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fopenmp")
 
@@ -169,7 +189,11 @@ target_link_libraries(_pcu_internal PRIVATE embree)
 target_link_libraries(_pcu_internal PRIVATE geogram)
 target_link_libraries(_pcu_internal PRIVATE manifold)
 # target_link_libraries(_pcu_internal PRIVATE mls_utils)
-set_target_properties(_pcu_internal PROPERTIES COMPILE_FLAGS "-fvisibility=hidden -msse3")
+if(NATIVE_SSE)
+  set_target_properties(_pcu_internal PROPERTIES COMPILE_FLAGS "-fvisibility=hidden -msse3")
+else()
+  set_target_properties(_pcu_internal PROPERTIES COMPILE_FLAGS "-fvisibility=hidden -dNO_NATIVE_SSE")
+endif()
 
 if(MSVC)
   target_compile_options(_pcu_internal PRIVATE
