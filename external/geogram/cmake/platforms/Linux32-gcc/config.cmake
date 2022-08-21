@@ -1,7 +1,12 @@
 set(VORPALINE_ARCH_32 true)
 include(${GEOGRAM_SOURCE_DIR}/cmake/platforms/Linux-gcc.cmake)
-add_flags(CMAKE_CXX_FLAGS -m32)
-add_flags(CMAKE_C_FLAGS -m32)
+
+IF(${CMAKE_SYSTEM_PROCESSOR} MATCHES "arm")
+    add_flags(CMAKE_CXX_FLAGS -m32)
+    add_flags(CMAKE_C_FLAGS -m32)
+ELSE(${CMAKE_SYSTEM_PROCESSOR} MATCHES "arm")
+    message("NOT ON ARM CPU! Omitting arm specific flag.")
+ENDIF(${CMAKE_SYSTEM_PROCESSOR} MATCHES "arm")
 
 # Configure FPU to use SSE instructions (IEEE rounding semantics)
 # In the default 387 mode, rounding is unpredictable
