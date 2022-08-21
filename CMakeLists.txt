@@ -7,7 +7,7 @@ option(GEOGRAM_WITH_HLBFGS "Non-linear solver (Yang Liu's HLBFGS)"             O
 #option(NPE_WITH_EIGEN      "Whether to use the bundled version of Eigen"       ON)
 option(EIGEN_WITH_MKL      "Whether to build Eigen with intel MKL or not"      OFF)
 # Turn this off if you want to build on Arm.
-option(NATIVE_SSE "Weather to use the default optimization setup" OFF)
+option(NATIVE_SSE "Weather to use the default optimization setup" ON)
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
