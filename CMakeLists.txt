@@ -13,7 +13,9 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
 if(NOT NATIVE_SSE)
   # set this to empty so it is not later set to -msse<version>
-  set(FLAGS_SSE2 " ")
+  # also high-jack for deprecated compile warnings.
+  set(FLAGS_SSE2 "-flax-vector-conversions")
+  add_compile_definitions(NO_NATIVE_SSE)
 endif()
 
 # Download NumpyEigen if we haven't already
@@ -122,11 +124,7 @@ set(THIRD_PARTY_DIR ${EXTERNAL_DEP_DIR})
 include(geogram)
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-  if(NATIVE_SSE)
-    SET_TARGET_PROPERTIES(geogram PROPERTIES COMPILE_FLAGS -fopenmp LINK_FLAGS -fopenmp)
-  else()
-    SET_TARGET_PROPERTIES(geogram PROPERTIES COMPILE_FLAGS -fopenmp -fNO_NATIVE_SSE LINK_FLAGS -fopenmp)
-  endif()
+  SET_TARGET_PROPERTIES(geogram PROPERTIES COMPILE_FLAGS -fopenmp LINK_FLAGS -fopenmp)
   target_compile_options(geogram PUBLIC    -fopenmp)
   SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fopenmp")
 
@@ -192,7 +190,7 @@ target_link_libraries(_pcu_internal PRIVATE manifold)
 if(NATIVE_SSE)
   set_target_properties(_pcu_internal PROPERTIES COMPILE_FLAGS "-fvisibility=hidden -msse3")
 else()
-  set_target_properties(_pcu_internal PROPERTIES COMPILE_FLAGS "-fvisibility=hidden -dNO_NATIVE_SSE")
+  set_target_properties(_pcu_internal PROPERTIES COMPILE_FLAGS "-fvisibility=hidden")
 endif()
 
 if(MSVC)
