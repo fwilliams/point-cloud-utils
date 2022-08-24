@@ -418,6 +418,10 @@ def save_mesh_vfn(filename, v, f, n, dtype=np.float32):
     save_triangle_mesh(filename, v=v, f=f, vn=n, dtype=dtype)
 
 
+def save_mesh_vfc(filename, v, f, c, dtype=np.float32):
+    save_triangle_mesh(filename, v=v, f=f, vc=c, dtype=dtype)
+    
+
 def save_mesh_vfnc(filename, v, f, n, c, dtype=np.float32):
     save_triangle_mesh(filename, v=v, f=f, vn=n, vc=c, dtype=dtype)
 
@@ -450,6 +454,11 @@ def load_mesh_vc(filename, dtype=float):
 def load_mesh_vnc(filename, dtype=float):
     ret = load_triangle_mesh(filename, dtype=dtype)
     return ret.v, ret.vn, ret.vc
+
+
+def load_mesh_vfc(filename, dtype=float):
+    ret = load_triangle_mesh(filename, dtype=dtype)
+    return ret.v, ret.f, ret.vc
 
 
 def load_mesh_vfn(filename, dtype=float):
