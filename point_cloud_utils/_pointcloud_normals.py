@@ -26,8 +26,9 @@ def estimate_point_cloud_normals_knn(points, num_neighbors, view_directions=None
 
     Returns
     -------
-    A tuple (p, n) of filtered points and normals (filtered because some points may be discarded), where:
-      - p is an (m, 3)-shaped Numpy array of 3d points
+    A tuple (idx, n) of filtered point indexes and normals (filtered because some points 
+    may be discarded), where:
+      - idx is an (m, 1)-shaped Numpy array of indices into points
       - n is an (m, 3)-shaped Numpy array of unit normals for each point in p
 
     See Also

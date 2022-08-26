@@ -64,9 +64,9 @@ IGL_INLINE void igl::fast_winding_number(
       for(int j = 0; j < point_indices[index].size(); j++){
           int curr_point_index = point_indices[index][j];
         
-          areatotal += A(curr_point_index);
-          masscenter += A(curr_point_index)*P.row(curr_point_index);
-          zeroth_expansion += A(curr_point_index)*N.row(curr_point_index);
+          areatotal += A(curr_point_index, 0);
+          masscenter += A(curr_point_index, 0)*P.row(curr_point_index);
+          zeroth_expansion += A(curr_point_index, 0)*N.row(curr_point_index);
       }
     
       masscenter = masscenter/areatotal;
@@ -89,7 +89,7 @@ IGL_INLINE void igl::fast_winding_number(
           //Calculate higher order terms if necessary
           Eigen::Matrix<real_ec,3,3> TempCoeffs;
           if(EC.cols() >= (3+9)){
-              TempCoeffs = A(curr_point_index)*point.transpose()*
+              TempCoeffs = A(curr_point_index, 0)*point.transpose()*
                               N.row(curr_point_index);
               EC.block(index,3,1,9) +=
               Eigen::Map<Eigen::Matrix<real_ec,1,9> >(TempCoeffs.data(),
@@ -98,7 +98,7 @@ IGL_INLINE void igl::fast_winding_number(
         
           if(EC.cols() == (3+9+27)){
               for(int k = 0; k < 3; k++){
-                  TempCoeffs = 0.5 * point(k) * (A(curr_point_index)*
+                  TempCoeffs = 0.5 * point(k) * (A(curr_point_index, 0)*
                                 point.transpose()*N.row(curr_point_index));
                   EC.block(index,12+9*k,1,9) += Eigen::Map<
                     Eigen::Matrix<real_ec,1,9> >(TempCoeffs.data(),
@@ -258,7 +258,7 @@ IGL_INLINE void igl::fast_winding_number(
         {
           int curr_row = point_indices[index][j];
           wn += direct_eval(P.row(curr_row)-query,
-                            N.row(curr_row)*A(curr_row));
+                            N.row(curr_row)*A(curr_row, 0));
         }
       }
       //Non-Leaf Case
@@ -278,7 +278,7 @@ IGL_INLINE void igl::fast_winding_number(
                 {
                   int curr_row = point_indices[child_index][j];
                   wn += direct_eval(P.row(curr_row)-query,
-                                    N.row(curr_row)*A(curr_row));
+                                    N.row(curr_row)*A(curr_row, 0));
                 }
               }else{
                 wn += expansion_eval(CMciq,child_index);
@@ -310,7 +310,7 @@ IGL_INLINE void igl::fast_winding_number(
       double wn = 0;
       for(int j = 0; j <P.rows(); j++)
       {
-        wn += direct_eval(P.row(j)-Q.row(iter),N.row(j)*A(j));
+        wn += direct_eval(P.row(j)-Q.row(iter),N.row(j)*A(j, 0));
       }
       WN(iter) = wn;
     },1000);

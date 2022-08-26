@@ -10,7 +10,7 @@ from ._pcu_internal import sample_mesh_poisson_disk, sample_mesh_random, \
     deduplicate_point_cloud, deduplicate_mesh_vertices, signed_distance_to_mesh, \
     closest_points_on_mesh, connected_components, ray_mesh_intersection, laplacian_smooth_mesh, \
     make_mesh_watertight, mesh_principal_curvatures, \
-    morton_add, morton_subtract, \
+    morton_add, morton_subtract, point_cloud_fast_winding_number, \
     sparse_voxel_grid_boundary, marching_cubes_sparse_voxel_grid, decimate_triangle_mesh, \
     remove_unreferenced_mesh_vertices, mesh_face_areas, triangle_soup_fast_winding_number
 
