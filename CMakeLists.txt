@@ -38,7 +38,8 @@ if(NOT NATIVE_SSE)
   # igl has sse hardcoded, so use simde to redirect to the platforms native simd instructions.
   download_dep(simde
           GIT_REPOSITORY https://github.com/simd-everywhere/simde.git
-  )
+          GIT_TAG dd0b662fd8cf4b1617dbbb4d08aa053e512b08e4
+          )
 endif()
 
 
