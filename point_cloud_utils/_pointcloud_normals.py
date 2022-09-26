@@ -9,7 +9,7 @@ def estimate_point_cloud_normals_knn(points, num_neighbors, view_directions=None
 
     This function can optionally consider directions to the sensor for each point to compute neighborhoods of points
     which are all facing the same direction, and align the final normal directions.
-    
+
     Parameters
     ----------
     points: (n, 3)-shaped NumPy array of point positions (each row is a point)
@@ -26,7 +26,7 @@ def estimate_point_cloud_normals_knn(points, num_neighbors, view_directions=None
 
     Returns
     -------
-    A tuple (idx, n) of filtered point indexes and normals (filtered because some points 
+    A tuple (idx, n) of filtered point indexes and normals (filtered because some points
     may be discarded), where:
       - idx is an (m, 1)-shaped Numpy array of indices into points
       - n is an (m, 3)-shaped Numpy array of unit normals for each point in p
@@ -56,9 +56,10 @@ def estimate_point_cloud_normals_knn(points, num_neighbors, view_directions=None
     if points.shape[-1] != 3:
         raise ValueError("Invalid shape for view_directions, must be (n, 3) but got " + str(points.shape))
 
+    seed = np.random.randint(2 ** 31 - 1)
     points, normals = estimate_point_cloud_normals_knn_internal(points, view_directions, num_neighbors,
                                                                 max_points_per_leaf, drop_angle_threshold,
-                                                                num_threads)
+                                                                num_threads, seed)
 
     return points, normals
 
@@ -66,7 +67,8 @@ def estimate_point_cloud_normals_knn(points, num_neighbors, view_directions=None
 def estimate_point_cloud_normals_ball(points, ball_radius, view_directions=None,
                                       drop_angle_threshold=np.deg2rad(90.0),
                                       min_pts_per_ball=3,
-                                      weight_function="rbf",
+                                      max_pts_per_ball=-1,
+                                      weight_function="constant",
                                       max_points_per_leaf=10, num_threads=-1):
     """
     Estimate normals for a point cloud by locally fitting a plane to all points within a radius of each point
@@ -84,9 +86,11 @@ def estimate_point_cloud_normals_ball(points, ball_radius, view_directions=None,
     drop_angle_threshold: If view_directions is passed in, drop points whose angle between the normal and view direction
                           exceeds drop_angle_threshold (in radians). Useful for filtering out low quality points.
     min_pts_per_ball: Discard points whose neighborhood contains fewer than min_pts_per_ball points.
+    max_pts_per_ball: If set to a positive number, then only use max_pts_per_ball points within each neighborhood
+                      whose number of points exceeds this value.
     weight_function: Weighting function for points in a neighborhood. Must be one of 'constant' or 'rbf' where:
-      - 'rbf' weights points as (1 - d/r)^4 * (4* d/r + 1) where d = distance to the center point and r = ball_radius
       - 'constant' weights points as 1.0 for every point
+      - 'rbf' weights points as (1 - d/r)^4 * (4* d/r + 1) where d = distance to the center point and r = ball_radius
     max_points_per_leaf: Maximum number of points in each leaf node of the KD-tree used for nearest neighbor queries.
                           Tuning this can potentially improve performance on large point clouds.
     num_threads: Number of threads used to parallelize computation. If set to 0 ir 1, will run in single threaded mode.
@@ -124,8 +128,10 @@ def estimate_point_cloud_normals_ball(points, ball_radius, view_directions=None,
     if points.shape[-1] != 3:
         raise ValueError("Invalid shape for view_directions, must be (n, 3) but got " + str(points.shape))
 
-    points, normals = estimate_point_cloud_normals_ball_internal(points, view_directions, ball_radius, min_pts_per_ball,
+    seed = np.random.randint(2 ** 31 - 1)
+    points, normals = estimate_point_cloud_normals_ball_internal(points, view_directions, ball_radius,
+                                                                 min_pts_per_ball, max_pts_per_ball,
                                                                  drop_angle_threshold, max_points_per_leaf,
-                                                                 num_threads, weight_function)
+                                                                 num_threads, weight_function, seed)
 
     return points, normals

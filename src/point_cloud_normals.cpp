@@ -51,6 +51,7 @@ std::tuple<bool, Eigen::RowVector3d> estimate_local_normal_rbf(const KdTreeType&
                    int point_index,
                    double ball_radius,
                    int min_pts_per_ball,
+                   int max_pts_per_ball,
                    double drop_angle_threshold,
                    const std::function<double(double, double)>& weighting_function)
 {
@@ -69,9 +70,14 @@ std::tuple<bool, Eigen::RowVector3d> estimate_local_normal_rbf(const KdTreeType&
         { points(point_index, 0), points(point_index, 1), points(point_index, 2) };
 
     std::vector<std::pair<IndexType, ScalarType>> out_nbrs;
-    const size_t founds = tree.index->radiusSearch(query_point.data(), ball_radius, out_nbrs, SearchParams());
+    size_t founds = tree.index->radiusSearch(query_point.data(), ball_radius, out_nbrs, SearchParams());
     if (founds < min_pts_per_ball) {
         return std::make_tuple(false, Eigen::RowVector3d(0., 0., 0.));
+    }
+
+    if (max_pts_per_ball > 0) {
+        std::random_shuffle(out_nbrs.begin(), out_nbrs.end());
+        founds = std::min((size_t) max_pts_per_ball, founds);
     }
 
     Eigen::MatrixXd neighbors(founds, 3);
@@ -168,7 +174,8 @@ std::tuple<bool, Eigen::RowVector3d> estimate_local_normal_knn(const KdTreeType&
 template <typename InPointsType, typename InViewDirsType, typename OutIndexType, typename OutNormalsType>
 void estimate_normals_parallel(const InPointsType& points, const InViewDirsType& view_dirs,
                                OutIndexType& filtered_indices, OutNormalsType& filtered_normals,
-                               std::function<std::tuple<bool, Eigen::RowVector3d>(int)> estimator, int num_threads)
+                               std::function<std::tuple<bool, Eigen::RowVector3d>(int)> estimator,
+                               int num_threads, int random_seed)
 {
 
     auto set_parallel = OmpSetParallelism(num_threads);
@@ -186,6 +193,12 @@ void estimate_normals_parallel(const InPointsType& points, const InViewDirsType&
         using index_t = typename OutIndexType::Scalar;
         std::vector<index_t> selected_indices;
         std::vector<Eigen::RowVector3d> estimated_normals;
+
+        if (random_seed > 0) {
+            #if defined(_OPENMP)
+            std::srand(random_seed ^ omp_get_thread_num());  // Hopefully everything uses rand()
+            #endif
+        }
 
         #if defined(_OPENMP)
         #pragma omp for nowait
@@ -241,8 +254,13 @@ void estimate_normals_parallel(const InPointsType& points, const InViewDirsType&
 template <typename InPointsType, typename InViewDirsType, typename OutIndexType, typename OutNormalsType>
 void estimate_normals_single_thread(const InPointsType& points, const InViewDirsType& view_dirs,
                                     OutIndexType& filtered_indices, OutNormalsType& filtered_normals,
-                                    std::function<std::tuple<bool, Eigen::RowVector3d>(int)> estimator)
+                                    std::function<std::tuple<bool, Eigen::RowVector3d>(int)> estimator,
+                                    int random_seed)
 {
+    if (random_seed > 0) {
+        std::srand(random_seed);  // Hopefully everything uses rand()
+    }
+
     filtered_indices.resize(points.rows(), 1);
     filtered_normals.resize(points.rows(), 3);
     int num_filtered_points = 0;
@@ -267,17 +285,18 @@ void estimate_normals_single_thread(const InPointsType& points, const InViewDirs
 template <typename InPointsType, typename InViewDirsType, typename OutIndexType, typename OutNormalsType>
 void estimate_normals(const InPointsType& points, const InViewDirsType& view_dirs,
                       OutIndexType& filtered_indices, OutNormalsType& filtered_normals,
-                      std::function<std::tuple<bool, Eigen::RowVector3d>(int)> estimator, int num_threads)
+                      std::function<std::tuple<bool, Eigen::RowVector3d>(int)> estimator,
+                      int num_threads, int random_seed)
 {
     #ifdef _OPENMP
     const int MIN_PARALLEL_INPUT_SIZE = 1000000;
     if (num_threads != 0 && num_threads != 1 && points.rows() > MIN_PARALLEL_INPUT_SIZE) {
-        estimate_normals_parallel(points, view_dirs, filtered_indices, filtered_normals, estimator, num_threads);
+        estimate_normals_parallel(points, view_dirs, filtered_indices, filtered_normals, estimator, num_threads, random_seed);
     } else {
-        estimate_normals_single_thread(points, view_dirs, filtered_indices, filtered_normals, estimator);
+        estimate_normals_single_thread(points, view_dirs, filtered_indices, filtered_normals, estimator, random_seed);
     }
     #else
-        estimate_normals_single_thread(points, view_dirs, filtered_indices, filtered_normals, estimator);
+        estimate_normals_single_thread(points, view_dirs, filtered_indices, filtered_normals, estimator, random_seed);
     #endif
 }
 } // namespace
@@ -288,10 +307,12 @@ npe_arg(points, dense_float, dense_double)
 npe_arg(view_dirs, npe_matches(points))
 npe_arg(radius, double)
 npe_arg(min_pts_per_ball, int)
+npe_default_arg(max_pts_per_ball, int, -1)
 npe_default_arg(drop_angle_threshold, double, M_PI / 2.0)
 npe_default_arg(max_points_per_leaf, int, 10)
 npe_default_arg(num_threads, int, 0)
-npe_default_arg(weight_function, std::string, "rbf")
+npe_default_arg(weight_function, std::string, "constant")
+npe_default_arg(random_seed, int, -1)
 npe_begin_code()
 {
     // Check that the inputs are good
@@ -301,6 +322,10 @@ npe_begin_code()
     if (min_pts_per_ball < 3) {
         throw pybind11::value_error("Invalid min_pts_per_ball (" + std::to_string(min_pts_per_ball) +
                                     ") must be greater than 3.");
+    }
+    if (max_pts_per_ball > 0 && max_pts_per_ball < 3) {
+        throw pybind11::value_error("Invalid max_pts_per_ball (" + std::to_string(max_pts_per_ball) +
+                            ") must either be negative (no max) or a number greater than 3.");
     }
     validate_input(points, view_dirs);
 
@@ -331,13 +356,15 @@ npe_begin_code()
 
     auto normal_estimator = [&](int pt_index) {
         return estimate_local_normal_rbf(tree, points, view_dirs, pt_index, radius,
-                                         min_pts_per_ball, drop_angle_threshold, weight_callback);
+                                         min_pts_per_ball, max_pts_per_ball, drop_angle_threshold,
+                                         weight_callback);
     };
 
     // Estimate the normals at every point (possibly in parallel)
     Eigen::Matrix<long, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> filtered_indices;
     EigenDenseLike<npe_Matrix_view_dirs> filtered_normals;
-    estimate_normals(points, view_dirs, filtered_indices, filtered_normals, normal_estimator, num_threads);
+    estimate_normals(points, view_dirs, filtered_indices, filtered_normals, normal_estimator,
+                     num_threads, random_seed);
 
     return std::make_tuple(npe::move(filtered_indices), npe::move(filtered_normals));
 }
@@ -351,6 +378,7 @@ npe_arg(num_neighbors, int)
 npe_default_arg(max_points_per_leaf, int, 10)
 npe_default_arg(drop_angle_threshold, double, M_PI / 2.0)
 npe_default_arg(num_threads, int, 0)
+npe_default_arg(random_seed, int, -1)
 npe_begin_code()
 {
     if (num_neighbors <= 0) {
@@ -373,7 +401,8 @@ npe_begin_code()
 
     Eigen::Matrix<long, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> filtered_indices;
     EigenDenseLike<npe_Matrix_view_dirs> filtered_normals;
-    estimate_normals(points, view_dirs, filtered_indices, filtered_normals, normal_estimator, num_threads);
+    estimate_normals(points, view_dirs, filtered_indices, filtered_normals, normal_estimator,
+                     num_threads, random_seed);
 
     // Estimate the normals at every point (possibly in parallel)
     return std::make_tuple(npe::move(filtered_indices), npe::move(filtered_normals));
