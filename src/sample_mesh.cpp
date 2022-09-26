@@ -193,7 +193,7 @@ npe_begin_code()
 
     if(random_seed > 0) {
         tri::SurfaceSampling<MeshType, MonteCarloSampler>::SamplingRandomGenerator().initialize(random_seed);
-        tri::SurfaceSampling<MeshType, PoissonDiskSampler>::SamplingRandomGenerator().initialize(random_seed);
+        // tri::SurfaceSampling<MeshType, PoissonDiskSampler>::SamplingRandomGenerator().initialize(random_seed);
     }
 
     // Generate dense samples on the mesh
