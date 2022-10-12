@@ -43,7 +43,7 @@ If Point Cloud Utils contributes to an academic publication, cite it as:
  - Mesh decimation
  - Removing duplicate/unreferenced vertices in point clouds and meshes
  - Making a mesh watertight (based on the [Watertight Manifold](https://github.com/hjwdzh/Manifold) algorithm)
- 
+
 <!-- ![Example of Poisson Disk Sampling](/img/blue_noise.png?raw=true "Example of Poisson Disk Sampling") -->
 
 # Installation
@@ -337,8 +337,8 @@ bbox_size = v.max(0) - v.min(0)
 sizeof_voxel = bbox_size / num_voxels_per_axis
 
 # Downsample a point cloud on a voxel grid so there is at most one point per voxel.
-# Multiple points, normals, and colors within a voxel cell are averaged together.
-v_sampled, n_sampled, c_sampled = pcu.downsample_point_cloud_voxel_grid(sizeof_voxel, v, n, c)
+# Any arguments after the points are treated as attribute arrays and get averaged within each voxel
+v_sampled, n_sampled, c_sampled = pcu.downsample_point_cloud_on_voxel_grid(sizeof_voxel, v, n, c)
 ```
 
 Specifying the location of the voxel grid in space (e.g. to only consider points wihtin a sub-region of the point cloud)
@@ -557,10 +557,10 @@ pts_b = np.random.rand(500, 3)
 
 k = 10
 
-# dists_a_to_b is of shape (pts_a.shape[0], k) and contains the (sorted) distances 
+# dists_a_to_b is of shape (pts_a.shape[0], k) and contains the (sorted) distances
 # to the k nearest points in pts_b
-# corrs_a_to_b is of shape (a.shape[0], k) and contains the index into pts_b of the 
-# k closest points for each point in pts_a 
+# corrs_a_to_b is of shape (a.shape[0], k) and contains the index into pts_b of the
+# k closest points for each point in pts_a
 dists_a_to_b, corrs_a_to_b = pcu.k_nearest_neighbors(pts_a, pts_b, k)
 ```
 
@@ -727,7 +727,7 @@ v, f = pcu.load_mesh_vf("my_model.ply")
 
 # Optional resolution parameter (default is 20_000).
 # See https://github.com/hjwdzh/Manifold for details
-resolution = 20_000  
+resolution = 20_000
 v_watertight, f_watertight = pcu.make_mesh_watertight(v, f, resolution=resolution)
 ```
 
@@ -797,11 +797,11 @@ import point_cloud_utils as pcu
 # f is an #f by 3 NumPy array of face indexes into v
 v, f = pcu.load_mesh_vfc("my_model.ply")
 
-# Compute principal min/max curvature magnitudes (k1, k2) and directions (d1, d2) 
+# Compute principal min/max curvature magnitudes (k1, k2) and directions (d1, d2)
 # using the one ring of each vertex
 k1, k2, d1, d2 = pcu.mesh_principal_curvatures(v, f)
 
-# Compute principal min/max curvature magnitudes (k1, k2) and directions (d1, d2) 
+# Compute principal min/max curvature magnitudes (k1, k2) and directions (d1, d2)
 # using a radius. This method is much more robust but requires tuning the radius
 k1, k2, d1, d2 = pcu.mesh_principal_curvatures(v, f, r=0.1)
 
