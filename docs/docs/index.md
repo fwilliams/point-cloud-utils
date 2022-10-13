@@ -2,27 +2,20 @@
   <img src="imgs/logo_solarized_tint.png">
 </p>
 
-**Point Cloud Utils** is an _easy-to-use_ Python library for processing 
+**Point Cloud Utils** is an _easy-to-use_ Python library for processing
 and manipulating 3D point clouds and meshes.
 
 ## Installation
-With `pip` (requires git and a compiler supporting C++14 or later):
-```shell
-pip install git+git://github.com/fwilliams/point-cloud-utils
-```
-
-With `conda`:
-```shell
-conda install -c conda-forge point_cloud_utils
+``` shell
+pip install point-cloud-utils
 ```
 
 ## A very simple example
-Point Cloud Utils uses numpy arrays as fundamental data structure, making it very easy to integrate with existing numerical code. 
-For example, here's how to remove all points in a point cloud which are greater than some distance from a mesh. 
+Point Cloud Utils uses numpy arrays as fundamental data structure, making it very easy to integrate with existing numerical code.
+For example, here's how to remove all points in a point cloud which are greater than some distance from a mesh.
 
-```python
+``` py
 import point_cloud_utils as pcu
-
 # Load a mesh stored in my_mesh.ply:
 #   v is a NumPy array of coordinates with shape (V, 3)
 #   f is a NumPy array of face indices with shape (F, 3)
@@ -33,7 +26,7 @@ v, f = pcu.load_mesh_vf("my_mesh.ply")
 p = pcu.load_mesh_v("my_point_cloud.ply")
 
 # Compute the shortest distance between each point in p and the mesh:
-#   dists is a NumPy array of shape (P,) where dists[i] is the 
+#   dists is a NumPy array of shape (P,) where dists[i] is the
 #   shortest distnace between the point p[i, :] and the mesh (v, f)
 dists, _, _ = pcu.closest_points_on_mesh(p, v, f)
 
@@ -58,3 +51,4 @@ Point Cloud Utils includes utilities to perform the following tasks:
 * [Estimating normals for point clouds and meshes](sections/normal_estimation).
 * [Fast ray/mesh intersection](sections/ray_mesh_intersection).
 * [Surface mesh smoothing](sections/mesh_smoothing).
+* [API Reference](sections/api_reference).
