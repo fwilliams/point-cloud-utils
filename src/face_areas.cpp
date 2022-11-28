@@ -7,14 +7,12 @@
 const char* triangle_mesh_face_areas_doc = R"Qu8mg5v7(
 Compute the areas of each face of a triangle mesh
 
-Parameters
-----------
-v : #v by 3 array of vertex positions (each row is a vertex)
-f : #f by 3 Matrix of face (triangle) indices
+Args:
+    v : \#v by 3 array of vertex positions (each row is a vertex)
+    f : \#f by 3 Matrix of face (triangle) indices
 
-Returns
--------
-A numpy array, areas, of shape (#faces,) where areas[i] is the area of the face f[i] 
+Returns:
+    areas : a numpy array of shape (\#faces,) where areas[i] is the area of the face f[i]
 )Qu8mg5v7";
 npe_function(mesh_face_areas)
 npe_arg(v, dense_float, dense_double)
@@ -66,8 +64,8 @@ npe_begin_code()
 
             const Real p = 0.5 * (a + b + c);
 
-            areas(i, 0) = sqrt(p * std::max(p - a, (Real) 0.0) * 
-                                std::max(p - b, (Real) 0.0) * 
+            areas(i, 0) = sqrt(p * std::max(p - a, (Real) 0.0) *
+                                std::max(p - b, (Real) 0.0) *
                                 std::max(p - c, (Real) 0.0));
         }
     }

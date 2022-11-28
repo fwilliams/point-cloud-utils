@@ -36,14 +36,10 @@ void hack_extra_bindings(pybind11::module& m) {
 
 
 
-const char* build_octree_from_pointcloud_internal_doc = R"Qu8mg5v7(
-
-)Qu8mg5v7";
 npe_function(build_octree_from_pointcloud_internal)
 npe_arg(octree, std::shared_ptr<Octree>)
 npe_arg(points, dense_float, dense_double)
 npe_arg(pad_amount, double)
-npe_doc(build_octree_from_pointcloud_internal_doc)
 npe_begin_code()
 {
     octree->ConvertFromPointCloud(points, pad_amount);
@@ -51,14 +47,10 @@ npe_begin_code()
 npe_end_code()
 
 
-const char* insert_points_into_octree_internal_doc = R"Qu8mg5v7(
-
-)Qu8mg5v7";
 npe_function(insert_points_into_octree_internal)
 npe_arg(octree, std::shared_ptr<Octree>)
 npe_arg(points, dense_float, dense_double)
 npe_arg(base_index, int)
-npe_doc(insert_points_into_octree_internal_doc)
 npe_begin_code()
 {
     for (int i = 0; i < points.rows(); i += 1) {
@@ -72,13 +64,9 @@ npe_begin_code()
 npe_end_code()
 
 
-const char* get_octree_point_leaves_internal_doc = R"Qu8mg5v7(
-
-)Qu8mg5v7";
 npe_function(get_octree_point_leaves_internal)
 npe_arg(octree, std::shared_ptr<Octree>)
 npe_arg(points, dense_float, dense_double)
-npe_doc(get_octree_point_leaves_internal_doc)
 npe_begin_code()
 {
     std::vector<pybind11::tuple> ret_info(points.rows());
@@ -105,13 +93,9 @@ npe_end_code()
 
 
 
-const char* get_octree_point_depths_internal_doc = R"Qu8mg5v7(
-
-)Qu8mg5v7";
 npe_function(get_octree_point_depths_internal)
 npe_arg(octree, std::shared_ptr<Octree>)
 npe_arg(points, dense_float, dense_double)
-npe_doc(get_octree_point_depths_internal_doc)
 npe_begin_code()
 {
     Eigen::VectorXi ret_depth(points.rows());

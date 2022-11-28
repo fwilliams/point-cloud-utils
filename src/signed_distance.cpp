@@ -7,21 +7,17 @@
 const char* signed_distance_doc = R"igl_Qu8mg5v7(
 Computes signed distances of a point cloud with respect to a Mesh using Fast Winding Numbers
 
-Parameters
-----------
-p : (#p, 3)-shaped array point cloud (one 3D point per row)
-v: (#v, 3)-shaped array of mesh vertex positions (one vertex position per row)
-f: (#f, 3)-shaped array of mesh face indexes into v (a row (fi, fj, fk) indicate the 3 vertices of a face)
-lower_bound: The minimum distance value possible (use this to clamp SDF values). negative infinite by default
-upper_bound: The maximum distance value possible (use this to clamp SDF values). negative infinite by default
+Args:
+    p : (\#p, 3)-shaped array point cloud (one 3D point per row)
+    v : (\#v, 3)-shaped array of mesh vertex positions (one vertex position per row)
+    f : (\#f, 3)-shaped array of mesh face indexes into v (a row (fi, fj, fk) indicate the 3 vertices of a face)
+    lower_bound : The minimum distance value possible (use this to clamp SDF values). negative infinite by default
+    upper_bound : The maximum distance value possible (use this to clamp SDF values). negative infinite by default
 
-Returns
--------
-A tuple (s, fi, bc) where:
-  - s is a (#p,) shaped array of signed distance values for each query point in p
-  - fi is a (#p,) shaped array of indices to the closest face for each query point in p
-  - bc is a (#p, 3) shaped array of barycentric coordinates for the closest point on
-    the mesh to each query point in p
+Returns:
+    s : a (#p,) shaped array of signed distance values for each query point in p
+    fi : a (#p,) shaped array of indices to the closest face for each query point in p
+    bc : a (#p, 3) shaped array of barycentric coordinates for the closest point on the mesh to each query point in p
 )igl_Qu8mg5v7";
 npe_function(signed_distance_to_mesh)
 npe_arg(p, dense_float, dense_double)

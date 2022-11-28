@@ -463,18 +463,16 @@ npe_end_code()
 const char* sparse_voxel_grid_boundary_doc = R"Qu8mg5v7(
 Find the indices of the voxels which lie on the boundary of a sparse voxel grid
 
-Parameters
-----------
-grid_coordinates: An (n, 3) shaped integer array of voxels coordinates in the sparse voxel grid
+Args:
+    grid_coordinates : An (n, 3) shaped integer array of voxels coordinates in the sparse voxel grid
 
-Returns
--------
-boundary_voxels: An (m,) shaped array of indices into grid_coordinates encoding which voxels lie on the boundary
+Returns:
+    boundary_voxels : An (m,) shaped array of indices into grid_coordinates encoding which voxels lie on the boundary
 
 )Qu8mg5v7";
 npe_function(sparse_voxel_grid_boundary)
 npe_arg(grid_coordinates, dense_int, dense_long, dense_longlong)
-npe_doc(sparse_voxel_grid_boundary_doc)
+// npe_doc(sparse_voxel_grid_boundary_doc)
 npe_begin_code()
 {
     validate_sparse_voxel_grid(grid_coordinates);

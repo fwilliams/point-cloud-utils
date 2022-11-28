@@ -7,17 +7,14 @@
 const char* make_mesh_watertight_doc = R"igl_Qu8mg5v7(
 Convert a mesh into a watertight manifold
 
-Parameters
-----------
-v: (#v, 3)-shaped array of mesh vertex positions (one vertex position per row)
-f: (#f, 3)-shaped array of mesh face indexes into v (a row (fi, fj, fk) indicate the 3 vertices of a face)
-resolution: A resolution parameter for the algorithm
+Args:
+    v : (#v, 3)-shaped array of mesh vertex positions (one vertex position per row)
+    f : (#f, 3)-shaped array of mesh face indexes into v (a row (fi, fj, fk) indicate the 3 vertices of a face)
+    resolution : A resolution parameter for the algorithm
 
-Returns
--------
-A tuple (vw, fw) representing a watertight version of the input mesh where:
-  - vw is a (#vw, 3)-shaped array of vertices (one per row)
-  - fw is a (#fw, 3)-shaped array of face indices into vw (one face per row)
+Returns:
+    vw : a (#vw, 3)-shaped array of vertices (one per row)
+    fw : a (#fw, 3)-shaped array of face indices into vw (one face per row)
 )igl_Qu8mg5v7";
 npe_function(make_mesh_watertight)
 npe_arg(v, dense_float, dense_double)

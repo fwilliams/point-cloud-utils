@@ -32,19 +32,16 @@ class VCGMesh : public tri::TriMesh<std::vector<VCGMeshVertex>, std::vector<VCGM
 const char* mesh_principal_curvatures_doc = R"Qu8mg5v7(
 Estimate principal curvature directions and magnitudes for a mesh
 
-Parameters
-----------
-v : #v by 3 Matrix of mesh vertex 3D positions
-f : #f by 3 Matrix of face (triangle) indices
-r : optional floating point radius of neighborhood to consider when estimating curvature
+Args:
+    v : \#v by 3 Matrix of mesh vertex 3D positions
+    f : \#f by 3 Matrix of face (triangle) indices
+    r : optional floating point radius of neighborhood to consider when estimating curvature
 
-Returns
--------
-A tuple (k1, k2, d1, d2) where:
-  k1 is an array of shape (#v,) of maximum curvature magnitudes
-  k2 is an array of shape (#v,) of minimum curvature magnitudes
-  d1 is an array of shape (#v, 3) of maximum curvature directions
-  d2 is an array of shape (#v, 3) of minimum curvature directions
+Returns:
+    k1 : an array of shape (\#v,) of maximum curvature magnitudes
+    k2 : an array of shape (\#v,) of minimum curvature magnitudes
+    d1 : an array of shape (\#v, 3) of maximum curvature directions
+    d2 : an array of shape (\#v, 3) of minimum curvature directions
 )Qu8mg5v7";
 npe_function(mesh_principal_curvatures)
 npe_arg(v, dense_float, dense_double)

@@ -12,19 +12,13 @@
 const char* estimate_mesh_vertex_normals_doc = R"igl_Qu8mg5v7(
 Compute vertex normals of a mesh from its vertices and faces using face area weighting
 
-Parameters
-----------
-v : (#v, 3)-shaped NumPy array of mesh vertex 3D positions
-f : (#f, 3)-shaped NumPy array of face (triangle) indices
-weighting_type : Weighting type must be one of 'uniform', 'angle', or 'area' (default is 'uniform')
+Args:
+    v : (#v, 3)-shaped NumPy array of mesh vertex 3D positions
+    f : (#f, 3)-shaped NumPy array of face (triangle) indices
+    weighting_type : Weighting type must be one of 'uniform', 'angle', or 'area' (default is 'uniform')
 
-Returns
--------
-n : (#v, 3)-shaped NumPy array of vertex normals (i.e. n[i] is the normal at vertex v[i])
-
-See also
---------
-estimate_mesh_face_normals
+Returns:
+    n : (#v, 3)-shaped NumPy array of vertex normals (i.e. n[i] is the normal at vertex v[i]) estimate_mesh_face_normals
 
 )igl_Qu8mg5v7";
 npe_function(estimate_mesh_vertex_normals)
@@ -60,19 +54,12 @@ npe_end_code()
 const char* estimate_mesh_face_normals_doc = R"igl_Qu8mg5v7(
 Compute vertex normals of a mesh from its vertices and faces using face area weighting
 
-Parameters
-----------
-v : (#v, 3)-shaped NumPy array of mesh vertex 3D positions
-f : (#f, 3)-shaped NumPy array of face (triangle) indices
+Args:
+    v : (#v, 3)-shaped NumPy array of mesh vertex 3D positions
+    f : (#f, 3)-shaped NumPy array of face (triangle) indices
 
-Returns
--------
-n : (#f, 3)-shaped NumPy array of face normals (i.e. n[i] is the normal at face f[i]). 
-    Note that any degenerate faces will have a zero normal.
-
-See also
---------
-estimate_mesh_vertex_normals
+Returns:
+    n : (#f, 3)-shaped NumPy array of face normals (i.e. n[i] is the normal at face f[i]). Note that any degenerate faces will have a zero normal.
 
 )igl_Qu8mg5v7";
 npe_function(estimate_mesh_face_normals)

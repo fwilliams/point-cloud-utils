@@ -7,22 +7,17 @@
 const char* decimate_triangle_mesh_doc = R"Qu8mg5v7(
 Decimate a (manifold) triangle mesh by collapsing edges
 
-Parameters
-----------
-v : (#v, 3)-shaped array of mesh vertex positions
-f : (#f, 3)-shaped array of triangle face indices
-max_faces : The maximum number of faces in the decimated output mesh (must be between 0 and #f)
-decimation_heuristic : Which decimation heuristic to use. Currently only supports "shortest_edge".
+Args:
+    v : (#v, 3)-shaped array of mesh vertex positions
+    f : (#f, 3)-shaped array of triangle face indices
+    max_faces : The maximum number of faces in the decimated output mesh (must be between 0 and #f)
+    decimation_heuristic : Which decimation heuristic to use. Currently only supports "shortest_edge".
 
-Returns
--------
-A tuple (v_out, f_out, f_correspondences, v_correspondences) where:
- - v_out : (#v_out, 3)-shaped array of vertex positions for the decimated mesh
- - f_out : (#f_out, 3)-shaped array of triangle face indices for the decimated mesh
- - v_correspondences : (#v_out, 1)-shaped array where v_correspondences[i] is the index of the vertex in v which generated v_out[i]
- - f_correspondences : (#f_out, 1)-shaped array where f_correspondences[i] is the index of the face in f which generated f_out[i]
-Notes
------
+Returns:
+    v_out : (#v_out, 3)-shaped array of vertex positions for the decimated mesh
+    f_out : (#f_out, 3)-shaped array of triangle face indices for the decimated mesh
+    v_correspondences : (#v_out, 1)-shaped array where v_correspondences[i] is the index of the vertex in v which generated v_out[i]
+    f_correspondences : (#f_out, 1)-shaped array where f_correspondences[i] is the index of the face in f which generated f_out[i]
 
 )Qu8mg5v7";
 npe_function(decimate_triangle_mesh)

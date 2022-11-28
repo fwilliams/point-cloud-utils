@@ -5,56 +5,51 @@ import os
 
 class TriangleMesh:
     """
-    A lightweight container class representing a triangle mesh with attributes stored at each vertex, wedge, and face,
-    where:
-        - A vertex is a 3D position
-        - A wedge is a vertex and its two adjacent edges
-        - A face is a triangle connecting 3 vertices (Each triangle has 3 vertices and 3 wedges).
+    A lightweight container class representing a triangle mesh with attributes stored at each vertex, wedge, and face, where:
 
-    The data in this class is represented as follows:
+     - A vertex is a 3D position
+     - A wedge is a vertex and its two adjacent edges
+     - A face is a triangle connecting 3 vertices (Each triangle has 3 vertices and 3 wedges).
 
-    TriangleMesh:
-        vertex_data:
-            positions: [V, 3]-shaped numpy array of per-vertex positions
-            normals: [V, 3]-shaped numpy array of per-vertex normals (or None)
-            texcoords: [V, 2]-shaped numpy array of per-vertex uv coordinates (or None)
-            tex_ids: [V,]-shaped numpy array of integer indices into TriangleMesh.textures indicating which texture to
-                     use at this vertex (or None)
-            colors: [V, 4]-shaped numpy array of per-vertex RBGA colors in [0.0, 1.0] (or None)
-            radius: [V,]-shaped numpy array of per-vertex curvature radii (or None)
-            quality: [V,]-shaped numpy array of per-vertex quality measures (or None)
-            flags: [V,]-shaped numpy array of 32-bit integer flags per vertex (or None)
-        face_data:
-            vertex_ids: [F, 3]-shaped numpy array of integer face indices into TrianglMesh.vertex_data.positions
-            normals: [F, 3]-shaped numpy array of per-face normals (or None)
-            colors: [F, 4]-shaped numpy array of per-face RBGA colors in [0.0, 1.0] (or None)
-            quality: [F,]-shaped numpy array of per-face quality measures (or None)
-            flags: [F,]-shaped numpy array of 32-bit integer flags per face (or None)
+    The data in encapsulated into vertex data and face data, accessible via `TriangleMes.vertex_data` and `TriangleMesh.face_data` respectively:
 
-            wedge_colors: [F, 3, 4]-shaped numpy array of per-wedge RBGA colors in [0.0, 1.0] (or None)
-            wedge_normals: [F, 3, 3]-shaped numpy array of per-wedge normals (or None)
-            wedge_texcoords: [F, 3, 2]-shaped numpy array of per-wedge] uv coordinates (or None)
-            wedge_tex_ids: [F, 3]-shaped numpy array of integer indices into TriangleMesh.textures indicating which
-                           texture to use at this wedge (or None)
-        textures: A list of paths to texture image files for this mesh
-        normal_maps: A list of paths to texture image files for this mesh
+    `TriangleMesh.vertex_data`:
+
+     - `positions`: [V, 3]-shaped numpy array of per-vertex positions
+     - `normals`: [V, 3]-shaped numpy array of per-vertex normals (or None)
+     - `texcoords`: [V, 2]-shaped numpy array of per-vertex uv coordinates (or None)
+     - `tex_ids`: [V,]-shaped numpy array of integer indices into TriangleMesh.textures indicating which texture to use at this vertex (or None)
+     - `colors`: [V, 4]-shaped numpy array of per-vertex RBGA colors in [0.0, 1.0] (or None)
+     - `radius`: [V,]-shaped numpy array of per-vertex curvature radii (or None)
+     - `quality`: [V,]-shaped numpy array of per-vertex quality measures (or None)
+     - `flags`: [V,]-shaped numpy array of 32-bit integer flags per vertex (or None)
+
+    `TriangleMesh.face_data`:
+
+     - `vertex_ids`: [F, 3]-shaped numpy array of integer face indices into TrianglMesh.vertex_data.positions
+     - `normals`: [F, 3]-shaped numpy array of per-face normals (or None)
+     - `colors`: [F, 4]-shaped numpy array of per-face RBGA colors in [0.0, 1.0] (or None)
+     - `quality`: [F,]-shaped numpy array of per-face quality measures (or None)
+     - `flags`: [F,]-shaped numpy array of 32-bit integer flags per face (or None)
+     - `wedge_colors`: [F, 3, 4]-shaped numpy array of per-wedge RBGA colors in [0.0, 1.0] (or None)
+     - `wedge_normals`: [F, 3, 3]-shaped numpy array of per-wedge normals (or None)
+     - `wedge_texcoords`: [F, 3, 2]-shaped numpy array of per-wedge] uv coordinates (or None)
+     - `wedge_tex_ids`: [F, 3]-shaped numpy array of integer indices into TriangleMesh.textures indicating which texture to use at this wedge (or None)
+     - `textures`: A list of paths to texture image files for this mesh
+     - `normal_maps`: A list of paths to texture image files for this mesh
     """
     class VertexData:
         """
-        A lightweight container class representing per-vertex information within a TriangleMesh.
+        A lightweight container class representing per-vertex information within a TriangleMesh with the following attributes
 
-        The data in this class is represented as follows:
-
-        VertexData:
-            positions: [V, 3]-shaped numpy array of per-vertex positions
-            normals: [V, 3]-shaped numpy array of per-vertex normals (or None)
-            texcoords: [V, 2]-shaped numpy array of per-vertex uv coordinates (or None)
-            tex_ids: [V,]-shaped numpy array of integer indices into TriangleMesh.textures indicating which texture to
-                     use at this vertex (or None)
-            colors: [V, 4]-shaped numpy array of per-vertex RBGA colors in [0.0, 1.0] or [0, 255] (or None)
-            radius: [V,]-shaped numpy array of per-vertex curvature radii (or None)
-            quality: [V,]-shaped numpy array of per-vertex quality measures (or None)
-            flags: [V,]-shaped numpy array of 32-bit integer flags per vertex (or None)
+         - `positions`: [V, 3]-shaped numpy array of per-vertex positions
+         - `normals`: [V, 3]-shaped numpy array of per-vertex normals (or None)
+         - `texcoords`: [V, 2]-shaped numpy array of per-vertex uv coordinates (or None)
+         - `tex_ids`: [V,]-shaped numpy array of integer indices into TriangleMesh.textures indicating which texture to use at this vertex (or None)
+         - `colors`: [V, 4]-shaped numpy array of per-vertex RBGA colors in [0.0, 1.0] (or None)
+         - `radius`: [V,]-shaped numpy array of per-vertex curvature radii (or None)
+         - `quality`: [V,]-shaped numpy array of per-vertex quality measures (or None)
+         - `flags`: [V,]-shaped numpy array of 32-bit integer flags per vertex (or None)
         """
 
         def __init__(self):
@@ -114,22 +109,19 @@ class TriangleMesh:
 
     class FaceData:
         """
-        A lightweight container class representing per-face information within a TriangleMesh.
+        A lightweight container class representing per-face information within a TriangleMesh with the following attributes
 
-        The data in this class is represented as follows:
-
-        FaceData:
-            vertex_ids: [F, 3]-shaped numpy array of integer face indices into TrianglMesh.vertex_data.positions
-            normals: [F, 3]-shaped numpy array of per-face normals (or None)
-            colors: [F, 4]-shaped numpy array of per-face RBGA colors in [0.0, 1.0] or [0, 255] (or None)
-            quality: [F,]-shaped numpy array of per-face quality measures (or None)
-            flags: [F,]-shaped numpy array of 32-bit integer flags per face (or None)
-
-            wedge_colors: [F, 3, 4]-shaped numpy array of per-wedge RBGA colors in [0.0, 1.0] (or None)
-            wedge_normals: [F, 3, 3]-shaped numpy array of per-wedge normals (or None)
-            wedge_texcoords: [F, 3, 2]-shaped numpy array of per-wedge] uv coordinates (or None)
-            wedge_tex_ids: [F, 3]-shaped numpy array of integer indices into TriangleMesh.textures indicating which
-                           texture to use at this wedge (or None)
+         - `vertex_ids`: [F, 3]-shaped numpy array of integer face indices into TrianglMesh.vertex_data.positions
+         - `normals`: [F, 3]-shaped numpy array of per-face normals (or None)
+         - `colors`: [F, 4]-shaped numpy array of per-face RBGA colors in [0.0, 1.0] (or None)
+         - `quality`: [F,]-shaped numpy array of per-face quality measures (or None)
+         - `flags`: [F,]-shaped numpy array of 32-bit integer flags per face (or None)
+         - `wedge_colors`: [F, 3, 4]-shaped numpy array of per-wedge RBGA colors in [0.0, 1.0] (or None)
+         - `wedge_normals`: [F, 3, 3]-shaped numpy array of per-wedge normals (or None)
+         - `wedge_texcoords`: [F, 3, 2]-shaped numpy array of per-wedge] uv coordinates (or None)
+         - `wedge_tex_ids`: [F, 3]-shaped numpy array of integer indices into TriangleMesh.textures indicating which texture to use at this wedge (or None)
+         - `textures`: A list of paths to texture image files for this mesh
+         - `normal_maps`: A list of paths to texture image files for this mesh
         """
 
         def __init__(self):
@@ -202,29 +194,54 @@ class TriangleMesh:
 
     @property
     def v(self):
+        """
+        An (n, 3)-shaped array containing this mesh's vertex positions
+        """
         return self.vertex_data.positions
 
     @property
     def f(self):
+        """
+        An (m, 3)-shaped integer array containing this mesh's face indices (None if no faces)
+        """
         return self.face_data.vertex_ids
 
     @property
     def vn(self):
+        """
+        An (n, 3)-shaped array containing this mesh's per-vertex normals (None if no vertex normals)
+        """
         return self.vertex_data.normals
 
     @property
     def vc(self):
+        """
+        An (n, 4)-shaped array containing this mesh's per-vertex RGBA (None if no vertex colors)
+        """
         return self.vertex_data.colors
 
     @property
     def fn(self):
+        """
+        An (m, 3)-shaped array containing this mesh's per-face normals (None if no face normals)
+        """
         return self.vertex_data.normals
 
     @property
     def fc(self):
+        """
+        An (m, 4)-shaped array containing this mesh's per-face RBGA colors (None if no face colors)
+        """
         return self.face_data.colors
 
     def save(self, filename, dtype=np.float32):
+        """
+        Save this mesh to a file. The type of file is determined by the extension. Point Cloud Utils currently supports PLY, OBJ, STL, OFF, VRML 2.0, X3D, COLLADA, 3DS.
+
+        Args:
+          filename : Path to the file to be saved. Must have a valid extension.
+          dtype : Type to save floating point data in (defaults to np.float32)
+        """
         from ._pcu_internal import save_mesh_internal
         self.vertex_data._reset_if_none()
         self.face_data._reset_if_none()
@@ -291,6 +308,14 @@ class TriangleMesh:
         self.face_data._set_empty_to_none()
 
     def load(self, filename, dtype=np.float64):
+        """
+        Load a mesh into this class from a file. The type of file is determined by the extension.
+        Point Cloud Utils currently supports PLY, OBJ, STL, OFF, VRML 2.0, X3D, COLLADA, 3DS.
+
+        Args:
+          filename : Path to the file to be loaded. Must have a valid extension.
+          dtype : Type to save floating point data in (defaults to np.float32)
+        """
         from ._pcu_internal import load_mesh_internal
         if not os.path.exists(filename):
             raise FileNotFoundError("Invalid path " + filename + " does not exist")
@@ -339,33 +364,28 @@ def save_triangle_mesh(filename, v, f=None,
     Save a triangle mesh to a file with various per-vertex, per-face, and per-wedge attributes. Each argument (except v)
     is optional and can be None.
 
-    Parameters
-    ----------
-    filename    : Path to the mesh to save. The type of file will be determined from the file extension.
-    v           : [V, 3]-shaped numpy array of per-vertex positions
-    f           : [F, 3]-shaped numpy array of integer face indices into TrianglMesh.vertex_data.positions (or None)
-    vn          : [V, 3]-shaped numpy array of per-vertex normals (or None)
-    vt          : [V, 2]-shaped numpy array of per-vertex uv coordinates (or None)
-    vc          : [V, 4]-shaped numpy array of per-vertex RBGA colors in [0.0, 1.0] (or None)
-    vq          : [V,]-shaped numpy array of per-vertex quality measures (or None)
-    vr          : [V,]-shaped numpy array of per-vertex curvature radii (or None)
-    vti         : [V,]-shaped numpy array of integer indices into TriangleMesh.textures indicating which texture to
-                  use at this vertex (or None)
-    vflags      : [V,]-shaped numpy array of 32-bit integer flags per vertex (or None)
-    fn          : [F, 3]-shaped numpy array of per-face normals (or None)
-    fc          : [F, 4]-shaped numpy array of per-face RBGA colors in [0.0, 1.0] (or None)
-    fq          : [F,]-shaped numpy array of per-face quality measures (or None)
-    fflags      : [F,]-shaped numpy array of 32-bit integer flags per face (or None)
-    wc          : [F, 3, 4]-shaped numpy array of per-wedge RBGA colors in [0.0, 1.0] (or None)
-    wn          : [F, 3, 3]-shaped numpy array of per-wedge normals (or None)
-    wt          : [F, 3, 2]-shaped numpy array of per-wedge] uv coordinates (or None)
-    wti         : [F, 3]-shaped numpy array of integer indices into TriangleMesh.textures indicating which
-    textures    : A list of paths to texture image files for this mesh
-    normal_maps : A list of paths to texture image files for this mesh
-
-    Returns
-    -------
-    None
+    Args:
+        filename    : Path to the mesh to save. The type of file will be determined from the file extension.
+        v           : [V, 3]-shaped numpy array of per-vertex positions
+        f           : [F, 3]-shaped numpy array of integer face indices into TrianglMesh.vertex_data.positions (or None)
+        vn          : [V, 3]-shaped numpy array of per-vertex normals (or None)
+        vt          : [V, 2]-shaped numpy array of per-vertex uv coordinates (or None)
+        vc          : [V, 4]-shaped numpy array of per-vertex RBGA colors in [0.0, 1.0] (or None)
+        vq          : [V,]-shaped numpy array of per-vertex quality measures (or None)
+        vr          : [V,]-shaped numpy array of per-vertex curvature radii (or None)
+        vti         : [V,]-shaped numpy array of integer indices into TriangleMesh.textures indicating which texture to use at this vertex (or None)
+        vflags      : [V,]-shaped numpy array of 32-bit integer flags per vertex (or None)
+        fn          : [F, 3]-shaped numpy array of per-face normals (or None)
+        fc          : [F, 4]-shaped numpy array of per-face RBGA colors in [0.0, 1.0] (or None)
+        fq          : [F,]-shaped numpy array of per-face quality measures (or None)
+        fflags      : [F,]-shaped numpy array of 32-bit integer flags per face (or None)
+        wc          : [F, 3, 4]-shaped numpy array of per-wedge RBGA colors in [0.0, 1.0] (or None)
+        wn          : [F, 3, 3]-shaped numpy array of per-wedge normals (or None)
+        wt          : [F, 3, 2]-shaped numpy array of per-wedge] uv coordinates (or None)
+        wti         : [F, 3]-shaped numpy array of integer indices into TriangleMesh.textures indicating which
+        textures    : A list of paths to texture image files for this mesh
+        normal_maps : A list of paths to texture image files for this mesh
+        dtype       : The floating point written to the file (`np.float32` or `np.float64`)
     """
     mesh = TriangleMesh()
     mesh.vertex_data.positions = v
@@ -395,69 +415,240 @@ def save_triangle_mesh(filename, v, f=None,
 
 
 def save_mesh_v(filename, v, dtype=np.float32):
+    """
+    Save a point cloud consisting only of vertex positions.
+    Point Cloud Utils currently supports PLY, OBJ, STL, OFF, VRML 2.0, X3D, COLLADA, 3DS.
+
+    Args:
+      filename : Path to the file to be saved. Must have a valid extension.
+      v : An (n, 3)-shaped numpy array of coordinates
+      dtype : The floating point written to the file (`np.float32` or `np.float64`)
+    """
     save_triangle_mesh(filename, v=v, dtype=dtype)
 
 
-def save_mesh_vf(filename, v, f, dtype=np.float32):
-    save_triangle_mesh(filename, v=v, f=f, dtype=dtype)
-
-
 def save_mesh_vn(filename, v, n, dtype=np.float32):
+    """
+    Save a point cloud consisting of vertex positions and vertex normals.
+    Point Cloud Utils currently supports PLY, OBJ, STL, OFF, VRML 2.0, X3D, COLLADA, 3DS.
+
+    Args:
+      filename : Path to the file to be saved. Must have a valid extension.
+      v : An (n, 3)-shaped numpy array of coordinates
+      n : An (n, 3)-shaped numpy array of per-vertex normals
+      dtype : The floating point written to the file (`np.float32` or `np.float64`)
+    """
     save_triangle_mesh(filename, v=v, vn=n, dtype=dtype)
 
 
 def save_mesh_vc(filename, v, c, dtype=np.float32):
+    """
+    Save a point cloud consisting of vertex positions and vertex colors.
+    Point Cloud Utils currently supports PLY, OBJ, STL, OFF, VRML 2.0, X3D, COLLADA, 3DS.
+
+    Args:
+      filename : Path to the file to be saved. Must have a valid extension.
+      v : An (n, 3)-shaped numpy array of coordinates
+      c : An (n, 3)-shaped or (n, 4)-shaped numpy array of per-vertex RGB or RGBA colors (from 0.0 to 1.0)
+      dtype : The floating point written to the file (`np.float32` or `np.float64`)
+    """
     save_triangle_mesh(filename, v=v, vc=c, dtype=dtype)
 
 
 def save_mesh_vnc(filename, v, n, c, dtype=np.float32):
+    """
+    Save a point cloud consisting of vertex positions, vertex normals, and vertex colors.
+    Point Cloud Utils currently supports PLY, OBJ, STL, OFF, VRML 2.0, X3D, COLLADA, 3DS.
+
+    Args:
+      filename : Path to the file to be saved. Must have a valid extension.
+      v : An (n, 3)-shaped numpy array of coordinates
+      n : An (n, 3)-shaped numpy array of per-vertex normals
+      c : An (n, 3)-shaped or (n, 4)-shaped numpy array of per-vertex RGB or RGBA colors (from 0.0 to 1.0)
+      dtype : The floating point written to the file (`np.float32` or `np.float64`)
+    """
     save_triangle_mesh(filename, v=v, vn=n, vc=c, dtype=dtype)
 
 
+def save_mesh_vf(filename, v, f, dtype=np.float32):
+    """
+    Save a triangle mesh consisting of vertex positions and face indices.
+    Point Cloud Utils currently supports PLY, OBJ, STL, OFF, VRML 2.0, X3D, COLLADA, 3DS.
+
+    Args:
+      filename : Path to the file to be saved. Must have a valid extension.
+      v : An (n, 3)-shaped numpy array of coordinates
+      f : An (m, 3)-shaped integer numpy array of face indices into v
+      dtype : The floating point written to the file (`np.float32` or `np.float64`)
+    """
+    save_triangle_mesh(filename, v=v, f=f, dtype=dtype)
+
+
 def save_mesh_vfn(filename, v, f, n, dtype=np.float32):
+    """
+    Save a triangle mesh consisting of vertex positions, face indices, and vertex normals.
+    Point Cloud Utils currently supports PLY, OBJ, STL, OFF, VRML 2.0, X3D, COLLADA, 3DS.
+
+    Args:
+      filename : Path to the file to be saved. Must have a valid extension.
+      v : An (n, 3)-shaped numpy array of coordinates
+      f : An (m, 3)-shaped integer numpy array of face indices into v
+      n : An (n, 3)-shaped numpy array of per-vertex normals
+      dtype : The floating point written to the file (`np.float32` or `np.float64`)
+    """
     save_triangle_mesh(filename, v=v, f=f, vn=n, dtype=dtype)
 
 
 def save_mesh_vfnc(filename, v, f, n, c, dtype=np.float32):
+    """
+    Save a triangle mesh consisting of vertex positions, face indices, vertex normals, and vertex colors.
+    Point Cloud Utils currently supports PLY, OBJ, STL, OFF, VRML 2.0, X3D, COLLADA, 3DS.
+
+    Args:
+      filename : Path to the file to be saved. Must have a valid extension.
+      v : An (n, 3)-shaped numpy array of coordinates
+      f : An (m, 3)-shaped integer numpy array of face indices into v
+      n : An (n, 3)-shaped numpy array of per-vertex normals
+      c : An (n, 3)-shaped or (n, 4)-shaped numpy array of per-vertex RGB or RGBA colors (from 0.0 to 1.0)
+      dtype : The floating point written to the file (`np.float32` or `np.float64`)
+    """
     save_triangle_mesh(filename, v=v, f=f, vn=n, vc=c, dtype=dtype)
 
 
 def load_triangle_mesh(filename, dtype=np.float64):
+    """
+    Load a triangle mesh into a `TriangleMesh` class.
+    Point Cloud Utils currently supports PLY, OBJ, STL, OFF, VRML 2.0, X3D, COLLADA, 3DS.
+
+    Args:
+      filename : Path to the file to be saved. Must have a valid extension.
+      dtype : The type of floating point number to store the data in (np.float32 or np.float64)
+
+    Returns:
+      mesh : A `TriangleMesh` class containing the loaded mesh
+    """
     ret = TriangleMesh()
     ret.load(filename, dtype=dtype)
     return ret
 
 
 def load_mesh_v(filename, dtype=float):
+    """
+    Load a point cloud consisting only of vertex positions.
+    Point Cloud Utils currently supports PLY, OBJ, STL, OFF, VRML 2.0, X3D, COLLADA, 3DS.
+
+    Args:
+      filename : Path to the file to be loaded. Must have a valid extension.
+      dtype : The floating point type of loaded data (`np.float32` or `np.float64`)
+
+    Returns:
+      v : An (n, 3)-shaped numpy array of coordinates
+    """
     return load_triangle_mesh(filename, dtype=dtype).v
 
 
-def load_mesh_vf(filename, dtype=float):
-    ret = load_triangle_mesh(filename, dtype=dtype)
-    return ret.v, ret.f
-
-
 def load_mesh_vn(filename, dtype=float):
+    """
+    Load a point cloud consisting of vertex positions, and vertex normals.
+    Point Cloud Utils currently supports PLY, OBJ, STL, OFF, VRML 2.0, X3D, COLLADA, 3DS.
+
+    Args:
+      filename : Path to the file to be loaded. Must have a valid extension.
+      dtype : The floating point type of loaded data (`np.float32` or `np.float64`)
+
+    Returns:
+      v : An (n, 3)-shaped numpy array of coordinates
+      n : An (n, 3)-shaped numpy array of per-vertex normals
+    """
     ret = load_triangle_mesh(filename, dtype=dtype)
     return ret.v, ret.vn
 
 
 def load_mesh_vc(filename, dtype=float):
+    """
+    Load a point cloud consisting of vertex positions, and vertex colors.
+    Point Cloud Utils currently supports PLY, OBJ, STL, OFF, VRML 2.0, X3D, COLLADA, 3DS.
+
+    Args:
+      filename : Path to the file to be loaded. Must have a valid extension.
+      dtype : The floating point type of loaded data (`np.float32` or `np.float64`)
+
+    Returns:
+      v : An (n, 3)-shaped numpy array of coordinates
+      c : An (n, 3)-shaped or (n, 4)-shaped numpy array of per-vertex RGB or RGBA colors (from 0.0 to 1.0)
+    """
     ret = load_triangle_mesh(filename, dtype=dtype)
     return ret.v, ret.vc
 
 
 def load_mesh_vnc(filename, dtype=float):
+    """
+    Load a point cloud consisting of vertex positions, vertex normals, and vertex colors.
+    Point Cloud Utils currently supports PLY, OBJ, STL, OFF, VRML 2.0, X3D, COLLADA, 3DS.
+
+    Args:
+      filename : Path to the file to be loaded. Must have a valid extension.
+      dtype : The floating point type of loaded data (`np.float32` or `np.float64`)
+
+    Returns:
+      v : An (n, 3)-shaped numpy array of coordinates
+      n : An (n, 3)-shaped numpy array of per-vertex normals
+      c : An (n, 3)-shaped or (n, 4)-shaped numpy array of per-vertex RGB or RGBA colors (from 0.0 to 1.0)
+    """
     ret = load_triangle_mesh(filename, dtype=dtype)
     return ret.v, ret.vn, ret.vc
 
 
+def load_mesh_vf(filename, dtype=float):
+    """
+    Load a triangle mesh consisting of vertex positions and face indices.
+    Point Cloud Utils currently supports PLY, OBJ, STL, OFF, VRML 2.0, X3D, COLLADA, 3DS.
+
+    Args:
+      filename : Path to the file to be loaded. Must have a valid extension.
+      dtype : The floating point type of loaded data (`np.float32` or `np.float64`)
+
+    Returns:
+      v : An (n, 3)-shaped numpy array of coordinates
+      f : An (m, 3)-shaped integer numpy array of face indices into v
+    """
+    ret = load_triangle_mesh(filename, dtype=dtype)
+    return ret.v, ret.f
+
+
 def load_mesh_vfn(filename, dtype=float):
+    """
+    Load a triangle mesh consisting of vertex positions, face indices, and vertex normals.
+    Point Cloud Utils currently supports PLY, OBJ, STL, OFF, VRML 2.0, X3D, COLLADA, 3DS.
+
+    Args:
+      filename : Path to the file to be loaded. Must have a valid extension.
+      dtype : The floating point type of loaded data (`np.float32` or `np.float64`)
+
+    Returns:
+      v : An (n, 3)-shaped numpy array of coordinates
+      f : An (m, 3)-shaped integer numpy array of face indices into v
+      n : An (n, 3)-shaped numpy array of per-vertex normals
+    """
     ret = load_triangle_mesh(filename, dtype=dtype)
     return ret.v, ret.f, ret.vn
 
 
 def load_mesh_vfnc(filename, dtype=float):
+    """
+    Load a triangle mesh consisting of vertex positions, face indices, vertex normals, and vertex colors.
+    Point Cloud Utils currently supports PLY, OBJ, STL, OFF, VRML 2.0, X3D, COLLADA, 3DS.
+
+    Args:
+      filename : Path to the file to be loaded. Must have a valid extension.
+      dtype : The floating point type of loaded data (`np.float32` or `np.float64`)
+
+    Returns:
+      v : An (n, 3)-shaped numpy array of coordinates
+      f : An (m, 3)-shaped integer numpy array of face indices into v
+      n : An (n, 3)-shaped numpy array of per-vertex normals
+      c : An (n, 3)-shaped or (n, 4)-shaped numpy array of per-vertex RGB or RGBA colors (from 0.0 to 1.0)
+    """
     ret = load_triangle_mesh(filename, dtype=dtype)
     return ret.v, ret.f, ret.vn, ret.vc
 

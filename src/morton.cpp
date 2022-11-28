@@ -14,14 +14,13 @@
 const char* morton_add = R"Qu8mg5v7(
 Add morton codes together (corresponding to adding the vectors they encode)
 
-Parameters
-----------
-codes_1: an [n,] array of morton codes
-codes_2 : an [n,] array of morton codes
-num_threads : Number of threads to use. If set to -1, will use all available CPUs. If set to 0, will run in serial. Default is -1.
-Returns
--------
-an [n,] shaped array of added morton codes
+Args:
+    codes_1 : an (n,)-shaped array of morton codes
+    codes_2 : an (n,)-shaped array of morton codes
+    num_threads : Number of threads to use. If set to -1, will use all available CPUs. If set to 0, will run in serial. Default is -1.
+
+Returns:
+    morton_codes : an (n,)-shaped array of added morton codes
 
 )Qu8mg5v7";
 npe_function(morton_add)
@@ -95,14 +94,13 @@ npe_end_code()
 const char* morton_subtract = R"Qu8mg5v7(
 Subtract morton codes from each other (corresponding to adding the vectors they encode)
 
-Parameters
-----------
-codes_1: an [n,] array of morton codes
-codes_2 : an [n,] array of morton codes
-num_threads : Number of threads to use. If set to -1, will use all available CPUs. If set to 0, will run in serial. Default is -1.
-Returns
--------
-an [n,] shaped array of added morton codes
+Args:
+    codes_1: an (n,)-shaped array of morton codes
+    codes_2 : an (n,)-shaped array of morton codes
+    num_threads : Number of threads to use. If set to -1, will use all available CPUs. If set to 0, will run in serial. Default is -1.
+
+Returns:
+    morton_codes : an (n,)-shaped shaped array of added morton codes
 
 )Qu8mg5v7";
 npe_function(morton_subtract)
@@ -176,13 +174,12 @@ npe_end_code()
 const char* morton_encode = R"Qu8mg5v7(
 Encode n 3D points using Morton coding, possibly sorting them
 
-Parameters
-----------
-pts: an [n, 3] array of 3D points
-num_threads : Number of threads to use. If set to -1, will use all available CPUs. If set to 0, will run in serial. Default is -1.
-Returns
--------
-an [n] shaped array of morton encoded points
+Args:
+    pts : an (n, 3)-shaped array of 3D points
+    num_threads : Number of threads to use. If set to -1, will use all available CPUs. If set to 0, will run in serial. Default is -1.
+
+Returns:
+    morton_codes : an (n,)-shaped array of morton encoded points
 
 )Qu8mg5v7";
 npe_function(morton_encode)
@@ -246,13 +243,11 @@ npe_end_code()
 const char* morton_decode = R"Qu8mg5v7(
 Decode n points along a Morton curve into 3D points
 
-Parameters
-----------
-codes: an [n] shaped array of Morton codes
+Args:
+    codes : an (n,)-shaped array of Morton codes
 
-Returns
--------
-an [n, 3] shaped array of 3D points
+Returns:
+    points : an (n, 3)-shaped array of 3D points
 
 )Qu8mg5v7";
 npe_function(morton_decode)
@@ -316,15 +311,14 @@ npe_end_code()
 const char* morton_knn = R"Qu8mg5v7(
 Queries a sorted array of morton encoded points to find the (approximate) k nearest neighbors
 
-Parameters
-----------
-codes: an [n] shaped array of morton codes
-qcodes: an [m] shaped array of query codes
-k: an integer representing the number of nearest neighbors
-sort_dist: (optional, defaults to True) whether to return the nearest neigbors in distance sorted order
-Returns
--------
-an (m, k) shaped array of indices into codes
+Args:
+    codes : an (n)-shaped array of morton codes
+    qcodes : an (m)-shaped array of query codes
+    k : an integer representing the number of nearest neighbors
+    sort_dist : (optional, defaults to True) whether to return the nearest neigbors in distance sorted order
+
+Returns:
+    nn_idx : an (m, k)-shaped array of indices into codes
 
 )Qu8mg5v7";
 npe_function(morton_knn)

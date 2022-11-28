@@ -158,28 +158,17 @@ Downsample a point set so that samples are approximately evenly spaced.
 This function uses the method in "Parallel Poisson Disk Sampling with Spectrum Analysis on Surface"
 (http://graphics.cs.umass.edu/pubs/sa_2010.pdf)
 
-Parameters
-----------
-v : #v by 3 array of vertex positions
-n : #v by 3 array of vertex normals
-num_samples: desired number of Poisson Disk samples. Note that the actual number of returned samples
-             will not be exactly this value (see sample_num_tolerance) to control the range of possible
-             returned samples.
-             Note: If this value <= 0, then the parameter radius is used to decide the number of samples
-radius : desired separation between points, if num_samples <= 0, then this value is used to determine the
-         sampling (-1.0, by default).
-best_choice_sampling : When downsampling, always keep the sample that will remove the
-                       fewest number of samples. (True by default).
-random_seed : A random seed used to generate the samples.
-              Passing in 0 will use the current time. (0 by default).
-sample_num_tolerance: If you requested a target number of samples, by passsing num_samples > 0, then this function will return
-                      between (1 - sample_num_tolerance) * num_samples and (1 + sample_num_tolerance) * num_samples.
-                      Setting a very small value for this parameter will increase convergence time. (0.04 by default).
+Args:
+    v: \#v by 3 array of vertex positions
+    n: \#v by 3 array of vertex normals
+    num_samples: desired number of Poisson Disk samples. Note that the actual number of returned samples will not be exactly this value (see sample_num_tolerance) to control the range of possible returned samples. Note: If this value <= 0, then the parameter radius is used to decide the number of samples
+    radius: desired separation between points, if num_samples <= 0, then this value is used to determine the sampling (-1.0, by default).
+    best_choice_sampling: When downsampling, always keep the sample that will remove the fewest number of samples. (True by default).
+    random_seed: A random seed used to generate the samples. Passing in 0 will use the current time. (0 by default).
+    sample_num_tolerance: If you requested a target number of samples, by passsing num_samples > 0, then this function will return between (1 - sample_num_tolerance) * num_samples and (1 + sample_num_tolerance) * num_samples. Setting a very small value for this parameter will increase convergence time. (0.04 by default).
 
-Returns
--------
-A (m,) shaped array of indices into v where m is the number of Poisson-disk samples
-
+Returns:
+    p_idx : A (m,) shaped array of indices into v where m is the number of Poisson-disk samples
 )Qu8mg5v7";
 npe_function(downsample_point_cloud_poisson_disk)
     npe_arg(v, dense_float, dense_double)

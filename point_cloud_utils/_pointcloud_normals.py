@@ -10,30 +10,20 @@ def estimate_point_cloud_normals_knn(points, num_neighbors, view_directions=None
     This function can optionally consider directions to the sensor for each point to compute neighborhoods of points
     which are all facing the same direction, and align the final normal directions.
 
-    Parameters
-    ----------
-    points: (n, 3)-shaped NumPy array of point positions (each row is a point)
-    num_neighbors: Integer number of neighbors to use in each neigghborhood.
-    view_directions: (n, 3)-shaped NumPy array or None, representing the unit direction to the sensor for each point.
-                      This parameter is used to align the normals and compute neighborhoods of similar facing points.
-    drop_angle_threshold: If view_directions is passed in, drop points whose angle between the normal and view direction
-                          exceeds drop_angle_threshold (in radians). Useful for filtering out low quality points.
-    max_points_per_leaf: Maximum number of points in each leaf node of the KD-tree used for nearest neighbor queries.
-                          Tuning this can potentially improve performance on large point clouds.
-    num_threads: Number of threads used to parallelize computation. If set to 0 ir 1, will run in single threaded mode.
-                 If set to a positive number t > 1, will use t threads.
-                 If set to -1, will use #processors threads for inputs greater than 1 million points.
+    Args:
+        points : (n, 3)-shaped NumPy array of point positions (each row is a point)
+        num_neighbors : Integer number of neighbors to use in each neigghborhood.
+        view_directions : (n, 3)-shaped NumPy array or None, representing the unit direction to the sensor for each point. This parameter is used to align the normals and compute neighborhoods of similar facing points.
+        drop_angle_threshold : If view_directions is passed in, drop points whose angle between the normal and view direction exceeds drop_angle_threshold (in radians). Useful for filtering out low quality points.
+        max_points_per_leaf : Maximum number of points in each leaf node of the KD-tree used for nearest neighbor queries. Tuning this can potentially improve performance on large point clouds.
+        num_threads : Number of threads used to parallelize computation. If set to 0 ir 1, will run in single threaded mode. If set to a positive number t > 1, will use t threads. If set to -1, will use #processors threads for inputs greater than 1 million points.
 
-    Returns
-    -------
-    A tuple (idx, n) of filtered point indexes and normals (filtered because some points
-    may be discarded), where:
-      - idx is an (m, 1)-shaped Numpy array of indices into points
-      - n is an (m, 3)-shaped Numpy array of unit normals for each point in p
+    Returns:
+        idx : an (m, 1)-shaped Numpy array of indices into points
+        n : an (m, 3)-shaped Numpy array of unit normals for each point in p
 
-    See Also
-    --------
-    estimate_pointcloud_normals_ball
+    See Also:
+        estimate_pointcloud_normals_ball
     """
     from ._pcu_internal import estimate_point_cloud_normals_knn_internal
 
@@ -77,35 +67,31 @@ def estimate_point_cloud_normals_ball(points, ball_radius, view_directions=None,
     This function can optionally consider directions to the sensor for each point to compute neighborhoods of points
     which are all facing the same direction, and align the final normal directions.
 
-    Parameters
-    ----------
-    points: (n, 3)-shaped NumPy array of point positions (each row is a point)
-    ball_radius: The radius of each neighborhood used to estimate normals
-    view_directions: (n, 3)-shaped NumPy array or None, representing the unit direction to the sensor for each point.
-                      This parameter is used to align the normals and compute neighborhoods of similar facing points.
-    drop_angle_threshold: If view_directions is passed in, drop points whose angle between the normal and view direction
-                          exceeds drop_angle_threshold (in radians). Useful for filtering out low quality points.
-    min_pts_per_ball: Discard points whose neighborhood contains fewer than min_pts_per_ball points.
-    max_pts_per_ball: If set to a positive number, then only use max_pts_per_ball points within each neighborhood
-                      whose number of points exceeds this value.
-    weight_function: Weighting function for points in a neighborhood. Must be one of 'constant' or 'rbf' where:
-      - 'constant' weights points as 1.0 for every point
-      - 'rbf' weights points as (1 - d/r)^4 * (4* d/r + 1) where d = distance to the center point and r = ball_radius
-    max_points_per_leaf: Maximum number of points in each leaf node of the KD-tree used for nearest neighbor queries.
-                          Tuning this can potentially improve performance on large point clouds.
-    num_threads: Number of threads used to parallelize computation. If set to 0 ir 1, will run in single threaded mode.
-                 If set to a positive number t > 1, will use t threads.
-                 If set to -1, will use #processors threads for inputs greater than 1 million points.
+    Args:
+        points: (n, 3)-shaped NumPy array of point positions (each row is a point)
+        ball_radius: The radius of each neighborhood used to estimate normals
+        view_directions: (n, 3)-shaped NumPy array or None, representing the unit direction to the sensor for each point.
+                        This parameter is used to align the normals and compute neighborhoods of similar facing points.
+        drop_angle_threshold: If view_directions is passed in, drop points whose angle between the normal and view direction
+                            exceeds drop_angle_threshold (in radians). Useful for filtering out low quality points.
+        min_pts_per_ball: Discard points whose neighborhood contains fewer than min_pts_per_ball points.
+        max_pts_per_ball: If set to a positive number, then only use max_pts_per_ball points within each neighborhood
+                        whose number of points exceeds this value.
+        weight_function: Weighting function for points in a neighborhood. Must be one of 'constant' or 'rbf' where:
+        - 'constant' weights points as 1.0 for every point
+        - 'rbf' weights points as (1 - d/r)^4 * (4* d/r + 1) where d = distance to the center point and r = ball_radius
+        max_points_per_leaf: Maximum number of points in each leaf node of the KD-tree used for nearest neighbor queries.
+                            Tuning this can potentially improve performance on large point clouds.
+        num_threads: Number of threads used to parallelize computation. If set to 0 ir 1, will run in single threaded mode.
+                    If set to a positive number t > 1, will use t threads.
+                    If set to -1, will use #processors threads for inputs greater than 1 million points.
 
-    Returns
-    -------
-    A tuple (p, n) of filtered points and normals (filtered because some points may be discarded), where:
-      - p is an (m, 3)-shaped Numpy array of 3d points
-      - n is an (m, 3)-shaped Numpy array of unit normals for each point in p
+    Returns:
+        p : an (m, 3)-shaped Numpy array of 3d points
+        n : an (m, 3)-shaped Numpy array of unit normals for each point in p
 
-    See Also
-    --------
-    estimate_pointcloud_normals_ball
+    See Also:
+        estimate_pointcloud_normals_ball
     """
     from ._pcu_internal import estimate_point_cloud_normals_ball_internal
 

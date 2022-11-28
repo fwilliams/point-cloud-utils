@@ -9,28 +9,18 @@
 const char* closest_points_on_mesh_doc = R"Qu8mg5v7(
 Compute distances from a set of points p to a triangle mesh (v, f)
 
-Parameters
-----------
-p : (#p, 3)-shaped array of query point positions
-v : (#v, 3)-shaped array of mesh vertex positions
-f : (#f, 3)-shaped array of triangle face indices
+Args:
+  p : (\#p, 3)-shaped array of query point positions
+  v : (\#v, 3)-shaped array of mesh vertex positions
+  f : (\#f, 3)-shaped array of triangle face indices
 
-Returns
--------
-A tuple (d, f_idx, bc) where:
- - d is a (#p,)-shaped array of shortest distances for each query point p
- - f_idx is a (#p,)-shaped array of indices into f of the face containing the closest
-   point to eaach query point
- - bc is a (#p, 3)-shaped array of barycentric coordinates for each query point
+Returns:
+  d : a (\#p,)-shaped array of shortest distances for each query point p
+  f_idx : a (\#p,)-shaped array of indices into f of the face containing the closest point to eaach query point
+  bc : a (#p, 3)-shaped array of barycentric coordinates for each query point
 
-Notes
------
-Known bugs: This only computes distances to given primitives. So
-unreferenced vertices are ignored. However, degenerate primitives are
-handled correctly: triangle [1 2 2] is treated as a segment [1 2], and
-triangle [1 1 1] is treated as a point. So one _could_ add extra
-combinatorially degenerate rows to Ele for all unreferenced vertices to
-also get distances to points.
+Notes:
+  Known bugs: This only computes distances to given primitives. So unreferenced vertices are ignored. However, degenerate primitives are handled correctly: triangle [1 2 2] is treated as a segment [1 2], and triangle [1 1 1] is treated as a point. So one _could_ add extra combinatorially degenerate rows to Ele for all unreferenced vertices to also get distances to points.
 )Qu8mg5v7";
 npe_function(closest_points_on_mesh)
 npe_arg(p, dense_float, dense_double)

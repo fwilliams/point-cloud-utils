@@ -51,4 +51,7 @@ Point Cloud Utils includes utilities to perform the following tasks:
 * [Estimating normals for point clouds and meshes](sections/normal_estimation).
 * [Fast ray/mesh intersection](sections/ray_mesh_intersection).
 * [Surface mesh smoothing](sections/mesh_smoothing).
-* [API Reference](sections/api_reference).
+
+
+## [API Reference](sections/api_reference.md)
+All available functions and classes are listed in the [API reference](sections/api_reference.md)

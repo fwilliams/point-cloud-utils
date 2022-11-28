@@ -3,12 +3,15 @@ import numpy as np
 
 def pairwise_distances(a, b, p=2):
     """
-    Compute the pairwise distance matrix between a and b which both have size [m, n, d] or [n, d]. The result is a tensor of
-    size [m, n, n] (or [n, n]) whose entry [m, i, j] contains the distance_tensor between a[m, i, :] and b[m, j, :].
-    :param a: A tensor containing m batches of n points of dimension d. i.e. of size [m, n, d]
-    :param b: A tensor containing m batches of n points of dimension d. i.e. of size [m, n, d]
-    :param p: Norm to use for the distance_tensor
-    :return: A tensor containing the pairwise distance_tensor between each pair of inputs in a batch.
+    Compute the (batched) pairwise distance matrix between a and b which both have size [m, n, d] or [n, d]. The result is a tensor of size [m, n, n] (or [n, n]) whose entry [m, i, j] contains the distance_tensor between a[m, i, :] and b[m, j, :].
+
+    Args:
+      a : A tensor containing m batches of n points of dimension d. i.e. of size (m, n, d)
+      b : A tensor containing m batches of n points of dimension d. i.e. of size (m, n, d)
+      p : Norm to use for the distance_tensor
+
+    Returns:
+      M : A (m, n, n)-shaped array containing the pairwise distance_tensor between each pair of inputs in a batch.
     """
 
     squeezed = False
@@ -16,7 +19,7 @@ def pairwise_distances(a, b, p=2):
        a = a[np.newaxis, :, :]
        b = b[np.newaxis, :, :]
        squeezed = True
-       
+
     if len(a.shape) != 3:
         raise ValueError("Invalid shape for a. Must be [m, n, d] or [n, d] but got", a.shape)
     if len(b.shape) != 3:
@@ -31,16 +34,19 @@ def pairwise_distances(a, b, p=2):
 
 def sinkhorn(a, b, M, eps, max_iters=100, stop_thresh=1e-3):
     """
-    Compute the Sinkhorn divergence between two sum of dirac delta distributions, U, and V.
+    Compute the (batched) Sinkhorn correspondences between two dirac delta distributions, U, and V.
     This implementation is numerically stable with float32.
-    :param a: A m-sized minibatch of weights for each dirac in the first distribution, U. i.e. shape = [m, n]
-    :param b: A m-sized minibatch of weights for each dirac in the second distribution, V. i.e. shape = [m, n]
-    :param M: A minibatch of n-by-n tensors storing the distance between each pair of diracs in U and V.
-             i.e. shape = [m, n, n] and each i.e. M[k, i, j] = ||u[k,_i] - v[k, j]||
-    :param eps: The reciprocal of the sinkhorn regularization parameter
-    :param max_iters: The maximum number of Sinkhorn iterations
-    :param stop_thresh: Stop if the change in iterates is below this value
-    :return:
+
+    Args:
+      a : A m-sized minibatch of weights for each dirac in the first distribution, U. i.e. shape = (m, n)
+      b : A m-sized minibatch of weights for each dirac in the second distribution, V. i.e. shape = (m, n)
+      M : A minibatch of n-by-n tensors storing the distance between each pair of diracs in U and V. i.e. shape = (m, n, n) and each i.e. M[k, i, j] = ||u[k,_i] - v[k, j]||
+      eps : The reciprocal of the sinkhorn regularization parameter
+      max_iters : The maximum number of Sinkhorn iterations
+      stop_thresh : Stop if the change in iterates is below this value
+
+    Returns:
+      P : An (m, n, n)-shaped array of correspondences between distributions U and V
     """
     # a and b are tensors of size [nb, m] and [nb, n]
     # M is a tensor of size [nb, m, n]

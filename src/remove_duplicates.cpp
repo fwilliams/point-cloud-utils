@@ -8,22 +8,19 @@ const char* remove_duplicate_points_doc = R"igl_Qu8mg5v7(
 Removes duplicated points from a point cloud where two points are considered the same if their distance is below
 some threshold
 
-Parameters
-----------
-x : #x by 3 Matrix of 3D positions
-epsilon: threshold below which two points are considered equal
-return_index: If true, return indices to map between input and output
+Args:
+    x : \#x by 3 Matrix of 3D positions
+    epsilon: threshold below which two points are considered equal
+    return_index: If true, return indices to map between input and output
 
-Returns
--------
-x_new : #x_new x 3 Point cloud with duplicates removed
-if return indices is set, this function also returns:
-    svi : #x x 1 indices so that x_new = x[svi]
-    svj : #x_new x 1 indices so that x = x_new[svj]
+Returns:
+    x_new : \#x_new x 3 Point cloud with duplicates removed
+    if return indices is set, this function also returns:
+        svi : \#x x 1 indices so that x_new = x[svi]
+        svj : \#x_new x 1 indices so that x = x_new[svj]
 
-See also
---------
-deduplicate_mesh_vertices
+See also:
+    deduplicate_mesh_vertices
 )igl_Qu8mg5v7";
 npe_function(deduplicate_point_cloud)
 npe_doc(remove_duplicate_points_doc)
@@ -54,23 +51,19 @@ const char* remove_duplicate_mesh_vertices_doc = R"igl_Qu8mg5v7(
 Removes duplicated vertices from a triangle mesh two vertices are considered the same if their distance is below
 some threshold
 
-Parameters
-----------
-v : #v by 3 Matrix of mesh vertex 3D positions
-f : #f by 3 Matrix of face (triangle) indices
-epsilon: threshold below which two points are considered equal
-return_index: If true, return indices to map between input and output
+Args:
+    v : \#v by 3 Matrix of mesh vertex 3D positions
+    f : \#f by 3 Matrix of face (triangle) indices
+    epsilon: threshold below which two points are considered equal
+    return_index: If true, return indices to map between input and output
 
-Returns
--------
-x_new : #x_new x 3 Point cloud with duplicates removed
-if return indices is set, this function also returns:
-    svi : #x x 1 indices so that x_new = x[svi]
-    svj : #x_new x 1 indices so that x = x_new[svj]
+Returns:
+    x_new : \#x_new x 3 Point cloud with duplicates removed
+    svi : \#x x 1 indices so that x_new = x[svi] (only returned if return_index is True)
+    svj : \#x_new x 1 indices so that x = x_new[svj] (only returned if return_index is True)
 
-See also
---------
-deduplicate_point_cloud
+See also:
+    deduplicate_point_cloud
 )igl_Qu8mg5v7";
 npe_function(deduplicate_mesh_vertices)
 npe_doc(remove_duplicate_mesh_vertices_doc)
