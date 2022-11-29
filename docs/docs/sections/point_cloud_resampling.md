@@ -2,7 +2,7 @@
 Point Cloud Utils provides tools for re-sampling a point cloud in several ways.
 
 !!! note "Data in examples"
-    In all the examples, below we first load [the point cloud here]()
+    In all the examples, below we first load [the point cloud here](https://github.com/fwilliams/point-cloud-utils/blob/master/data/wheel.ply)
 
 ## Binning points in a voxel grid
 In many 3D tasks, it is often advantageous to quantize a point cloud to a regular voxel grid in space.
@@ -40,7 +40,6 @@ v_sampled, n_sampled = pcu.downsample_point_cloud_on_voxel_grid(sizeof_voxel, p,
   <div class="column" style="float: left; width: 50%; padding: 5px;">
     <img src="/imgs/grid2.png.crop.png.tx.png" alt="Downsampled point cloud on a voxel grid with normal" style="width:100%">
   </div>
-
     <figcaption style="text-align: center; font-style: italic;">Downsampling the blue point cloud by averaging points within each voxel. The yellow points are the downsampled points. The right image shows the downsampled normals.</figcaption>
 </div>
 </p>
@@ -68,7 +67,7 @@ p, n = pcu.load_mesh_vn("wheel.ply")
 target_num_pts= int(0.1*p.shape[0])  # 10% of the number of input points
 idx = pcu.downsample_point_cloud_poisson_disk(p, num_samples=target_num_pts)
 
-### Option 1:
+### Option 2:
 ### Downsampling a points to a blue noise distribution with a target radius
 # idx is an array of integer indices into v indicating which samples to keep
 target_radius = np.linalg.norm(p.max(0) - p.min(0)) * 0.02  # 2% of the bounding box radius
