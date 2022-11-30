@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>Mesh I/O - Point Cloud Utils</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
+        <link href="../../assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Mesh I/O";
+        var mkdocs_page_input_path = "sections/mesh_io.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <script src="../../js/jquery-3.6.0.min.js" defer></script>
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
+      <script>hljs.initHighlightingOnLoad();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> Point Cloud Utils
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">Home</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Functionality</span></p>
+              <ul class="current">
+                  <li class="toctree-l1 current"><a class="reference internal current" href="./">Mesh I/O</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#3d-data-representation-in-point-cloud-utils">3D Data Representation in Point Cloud Utils</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#representing-point-clouds">Representing Point Clouds</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#representing-triangle-meshes">Representing Triangle Meshes</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#representing-point-and-face-attributes">Representing Point and Face Attributes</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#shorthand-functions-for-loading-and-saving-3d-data">Shorthand functions for loading and saving 3D data</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#loadsave-only-points">Load/Save only points</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#loadsave-mesh-vertices-and-faces">Load/Save mesh vertices and faces</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#loadsave-points-and-per-point-normals">Load/Save points and per-point normals</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#loadsave-mesh-vertices-faces-and-vertex-colors">Load/Save mesh vertices, faces, and vertex colors</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#loadsave-mesh-vertices-faces-and-vertex-normals">Load/Save mesh vertices, faces, and vertex normals</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#loadsave-mesh-vertices-faces-vertex-normals-and-vertex-colors">Load/Save mesh vertices, faces, vertex normals, and vertex colors</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#loading-3d-data-with-all-attributes">Loading 3D data with all attributes</a>
+    </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../point_cloud_resampling/">Point Cloud Resampling</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../mesh_sampling/">Mesh Sampling</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../shape_metrics/">Shape Metrics</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../mesh_sdf/">Computing SDFs for a Mesh</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../normal_estimation/">Normal Estimation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../ray_mesh_intersection/">Ray/Mesh Intersection</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../ray_surfel_intersection/">Ray/Surfel Intersection</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../mesh_smoothing/">Mesh Smoothing</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">API Reference</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../api_reference/">API Reference</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">Point Cloud Utils</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" alt="Docs"></a> &raquo;</li>
+          <li>Functionality &raquo;</li>
+      <li>Mesh I/O</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="mesh-and-point-cloud-io">Mesh and Point Cloud I/O</h1>
+<p><strong>If your file can be imported into MeshLab, we can read it!</strong></p>
+<p>Point Cloud Utils supports reading and writing many common 3D formats (PLY, STL, OFF, OBJ, 3DS, VRML 2.0,
+X3D, COLLADA).
+In all the functions in this section, the type of file is inferred from its file extension.</p>
+<h2 id="3d-data-representation-in-point-cloud-utils">3D Data Representation in Point Cloud Utils</h2>
+<p>Point Cloud Utils uses NumPy arrays as a fundamental data structure for storing 3D data.</p>
+<h3 id="representing-point-clouds">Representing Point Clouds</h3>
+<p>A point cloud with <code>#p</code> points is represented as a simple Numpy array with shape <code>(#p, 3)</code> (one point per row). The example below illustrates a point cloud with six points.</p>
+<p align="center">
+  <img src="/imgs/mesh_format.svg">
+</p>
+
+<h3 id="representing-triangle-meshes">Representing Triangle Meshes</h3>
+<p>A triangle mesh with <code>#v</code> vertices and <code>#f</code> faces is stored using a pair of NumPy arrays <code>v, f</code> with
+shape <code>(#v, 3)</code> and <code>(#f, 3)</code> respectively. Each row of <code>v</code> stores a vertex coordinate and each row of <code>f</code> stores
+three integer indexes into <code>v</code> denoting the three vertices forming that face. Per-vertex attributes are stored as
+separate NumPy arrays with <code>#v</code> rows (one row per vertex).</p>
+<p align="center">
+  <img src="/imgs/mesh_format_transparent.png">
+</p>
+
+<p>For example, consider the mesh with 6 vertices and 5 faces illustrated above.
+We would store this as two numpy arrays  <code>v, f</code> with <code>v.shape = (6, 3)</code> and <code>f.shape = (5, 3)</code>. The i<sup>th</sup> row
+of <code>v</code> is a 3D vector encoding the position of the vertex <em>v<sub>i</sub></em>, and j<sup>th</sup> row of
+<code>f</code> holds three indices to each of the vertices of the j<sup>th</sup> face. In the figure, the second face is formed by
+the vertices <em>v<sub>1</sub>, v<sub>2</sub>, v<sub>5</sub></em>, so the second row of <code>f</code> are the integers <code>(1, 2, 5)</code>.</p>
+<h3 id="representing-point-and-face-attributes">Representing Point and Face Attributes</h3>
+<p>In addition to vertices and face data, we often want to store attributes alongside a point cloud or mesh. Attributes can be stored per-point as well as per-face. Attributes are stored as NumPy arrays with one attribute per row. Examples of attributes include point cloud normals, point colors, per-face colors, or per-vertex texture coordinates.</p>
+<p><strong>Example - Storing face colors and vertex normals in a mesh:</strong>
+For example, consider the mesh described above with 6 vertices and 5 faces, stored as two arrays <code>v</code> and <code>f</code> with shapes <code>(6, 3)</code> and <code>(5, 3)</code> respectively. We could store per-face colors as
+a NumPy array with shape <code>(5, 3)</code> each row is the color of the correponding face:</p>
+<p align="center">
+  <img src="/imgs/mesh_format_attrib.svg" alt="Per face colors are stored in an array with the same number of rows as the face array">
+  <figcaption style="text-align: center; font-style: italic;">Per-face attributes are stored in an array with the same number of rows as the face array</figcaption>
+</p>
+
+<p>We could store per-vertex normals as a NumPy array of shape <code>(6, 3)</code> where each row contains the normal at the corresponding vertex:</p>
+<p align="center">
+  <img src="/imgs/mesh_format_attrib_vertex.svg" alt="Per-vertex normals are stored in an array with the same number of rows as the vertex array">
+  <figcaption style="text-align: center; font-style: italic">Per-vertex attributes (e.g. normals) are stored in an array with the same number of rows as the vertex array</figcaption>
+</p>
+
+<h2 id="shorthand-functions-for-loading-and-saving-3d-data">Shorthand functions for loading and saving 3D data</h2>
+<p>Many times, we only need to load a few attributes from a mesh or point cloud. For example, we may only want the vertices, faces, and vertex colors for mesh. Point Cloud Utils provides a number of
+shorthand helper functions which can load these attributes directly into NumPy arrays. These functions have the form <code>load_mesh_*</code> and <code>save_mesh_*</code> where <code>*</code> indicates which data to load. If some attribute is not present in the file being loaded, these functions will simply return an empty array.</p>
+<h4 id="loadsave-only-points">Load/Save only points</h4>
+<pre><code class="language-python">import point_cloud_utils as pcu
+
+# v is a NumPy array of shape (#v, 3) of points
+v = pcu.load_mesh_v(&quot;path/to/mesh&quot;)
+pcu.save_mesh_v(&quot;path/to/mash&quot;, v)
+</code></pre>
+<h4 id="loadsave-mesh-vertices-and-faces">Load/Save mesh vertices and faces</h4>
+<pre><code class="language-python">import point_cloud_utils as pcu
+
+# v is a NumPy array of shape (#v, 3) of points
+# f is a NumPy array of shape (#f, 3) of face indices
+v, f = pcu.load_mesh_vf(&quot;path/to/mesh&quot;)
+pcu.save_mesh_vf(&quot;path/to/mash&quot;, v, f)
+</code></pre>
+<h4 id="loadsave-points-and-per-point-normals">Load/Save points and per-point normals</h4>
+<pre><code class="language-python">import point_cloud_utils as pcu
+
+# v is a NumPy array of shape (#v, 3) of points
+# n is a NumPy array of shape (#v, 3) of per-vertex normals
+v, n = pcu.load_mesh_vn(&quot;path/to/mesh&quot;)
+pcu.save_mesh_vn(&quot;path/to/mash&quot;, v, n)
+</code></pre>
+<h4 id="loadsave-mesh-vertices-faces-and-vertex-colors">Load/Save mesh vertices, faces, and vertex colors</h4>
+<pre><code class="language-python">import point_cloud_utils as pcu
+
+# v is a NumPy array of shape (#v, 3) of points
+# f is a NumPy array of shape (#f, 3) of face indices
+# c is a NumPy array of shape (#v, 4) of RBGA per-vertex colors
+v, f, c = pcu.load_mesh_vfc(&quot;path/to/mesh&quot;)
+pcu.save_mesh_vfc(&quot;path/to/mash&quot;, v, f, c)
+</code></pre>
+<h4 id="loadsave-mesh-vertices-faces-and-vertex-normals">Load/Save mesh vertices, faces, and vertex normals</h4>
+<pre><code class="language-python">import point_cloud_utils as pcu
+
+# v is a NumPy array of shape (#v, 3) of points
+# f is a NumPy array of shape (#f, 3) of face indices
+# n is a NumPy array of shape (#v, 3) of per-vertex normals
+v, f, n = pcu.load_mesh_vfn(&quot;path/to/mesh&quot;)
+pcu.save_mesh_vfn(&quot;path/to/mash&quot;, v, f, n)
+</code></pre>
+<h4 id="loadsave-mesh-vertices-faces-vertex-normals-and-vertex-colors">Load/Save mesh vertices, faces, vertex normals, and vertex colors</h4>
+<pre><code class="language-python">import point_cloud_utils as pcu
+
+# v is a NumPy array of shape (#v, 3) of points
+# f is a NumPy array of shape (#f, 3) of face indices
+# n is a NumPy array of shape (#v, 3) of per-vertex normals
+# c is a NumPy array of shape (#v, 4) of RBGA per-vertex colors
+v, f, n, c = pcu.load_mesh_vfn(&quot;path/to/mesh&quot;)
+pcu.save_mesh_vfnc(&quot;path/to/mash&quot;, v, f, n, c)
+</code></pre>
+<h2 id="loading-3d-data-with-all-attributes">Loading 3D data with all attributes</h2>
+<p>Some meshes or point clouds may have more complex attribute structures, or we may not know which attributes are stored
+in the mesh file before loading it. In this case, Point Cloud Utils provides utilities to load a mesh into
+a <code>TriangleMesh</code> class. <code>TriangleMesh</code> is a lightweight container containing numpy arrays for
+vertices, faces, textures, and other attributes.</p>
+<p>To load a mesh into a <code>TriangleMesh</code> class simply construct it with the path to the mesh:</p>
+<pre><code class="language-python">import point_cloud_utils as pcu
+
+mesh = pcu.TriangleMesh(&quot;path/to/mesh&quot;)
+</code></pre>
+<p>To save a <code>TriangleMesh</code> object, simply call the <code>save</code> method with the desired path:</p>
+<pre><code class="language-python">mesh.save(&quot;path/to/mesh&quot;)
+</code></pre>
+<p>The <code>TriangleMesh</code> class contains attributes encoding vertex and face data as well as texture information. It is structured as follows:</p>
+<ul>
+<li><strong><code>TriangleMesh</code></strong>:<ul>
+<li><strong><code>vertex_data</code></strong>:<ul>
+<li><strong><code>positions</code></strong>: (#v, 3)-shaped NumPy array of per-vertex positions</li>
+<li><strong><code>normals</code></strong>: (#v, 3)-shaped NumPy array of per-vertex normals (or <code>None</code>)</li>
+<li><strong><code>texcoords</code></strong>: (#v, 2)-shaped NumPy array of per-vertex uv coordinates (or <code>None</code>)</li>
+<li><strong><code>tex_ids</code></strong>: (#v,)-shaped NumPy array of integer indices into TriangleMesh.textures indicating which texture to use at this vertex (or <code>None</code>)</li>
+<li><strong><code>colors</code></strong>: (#v, 4)-shaped NumPy array of per-vertex RBGA colors in <code>[0.0, 1.0]</code> (or <code>None</code>)</li>
+<li><strong><code>radius</code></strong>: (#v,)-shaped NumPy array of per-vertex curvature radii (or <code>None</code>)</li>
+<li><strong><code>quality</code></strong>: (#v,)-shaped NumPy array of per-vertex quality measures (or <code>None</code>)</li>
+<li><strong><code>flags</code></strong>: (#v,)-shaped NumPy array of 32-bit integer flags per vertex (or <code>None</code>)</li>
+</ul>
+</li>
+<li><strong><code>face_data</code></strong>:<ul>
+<li><strong><code>vertex_ids</code></strong>: (#f, 3)-shaped NumPy array of integer face indices into <code>TrianglMesh.vertex_data.positions</code></li>
+<li><strong><code>normals</code></strong>: (#f, 3)-shaped NumPy array of per-face normals (or <code>None</code>)</li>
+<li><strong><code>colors</code></strong>: (#f, 4)-shaped NumPy array of per-face RBGA colors in <code>[0.0, 1.0]</code> (or <code>None</code>)</li>
+<li><strong><code>quality</code></strong>: (#f,)-shaped NumPy array of per-face quality measures (or <code>None</code>)</li>
+<li><strong><code>flags</code></strong>: (#f,(-shaped NumPy array of 32-bit integer flags per face (or <code>None</code>)</li>
+<li><strong><code>wedge_colors</code></strong>: (#f, 3, 4)-shaped NumPy array of per-wedge RBGA colors in <code>[0.0, 1.0]</code> (or <code>None</code>)</li>
+<li><strong><code>wedge_normals</code></strong>: (#f, 3, 3)-shaped NumPy array of per-wedge normals (or <code>None</code>)</li>
+<li><strong><code>wedge_texcoords</code></strong>: (#f, 3, 2)-shaped NumPy array of per-wedge] uv coordinates (or <code>None</code>)</li>
+<li><strong><code>wedge_tex_ids</code></strong>: (#f, 3)-shaped NumPy array of integer indices into <code>TriangleMesh.textures</code> indicating which texture to use at this wedge (or <code>None</code>)</li>
+</ul>
+</li>
+<li><strong><code>textures</code></strong>: A list of paths to texture image files for this mesh</li>
+<li><strong><code>normal_maps</code></strong>: A list of paths to texture image files for this mesh</li>
+</ul>
+</li>
+</ul>
+<p>The hierarchy of the list above denotes composition. For example, to access the vertex colors of a <code>TriangleMesh</code>, you would
+read the <code>TriangleMesh.vertex_data.colors</code> property.</p>
+<div class="admonition note">
+<p class="admonition-title">Remark on wedge face attributes</p>
+<p>The <code>face_data</code> member of the <code>TriangleMesh</code> class contains a number of <code>wedge</code> attributes. These all start with
+<code>wedge_</code>. In this context a <em>wedge</em> is a corner of a triangle face. Each face contains three wedges corresponding
+ to each corner. Wedge attributes have shape <code>(#f, 3, d)</code> where <code>d</code> is the dimension of the attribute.
+ Wedges attributes are useful for storing which are discontinous across face boundaries.</p>
+</div>
+<!--
+```text
+TriangleMesh:
+  vertex_data:
+      positions: (#v, 3)-shaped numpy array of per-vertex positions
+      normals: (#v, 3)-shaped numpy array of per-vertex normals (or None)
+      texcoords: (#v, 2)-shaped numpy array of per-vertex uv coordinates (or None)
+      tex_ids: (#v,)-shaped numpy array of integer indices into TriangleMesh.textures indicating which texture to
+               use at this vertex (or None)
+      colors: (#v, 4)-shaped numpy array of per-vertex RBGA colors in [0.0, 1.0] (or None)
+      radius: (#v,)-shaped numpy array of per-vertex curvature radii (or None)
+      quality: (#v,)-shaped numpy array of per-vertex quality measures (or None)
+      flags: (#v,)-shaped numpy array of 32-bit integer flags per vertex (or None)
+  face_data:
+      vertex_ids: (#f, 3)-shaped numpy array of integer face indices into TrianglMesh.vertex_data.positions
+      normals: (#f, 3)-shaped numpy array of per-face normals (or None)
+      colors: (#f, 4)-shaped numpy array of per-face RBGA colors in [0.0, 1.0] (or None)
+      quality: (#f,)-shaped numpy array of per-face quality measures (or None)
+      flags: (#f,(-shaped numpy array of 32-bit integer flags per face (or None)
+
+      wedge_colors: (#f, 3, 4)-shaped numpy array of per-wedge RBGA colors in [0.0, 1.0] (or None)
+      wedge_normals: (#f, 3, 3)-shaped numpy array of per-wedge normals (or None)
+      wedge_texcoords: (#f, 3, 2)-shaped numpy array of per-wedge] uv coordinates (or None)
+      wedge_tex_ids: (#f, 3)-shaped numpy array of integer indices into TriangleMesh.textures indicating which
+                     texture to use at this wedge (or None)
+  textures: A list of paths to texture image files for this mesh
+  normal_maps: A list of paths to texture image files for this mesh
+``` --->
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../.." class="btn btn-neutral float-left" title="Home"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../point_cloud_resampling/" class="btn btn-neutral float-right" title="Point Cloud Resampling">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../.." style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../point_cloud_resampling/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script>var base_url = '../..';</script>
+    <script src="../../js/theme_extra.js" defer></script>
+    <script src="../../js/theme.js" defer></script>
+      <script src="../../javascripts/mathjax.js" defer></script>
+      <script src="https://polyfill.io/v3/polyfill.min.js?features=es6" defer></script>
+      <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" defer></script>
+      <script src="../../search/main.js" defer></script>
+    <script defer>
+        window.onload = function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        };
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="description" content="None" />
+      <link rel="shortcut icon" href="img/favicon.ico" />
+    <title>Point Cloud Utils</title>
+    <link rel="stylesheet" href="css/theme.css" />
+    <link rel="stylesheet" href="css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
+        <link href="assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Home";
+        var mkdocs_page_input_path = "index.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <script src="js/jquery-3.6.0.min.js" defer></script>
+    <!--[if lt IE 9]>
+      <script src="js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
+      <script>hljs.initHighlightingOnLoad();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="." class="icon icon-home"> Point Cloud Utils
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="./search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+                <li class="toctree-l1 current"><a class="reference internal current" href=".">Home</a>
+    <ul class="current">
+    </ul>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Functionality</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="sections/mesh_io/">Mesh I/O</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="sections/point_cloud_resampling/">Point Cloud Resampling</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="sections/mesh_sampling/">Mesh Sampling</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="sections/shape_metrics/">Shape Metrics</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="sections/mesh_sdf/">Computing SDFs for a Mesh</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="sections/normal_estimation/">Normal Estimation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="sections/ray_mesh_intersection/">Ray/Mesh Intersection</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="sections/ray_surfel_intersection/">Ray/Surfel Intersection</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="sections/mesh_smoothing/">Mesh Smoothing</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">API Reference</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="sections/api_reference/">API Reference</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href=".">Point Cloud Utils</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="." class="icon icon-home" alt="Docs"></a> &raquo;</li>
+      <li>Home</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <p align="center">
+  <img src="imgs/logo_solarized_tint.png">
+</p>
+
+<p><strong>Point Cloud Utils</strong> is an <em>easy-to-use</em> Python library for processing
+and manipulating 3D point clouds and meshes.</p>
+<h2 id="installation">Installation</h2>
+<pre><code class="language-shell">pip install point-cloud-utils
+</code></pre>
+<h2 id="a-very-simple-example">A very simple example</h2>
+<p>Point Cloud Utils uses numpy arrays as fundamental data structure, making it very easy to integrate with existing numerical code.
+For example, here's how to remove all points in a point cloud which are greater than some distance from a mesh.</p>
+<pre><code class="language-py">import point_cloud_utils as pcu
+# Load a mesh stored in my_mesh.ply:
+#   v is a NumPy array of coordinates with shape (V, 3)
+#   f is a NumPy array of face indices with shape (F, 3)
+v, f = pcu.load_mesh_vf(&quot;my_mesh.ply&quot;)
+
+# Load a point cloud stored in my_point_cloud.ply:
+#   p is a NumPy array of point coordinates with shape (P, 3)
+p = pcu.load_mesh_v(&quot;my_point_cloud.ply&quot;)
+
+# Compute the shortest distance between each point in p and the mesh:
+#   dists is a NumPy array of shape (P,) where dists[i] is the
+#   shortest distnace between the point p[i, :] and the mesh (v, f)
+dists, _, _ = pcu.closest_points_on_mesh(p, v, f)
+
+# Delete all points which are farther than some distance away from the mesh
+dist_thresh = 0.1
+keep_points = p[dists &lt; dist_thresh]
+
+# Save the filtered point cloud to my_point_cloud_trimmed.ply
+pcu.save_mesh_v(&quot;my_point_cloud_trimmed.ply&quot;, keep_points)
+</code></pre>
+<h2 id="core-features">Core Features</h2>
+<p>Point Cloud Utils includes utilities to perform the following tasks:</p>
+<ul>
+<li><a href="sections/mesh_io">Reading and writing meshes and point clouds from disk</a>. Point Cloud Utils can handle any file that can be opened in MeshLab.</li>
+<li><a href="sections/point_cloud_resampling">Resampling point clouds</a> to have different distributions.</li>
+<li><a href="sections/mesh_sampling">Generating point samples on a mesh</a>.</li>
+<li><a href="sections/shape_metrics">Computing metrics between point clouds and meshes</a> (e.g. Chamfer Distance, Hausdorff Distance, etc...).</li>
+<li><a href="sections/mesh_sdf">Computing signed distances to triangle meshes</a>.</li>
+<li><a href="sections/normal_estimation">Estimating normals for point clouds and meshes</a>.</li>
+<li><a href="sections/ray_mesh_intersection">Fast ray/mesh intersection</a>.</li>
+<li><a href="sections/mesh_smoothing">Surface mesh smoothing</a>.</li>
+</ul>
+<h2 id="api-reference"><a href="sections/api_reference/">API Reference</a></h2>
+<p>All available functions and classes are listed in the <a href="sections/api_reference/">API reference</a></p>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="sections/mesh_io/" class="btn btn-neutral float-right" title="Mesh I/O">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+    
+      <span><a href="sections/mesh_io/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script>var base_url = '.';</script>
+    <script src="js/theme_extra.js" defer></script>
+    <script src="js/theme.js" defer></script>
+      <script src="javascripts/mathjax.js" defer></script>
+      <script src="https://polyfill.io/v3/polyfill.min.js?features=es6" defer></script>
+      <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" defer></script>
+      <script src="search/main.js" defer></script>
+    <script defer>
+        window.onload = function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        };
+    </script>
+
+</body>
+</html>
+
+<!--
+MkDocs version : 1.4.0
+Build Date UTC : 2022-11-30 15:34:59.447390+00:00
+-->
