@@ -120,6 +120,16 @@
 
 ----------------
 
+::: point_cloud_utils.earth_movers_distance
+    handler: python
+    options:
+        show_root_heading: true
+        show_source: false
+
+
+
+----------------
+
 ::: point_cloud_utils.erode_sparse_voxel_grid
     handler: python
     options:
