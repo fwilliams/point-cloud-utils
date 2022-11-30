@@ -1,7 +1,7 @@
 import numpy as np
 
 
-def pairwise_distances(a, b, p=2):
+def pairwise_distances(a, b, p=None):
     """
     Compute the (batched) pairwise distance matrix between a and b which both have size [m, n, d] or [n, d]. The result is a tensor of size [m, n, n] (or [n, n]) whose entry [m, i, j] contains the distance_tensor between a[m, i, :] and b[m, j, :].
 
@@ -16,16 +16,17 @@ def pairwise_distances(a, b, p=2):
 
     squeezed = False
     if len(a.shape) == 2 and len(b.shape) == 2:
-       a = a[np.newaxis, :, :]
-       b = b[np.newaxis, :, :]
-       squeezed = True
+        a = a[np.newaxis, :, :]
+        b = b[np.newaxis, :, :]
+        squeezed = True
 
     if len(a.shape) != 3:
         raise ValueError("Invalid shape for a. Must be [m, n, d] or [n, d] but got", a.shape)
     if len(b.shape) != 3:
         raise ValueError("Invalid shape for a. Must be [m, n, d] or [n, d] but got", b.shape)
 
-    ret = np.power(np.abs(a[:, :, np.newaxis, :] - b[:, np.newaxis, :, :]), p).sum(3)
+    ret = np.linalg.norm(a[:, :, np.newaxis, :] - b[:, np.newaxis, :, :], axis=-1, ord=p)
+    # ret = np.power(np.abs(a[:, :, np.newaxis, :] - b[:, np.newaxis, :, :]), p).sum(3)
     if squeezed:
         ret = np.squeeze(ret)
 
@@ -127,3 +128,29 @@ def sinkhorn(a, b, M, eps, max_iters=100, stop_thresh=1e-3):
         P = np.squeeze(P)
 
     return P
+
+
+def earth_movers_distance(p, q, p_norm=2, eps=1e-4, max_iters=100, stop_thresh=1e-3):
+    """
+    Compute the (batched) Sinkhorn correspondences between two dirac delta distributions, U, and V.
+    This implementation is numerically stable with float32.
+
+    Args:
+      p : An (n, d)-shaped array of d-dimensional points
+      b : An (m, d)-shaped array of d-dimensional points
+      p_norm : Which norm to use. Must be one of {non-zero int, inf, -inf, ‘fro’, ‘nuc’} (default is 2),
+      eps : The reciprocal of the sinkhorn regularization parameter (default 1e-4)
+      max_iters : The maximum number of Sinkhorn iterations
+      stop_thresh : Stop if the change in iterates is below this value
+
+    Returns:
+      emd : The earth mover's distance between point clouds p and q
+      P : An (n, m)-shaped array of correspondences between point clouds p and q
+    """
+
+    M = pairwise_distances(p, q, p_norm)
+    a = np.ones(p.shape[0]) / p.shape[0]
+    b = np.ones(q.shape[0]) / q.shape[0]
+    P = sinkhorn(a, b, M, eps, max_iters, stop_thresh)
+
+    return (P * M).sum(), P
