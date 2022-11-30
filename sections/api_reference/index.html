@@ -128,6 +128,8 @@
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#point_cloud_utils.downsample_point_cloud_poisson_disk">downsample_point_cloud_poisson_disk()</a>
     </li>
+    <li class="toctree-l2"><a class="reference internal" href="#point_cloud_utils.earth_movers_distance">earth_movers_distance()</a>
+    </li>
     <li class="toctree-l2"><a class="reference internal" href="#point_cloud_utils.erode_sparse_voxel_grid">erode_sparse_voxel_grid()</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#point_cloud_utils.estimate_mesh_face_normals">estimate_mesh_face_normals()</a>
@@ -264,6 +266,7 @@
           <li>API Reference &raquo;</li>
       <li>API Reference</li>
     <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/fwilliams/point-cloud-utils/point-cloud-utils/sections/api_reference.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
   </ul>
   <hr/>
@@ -1962,6 +1965,116 @@ This function uses the method in "Parallel Poisson Disk Sampling with Spectrum A
 <td><code>p_idx</code></td>          <td>
           </td>
           <td><p>A (m,) shaped array of indices into v where m is the number of Poisson-disk samples</p></td>
+        </tr>
+    </tbody>
+  </table>
+
+  </div>
+
+</div><hr />
+
+
+<div class="doc doc-object doc-function">
+
+
+
+<h2 id="point_cloud_utils.earth_movers_distance" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">point_cloud_utils</span><span class="o">.</span><span class="n">earth_movers_distance</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">p_norm</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="mf">0.0001</span><span class="p">,</span> <span class="n">max_iters</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">stop_thresh</span><span class="o">=</span><span class="mf">0.001</span><span class="p">)</span></code>
+
+</h2>
+
+
+  <div class="doc doc-contents first">
+  
+      <p>Compute the (batched) Sinkhorn correspondences between two dirac delta distributions, U, and V.
+This implementation is numerically stable with float32.</p>
+
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>p</code></td>
+          <td>
+          </td>
+          <td><p>An (n, d)-shaped array of d-dimensional points</p></td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+        <tr>
+          <td><code>b</code></td>
+          <td>
+          </td>
+          <td><p>An (m, d)-shaped array of d-dimensional points</p></td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+        <tr>
+          <td><code>p_norm</code></td>
+          <td>
+          </td>
+          <td><p>Which norm to use. Must be one of {non-zero int, inf, -inf, ‘fro’, ‘nuc’} (default is 2),</p></td>
+          <td>
+                <code>2</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>eps</code></td>
+          <td>
+          </td>
+          <td><p>The reciprocal of the sinkhorn regularization parameter (default 1e-4)</p></td>
+          <td>
+                <code>0.0001</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>max_iters</code></td>
+          <td>
+          </td>
+          <td><p>The maximum number of Sinkhorn iterations</p></td>
+          <td>
+                <code>100</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>stop_thresh</code></td>
+          <td>
+          </td>
+          <td><p>Stop if the change in iterates is below this value</p></td>
+          <td>
+                <code>0.001</code>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+<th>Name</th>        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+<td><code>emd</code></td>          <td>
+          </td>
+          <td><p>The earth mover's distance between point clouds p and q</p></td>
+        </tr>
+        <tr>
+<td><code>P</code></td>          <td>
+          </td>
+          <td><p>An (n, m)-shaped array of correspondences between point clouds p and q</p></td>
         </tr>
     </tbody>
   </table>
@@ -7170,6 +7283,10 @@ quantize_subdivided_sparse_voxel_grid</p>
 
   <div class="rst-versions" role="note" aria-label="Versions">
   <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/fwilliams/point-cloud-utils" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
     
     
       <span><a href="../mesh_smoothing/" style="color: #fcfcfc">&laquo; Previous</a></span>
