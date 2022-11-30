@@ -1,6 +1,7 @@
 site_name: Point Cloud Utils
 repo_url: https://github.com/fwilliams/point-cloud-utils
-edit_uri: point-cloud-utils
+site_url: http://www.fwilliams.info/point-cloud-utils/
+edit_uri: docs/docs/
 nav:
   - Home: index.md
 #  - About: about.md
