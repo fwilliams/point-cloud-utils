@@ -136,7 +136,7 @@ In all the functions in this section, the type of file is inferred from its file
 <h3 id="representing-point-clouds">Representing Point Clouds</h3>
 <p>A point cloud with <code>#p</code> points is represented as a simple Numpy array with shape <code>(#p, 3)</code> (one point per row). The example below illustrates a point cloud with six points.</p>
 <p align="center">
-  <img src="/imgs/mesh_format.svg">
+  <img src="../imgs/mesh_format.svg">
 </p>
 
 <h3 id="representing-triangle-meshes">Representing Triangle Meshes</h3>
@@ -145,7 +145,7 @@ shape <code>(#v, 3)</code> and <code>(#f, 3)</code> respectively. Each row of <c
 three integer indexes into <code>v</code> denoting the three vertices forming that face. Per-vertex attributes are stored as
 separate NumPy arrays with <code>#v</code> rows (one row per vertex).</p>
 <p align="center">
-  <img src="/imgs/mesh_format_transparent.png">
+  <img src="../imgs/mesh_format_transparent.png">
 </p>
 
 <p>For example, consider the mesh with 6 vertices and 5 faces illustrated above.
@@ -159,13 +159,13 @@ the vertices <em>v<sub>1</sub>, v<sub>2</sub>, v<sub>5</sub></em>, so the second
 For example, consider the mesh described above with 6 vertices and 5 faces, stored as two arrays <code>v</code> and <code>f</code> with shapes <code>(6, 3)</code> and <code>(5, 3)</code> respectively. We could store per-face colors as
 a NumPy array with shape <code>(5, 3)</code> each row is the color of the correponding face:</p>
 <p align="center">
-  <img src="/imgs/mesh_format_attrib.svg" alt="Per face colors are stored in an array with the same number of rows as the face array">
+  <img src="../imgs/mesh_format_attrib.svg" alt="Per face colors are stored in an array with the same number of rows as the face array">
   <figcaption style="text-align: center; font-style: italic;">Per-face attributes are stored in an array with the same number of rows as the face array</figcaption>
 </p>
 
 <p>We could store per-vertex normals as a NumPy array of shape <code>(6, 3)</code> where each row contains the normal at the corresponding vertex:</p>
 <p align="center">
-  <img src="/imgs/mesh_format_attrib_vertex.svg" alt="Per-vertex normals are stored in an array with the same number of rows as the vertex array">
+  <img src="../imgs/mesh_format_attrib_vertex.svg" alt="Per-vertex normals are stored in an array with the same number of rows as the vertex array">
   <figcaption style="text-align: center; font-style: italic">Per-vertex attributes (e.g. normals) are stored in an array with the same number of rows as the vertex array</figcaption>
 </p>
 
