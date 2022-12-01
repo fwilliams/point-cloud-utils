@@ -11,7 +11,7 @@ Point Cloud Utils uses NumPy arrays as a fundamental data structure for storing 
 ### Representing Point Clouds
 A point cloud with `#p` points is represented as a simple Numpy array with shape `(#p, 3)` (one point per row). The example below illustrates a point cloud with six points.
 <p align="center">
-  <img src="/imgs/mesh_format.svg">
+  <img src="../imgs/mesh_format.svg">
 </p>
 
 
@@ -21,7 +21,7 @@ shape `(#v, 3)` and `(#f, 3)` respectively. Each row of `v` stores a vertex coor
 three integer indexes into `v` denoting the three vertices forming that face. Per-vertex attributes are stored as
 separate NumPy arrays with `#v` rows (one row per vertex).
 <p align="center">
-  <img src="/imgs/mesh_format_transparent.png">
+  <img src="../imgs/mesh_format_transparent.png">
 </p>
 
 For example, consider the mesh with 6 vertices and 5 faces illustrated above.
@@ -39,14 +39,14 @@ For example, consider the mesh described above with 6 vertices and 5 faces, stor
 a NumPy array with shape `(5, 3)` each row is the color of the correponding face:
 
 <p align="center">
-  <img src="/imgs/mesh_format_attrib.svg" alt="Per face colors are stored in an array with the same number of rows as the face array">
+  <img src="../imgs/mesh_format_attrib.svg" alt="Per face colors are stored in an array with the same number of rows as the face array">
   <figcaption style="text-align: center; font-style: italic;">Per-face attributes are stored in an array with the same number of rows as the face array</figcaption>
 </p>
 
 
 We could store per-vertex normals as a NumPy array of shape `(6, 3)` where each row contains the normal at the corresponding vertex:
 <p align="center">
-  <img src="/imgs/mesh_format_attrib_vertex.svg" alt="Per-vertex normals are stored in an array with the same number of rows as the vertex array">
+  <img src="../imgs/mesh_format_attrib_vertex.svg" alt="Per-vertex normals are stored in an array with the same number of rows as the vertex array">
   <figcaption style="text-align: center; font-style: italic">Per-vertex attributes (e.g. normals) are stored in an array with the same number of rows as the vertex array</figcaption>
 </p>
 
