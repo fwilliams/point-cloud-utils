@@ -3,19 +3,18 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://www.fwilliams.info/point-cloud-utils/sections/shape_metrics/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <link rel="shortcut icon" href="../../img/favicon.ico" />
     <title>Shape Metrics - Point Cloud Utils</title>
     <link rel="stylesheet" href="../../css/theme.css" />
     <link rel="stylesheet" href="../../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
-        <link href="../../assets/_mkdocstrings.css" rel="stylesheet" />
     
       <script>
         // Current page data
         var mkdocs_page_name = "Shape Metrics";
         var mkdocs_page_input_path = "sections/shape_metrics.md";
-        var mkdocs_page_url = "/point-cloud-utils/sections/shape_metrics/";
+        var mkdocs_page_url = null;
       </script>
     
     <script src="../../js/jquery-3.6.0.min.js" defer></script>
@@ -54,33 +53,14 @@
                   <li class="toctree-l1"><a class="reference internal" href="../mesh_sampling/">Mesh Sampling</a>
                   </li>
                   <li class="toctree-l1 current"><a class="reference internal current" href="./">Shape Metrics</a>
-    <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#chamfer-distance">Chamfer Distance</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#hausdorff-distance">Hausdorff distance</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#one-sided-hausdorff-distance">One sided Hausdorff distance</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#earth-movers-sinkhorn-distance">Earth-Mover's (Sinkhorn) distance</a>
-    </li>
-    </ul>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../mesh_sdf/">Computing SDFs for a Mesh</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../mesh_sdf/">Mesh Signed Distances</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../normal_estimation/">Normal Estimation</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../ray_mesh_intersection/">Ray/Mesh Intersection</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../ray_surfel_intersection/">Ray/Surfel Intersection</a>
-                  </li>
                   <li class="toctree-l1"><a class="reference internal" href="../mesh_smoothing/">Mesh Smoothing</a>
-                  </li>
-              </ul>
-              <p class="caption"><span class="caption-text">API Reference</span></p>
-              <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="../api_reference/">API Reference</a>
                   </li>
               </ul>
       </div>
@@ -100,7 +80,6 @@
           <li>Functionality &raquo;</li>
       <li>Shape Metrics</li>
     <li class="wy-breadcrumbs-aside">
-          <a href="https://github.com/fwilliams/point-cloud-utils/tree/master/docs/docs/sections/shape_metrics.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
   </ul>
   <hr/>
@@ -108,88 +87,13 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="shape-metrics">Shape Metrics</h1>
-<p>Point Cloud Utils has functions to compute a number of commonly used metrics between point clouds.</p>
-<h2 id="chamfer-distance">Chamfer Distance</h2>
-<p>The Chamfer distance between two point clouds <span class="arithmatex">\(P_1 = \{x_i \in \mathbb{R}^3\}_{i=1}^n\)</span> and <span class="arithmatex">\(P_2 = \{x_j \in \mathbb{R}^3\}_{j=1}^m\)</span> is defined as the average distance between pairs of nearest neighbors between <span class="arithmatex">\(P_1\)</span> and <span class="arithmatex">\(P_2\)</span> <em>i.e.</em>
-$$
-\text{chamfer}(P_1, P_2) = \frac{1}{2n} \sum_{i=1}^n |x_i - \text{NN}(x_i, P_2)| + \frac{1}{2m} \sum_{j=1}^n |x_j - \text{NN}(x_j, P_1)|
-$$
-and <span class="arithmatex">\(\text{NN}(x, P) = \text{argmin}_{x' \in P} \|x - x'\|\)</span> is the nearest neighbor function.</p>
-<p>The following code computes the Chamfer distance between two point clouds:</p>
-<pre><code class="language-python">import point_cloud_utils as pcu
-
-# p1 is an (n, 3)-shaped numpy array containing one point per row
-p1 = pcu.load_mesh_v(&quot;point_cloud_1.ply&quot;)
-
-# p2 is an (m, 3)-shaped numpy array containing one point per row
-p2 = pcu.load_mesh_v(&quot;point_cloud_2.ply&quot;)
-
-# Compute the chamfer distance between p1 and p2
-cd = pcu.chamfer_distance(p1, p2)
-</code></pre>
-<h2 id="hausdorff-distance">Hausdorff distance</h2>
-<p>The Hausdorff distance between two point clouds <span class="arithmatex">\(P_1 = \{x_i \in \mathbb{R}^3\}_{i=1}^n\)</span> and <span class="arithmatex">\(P_2 = \{x_j \in \mathbb{R}^3\}_{j=1}^m\)</span> is defined as the maxmimum distance between any pair of nearest neighbors between <span class="arithmatex">\(P_1\)</span> and <span class="arithmatex">\(P_2\)</span> <em>i.e.</em>
-$$
-\text{hausdorff}(P_1, P_2) = \frac{1}{2} \max_{x \in P_1} |x - \text{NN}(x, P_2)| + \frac{1}{2} \max_{x' \in P_2}  |x' - \text{NN}(x', P_1)|
-$$
-and <span class="arithmatex">\(\text{NN}(x, P) = \text{argmin}_{x' \in P} \|x - x'\|\)</span> is the nearest neighbor function.</p>
-<p>The following code computes the Hausdorff distance between two point clouds:</p>
-<pre><code class="language-python">import point_cloud_utils as pcu
-
-# p1 is an (n, 3)-shaped numpy array containing one point per row
-p1 = pcu.load_mesh_v(&quot;point_cloud_1.ply&quot;)
-
-# p2 is an (m, 3)-shaped numpy array containing one point per row
-p2 = pcu.load_mesh_v(&quot;point_cloud_2.ply&quot;)
-
-# Compute the chamfer distance between p1 and p2
-hd = pcu.hausdorff_distance(p1, p2)
-</code></pre>
-<h3 id="one-sided-hausdorff-distance">One sided Hausdorff distance</h3>
-<p>In some applications, one only needs the <em>one-sided Hausdorff distance</em> between <span class="arithmatex">\(P_1\)</span> and <span class="arithmatex">\(P_2\)</span>, <em>i.e.</em></p>
-<div class="arithmatex">\[
-\text{hausdorff}_{P_1 \rightarrow P_2}(P_1, P_2) = \max_{x \in P_1} \|x - \text{NN}(x, P_2)\|
-\]</div>
-<p>The following code computes the one-sided Hausdorff distance between two point clouds:</p>
-<pre><code class="language-python">import point_cloud_utils as pcu
-
-# p1 is an (n, 3)-shaped numpy array containing one point per row
-p1 = pcu.load_mesh_v(&quot;point_cloud_1.ply&quot;)
-
-# p2 is an (m, 3)-shaped numpy array containing one point per row
-p2 = pcu.load_mesh_v(&quot;point_cloud_2.ply&quot;)
-
-# Compute the chamfer distance between p1 and p2
-hd_p1_to_p2 = pcu.one_sided_hausdorff_distance(p1, p2)
-</code></pre>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>To get the <span class="arithmatex">\(P_2 \rightarrow P_1\)</span> Hausdorff distance, just swap the arguments to <code>pcu.one_sided_hausdorff_distance</code></p>
-</div>
-<h2 id="earth-movers-sinkhorn-distance">Earth-Mover's (Sinkhorn) distance</h2>
-<p>The <a href="https://en.wikipedia.org/wiki/Earth_mover%27s_distance">Earth Mover's distance</a> between two point clouds <span class="arithmatex">\(P = \{p_i \in \mathbb{R}^3\}_{i=1}^n\)</span> and <span class="arithmatex">\(Q = \{q_j \in \mathbb{R}^3\}_{j=1}^m\)</span> is computed as the average distance between pairs of points according to an optimal correspondence <span class="arithmatex">\(\pi \in \Pi(P, Q)\)</span>, where <span class="arithmatex">\(\Pi(P, Q)\)</span> is the set of <span class="arithmatex">\(n \times m\)</span> matrices where the rows and columns sum to one. The assignment <span class="arithmatex">\(\pi\)</span> is thus a matrix where <span class="arithmatex">\(\Pi_{i,j}\)</span> is a number between <span class="arithmatex">\(0\)</span> and <span class="arithmatex">\(1\)</span> denoting how much point <span class="arithmatex">\(p_i\)</span> and <span class="arithmatex">\(q_j\)</span> correspond. We can write the EMD formally as:
-$$
-\text{EMD}(P, Q) = \min_{\pi \in \Pi(P, Q)} \sum_{i = 1}^n \sum_{j = 1}^m \pi_{i,j} |p_i - q_j| % \langle \pi, D \rangle \qquad D_{ij} = |p_i - q_j|
-$$</p>
-<p>Point Cloud Utils implements the sinkhorn algorithm for computing the (approximate) Earth Mover's Distance. To compute the EMD, run:</p>
-<pre><code class="language-python">import point_cloud_utils as pcu
-
-# p1 is an (n, 3)-shaped numpy array containing one point per row
-p1 = pcu.load_mesh_v(&quot;point_cloud_1.ply&quot;)
-
-# p2 is an (m, 3)-shaped numpy array containing one point per row
-p2 = pcu.load_mesh_v(&quot;point_cloud_2.ply&quot;)
-
-# Compute the chamfer distance between p1 and p2
-emd, pi = pcu.earth_movers_distance(p1, p2)
-</code></pre>
+                
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
         <a href="../mesh_sampling/" class="btn btn-neutral float-left" title="Mesh Sampling"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../mesh_sdf/" class="btn btn-neutral float-right" title="Computing SDFs for a Mesh">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../mesh_sdf/" class="btn btn-neutral float-right" title="Mesh Signed Distances">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -211,10 +115,6 @@ emd, pi = pcu.earth_movers_distance(p1, p2)
   <div class="rst-versions" role="note" aria-label="Versions">
   <span class="rst-current-version" data-toggle="rst-current-version">
     
-        <span>
-          <a href="https://github.com/fwilliams/point-cloud-utils" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
-        </span>
-    
     
       <span><a href="../mesh_sampling/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
@@ -226,9 +126,6 @@ emd, pi = pcu.earth_movers_distance(p1, p2)
     <script>var base_url = '../..';</script>
     <script src="../../js/theme_extra.js" defer></script>
     <script src="../../js/theme.js" defer></script>
-      <script src="../../javascripts/mathjax.js" defer></script>
-      <script src="https://polyfill.io/v3/polyfill.min.js?features=es6" defer></script>
-      <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" defer></script>
       <script src="../../search/main.js" defer></script>
     <script defer>
         window.onload = function () {

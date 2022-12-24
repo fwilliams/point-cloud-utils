@@ -3,19 +3,18 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://www.fwilliams.info/point-cloud-utils/sections/mesh_sdf/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <link rel="shortcut icon" href="../../img/favicon.ico" />
-    <title>Computing SDFs for a Mesh - Point Cloud Utils</title>
+    <title>Mesh Signed Distances - Point Cloud Utils</title>
     <link rel="stylesheet" href="../../css/theme.css" />
     <link rel="stylesheet" href="../../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
-        <link href="../../assets/_mkdocstrings.css" rel="stylesheet" />
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Computing SDFs for a Mesh";
+        var mkdocs_page_name = "Mesh Signed Distances";
         var mkdocs_page_input_path = "sections/mesh_sdf.md";
-        var mkdocs_page_url = "/point-cloud-utils/sections/mesh_sdf/";
+        var mkdocs_page_url = null;
       </script>
     
     <script src="../../js/jquery-3.6.0.min.js" defer></script>
@@ -55,20 +54,19 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../shape_metrics/">Shape Metrics</a>
                   </li>
-                  <li class="toctree-l1 current"><a class="reference internal current" href="./">Computing SDFs for a Mesh</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="./">Mesh Signed Distances</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#sdf-overview">SDF Overview</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#computing-an-sdf-from-a-triangle-mesh">Computing an SDF from a triangle mesh</a>
+    </li>
+    </ul>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../normal_estimation/">Normal Estimation</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../ray_mesh_intersection/">Ray/Mesh Intersection</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../ray_surfel_intersection/">Ray/Surfel Intersection</a>
-                  </li>
                   <li class="toctree-l1"><a class="reference internal" href="../mesh_smoothing/">Mesh Smoothing</a>
-                  </li>
-              </ul>
-              <p class="caption"><span class="caption-text">API Reference</span></p>
-              <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="../api_reference/">API Reference</a>
                   </li>
               </ul>
       </div>
@@ -86,9 +84,8 @@
   <ul class="wy-breadcrumbs">
     <li><a href="../.." class="icon icon-home" alt="Docs"></a> &raquo;</li>
           <li>Functionality &raquo;</li>
-      <li>Computing SDFs for a Mesh</li>
+      <li>Mesh Signed Distances</li>
     <li class="wy-breadcrumbs-aside">
-          <a href="https://github.com/fwilliams/point-cloud-utils/tree/master/docs/docs/sections/mesh_sdf.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
   </ul>
   <hr/>
@@ -96,7 +93,43 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                
+                <h1 id="computing-signed-distances-to-triangle-meshes">Computing Signed Distances to Triangle Meshes</h1>
+<p>Many applications require a <a href="https://en.wikipedia.org/wiki/Signed_distance_function">signed distance function (SDF) representation for a 3D shape</a>. For example, many shape reconstruction neural networks such as (DeepSDF)[https://arxiv.org/abs/1901.05103] require such a representation for training. Unfortunately, most 3D shape data is stored as a triangle mesh, making SDFs not readily available. Point-Cloud-Utils makes it very easy to extract signed distances from a triangle mesh. </p>
+<div class="admonition note">
+<p class="admonition-title">Remark about mesh quality</p>
+<p>To extract an SDF for a triangle mesh, the mesh must be of relatively good quality (manifold, watertight, no sliver triangles, etc...). To clean up a mesh for SDF extraction see <a href="sections/watertight_mesh.md">Making a triangle mesh watertight</a>.</p>
+</div>
+<h2 id="sdf-overview">SDF Overview</h2>
+<p>A <em>signed distance function</em> $f : \mathbb{R}^3 \rightarrow \mathbb{R}$ maps 3D points $x \in \mathbb{R}^3$ to the nearest distance between $x$ and some surface $S$. In other words:
+$$
+f(x) = \min_{x' \in S} |x - x'|_2
+$$
+The zero level set of the SDF $f$ are precisely the set of points which lie on the surface. <em>i.e.</em>
+$$
+S = {x : f(x) = 0}
+$$
+The image below shows a plot of the SDF for the boundary of the letters PCU. </p>
+<p align="center">
+    <img src="../../imgs/pcu_sdf.png" alt="Signed distance function for the letters PCU" style="width:50%">
+    <figcaption style="text-align: center; font-style: italic;">Level sets of the signed distance function for the letters PCU. The zero level set (surface) is colored as a green line.</figcaption>
+</div>
+</p>
+
+<h2 id="computing-an-sdf-from-a-triangle-mesh">Computing an SDF from a triangle mesh</h2>
+<p>We can compute the signed distance of a set of points in Point-Cloud-Utils in the following way:
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">point_cloud_utils</span> <span class="k">as</span> <span class="nn">pcu</span>
+
+<span class="c1"># 1000 random query points to compute the SDF at</span>
+<span class="n">query_pts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+
+<span class="n">v</span><span class="p">,</span> <span class="n">f</span> <span class="o">=</span> <span class="n">pcu</span><span class="o">.</span><span class="n">load_mesh_vf</span><span class="p">(</span><span class="s2">&quot;bunny.ply&quot;</span><span class="p">)</span>
+
+<span class="c1"># sdf is the signed distance for each query point</span>
+<span class="c1"># fid is the nearest face to each query point on the mesh</span>
+<span class="c1"># bc are the barycentric coordinates of the nearest point to each query point within the face</span>
+<span class="n">sdf</span><span class="p">,</span> <span class="n">fid</span><span class="p">,</span> <span class="n">bc</span> <span class="o">=</span> <span class="n">pcu</span><span class="o">.</span><span class="n">signed_distance_to_mesh</span><span class="p">(</span><span class="n">query_pts</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+</code></pre></div></p>
               
             </div>
           </div><footer>
@@ -124,10 +157,6 @@
   <div class="rst-versions" role="note" aria-label="Versions">
   <span class="rst-current-version" data-toggle="rst-current-version">
     
-        <span>
-          <a href="https://github.com/fwilliams/point-cloud-utils" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
-        </span>
-    
     
       <span><a href="../shape_metrics/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
@@ -139,9 +168,6 @@
     <script>var base_url = '../..';</script>
     <script src="../../js/theme_extra.js" defer></script>
     <script src="../../js/theme.js" defer></script>
-      <script src="../../javascripts/mathjax.js" defer></script>
-      <script src="https://polyfill.io/v3/polyfill.min.js?features=es6" defer></script>
-      <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" defer></script>
       <script src="../../search/main.js" defer></script>
     <script defer>
         window.onload = function () {

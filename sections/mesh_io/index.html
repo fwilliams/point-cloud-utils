@@ -3,19 +3,18 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://www.fwilliams.info/point-cloud-utils/sections/mesh_io/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <link rel="shortcut icon" href="../../img/favicon.ico" />
     <title>Mesh I/O - Point Cloud Utils</title>
     <link rel="stylesheet" href="../../css/theme.css" />
     <link rel="stylesheet" href="../../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
-        <link href="../../assets/_mkdocstrings.css" rel="stylesheet" />
     
       <script>
         // Current page data
         var mkdocs_page_name = "Mesh I/O";
         var mkdocs_page_input_path = "sections/mesh_io.md";
-        var mkdocs_page_url = "/point-cloud-utils/sections/mesh_io/";
+        var mkdocs_page_url = null;
       </script>
     
     <script src="../../js/jquery-3.6.0.min.js" defer></script>
@@ -51,11 +50,7 @@
     <ul class="current">
     <li class="toctree-l2"><a class="reference internal" href="#3d-data-representation-in-point-cloud-utils">3D Data Representation in Point Cloud Utils</a>
         <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#representing-point-clouds">Representing Point Clouds</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#representing-triangle-meshes">Representing Triangle Meshes</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#representing-point-and-face-attributes">Representing Point and Face Attributes</a>
+    <li class="toctree-l3"><a class="reference internal" href="#vertex-and-face-attributes">Vertex and Face Attributes</a>
     </li>
         </ul>
     </li>
@@ -85,20 +80,13 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../shape_metrics/">Shape Metrics</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../mesh_sdf/">Computing SDFs for a Mesh</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../mesh_sdf/">Mesh Signed Distances</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../normal_estimation/">Normal Estimation</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../ray_mesh_intersection/">Ray/Mesh Intersection</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../ray_surfel_intersection/">Ray/Surfel Intersection</a>
-                  </li>
                   <li class="toctree-l1"><a class="reference internal" href="../mesh_smoothing/">Mesh Smoothing</a>
-                  </li>
-              </ul>
-              <p class="caption"><span class="caption-text">API Reference</span></p>
-              <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="../api_reference/">API Reference</a>
                   </li>
               </ul>
       </div>
@@ -118,7 +106,6 @@
           <li>Functionality &raquo;</li>
       <li>Mesh I/O</li>
     <li class="wy-breadcrumbs-aside">
-          <a href="https://github.com/fwilliams/point-cloud-utils/tree/master/docs/docs/sections/mesh_io.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
   </ul>
   <hr/>
@@ -126,116 +113,121 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="mesh-and-point-cloud-io">Mesh and Point Cloud I/O</h1>
-<p><strong>If your file can be imported into MeshLab, we can read it!</strong></p>
-<p>Point Cloud Utils supports reading and writing many common 3D formats (PLY, STL, OFF, OBJ, 3DS, VRML 2.0,
-X3D, COLLADA).
+                <h1 id="mesh-io">Mesh I/O</h1>
+<p>Point Cloud Utils supports reading and writing many common 3D formats (PLY, STL, OFF, OBJ, 3DS, VRML 2.0, 
+X3D, COLLADA). If your file can be imported into MeshLab, we can read it! 
 In all the functions in this section, the type of file is inferred from its file extension.</p>
 <h2 id="3d-data-representation-in-point-cloud-utils">3D Data Representation in Point Cloud Utils</h2>
-<p>Point Cloud Utils uses NumPy arrays as a fundamental data structure for storing 3D data.</p>
-<h3 id="representing-point-clouds">Representing Point Clouds</h3>
-<p>A point cloud with <code>#p</code> points is represented as a simple Numpy array with shape <code>(#p, 3)</code> (one point per row). The example below illustrates a point cloud with six points.</p>
-<p align="center">
-  <img src="../../imgs/mesh_format.svg">
-</p>
-
-<h3 id="representing-triangle-meshes">Representing Triangle Meshes</h3>
-<p>A triangle mesh with <code>#v</code> vertices and <code>#f</code> faces is stored using a pair of NumPy arrays <code>v, f</code> with
-shape <code>(#v, 3)</code> and <code>(#f, 3)</code> respectively. Each row of <code>v</code> stores a vertex coordinate and each row of <code>f</code> stores
-three integer indexes into <code>v</code> denoting the three vertices forming that face. Per-vertex attributes are stored as
-separate NumPy arrays with <code>#v</code> rows (one row per vertex).</p>
-<p align="center">
-  <img src="../../imgs/mesh_format_transparent.png">
-</p>
-
-<p>For example, consider the mesh with 6 vertices and 5 faces illustrated above.
+<p>Point Cloud Utils uses NumPy arrays as a fundamental data structure for storing 3D data. </p>
+<p>A triangle mesh with <code>#v</code> vertices and <code>#f</code> faces is stored using a pair of NumPy arrays <code>v, f</code> with 
+shape <code>(#v, 3)</code> and <code>(#f, 3)</code> respectively. Each row of <code>v</code> stores a vertex coordinate and each row of <code>f</code> stores 
+three integer indexes into <code>v</code> denoting the three vertices forming that face. Per-vertex attributes are stored as 
+separate NumPy arrays with <code>#v</code> rows (one row per vertex). </p>
+<p>Point clouds can simply be viewed as a special case of triangle meshes with no faces. Thus we encode a point cloud with 
+<code>#p</code> points  as a NumPy array <code>p</code> with shape <code>(#p, 3)</code> (one point per row).</p>
+<p>For example, consider the mesh with 6 vertices and 5 faces illustrated below. 
 We would store this as two numpy arrays  <code>v, f</code> with <code>v.shape = (6, 3)</code> and <code>f.shape = (5, 3)</code>. The i<sup>th</sup> row
-of <code>v</code> is a 3D vector encoding the position of the vertex <em>v<sub>i</sub></em>, and j<sup>th</sup> row of
-<code>f</code> holds three indices to each of the vertices of the j<sup>th</sup> face. In the figure, the second face is formed by
+of <code>v</code> is a 3D vector encoding the position of the vertex <em>v<sub>i</sub></em>, and j<sup>th</sup> row of 
+<code>f</code> holds three indices to each of the vertices of the j<sup>th</sup> face. In the figure, the second face is formed by 
 the vertices <em>v<sub>1</sub>, v<sub>2</sub>, v<sub>5</sub></em>, so the second row of <code>f</code> are the integers <code>(1, 2, 5)</code>.</p>
-<h3 id="representing-point-and-face-attributes">Representing Point and Face Attributes</h3>
-<p>In addition to vertices and face data, we often want to store attributes alongside a point cloud or mesh. Attributes can be stored per-point as well as per-face. Attributes are stored as NumPy arrays with one attribute per row. Examples of attributes include point cloud normals, point colors, per-face colors, or per-vertex texture coordinates.</p>
-<p><strong>Example - Storing face colors and vertex normals in a mesh:</strong>
-For example, consider the mesh described above with 6 vertices and 5 faces, stored as two arrays <code>v</code> and <code>f</code> with shapes <code>(6, 3)</code> and <code>(5, 3)</code> respectively. We could store per-face colors as
-a NumPy array with shape <code>(5, 3)</code> each row is the color of the correponding face:</p>
 <p align="center">
-  <img src="../../imgs/mesh_format_attrib.svg" alt="Per face colors are stored in an array with the same number of rows as the face array">
-  <figcaption style="text-align: center; font-style: italic;">Per-face attributes are stored in an array with the same number of rows as the face array</figcaption>
+  <img src="/imgs/mesh_format_transparent.png">
 </p>
 
-<p>We could store per-vertex normals as a NumPy array of shape <code>(6, 3)</code> where each row contains the normal at the corresponding vertex:</p>
+<h4 id="vertex-and-face-attributes">Vertex and Face Attributes</h4>
+<p>In addition to vertices and face data, we often want to store attributes alongside the mesh. 
+Attributes can either be stored per-face or per-vertex.  Examples of attributes include per-vertex normals, 
+per-face colors, or per-vertex texture coordinates. </p>
+<p>Suppose we have a triangle mesh stored as NumPy arrays <code>v, f</code> with shapes <code>(#v, 3)</code> and <code>(#f, 3)</code>. 
+A set of <code>d</code>-dimensionsl per-vertex attributes is stored as a NumPy array with shape <code>(#v, d)</code> 
+ such that the i<sup>th</sup> row of the attribute array corresponds to 
+the i<sup>th</sup> vertex. 
+Similarly,  a <code>d</code>-dimensional set of per-face attributes is stored as a NumPy array with shape <code>(#f, d)</code> such that 
+the j<sup>th</sup> row of the attribute array corresponds to the j<sup>th</sup> face.</p>
+<p>For example, consider the mesh described above with 6 vertices and 5 faces. We could store per-face colors as 
+a NumPy array with shape <code>(5, 3)</code> each row is the color of the correponding face (first image below). We could store 
+per-vertex normals as a NumPy array of shape <code>(6, 3)</code> where each row contains the normal at the corresponding vertex
+(second image below)</p>
 <p align="center">
-  <img src="../../imgs/mesh_format_attrib_vertex.svg" alt="Per-vertex normals are stored in an array with the same number of rows as the vertex array">
-  <figcaption style="text-align: center; font-style: italic">Per-vertex attributes (e.g. normals) are stored in an array with the same number of rows as the vertex array</figcaption>
+  <img src="/imgs/mesh_format_attrib.svg", 
+       alt="Per face colors are stored in an array with the same number of rows as the face array">
 </p>
-
+<p><center><em>Per-face attributes are stored in an array with the same number of rows as the face array</em></center></p>
+<p align="center">
+  <img src="/imgs/mesh_format_attrib_vertex.svg", 
+       alt="Per-vertex normals are stored in an array with the same number of rows as the vertex array">
+</p>
+<p><center><em>Per-vertex attributes are stored in an array with the same number of rows as the vertex array</em></center></p>
 <h2 id="shorthand-functions-for-loading-and-saving-3d-data">Shorthand functions for loading and saving 3D data</h2>
-<p>Many times, we only need to load a few attributes from a mesh or point cloud. For example, we may only want the vertices, faces, and vertex colors for mesh. Point Cloud Utils provides a number of
-shorthand helper functions which can load these attributes directly into NumPy arrays. These functions have the form <code>load_mesh_*</code> and <code>save_mesh_*</code> where <code>*</code> indicates which data to load. If some attribute is not present in the file being loaded, these functions will simply return an empty array.</p>
+<p>Many times, we only need to load a few attributes from a mesh or point cloud. For example, we may only want the 
+vertices, faces, and vertex colors for mesh. Point Cloud Utils provides a number of 
+shorthand helper functions which can load these attributes directly into NumPy arrays. These functions have 
+the form <code>load_mesh_*</code> and <code>save_mesh_*</code> where <code>*</code> indicates which data to load. If some attribute is not present in 
+the file being loaded, these functions will simply return an empty array.</p>
 <h4 id="loadsave-only-points">Load/Save only points</h4>
-<pre><code class="language-python">import point_cloud_utils as pcu
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">point_cloud_utils</span> <span class="k">as</span> <span class="nn">pcu</span>
 
-# v is a NumPy array of shape (#v, 3) of points
-v = pcu.load_mesh_v(&quot;path/to/mesh&quot;)
-pcu.save_mesh_v(&quot;path/to/mash&quot;, v)
-</code></pre>
+<span class="c1"># v is a NumPy array of shape (#v, 3) of points</span>
+<span class="n">v</span> <span class="o">=</span> <span class="n">pcu</span><span class="o">.</span><span class="n">load_mesh_v</span><span class="p">(</span><span class="s2">&quot;path/to/mesh&quot;</span><span class="p">)</span>
+<span class="n">pcu</span><span class="o">.</span><span class="n">save_mesh_v</span><span class="p">(</span><span class="s2">&quot;path/to/mash&quot;</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+</code></pre></div>
 <h4 id="loadsave-mesh-vertices-and-faces">Load/Save mesh vertices and faces</h4>
-<pre><code class="language-python">import point_cloud_utils as pcu
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">point_cloud_utils</span> <span class="k">as</span> <span class="nn">pcu</span>
 
-# v is a NumPy array of shape (#v, 3) of points
-# f is a NumPy array of shape (#f, 3) of face indices
-v, f = pcu.load_mesh_vf(&quot;path/to/mesh&quot;)
-pcu.save_mesh_vf(&quot;path/to/mash&quot;, v, f)
-</code></pre>
+<span class="c1"># v is a NumPy array of shape (#v, 3) of points</span>
+<span class="c1"># f is a NumPy array of shape (#f, 3) of face indices</span>
+<span class="n">v</span><span class="p">,</span> <span class="n">f</span> <span class="o">=</span> <span class="n">pcu</span><span class="o">.</span><span class="n">load_mesh_vf</span><span class="p">(</span><span class="s2">&quot;path/to/mesh&quot;</span><span class="p">)</span>
+<span class="n">pcu</span><span class="o">.</span><span class="n">save_mesh_vf</span><span class="p">(</span><span class="s2">&quot;path/to/mash&quot;</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+</code></pre></div>
 <h4 id="loadsave-points-and-per-point-normals">Load/Save points and per-point normals</h4>
-<pre><code class="language-python">import point_cloud_utils as pcu
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">point_cloud_utils</span> <span class="k">as</span> <span class="nn">pcu</span>
 
-# v is a NumPy array of shape (#v, 3) of points
-# n is a NumPy array of shape (#v, 3) of per-vertex normals
-v, n = pcu.load_mesh_vn(&quot;path/to/mesh&quot;)
-pcu.save_mesh_vn(&quot;path/to/mash&quot;, v, n)
-</code></pre>
+<span class="c1"># v is a NumPy array of shape (#v, 3) of points</span>
+<span class="c1"># n is a NumPy array of shape (#v, 3) of per-vertex normals</span>
+<span class="n">v</span><span class="p">,</span> <span class="n">n</span> <span class="o">=</span> <span class="n">pcu</span><span class="o">.</span><span class="n">load_mesh_vn</span><span class="p">(</span><span class="s2">&quot;path/to/mesh&quot;</span><span class="p">)</span>
+<span class="n">pcu</span><span class="o">.</span><span class="n">save_mesh_vn</span><span class="p">(</span><span class="s2">&quot;path/to/mash&quot;</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+</code></pre></div>
 <h4 id="loadsave-mesh-vertices-faces-and-vertex-colors">Load/Save mesh vertices, faces, and vertex colors</h4>
-<pre><code class="language-python">import point_cloud_utils as pcu
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">point_cloud_utils</span> <span class="k">as</span> <span class="nn">pcu</span>
 
-# v is a NumPy array of shape (#v, 3) of points
-# f is a NumPy array of shape (#f, 3) of face indices
-# c is a NumPy array of shape (#v, 4) of RBGA per-vertex colors
-v, f, c = pcu.load_mesh_vfc(&quot;path/to/mesh&quot;)
-pcu.save_mesh_vfc(&quot;path/to/mash&quot;, v, f, c)
-</code></pre>
+<span class="c1"># v is a NumPy array of shape (#v, 3) of points</span>
+<span class="c1"># f is a NumPy array of shape (#f, 3) of face indices</span>
+<span class="c1"># c is a NumPy array of shape (#v, 4) of RBGA per-vertex colors</span>
+<span class="n">v</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="n">pcu</span><span class="o">.</span><span class="n">load_mesh_vfc</span><span class="p">(</span><span class="s2">&quot;path/to/mesh&quot;</span><span class="p">)</span>
+<span class="n">pcu</span><span class="o">.</span><span class="n">save_mesh_vfc</span><span class="p">(</span><span class="s2">&quot;path/to/mash&quot;</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span>
+</code></pre></div>
 <h4 id="loadsave-mesh-vertices-faces-and-vertex-normals">Load/Save mesh vertices, faces, and vertex normals</h4>
-<pre><code class="language-python">import point_cloud_utils as pcu
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">point_cloud_utils</span> <span class="k">as</span> <span class="nn">pcu</span>
 
-# v is a NumPy array of shape (#v, 3) of points
-# f is a NumPy array of shape (#f, 3) of face indices
-# n is a NumPy array of shape (#v, 3) of per-vertex normals
-v, f, n = pcu.load_mesh_vfn(&quot;path/to/mesh&quot;)
-pcu.save_mesh_vfn(&quot;path/to/mash&quot;, v, f, n)
-</code></pre>
+<span class="c1"># v is a NumPy array of shape (#v, 3) of points</span>
+<span class="c1"># f is a NumPy array of shape (#f, 3) of face indices</span>
+<span class="c1"># n is a NumPy array of shape (#v, 3) of per-vertex normals</span>
+<span class="n">v</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">n</span> <span class="o">=</span> <span class="n">pcu</span><span class="o">.</span><span class="n">load_mesh_vfn</span><span class="p">(</span><span class="s2">&quot;path/to/mesh&quot;</span><span class="p">)</span>
+<span class="n">pcu</span><span class="o">.</span><span class="n">save_mesh_vfn</span><span class="p">(</span><span class="s2">&quot;path/to/mash&quot;</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+</code></pre></div>
 <h4 id="loadsave-mesh-vertices-faces-vertex-normals-and-vertex-colors">Load/Save mesh vertices, faces, vertex normals, and vertex colors</h4>
-<pre><code class="language-python">import point_cloud_utils as pcu
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">point_cloud_utils</span> <span class="k">as</span> <span class="nn">pcu</span>
 
-# v is a NumPy array of shape (#v, 3) of points
-# f is a NumPy array of shape (#f, 3) of face indices
-# n is a NumPy array of shape (#v, 3) of per-vertex normals
-# c is a NumPy array of shape (#v, 4) of RBGA per-vertex colors
-v, f, n, c = pcu.load_mesh_vfn(&quot;path/to/mesh&quot;)
-pcu.save_mesh_vfnc(&quot;path/to/mash&quot;, v, f, n, c)
-</code></pre>
+<span class="c1"># v is a NumPy array of shape (#v, 3) of points</span>
+<span class="c1"># f is a NumPy array of shape (#f, 3) of face indices</span>
+<span class="c1"># n is a NumPy array of shape (#v, 3) of per-vertex normals</span>
+<span class="c1"># c is a NumPy array of shape (#v, 4) of RBGA per-vertex colors</span>
+<span class="n">v</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="n">pcu</span><span class="o">.</span><span class="n">load_mesh_vfn</span><span class="p">(</span><span class="s2">&quot;path/to/mesh&quot;</span><span class="p">)</span>
+<span class="n">pcu</span><span class="o">.</span><span class="n">save_mesh_vfnc</span><span class="p">(</span><span class="s2">&quot;path/to/mash&quot;</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span>
+</code></pre></div>
 <h2 id="loading-3d-data-with-all-attributes">Loading 3D data with all attributes</h2>
-<p>Some meshes or point clouds may have more complex attribute structures, or we may not know which attributes are stored
-in the mesh file before loading it. In this case, Point Cloud Utils provides utilities to load a mesh into
-a <code>TriangleMesh</code> class. <code>TriangleMesh</code> is a lightweight container containing numpy arrays for
+<p>Some meshes or point clouds may have more complex attribute structures, or we may not know which attributes are stored 
+in the mesh file before loading it. In this case, Point Cloud Utils provides utilities to load a mesh into 
+a <code>TriangleMesh</code> class. <code>TriangleMesh</code> is a lightweight container containing numpy arrays for 
 vertices, faces, textures, and other attributes.</p>
 <p>To load a mesh into a <code>TriangleMesh</code> class simply construct it with the path to the mesh:</p>
-<pre><code class="language-python">import point_cloud_utils as pcu
+<p><div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">point_cloud_utils</span> <span class="k">as</span> <span class="nn">pcu</span>
 
-mesh = pcu.TriangleMesh(&quot;path/to/mesh&quot;)
-</code></pre>
-<p>To save a <code>TriangleMesh</code> object, simply call the <code>save</code> method with the desired path:</p>
-<pre><code class="language-python">mesh.save(&quot;path/to/mesh&quot;)
-</code></pre>
+<span class="n">mesh</span> <span class="o">=</span> <span class="n">pcu</span><span class="o">.</span><span class="n">TriangleMesh</span><span class="p">(</span><span class="s2">&quot;path/to/mesh&quot;</span><span class="p">)</span>
+</code></pre></div>
+To save a <code>TriangleMesh</code> object, simply call the <code>save</code> method with the desired path:
+<div class="highlight"><pre><span></span><code><span class="n">mesh</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">&quot;path/to/mesh&quot;</span><span class="p">)</span>
+</code></pre></div></p>
 <p>The <code>TriangleMesh</code> class contains attributes encoding vertex and face data as well as texture information. It is structured as follows:</p>
 <ul>
 <li><strong><code>TriangleMesh</code></strong>:<ul>
@@ -267,13 +259,13 @@ mesh = pcu.TriangleMesh(&quot;path/to/mesh&quot;)
 </ul>
 </li>
 </ul>
-<p>The hierarchy of the list above denotes composition. For example, to access the vertex colors of a <code>TriangleMesh</code>, you would
+<p>The hierarchy of the list above denotes composition. For example, to access the vertex colors of a <code>TriangleMesh</code>, you would 
 read the <code>TriangleMesh.vertex_data.colors</code> property.</p>
 <div class="admonition note">
 <p class="admonition-title">Remark on wedge face attributes</p>
-<p>The <code>face_data</code> member of the <code>TriangleMesh</code> class contains a number of <code>wedge</code> attributes. These all start with
+<p>The <code>face_data</code> member of the <code>TriangleMesh</code> class contains a number of <code>wedge</code> attributes. These all start with 
 <code>wedge_</code>. In this context a <em>wedge</em> is a corner of a triangle face. Each face contains three wedges corresponding
- to each corner. Wedge attributes have shape <code>(#f, 3, d)</code> where <code>d</code> is the dimension of the attribute.
+ to each corner. Wedge attributes have shape <code>(#f, 3, d)</code> where <code>d</code> is the dimension of the attribute. 
  Wedges attributes are useful for storing which are discontinous across face boundaries.</p>
 </div>
 <!--
@@ -331,10 +323,6 @@ TriangleMesh:
   <div class="rst-versions" role="note" aria-label="Versions">
   <span class="rst-current-version" data-toggle="rst-current-version">
     
-        <span>
-          <a href="https://github.com/fwilliams/point-cloud-utils" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
-        </span>
-    
     
       <span><a href="../.." style="color: #fcfcfc">&laquo; Previous</a></span>
     
@@ -346,9 +334,6 @@ TriangleMesh:
     <script>var base_url = '../..';</script>
     <script src="../../js/theme_extra.js" defer></script>
     <script src="../../js/theme.js" defer></script>
-      <script src="../../javascripts/mathjax.js" defer></script>
-      <script src="https://polyfill.io/v3/polyfill.min.js?features=es6" defer></script>
-      <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" defer></script>
       <script src="../../search/main.js" defer></script>
     <script defer>
         window.onload = function () {
