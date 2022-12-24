@@ -10,6 +10,7 @@ nav:
       - "Point Cloud Resampling": sections/point_cloud_resampling.md
       - "Mesh Sampling": sections/mesh_sampling.md
       - "Shape Metrics": sections/shape_metrics.md
+      - "Making a Mesh a Watertight Manifold": sections/watertight_manifold.md
       - "Computing SDFs for a Mesh": sections/mesh_sdf.md
       - "Normal Estimation": sections/normal_estimation.md
       - "Ray/Mesh Intersection": sections/ray_mesh_intersection.md
