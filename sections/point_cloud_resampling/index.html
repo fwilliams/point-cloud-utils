@@ -3,18 +3,19 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://www.fwilliams.info/point-cloud-utils/sections/point_cloud_resampling/" />
       <link rel="shortcut icon" href="../../img/favicon.ico" />
     <title>Point Cloud Resampling - Point Cloud Utils</title>
     <link rel="stylesheet" href="../../css/theme.css" />
     <link rel="stylesheet" href="../../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
+        <link href="../../assets/_mkdocstrings.css" rel="stylesheet" />
     
       <script>
         // Current page data
         var mkdocs_page_name = "Point Cloud Resampling";
         var mkdocs_page_input_path = "sections/point_cloud_resampling.md";
-        var mkdocs_page_url = null;
+        var mkdocs_page_url = "/point-cloud-utils/sections/point_cloud_resampling/";
       </script>
     
     <script src="../../js/jquery-3.6.0.min.js" defer></script>
@@ -62,13 +63,20 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../shape_metrics/">Shape Metrics</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../mesh_sdf/">Mesh Signed Distances</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../mesh_sdf/">Computing SDFs for a Mesh</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../normal_estimation/">Normal Estimation</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../ray_mesh_intersection/">Ray/Mesh Intersection</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../ray_surfel_intersection/">Ray/Surfel Intersection</a>
+                  </li>
                   <li class="toctree-l1"><a class="reference internal" href="../mesh_smoothing/">Mesh Smoothing</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">API Reference</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../api_reference/">API Reference</a>
                   </li>
               </ul>
       </div>
@@ -88,6 +96,7 @@
           <li>Functionality &raquo;</li>
       <li>Point Cloud Resampling</li>
     <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/fwilliams/point-cloud-utils/tree/master/docs/docs/sections/point_cloud_resampling.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
   </ul>
   <hr/>
@@ -96,25 +105,100 @@
             <div class="section" itemprop="articleBody">
               
                 <h1 id="point-cloud-re-sampling">Point Cloud Re-Sampling</h1>
-<p>Point Cloud Utils provides utilities for re-sampling a point cloud in several ways.</p>
+<p>Point Cloud Utils provides tools for re-sampling a point cloud in several ways.</p>
+<div class="admonition note">
+<p class="admonition-title">Data in examples</p>
+<p>In all the examples, below we first load <a href="https://github.com/fwilliams/point-cloud-utils/blob/master/data/wheel.ply">the point cloud here</a></p>
+</div>
 <h2 id="binning-points-in-a-voxel-grid">Binning points in a voxel grid</h2>
 <p>In many 3D tasks, it is often advantageous to quantize a point cloud to a regular voxel grid in space.
-Such quantization can reduce the number of input points to an algorithm to match the resolution 
+Such quantization can reduce the number of input points to an algorithm to match the resolution
 at which that algorithm operates.</p>
-<p>Point Cloud Utils provides a simple function for quantizing a point cloud with attributes into a voxel grid.</p>
-<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">point_cloud_utils</span> <span class="k">as</span> <span class="nn">pcu</span>
+<p>Point Cloud Utils provides a simple function for quantizing a point cloud with arbitrary attributes into a voxel grid. Attributes are averaged within a voxel. The code below shows an example of this functionality with the figure showing the result.</p>
+<pre><code class="language-python">import point_cloud_utils as pcu
 
-<span class="n">pcu</span><span class="o">.</span><span class="n">downsample_point_cloud_voxel_grid</span>
-</code></pre></div>
+# v is a [n, 3] shaped NumPy array of vertices
+# n is a [n, 3] NumPy array of vertex normals
+p, n = pcu.load_mesh_vnc(&quot;wheel.ply&quot;)
+
+# We'll quantize our point cloud to a voxel grid with 128 voxels per axis
+num_voxels_per_axis = 128
+
+# Size of the axis aligned bounding box of the point cloud
+bbox_size = p.max(0) - p.min(0)
+
+# The size per-axis of a single voxel
+sizeof_voxel = bbox_size / num_voxels_per_axis
+
+# Downsample a point cloud on a voxel grid so there is at most one point per voxel.
+# Any arguments after the points are treated as attribute arrays and get averaged within each voxel
+v_sampled, n_sampled = pcu.downsample_point_cloud_on_voxel_grid(sizeof_voxel, p, n)
+
+</code></pre>
+<p align="center">
+ <div class="row">
+  <div class="column" style="float: left; width: 50%; padding: 5px;">
+    <img src="../../imgs/grid1.png.crop.png.tx.png" alt="Downsampled point cloud on a voxel grid" style="width:100%">
+  </div>
+  <div class="column" style="float: left; width: 50%; padding: 5px;">
+    <img src="../../imgs/grid2.png.crop.png.tx.png" alt="Downsampled point cloud on a voxel grid with normal" style="width:100%">
+  </div>
+    <figcaption style="text-align: center; font-style: italic;">Downsampling the blue point cloud by averaging points within each voxel. The yellow points are the downsampled points. The right image shows the downsampled normals.</figcaption>
+</div>
+</p>
+
 <h2 id="downsampling-a-point-cloud-to-have-a-blue-noise-distribution">Downsampling a point cloud to have a blue noise distribution</h2>
-<p>Often times, we want to resample a dense point cloud to have approximately even spacing between points. 
-This can be achieved with Poisson Disk Sampling. Point Cloud utils provides a r</p>
+<p>If we have a dense point cloud, we may want to downsample it to sparse point cloud where all points are about evenly spaced apart. Such a distribution of points is called a "blue noise" distribution. Formally, this means that the expected distance between points on the surface is some constant. i.e. for a point cloud <span class="arithmatex">\(P\)</span>:
+$$
+\mathbb{E}_{x \in P} ||x - \text{nearest_neighbor}(x)|| = \epsilon
+$$</p>
+<p>This can be achieved with Poisson Disk Sampling. Point cloud utils supports downsampling a point cloud to a target radius or to a target number of points</p>
+<p><strong>Downsampling a points to a blue noise distribution with a target number of points</strong></p>
+<pre><code class="language-python">import point_cloud_utils as pcu
+import numpy as np
+
+# v is a [n, 3] shaped NumPy array of vertices
+# n is a [n, 3] NumPy array of vertex normals
+p, n = pcu.load_mesh_vn(&quot;wheel.ply&quot;)
+
+### Option 1:
+### Downsampling a points to a blue noise distribution with a target number of points
+# idx is an array of integer indices into v indicating which samples to keep
+target_num_pts= int(0.1*p.shape[0])  # 10% of the number of input points
+idx = pcu.downsample_point_cloud_poisson_disk(p, num_samples=target_num_pts)
+
+### Option 2:
+### Downsampling a points to a blue noise distribution with a target radius
+# idx is an array of integer indices into v indicating which samples to keep
+target_radius = np.linalg.norm(p.max(0) - p.min(0)) * 0.02  # 2% of the bounding box radius
+idx = pcu.downsample_point_cloud_poisson_disk(p, -1, radius=target_radius)
+
+# Use the indices to get the sample positions and normals
+v_sampled = p[idx]
+n_sampled = n[idx]
+</code></pre>
+<p align="center">
+  <img src="../../imgs/poisson_disk_crop.tx.png" style="width: 50%;"alt="Downsampling a point cloud according to a blue noise distribution so that points are approximately evenly spaced">
+  <figcaption style="text-align: center; font-style: italic;">Downsampling the blue point cloud according to a blue noise distribution so that the resulting points (yellow) are approximately evenly spaced</figcaption>
+</p>
+
 <h2 id="deduplicating-a-point-cloud">Deduplicating a point cloud</h2>
-<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">point_cloud_utils</span> <span class="k">as</span> <span class="nn">pcu</span>
-<span class="n">pcu</span><span class="o">.</span><span class="n">deduplicate_point_cloud</span>
-<span class="n">pcu</span><span class="o">.</span><span class="n">downsample_point_cloud_voxel_grid</span>
-<span class="n">pcu</span><span class="o">.</span><span class="n">downsample_point_cloud_poisson_disk</span>
-</code></pre></div>
+<p>You can deduplicate a point cloud by removing vertices that are equal up to some threshold.
+The example below removes duplicate points with a threshold of <span class="arithmatex">\(10^{-1}\)</span></p>
+<pre><code class="language-python">import point_cloud_utils as pcu
+
+# p is a (n, 3)-shaped array of points (one per row)
+# p is a (n, 3)-shaped array of normals at each point
+p, n = pcu.load_mesh_vn(&quot;my_pcloud.ply&quot;)
+
+# Treat any points closer than 1e-7 apart as the same point
+# idx_i is an array of indices such that p_dedup = p[idx_i]
+# idx_j is an array of indices such that p = p_dedup[idx_j]
+p_dedup, idx_i, idx_j  = pcu.deduplicate_point_cloud(p, 1e-7)
+
+# Use idx_i to deduplicate the normals
+n_dedup = n[idx_i]
+</code></pre>
               
             </div>
           </div><footer>
@@ -142,6 +226,10 @@ This can be achieved with Poisson Disk Sampling. Point Cloud utils provides a r<
   <div class="rst-versions" role="note" aria-label="Versions">
   <span class="rst-current-version" data-toggle="rst-current-version">
     
+        <span>
+          <a href="https://github.com/fwilliams/point-cloud-utils" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
     
       <span><a href="../mesh_io/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
@@ -153,6 +241,9 @@ This can be achieved with Poisson Disk Sampling. Point Cloud utils provides a r<
     <script>var base_url = '../..';</script>
     <script src="../../js/theme_extra.js" defer></script>
     <script src="../../js/theme.js" defer></script>
+      <script src="../../javascripts/mathjax.js" defer></script>
+      <script src="https://polyfill.io/v3/polyfill.min.js?features=es6" defer></script>
+      <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" defer></script>
       <script src="../../search/main.js" defer></script>
     <script defer>
         window.onload = function () {

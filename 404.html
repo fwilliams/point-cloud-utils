@@ -4,15 +4,16 @@
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <link rel="shortcut icon" href="/img/favicon.ico" />
+      <link rel="shortcut icon" href="/point-cloud-utils/img/favicon.ico" />
     <title>Point Cloud Utils</title>
-    <link rel="stylesheet" href="/css/theme.css" />
-    <link rel="stylesheet" href="/css/theme_extra.css" />
+    <link rel="stylesheet" href="/point-cloud-utils/css/theme.css" />
+    <link rel="stylesheet" href="/point-cloud-utils/css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
+        <link href="/point-cloud-utils/assets/_mkdocstrings.css" rel="stylesheet" />
     
-    <script src="/js/jquery-3.6.0.min.js" defer></script>
+    <script src="/point-cloud-utils/js/jquery-3.6.0.min.js" defer></script>
     <!--[if lt IE 9]>
-      <script src="/js/html5shiv.min.js"></script>
+      <script src="/point-cloud-utils/js/html5shiv.min.js"></script>
     <![endif]-->
       <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
       <script>hljs.initHighlightingOnLoad();</script> 
@@ -24,9 +25,9 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
     <div class="wy-side-scroll">
       <div class="wy-side-nav-search">
-          <a href="/." class="icon icon-home"> Point Cloud Utils
+          <a href="/point-cloud-utils/." class="icon icon-home"> Point Cloud Utils
         </a><div role="search">
-  <form id ="rtd-search-form" class="wy-form" action="//search.html" method="get">
+  <form id ="rtd-search-form" class="wy-form" action="/point-cloud-utils//search.html" method="get">
       <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
   </form>
 </div>
@@ -34,26 +35,33 @@
 
       <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul>
-                <li class="toctree-l1"><a class="reference internal" href="/.">Home</a>
+                <li class="toctree-l1"><a class="reference internal" href="/point-cloud-utils/.">Home</a>
                 </li>
               </ul>
               <p class="caption"><span class="caption-text">Functionality</span></p>
               <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="/sections/mesh_io/">Mesh I/O</a>
+                  <li class="toctree-l1"><a class="reference internal" href="/point-cloud-utils/sections/mesh_io/">Mesh I/O</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="/sections/point_cloud_resampling/">Point Cloud Resampling</a>
+                  <li class="toctree-l1"><a class="reference internal" href="/point-cloud-utils/sections/point_cloud_resampling/">Point Cloud Resampling</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="/sections/mesh_sampling/">Mesh Sampling</a>
+                  <li class="toctree-l1"><a class="reference internal" href="/point-cloud-utils/sections/mesh_sampling/">Mesh Sampling</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="/sections/shape_metrics/">Shape Metrics</a>
+                  <li class="toctree-l1"><a class="reference internal" href="/point-cloud-utils/sections/shape_metrics/">Shape Metrics</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="/sections/mesh_sdf/">Mesh Signed Distances</a>
+                  <li class="toctree-l1"><a class="reference internal" href="/point-cloud-utils/sections/mesh_sdf/">Computing SDFs for a Mesh</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="/sections/normal_estimation/">Normal Estimation</a>
+                  <li class="toctree-l1"><a class="reference internal" href="/point-cloud-utils/sections/normal_estimation/">Normal Estimation</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="/sections/ray_mesh_intersection/">Ray/Mesh Intersection</a>
+                  <li class="toctree-l1"><a class="reference internal" href="/point-cloud-utils/sections/ray_mesh_intersection/">Ray/Mesh Intersection</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="/sections/mesh_smoothing/">Mesh Smoothing</a>
+                  <li class="toctree-l1"><a class="reference internal" href="/point-cloud-utils/sections/ray_surfel_intersection/">Ray/Surfel Intersection</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="/point-cloud-utils/sections/mesh_smoothing/">Mesh Smoothing</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">API Reference</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="/point-cloud-utils/sections/api_reference/">API Reference</a>
                   </li>
               </ul>
       </div>
@@ -63,13 +71,13 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
       <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="/.">Point Cloud Utils</a>
+          <a href="/point-cloud-utils/.">Point Cloud Utils</a>
         
       </nav>
       <div class="wy-nav-content">
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
-    <li><a href="/." class="icon icon-home" alt="Docs"></a> &raquo;</li>
+    <li><a href="/point-cloud-utils/." class="icon icon-home" alt="Docs"></a> &raquo;</li>
     <li class="wy-breadcrumbs-aside">
     </li>
   </ul>
@@ -106,14 +114,21 @@
   <div class="rst-versions" role="note" aria-label="Versions">
   <span class="rst-current-version" data-toggle="rst-current-version">
     
+        <span>
+          <a href="https://github.com/fwilliams/point-cloud-utils" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
     
     
   </span>
 </div>
-    <script>var base_url = '/';</script>
-    <script src="/js/theme_extra.js" defer></script>
-    <script src="/js/theme.js" defer></script>
-      <script src="/search/main.js" defer></script>
+    <script>var base_url = '/point-cloud-utils/';</script>
+    <script src="/point-cloud-utils/js/theme_extra.js" defer></script>
+    <script src="/point-cloud-utils/js/theme.js" defer></script>
+      <script src="/point-cloud-utils/javascripts/mathjax.js" defer></script>
+      <script src="https://polyfill.io/v3/polyfill.min.js?features=es6" defer></script>
+      <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" defer></script>
+      <script src="/point-cloud-utils/search/main.js" defer></script>
     <script defer>
         window.onload = function () {
             SphinxRtdTheme.Navigation.enable(true);

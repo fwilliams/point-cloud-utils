@@ -3,18 +3,19 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="description" content="None" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="description" content="None" /><link rel="canonical" href="https://www.fwilliams.info/point-cloud-utils/" />
       <link rel="shortcut icon" href="img/favicon.ico" />
     <title>Point Cloud Utils</title>
     <link rel="stylesheet" href="css/theme.css" />
     <link rel="stylesheet" href="css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
+        <link href="assets/_mkdocstrings.css" rel="stylesheet" />
     
       <script>
         // Current page data
         var mkdocs_page_name = "Home";
         var mkdocs_page_input_path = "index.md";
-        var mkdocs_page_url = null;
+        var mkdocs_page_url = "/point-cloud-utils/";
       </script>
     
     <script src="js/jquery-3.6.0.min.js" defer></script>
@@ -56,13 +57,20 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="sections/shape_metrics/">Shape Metrics</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="sections/mesh_sdf/">Mesh Signed Distances</a>
+                  <li class="toctree-l1"><a class="reference internal" href="sections/mesh_sdf/">Computing SDFs for a Mesh</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="sections/normal_estimation/">Normal Estimation</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="sections/ray_mesh_intersection/">Ray/Mesh Intersection</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="sections/ray_surfel_intersection/">Ray/Surfel Intersection</a>
+                  </li>
                   <li class="toctree-l1"><a class="reference internal" href="sections/mesh_smoothing/">Mesh Smoothing</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">API Reference</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="sections/api_reference/">API Reference</a>
                   </li>
               </ul>
       </div>
@@ -81,6 +89,7 @@
     <li><a href="." class="icon icon-home" alt="Docs"></a> &raquo;</li>
       <li>Home</li>
     <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/fwilliams/point-cloud-utils/tree/master/docs/docs/index.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
   </ul>
   <hr/>
@@ -92,41 +101,36 @@
   <img src="imgs/logo_solarized_tint.png">
 </p>
 
-<p><strong>Point Cloud Utils</strong> is an <em>easy-to-use</em> Python library for processing 
+<p><strong>Point Cloud Utils</strong> is an <em>easy-to-use</em> Python library for processing
 and manipulating 3D point clouds and meshes.</p>
 <h2 id="installation">Installation</h2>
-<p>With <code>pip</code> (requires git and a compiler supporting C++14 or later):
-<div class="highlight"><pre><span></span><code>pip install git+git://github.com/fwilliams/point-cloud-utils
-</code></pre></div></p>
-<p>With <code>conda</code>:
-<div class="highlight"><pre><span></span><code>conda install -c conda-forge point_cloud_utils
-</code></pre></div></p>
+<pre><code class="language-shell">pip install point-cloud-utils
+</code></pre>
 <h2 id="a-very-simple-example">A very simple example</h2>
-<p>Point Cloud Utils uses numpy arrays as fundamental data structure, making it very easy to integrate with existing numerical code. 
-For example, here's how to remove all points in a point cloud which are greater than some distance from a mesh. </p>
-<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">point_cloud_utils</span> <span class="k">as</span> <span class="nn">pcu</span>
+<p>Point Cloud Utils uses numpy arrays as fundamental data structure, making it very easy to integrate with existing numerical code.
+For example, here's how to remove all points in a point cloud which are greater than some distance from a mesh.</p>
+<pre><code class="language-py">import point_cloud_utils as pcu
+# Load a mesh stored in my_mesh.ply:
+#   v is a NumPy array of coordinates with shape (V, 3)
+#   f is a NumPy array of face indices with shape (F, 3)
+v, f = pcu.load_mesh_vf(&quot;my_mesh.ply&quot;)
 
-<span class="c1"># Load a mesh stored in my_mesh.ply:</span>
-<span class="c1">#   v is a NumPy array of coordinates with shape (V, 3)</span>
-<span class="c1">#   f is a NumPy array of face indices with shape (F, 3)</span>
-<span class="n">v</span><span class="p">,</span> <span class="n">f</span> <span class="o">=</span> <span class="n">pcu</span><span class="o">.</span><span class="n">load_mesh_vf</span><span class="p">(</span><span class="s2">&quot;my_mesh.ply&quot;</span><span class="p">)</span>
+# Load a point cloud stored in my_point_cloud.ply:
+#   p is a NumPy array of point coordinates with shape (P, 3)
+p = pcu.load_mesh_v(&quot;my_point_cloud.ply&quot;)
 
-<span class="c1"># Load a point cloud stored in my_point_cloud.ply:</span>
-<span class="c1">#   p is a NumPy array of point coordinates with shape (P, 3)</span>
-<span class="n">p</span> <span class="o">=</span> <span class="n">pcu</span><span class="o">.</span><span class="n">load_mesh_v</span><span class="p">(</span><span class="s2">&quot;my_point_cloud.ply&quot;</span><span class="p">)</span>
+# Compute the shortest distance between each point in p and the mesh:
+#   dists is a NumPy array of shape (P,) where dists[i] is the
+#   shortest distnace between the point p[i, :] and the mesh (v, f)
+dists, _, _ = pcu.closest_points_on_mesh(p, v, f)
 
-<span class="c1"># Compute the shortest distance between each point in p and the mesh:</span>
-<span class="c1">#   dists is a NumPy array of shape (P,) where dists[i] is the </span>
-<span class="c1">#   shortest distnace between the point p[i, :] and the mesh (v, f)</span>
-<span class="n">dists</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">pcu</span><span class="o">.</span><span class="n">closest_points_on_mesh</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+# Delete all points which are farther than some distance away from the mesh
+dist_thresh = 0.1
+keep_points = p[dists &lt; dist_thresh]
 
-<span class="c1"># Delete all points which are farther than some distance away from the mesh</span>
-<span class="n">dist_thresh</span> <span class="o">=</span> <span class="mf">0.1</span>
-<span class="n">keep_points</span> <span class="o">=</span> <span class="n">p</span><span class="p">[</span><span class="n">dists</span> <span class="o">&lt;</span> <span class="n">dist_thresh</span><span class="p">]</span>
-
-<span class="c1"># Save the filtered point cloud to my_point_cloud_trimmed.ply</span>
-<span class="n">pcu</span><span class="o">.</span><span class="n">save_mesh_v</span><span class="p">(</span><span class="s2">&quot;my_point_cloud_trimmed.ply&quot;</span><span class="p">,</span> <span class="n">keep_points</span><span class="p">)</span>
-</code></pre></div>
+# Save the filtered point cloud to my_point_cloud_trimmed.ply
+pcu.save_mesh_v(&quot;my_point_cloud_trimmed.ply&quot;, keep_points)
+</code></pre>
 <h2 id="core-features">Core Features</h2>
 <p>Point Cloud Utils includes utilities to perform the following tasks:</p>
 <ul>
@@ -139,6 +143,8 @@ For example, here's how to remove all points in a point cloud which are greater 
 <li><a href="sections/ray_mesh_intersection">Fast ray/mesh intersection</a>.</li>
 <li><a href="sections/mesh_smoothing">Surface mesh smoothing</a>.</li>
 </ul>
+<h2 id="api-reference"><a href="sections/api_reference/">API Reference</a></h2>
+<p>All available functions and classes are listed in the <a href="sections/api_reference/">API reference</a></p>
               
             </div>
           </div><footer>
@@ -165,6 +171,10 @@ For example, here's how to remove all points in a point cloud which are greater 
   <div class="rst-versions" role="note" aria-label="Versions">
   <span class="rst-current-version" data-toggle="rst-current-version">
     
+        <span>
+          <a href="https://github.com/fwilliams/point-cloud-utils" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
     
     
       <span><a href="sections/mesh_io/" style="color: #fcfcfc">Next &raquo;</a></span>
@@ -174,6 +184,9 @@ For example, here's how to remove all points in a point cloud which are greater 
     <script>var base_url = '.';</script>
     <script src="js/theme_extra.js" defer></script>
     <script src="js/theme.js" defer></script>
+      <script src="javascripts/mathjax.js" defer></script>
+      <script src="https://polyfill.io/v3/polyfill.min.js?features=es6" defer></script>
+      <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" defer></script>
       <script src="search/main.js" defer></script>
     <script defer>
         window.onload = function () {
@@ -186,5 +199,5 @@ For example, here's how to remove all points in a point cloud which are greater 
 
 <!--
 MkDocs version : 1.4.2
-Build Date UTC : 2022-12-24 00:05:29.244786+00:00
+Build Date UTC : 2022-12-24 00:09:31.553806+00:00
 -->
