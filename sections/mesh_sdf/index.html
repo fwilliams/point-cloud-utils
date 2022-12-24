@@ -55,6 +55,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../shape_metrics/">Shape Metrics</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../watertight_manifold/">Making a Mesh a Watertight Manifold</a>
+                  </li>
                   <li class="toctree-l1 current"><a class="reference internal current" href="./">Computing SDFs for a Mesh</a>
     <ul class="current">
     <li class="toctree-l2"><a class="reference internal" href="#sdf-overview">SDF Overview</a>
@@ -106,7 +108,7 @@
 <p>Many applications require a <a href="https://en.wikipedia.org/wiki/Signed_distance_function">signed distance function (SDF) representation for a 3D shape</a>. For example, many shape reconstruction neural networks such as <a href="https://arxiv.org/abs/1901.05103">DeepSDF</a> require such a representation for training. Unfortunately, most 3D shape data is stored as a triangle mesh, making SDFs not readily available. Point-Cloud-Utils makes it very easy to extract signed distances from a triangle mesh. </p>
 <div class="admonition note">
 <p class="admonition-title">Remark about mesh quality</p>
-<p>To extract an SDF for a triangle mesh, the mesh must be of relatively good quality (manifold, watertight, no sliver triangles, etc...). To clean up a mesh for SDF extraction see <a href="sections/watertight_mesh.md">Making a triangle mesh watertight</a>.</p>
+<p>To extract an SDF for a triangle mesh, the mesh must be of relatively good quality (manifold, watertight, no sliver triangles, etc...). To clean up a mesh for SDF extraction see <a href="../watertight_manifold">Making a triangle mesh watertight</a>.</p>
 </div>
 <h2 id="sdf-overview">SDF Overview</h2>
 <p>A <em>signed distance function</em> <span class="arithmatex">\(f : \mathbb{R}^3 \rightarrow \mathbb{R}\)</span> maps 3D points <span class="arithmatex">\(x \in \mathbb{R}^3\)</span> to the nearest distance between <span class="arithmatex">\(x\)</span> and some surface <span class="arithmatex">\(S\)</span>. In other words:
@@ -149,7 +151,7 @@ sdf, fid, bc = pcu.signed_distance_to_mesh(query_pts, v, f)
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../shape_metrics/" class="btn btn-neutral float-left" title="Shape Metrics"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../watertight_manifold/" class="btn btn-neutral float-left" title="Making a Mesh a Watertight Manifold"><span class="icon icon-circle-arrow-left"></span> Previous</a>
         <a href="../normal_estimation/" class="btn btn-neutral float-right" title="Normal Estimation">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
@@ -177,7 +179,7 @@ sdf, fid, bc = pcu.signed_distance_to_mesh(query_pts, v, f)
         </span>
     
     
-      <span><a href="../shape_metrics/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../watertight_manifold/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
       <span><a href="../normal_estimation/" style="color: #fcfcfc">Next &raquo;</a></span>
