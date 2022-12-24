@@ -21,6 +21,11 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>https://www.fwilliams.info/point-cloud-utils/sections/mesh_normal_estimation/</loc>
+         <lastmod>2022-12-24</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>https://www.fwilliams.info/point-cloud-utils/sections/mesh_sampling/</loc>
          <lastmod>2022-12-24</lastmod>
          <changefreq>daily</changefreq>
@@ -36,7 +41,7 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.fwilliams.info/point-cloud-utils/sections/normal_estimation/</loc>
+         <loc>https://www.fwilliams.info/point-cloud-utils/sections/point_cloud_normal_estimation/</loc>
          <lastmod>2022-12-24</lastmod>
          <changefreq>daily</changefreq>
     </url>

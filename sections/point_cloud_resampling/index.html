@@ -59,15 +59,17 @@
     </li>
     </ul>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../mesh_sampling/">Mesh Sampling</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../mesh_sampling/">Generating Point Samples on a Mesh</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../shape_metrics/">Shape Metrics</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../watertight_manifold/">Making a Mesh a Watertight Manifold</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../mesh_sdf/">Computing SDFs for a Mesh</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../mesh_sdf/">Computing SDFs from Triangle Meshes</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../normal_estimation/">Normal Estimation</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../point_cloud_normal_estimation/">Estimating Normals for a Point Cloud</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../mesh_normal_estimation/">Computing Mesh Normals</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../ray_mesh_intersection/">Ray/Mesh Intersection</a>
                   </li>
@@ -138,15 +140,15 @@ v_sampled, n_sampled = pcu.downsample_point_cloud_on_voxel_grid(sizeof_voxel, p,
 
 </code></pre>
 <p align="center">
- <div class="row">
-  <div class="column" style="float: left; width: 50%; padding: 5px;">
-    <img src="../../imgs/grid1.png.crop.png.tx.png" alt="Downsampled point cloud on a voxel grid" style="width:100%">
-  </div>
-  <div class="column" style="float: left; width: 50%; padding: 5px;">
-    <img src="../../imgs/grid2.png.crop.png.tx.png" alt="Downsampled point cloud on a voxel grid with normal" style="width:100%">
-  </div>
+  <div class="row">
+    <div class="column" style="float: left; width: 50%; padding: 5px;">
+      <img src="../../imgs/grid1.png.crop.png.tx.png" alt="Downsampled point cloud on a voxel grid" style="width:100%">
+    </div>
+    <div class="column" style="float: left; width: 50%; padding: 5px;">
+      <img src="../../imgs/grid2.png.crop.png.tx.png" alt="Downsampled point cloud on a voxel grid with normal" style="width:100%">
+    </div>
     <figcaption style="text-align: center; font-style: italic;">Downsampling the blue point cloud by averaging points within each voxel. The yellow points are the downsampled points. The right image shows the downsampled normals.</figcaption>
-</div>
+  </div>
 </p>
 
 <h2 id="downsampling-a-point-cloud-to-have-a-blue-noise-distribution">Downsampling a point cloud to have a blue noise distribution</h2>
@@ -206,7 +208,7 @@ n_dedup = n[idx_i]
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
         <a href="../mesh_io/" class="btn btn-neutral float-left" title="Mesh I/O"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../mesh_sampling/" class="btn btn-neutral float-right" title="Mesh Sampling">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../mesh_sampling/" class="btn btn-neutral float-right" title="Generating Point Samples on a Mesh">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>

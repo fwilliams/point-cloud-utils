@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://www.fwilliams.info/point-cloud-utils/sections/mesh_sampling/" />
       <link rel="shortcut icon" href="../../img/favicon.ico" />
-    <title>Mesh Sampling - Point Cloud Utils</title>
+    <title>Generating Point Samples on a Mesh - Point Cloud Utils</title>
     <link rel="stylesheet" href="../../css/theme.css" />
     <link rel="stylesheet" href="../../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
@@ -13,7 +13,7 @@
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Mesh Sampling";
+        var mkdocs_page_name = "Generating Point Samples on a Mesh";
         var mkdocs_page_input_path = "sections/mesh_sampling.md";
         var mkdocs_page_url = "/point-cloud-utils/sections/mesh_sampling/";
       </script>
@@ -51,7 +51,7 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../point_cloud_resampling/">Point Cloud Resampling</a>
                   </li>
-                  <li class="toctree-l1 current"><a class="reference internal current" href="./">Mesh Sampling</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="./">Generating Point Samples on a Mesh</a>
     <ul class="current">
     <li class="toctree-l2"><a class="reference internal" href="#generating-random-samples-on-a-mesh">Generating random samples on a mesh</a>
     </li>
@@ -63,9 +63,11 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../watertight_manifold/">Making a Mesh a Watertight Manifold</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../mesh_sdf/">Computing SDFs for a Mesh</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../mesh_sdf/">Computing SDFs from Triangle Meshes</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../normal_estimation/">Normal Estimation</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../point_cloud_normal_estimation/">Estimating Normals for a Point Cloud</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../mesh_normal_estimation/">Computing Mesh Normals</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../ray_mesh_intersection/">Ray/Mesh Intersection</a>
                   </li>
@@ -94,7 +96,7 @@
   <ul class="wy-breadcrumbs">
     <li><a href="../.." class="icon icon-home" alt="Docs"></a> &raquo;</li>
           <li>Functionality &raquo;</li>
-      <li>Mesh Sampling</li>
+      <li>Generating Point Samples on a Mesh</li>
     <li class="wy-breadcrumbs-aside">
           <a href="https://github.com/fwilliams/point-cloud-utils/tree/master/docs/docs/sections/mesh_sampling.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
@@ -141,7 +143,6 @@ rand_normals = pcu.interpolate_barycentric_coords(f, fid, bc, n)
 <p align="center">
     <img src="../../imgs/mesh_randsample.png" alt="Random points and normals sampled on a mesh" style="width:50%">
     <figcaption style="text-align: center; font-style: italic;">Generating random (yellow) points on the mesh. We can also extract vertex attributes such as normals (pink arrows) at the points.</figcaption>
-</div>
 </p>
 
 <h2 id="generating-blue-noise-random-samples-on-a-mesh">Generating blue-noise random samples on a mesh</h2>
@@ -186,15 +187,15 @@ rand_positions = pcu.interpolate_barycentric_coords(f, fid, bc, v)
 rand_normals = pcu.interpolate_barycentric_coords(f, fid, bc, n)
 </code></pre>
 <p align="center">
- <div class="row">
-  <div class="column" style="float: left; width: 50%; padding: 5px;">
-    <img src="../../imgs/mesh_poisson_disk_number.png" alt="Poisson disk samples on a mesh using a target number of points" style="width:100%">
+  <div class="row">
+    <div class="column" style="float: left; width: 50%; padding: 5px;">
+      <img src="../../imgs/mesh_poisson_disk_number.png" alt="Poisson disk samples on a mesh using a target number of points" style="width:99%">
+    </div>
+    <div class="column" style="float: left; width: 50%; padding: 5px;">
+      <img src="../../imgs/mesh_poisson_disk_radius.png" alt="Poisson disk samples on a mesh using a target radius" style="width:100%">
+    </div>
+    <figcaption style="text-align: center; font-style: italic;">Generating blue noise samples on a mesh using a target number of points (left) and a target radius (right).</figcaption>
   </div>
-  <div class="column" style="float: left; width: 50%; padding: 5px;">
-    <img src="../../imgs/mesh_poisson_disk_radius.png" alt="Poisson disk samples on a mesh using a target radius" style="width:100%">
-  </div>
-  <figcaption style="text-align: center; font-style: italic;">Generating blue noise samples on a mesh using a target number of points (left) and a target radius (right).</figcaption>
-</div>
 </p>
               
             </div>
