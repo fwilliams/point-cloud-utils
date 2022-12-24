@@ -33,15 +33,15 @@ v_sampled, n_sampled = pcu.downsample_point_cloud_on_voxel_grid(sizeof_voxel, p,
 
 ```
 <p align="center">
- <div class="row">
-  <div class="column" style="float: left; width: 50%; padding: 5px;">
-    <img src="../../imgs/grid1.png.crop.png.tx.png" alt="Downsampled point cloud on a voxel grid" style="width:100%">
-  </div>
-  <div class="column" style="float: left; width: 50%; padding: 5px;">
-    <img src="../../imgs/grid2.png.crop.png.tx.png" alt="Downsampled point cloud on a voxel grid with normal" style="width:100%">
-  </div>
+  <div class="row">
+    <div class="column" style="float: left; width: 50%; padding: 5px;">
+      <img src="../../imgs/grid1.png.crop.png.tx.png" alt="Downsampled point cloud on a voxel grid" style="width:100%">
+    </div>
+    <div class="column" style="float: left; width: 50%; padding: 5px;">
+      <img src="../../imgs/grid2.png.crop.png.tx.png" alt="Downsampled point cloud on a voxel grid with normal" style="width:100%">
+    </div>
     <figcaption style="text-align: center; font-style: italic;">Downsampling the blue point cloud by averaging points within each voxel. The yellow points are the downsampled points. The right image shows the downsampled normals.</figcaption>
-</div>
+  </div>
 </p>
 
 ## Downsampling a point cloud to have a blue noise distribution

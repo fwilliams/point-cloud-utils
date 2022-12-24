@@ -17,7 +17,6 @@ The image below shows a plot of the SDF for the boundary of the letters PCU.
 <p align="center">
     <img src="../../imgs/pcu_sdf_2.png" alt="Signed distance function for the letters PCU" style="width:85%">
     <figcaption style="text-align: center; font-style: italic;">Level sets of the signed distance function for the letters PCU. The zero level set (surface) is colored as a white line.</figcaption>
-</div>
 </p>
 
 ## Computing an SDF from a triangle mesh
@@ -40,5 +39,4 @@ Below we plot the sampled points colored by their SDF values:
 <p align="center">
     <img src="../../imgs/bunny_sdf.png" alt="Signed distance values for points around a mesh" style="width:80%">
     <figcaption style="text-align: center; font-style: italic;">A thousand points sammpled around the bunny colored by their signed distance values.</figcaption>
-</div>
 </p>

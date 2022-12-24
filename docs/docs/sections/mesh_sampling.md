@@ -38,7 +38,6 @@ rand_normals = pcu.interpolate_barycentric_coords(f, fid, bc, n)
 <p align="center">
     <img src="../../imgs/mesh_randsample.png" alt="Random points and normals sampled on a mesh" style="width:50%">
     <figcaption style="text-align: center; font-style: italic;">Generating random (yellow) points on the mesh. We can also extract vertex attributes such as normals (pink arrows) at the points.</figcaption>
-</div>
 </p>
 
 
@@ -85,13 +84,13 @@ rand_positions = pcu.interpolate_barycentric_coords(f, fid, bc, v)
 rand_normals = pcu.interpolate_barycentric_coords(f, fid, bc, n)
 ```
 <p align="center">
- <div class="row">
-  <div class="column" style="float: left; width: 50%; padding: 5px;">
-    <img src="../../imgs/mesh_poisson_disk_number.png" alt="Poisson disk samples on a mesh using a target number of points" style="width:100%">
+  <div class="row">
+    <div class="column" style="float: left; width: 50%; padding: 5px;">
+      <img src="../../imgs/mesh_poisson_disk_number.png" alt="Poisson disk samples on a mesh using a target number of points" style="width:99%">
+    </div>
+    <div class="column" style="float: left; width: 50%; padding: 5px;">
+      <img src="../../imgs/mesh_poisson_disk_radius.png" alt="Poisson disk samples on a mesh using a target radius" style="width:100%">
+    </div>
+    <figcaption style="text-align: center; font-style: italic;">Generating blue noise samples on a mesh using a target number of points (left) and a target radius (right).</figcaption>
   </div>
-  <div class="column" style="float: left; width: 50%; padding: 5px;">
-    <img src="../../imgs/mesh_poisson_disk_radius.png" alt="Poisson disk samples on a mesh using a target radius" style="width:100%">
-  </div>
-  <figcaption style="text-align: center; font-style: italic;">Generating blue noise samples on a mesh using a target number of points (left) and a target radius (right).</figcaption>
-</div>
 </p>

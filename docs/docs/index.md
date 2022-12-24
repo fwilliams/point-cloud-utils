@@ -49,7 +49,8 @@ Point Cloud Utils includes utilities to perform the following tasks:
 * [Computing metrics between point clouds and meshes](sections/shape_metrics) (e.g. Chamfer Distance, Hausdorff Distance, etc...).
 * [Making a Mesh a Watertight Manifold](sections/watertight_manifold).
 * [Computing signed distances to triangle meshes](sections/mesh_sdf).
-* [Estimating normals for point clouds and meshes](sections/normal_estimation).
+* [Estimating normals for point clouds](sections/point_cloud_normal_estimation).
+* [Computing normals for triangle meshes](sections/mesh_normal_estimation).
 * [Fast ray/mesh intersection](sections/ray_mesh_intersection).
 * [Surface mesh smoothing](sections/mesh_smoothing).
 

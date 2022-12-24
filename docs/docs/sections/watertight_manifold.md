@@ -16,13 +16,13 @@ resolution = 50_000
 vw, fw = pcu.make_mesh_watertight(v, f, resolution)
 ```
 <p align="center">
- <div class="row">
-  <div class="column" style="float: left; width: 50%; padding: 5px;">
-    <img src="../../imgs/non_manifold.png" alt="Non-manifold, non-watertight mesh" style="width:100%">
+  <div class="row">
+    <div class="column" style="float: left; width: 50%; padding: 5px;">
+      <img src="../../imgs/non_manifold.png" alt="Non-manifold, non-watertight mesh" style="width:100%">
+    </div>
+    <div class="column" style="float: left; width: 50%; padding: 5px;">
+      <img src="../../imgs/manifold.png" alt="Watertight, Manifold version of the input mesh" style="width:100%">
+    </div>
+    <figcaption style="text-align: center; font-style: italic;">The left mesh is non-manifold and non-watertight. The Manifold algorithm converts it to a watertight manifold on the left.</figcaption>
   </div>
-  <div class="column" style="float: left; width: 50%; padding: 5px;">
-    <img src="../../imgs/manifold.png" alt="Watertight, Manifold version of the input mesh" style="width:100%">
-  </div>
-  <figcaption style="text-align: center; font-style: italic;">The left mesh is non-manifold and non-watertight. The Manifold algorithm converts it to a watertight manifold on the left.</figcaption>
-</div>
 </p>

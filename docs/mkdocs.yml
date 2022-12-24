@@ -8,11 +8,12 @@ nav:
   - Functionality:
       - "Mesh I/O": sections/mesh_io.md
       - "Point Cloud Resampling": sections/point_cloud_resampling.md
-      - "Mesh Sampling": sections/mesh_sampling.md
+      - "Generating Point Samples on a Mesh": sections/mesh_sampling.md
       - "Shape Metrics": sections/shape_metrics.md
       - "Making a Mesh a Watertight Manifold": sections/watertight_manifold.md
-      - "Computing SDFs for a Mesh": sections/mesh_sdf.md
-      - "Normal Estimation": sections/normal_estimation.md
+      - "Computing SDFs from Triangle Meshes": sections/mesh_sdf.md
+      - "Estimating Normals for a Point Cloud": sections/point_cloud_normal_estimation.md
+      - "Computing Mesh Normals": sections/mesh_normal_estimation.md
       - "Ray/Mesh Intersection": sections/ray_mesh_intersection.md
       - "Ray/Surfel Intersection": sections/ray_surfel_intersection.md
       - "Mesh Smoothing": sections/mesh_smoothing.md
