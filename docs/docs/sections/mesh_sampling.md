@@ -10,6 +10,10 @@ Point Cloud Utils provides tools for generating point samples on a triangle mesh
      1. The index of the mesh face containing it (usually referred to as `fid`)
      2. The barycentric coordinates of the point within that face (usually referred to as `bc`)
 
+    <p align="center">
+      <img src="../../imgs/barycentric_coords.png" alt="Barycentric coordinates illustration" style="width:80%">
+      <figcaption style="text-align: center; font-style: italic;">Encoding surface samples as barycentric coordinates. The teal point is the barycentric combination with weights $(\alpha, \beta, \gamma)$ in face 3.</figcaption>
+    </p>
     The reason for encoding points in this way is that it allows us to interpolate any quantity stored at the vertices (including their positions) of a mesh to the sample positions, and thus sample vertex attributes.
 
     To recover vertex quantities from `fid`, `bc` pairs use the function `pcu.interpolate_barycentric_coords(f, fid, bc, vertex_quantity)`
