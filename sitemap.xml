@@ -2,72 +2,72 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://www.fwilliams.info/point-cloud-utils/</loc>
-         <lastmod>2022-12-24</lastmod>
+         <lastmod>2022-12-25</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://www.fwilliams.info/point-cloud-utils/about/</loc>
-         <lastmod>2022-12-24</lastmod>
+         <lastmod>2022-12-25</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://www.fwilliams.info/point-cloud-utils/sections/api_reference/</loc>
-         <lastmod>2022-12-24</lastmod>
+         <lastmod>2022-12-25</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://www.fwilliams.info/point-cloud-utils/sections/mesh_io/</loc>
-         <lastmod>2022-12-24</lastmod>
+         <lastmod>2022-12-25</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://www.fwilliams.info/point-cloud-utils/sections/mesh_normal_estimation/</loc>
-         <lastmod>2022-12-24</lastmod>
+         <lastmod>2022-12-25</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://www.fwilliams.info/point-cloud-utils/sections/mesh_sampling/</loc>
-         <lastmod>2022-12-24</lastmod>
+         <lastmod>2022-12-25</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://www.fwilliams.info/point-cloud-utils/sections/mesh_sdf/</loc>
-         <lastmod>2022-12-24</lastmod>
+         <lastmod>2022-12-25</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://www.fwilliams.info/point-cloud-utils/sections/mesh_smoothing/</loc>
-         <lastmod>2022-12-24</lastmod>
+         <lastmod>2022-12-25</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://www.fwilliams.info/point-cloud-utils/sections/point_cloud_normal_estimation/</loc>
-         <lastmod>2022-12-24</lastmod>
+         <lastmod>2022-12-25</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://www.fwilliams.info/point-cloud-utils/sections/point_cloud_resampling/</loc>
-         <lastmod>2022-12-24</lastmod>
+         <lastmod>2022-12-25</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://www.fwilliams.info/point-cloud-utils/sections/ray_mesh_intersection/</loc>
-         <lastmod>2022-12-24</lastmod>
+         <lastmod>2022-12-25</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://www.fwilliams.info/point-cloud-utils/sections/ray_surfel_intersection/</loc>
-         <lastmod>2022-12-24</lastmod>
+         <lastmod>2022-12-25</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://www.fwilliams.info/point-cloud-utils/sections/shape_metrics/</loc>
-         <lastmod>2022-12-24</lastmod>
+         <lastmod>2022-12-25</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://www.fwilliams.info/point-cloud-utils/sections/watertight_manifold/</loc>
-         <lastmod>2022-12-24</lastmod>
+         <lastmod>2022-12-25</lastmod>
          <changefreq>daily</changefreq>
     </url>
 </urlset>

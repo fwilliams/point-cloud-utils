@@ -63,6 +63,10 @@
                   </li>
                   <li class="toctree-l1 current"><a class="reference internal current" href="./">Computing Mesh Normals</a>
     <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#computing-vertex-normals-for-a-mesh">Computing Vertex Normals for a Mesh</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#computing-face-normals-for-a-mesh">Computing Face Normals for a Mesh</a>
+    </li>
     </ul>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../ray_mesh_intersection/">Ray/Mesh Intersection</a>
@@ -103,6 +107,32 @@
             <div class="section" itemprop="articleBody">
               
                 <h1 id="computing-normals-for-a-triangle-mesh">Computing Normals for a Triangle Mesh</h1>
+<p>Point-Cloud-Utils lets you easily compute both vertex and face normals for a mesh</p>
+<h2 id="computing-vertex-normals-for-a-mesh">Computing Vertex Normals for a Mesh</h2>
+<pre><code class="language-python">import point_cloud_utils as pcu
+
+v, f = pcu.load_mesh_vf(&quot;bunny.ply&quot;)
+
+# n is a NumPy array with the same shape as v containing vertex normals
+n = pcu.estimate_mesh_normals(v, f)
+</code></pre>
+<p align="center">
+    <img src="../../imgs/mesh_vertex_normals_2.png" alt="Estimated vertex normals for a triangle mesh" style="width:70%">
+    <figcaption style="text-align: center; font-style: italic;">Estimating vertex normals for a triangle mesh.</figcaption>
+</p>
+
+<h2 id="computing-face-normals-for-a-mesh">Computing Face Normals for a Mesh</h2>
+<pre><code class="language-python">import point_cloud_utils as pcu
+
+v, f = pcu.load_mesh_vf(&quot;bunny.ply&quot;)
+
+# n is a NumPy array with the same shape as f containing face normals
+n = pcu.estimate_mesh_face_normals(v, f)
+</code></pre>
+<p align="center">
+    <img src="../../imgs/mesh_face_normals_2.png" alt="Estimated face normals for a triangle mesh" style="width:70%">
+    <figcaption style="text-align: center; font-style: italic;">Estimating face normals for a triangle mesh</figcaption>
+</p>
               
             </div>
           </div><footer>
