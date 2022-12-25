@@ -1,4 +1,4 @@
-# Point Cloud Re-Sampling
+# Resampling Point Clouds
 Point Cloud Utils provides tools for re-sampling a point cloud in several ways.
 
 !!! note "Data in examples"

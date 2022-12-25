@@ -43,17 +43,22 @@ pcu.save_mesh_v("my_point_cloud_trimmed.ply", keep_points)
 ## Core Features
 Point Cloud Utils includes utilities to perform the following tasks:
 
-* [Reading and writing meshes and point clouds from disk](sections/mesh_io). Point Cloud Utils can handle any file that can be opened in MeshLab.
-* [Resampling point clouds](sections/point_cloud_resampling) to have different distributions.
-* [Generating point samples on a mesh](sections/mesh_sampling).
-* [Computing metrics between point clouds](sections/shape_metrics) (e.g. Chamfer Distance, Hausdorff Distance, etc...).
+* [Mesh and Point Cloud I/O](sections/mesh_io). Point Cloud Utils can handle any file that can be opened in MeshLab.
+* [Resampling Point Clouds](sections/point_cloud_resampling) to have different distributions.
+* [Generating Point Samples on a Mesh](sections/mesh_sampling).
+* [Computing Metrics Between Point Clouds](sections/shape_metrics) (e.g. Chamfer Distance, Hausdorff Distance, etc...).
 * [Making a Mesh a Watertight Manifold](sections/watertight_manifold).
-* [Computing signed distances to triangle meshes](sections/mesh_sdf).
-* [Estimating normals for point clouds](sections/point_cloud_normal_estimation).
-* [Computing normals for triangle meshes](sections/mesh_normal_estimation).
-* [Fast ray/mesh intersection](sections/ray_mesh_intersection).
+* [Computing Signed Distances (SDFs) to Meshes](sections/mesh_sdf).
+* [Estimating Normals for Point Clouds](sections/point_cloud_normal_estimation).
+* [Computing Mesh Normals](sections/mesh_normal_estimation).
+* [Ray/Mesh Intersection](sections/ray_mesh_intersection).
 * [Generating Surfels from Point Clouds](sections/surfels).
-* [Surface mesh smoothing](sections/mesh_smoothing).
+* [Smooting a Mesh](sections/mesh_smoothing).
+* [Decimating a Mesh](sections/mesh_decimation).
+* [Computing Connected Components of a Mesh](sections/computing_connected_components_of_a_mesh.md).
+* [Deduplicating Point Clouds and Meshes](sections/deduplicating_point_clouds_and_meshes).
+* [Calculating Mesh Face Areas](sections/calculating_mesh_face_areas).
+* [Consistently Orienting Mesh Faces](sections/consistently_orienting_mesh_faces.md)
 
 
 ## [API Reference](sections/api_reference.md)

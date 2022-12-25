@@ -1,4 +1,4 @@
-# Computing Signed Distances to Triangle Meshes
+# Computing Signed Distances (SDFs) to Meshes
 Many applications require a [signed distance function (SDF) representation for a 3D shape](https://en.wikipedia.org/wiki/Signed_distance_function). For example, many shape reconstruction neural networks such as [DeepSDF](https://arxiv.org/abs/1901.05103) require such a representation for training. Unfortunately, most 3D shape data is stored as a triangle mesh, making SDFs not readily available. Point-Cloud-Utils makes it very easy to extract signed distances from a triangle mesh. 
 
 !!! note "Remark about mesh quality"
@@ -19,7 +19,7 @@ The image below shows a plot of the SDF for the boundary of the letters PCU.
     <figcaption style="text-align: center; font-style: italic;">Level sets of the signed distance function for the letters PCU. The zero level set (surface) is colored as a white line.</figcaption>
 </p>
 
-## Computing an SDF from a triangle mesh
+## Computing an SDF to a Mesh
 We can compute the signed distance of a set of points in Point-Cloud-Utils in the following way:
 ```python
 import numpy as np

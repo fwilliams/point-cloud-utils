@@ -1,7 +1,7 @@
-# Computing Normals for a Triangle Mesh
+# Computing Mesh Normals
 Point-Cloud-Utils lets you easily compute both vertex and face normals for a mesh
 
-## Computing Vertex Normals for a Mesh
+## Per-Vertex Normals
 ```python
 import point_cloud_utils as pcu
 
@@ -16,7 +16,7 @@ n = pcu.estimate_mesh_normals(v, f)
 </p>
 
 
-## Computing Face Normals for a Mesh
+## Per-Face Normals for a Mesh
 ```python
 import point_cloud_utils as pcu
 

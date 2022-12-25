@@ -1,4 +1,4 @@
-# Mesh Sampling
+# Generating Point Samples on a Mesh
 Point Cloud Utils provides tools for generating point samples on a triangle mesh.
 
 !!! note "Data in examples"
