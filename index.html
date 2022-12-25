@@ -73,6 +73,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="sections/mesh_decimation/">Decimating a Mesh</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="sections/closest_point_on_mesh/">Finding Closest Points Between Point Clouds and Meshes</a>
+                  </li>
                   <li class="toctree-l1"><a class="reference internal" href="sections/computing_connected_components_of_a_mesh/">Computing Connected Components of a Mesh</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="sections/deduplicating_point_clouds_and_meshes/">Deduplicating Point Clouds and Meshes</a>
@@ -121,7 +123,7 @@ and manipulating 3D point clouds and meshes.</p>
 <pre><code class="language-shell">pip install point-cloud-utils
 </code></pre>
 <h2 id="a-very-simple-example">A very simple example</h2>
-<p>Point Cloud Utils uses numpy arrays as fundamental data structure, making it very easy to integrate with existing numerical code.
+<p>Point Cloud Utils uses NumPy arrays as fundamental data structure, making it very easy to integrate with existing numerical code.
 For example, here's how to remove all points in a point cloud which are greater than some distance from a mesh.</p>
 <pre><code class="language-py">import point_cloud_utils as pcu
 # Load a mesh stored in my_mesh.ply:
@@ -160,7 +162,8 @@ pcu.save_mesh_v(&quot;my_point_cloud_trimmed.ply&quot;, keep_points)
 <li><a href="sections/surfels">Generating Surfels from Point Clouds</a>.</li>
 <li><a href="sections/mesh_smoothing">Smooting a Mesh</a>.</li>
 <li><a href="sections/mesh_decimation">Decimating a Mesh</a>.</li>
-<li><a href="sections/computing_connected_components_of_a_mesh/">Computing Connected Components of a Mesh</a>.</li>
+<li><a href="sections/closest_point_on_mesh">Finding Closest Points Between Point Clouds and Meshes</a>.</li>
+<li><a href="sections/computing_connected_components_of_a_mesh">Computing Connected Components of a Mesh</a>.</li>
 <li><a href="sections/deduplicating_point_clouds_and_meshes">Deduplicating Point Clouds and Meshes</a>.</li>
 <li><a href="sections/calculating_mesh_face_areas">Calculating Mesh Face Areas</a>.</li>
 <li><a href="sections/consistently_orienting_mesh_faces/">Consistently Orienting Mesh Faces</a></li>
@@ -221,5 +224,5 @@ pcu.save_mesh_v(&quot;my_point_cloud_trimmed.ply&quot;, keep_points)
 
 <!--
 MkDocs version : 1.4.2
-Build Date UTC : 2022-12-25 14:43:16.759924+00:00
+Build Date UTC : 2022-12-25 14:55:58.398607+00:00
 -->

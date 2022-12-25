@@ -3,9 +3,9 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://www.fwilliams.info/point-cloud-utils/sections/surfels/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://www.fwilliams.info/point-cloud-utils/sections/closest_point_on_mesh/" />
       <link rel="shortcut icon" href="../../img/favicon.ico" />
-    <title>Generating Surfels from Point Clouds - Point Cloud Utils</title>
+    <title>Finding Closest Points Between Point Clouds and Meshes - Point Cloud Utils</title>
     <link rel="stylesheet" href="../../css/theme.css" />
     <link rel="stylesheet" href="../../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
@@ -13,9 +13,9 @@
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Generating Surfels from Point Clouds";
-        var mkdocs_page_input_path = "sections/surfels.md";
-        var mkdocs_page_url = "/point-cloud-utils/sections/surfels/";
+        var mkdocs_page_name = "Finding Closest Points Between Point Clouds and Meshes";
+        var mkdocs_page_input_path = "sections/closest_point_on_mesh.md";
+        var mkdocs_page_url = "/point-cloud-utils/sections/closest_point_on_mesh/";
       </script>
     
     <script src="../../js/jquery-3.6.0.min.js" defer></script>
@@ -65,15 +65,15 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../ray_mesh_intersection/">Ray/Mesh Intersection</a>
                   </li>
-                  <li class="toctree-l1 current"><a class="reference internal current" href="./">Generating Surfels from Point Clouds</a>
-    <ul class="current">
-    </ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../surfels/">Generating Surfels from Point Clouds</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../mesh_smoothing/">Smoothing a Mesh</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../mesh_decimation/">Decimating a Mesh</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../closest_point_on_mesh/">Finding Closest Points Between Point Clouds and Meshes</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="./">Finding Closest Points Between Point Clouds and Meshes</a>
+    <ul class="current">
+    </ul>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../computing_connected_components_of_a_mesh/">Computing Connected Components of a Mesh</a>
                   </li>
@@ -104,9 +104,9 @@
   <ul class="wy-breadcrumbs">
     <li><a href="../.." class="icon icon-home" alt="Docs"></a> &raquo;</li>
           <li>Functionality &raquo;</li>
-      <li>Generating Surfels from Point Clouds</li>
+      <li>Finding Closest Points Between Point Clouds and Meshes</li>
     <li class="wy-breadcrumbs-aside">
-          <a href="https://github.com/fwilliams/point-cloud-utils/tree/master/docs/docs/sections/surfels.md" class="icon icon-github"> Edit on GitHub</a>
+          <a href="https://github.com/fwilliams/point-cloud-utils/tree/master/docs/docs/sections/closest_point_on_mesh.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
   </ul>
   <hr/>
@@ -114,13 +114,33 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="generating-surfels-from-point-clouds">Generating Surfels from Point Clouds</h1>
+                <h1 id="finding-closest-points-between-point-clouds-and-meshes">Finding Closest Points Between Point Clouds and Meshes</h1>
+<p>You can easily find the closest point on a mesh to any 3D point in space with Point-Cloud-Utils.</p>
+<pre><code class="language-python">import point_cloud_utils as pcu
+# Load a mesh stored in my_mesh.ply:
+#   v is a NumPy array of coordinates with shape (V, 3)
+#   f is a NumPy array of face indices with shape (F, 3)
+v, f = pcu.load_mesh_vf(&quot;my_mesh.ply&quot;)
+
+# Load a point cloud stored in my_point_cloud.ply:
+#   p is a NumPy array of point coordinates with shape (P, 3)
+p = pcu.load_mesh_v(&quot;my_point_cloud.ply&quot;)
+
+# Compute the shortest distance between each point in p and the mesh:
+#   dists is a NumPy array of shape (P,) where dists[i] is the
+#   shortest distnace between the point p[i, :] and the mesh (v, f)
+dists, fid, bc = pcu.closest_points_on_mesh(p, v, f)
+
+# Interpolate the barycentric coordinates to get the coordinates of 
+# the closest points on the mesh to each point in p
+closest_pts = pcu.interpolate_barycentric_coords(f, fid, bc, f)
+</code></pre>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../ray_mesh_intersection/" class="btn btn-neutral float-left" title="Ray/Mesh Intersection"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../mesh_smoothing/" class="btn btn-neutral float-right" title="Smoothing a Mesh">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../mesh_decimation/" class="btn btn-neutral float-left" title="Decimating a Mesh"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../computing_connected_components_of_a_mesh/" class="btn btn-neutral float-right" title="Computing Connected Components of a Mesh">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -147,10 +167,10 @@
         </span>
     
     
-      <span><a href="../ray_mesh_intersection/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../mesh_decimation/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../mesh_smoothing/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../computing_connected_components_of_a_mesh/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>
