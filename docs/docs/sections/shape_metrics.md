@@ -1,4 +1,4 @@
-# Shape Metrics
+# Point Cloud Metrics
 Point Cloud Utils has functions to compute a number of commonly used metrics between point clouds.
 
 

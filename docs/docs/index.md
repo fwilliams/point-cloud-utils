@@ -46,12 +46,13 @@ Point Cloud Utils includes utilities to perform the following tasks:
 * [Reading and writing meshes and point clouds from disk](sections/mesh_io). Point Cloud Utils can handle any file that can be opened in MeshLab.
 * [Resampling point clouds](sections/point_cloud_resampling) to have different distributions.
 * [Generating point samples on a mesh](sections/mesh_sampling).
-* [Computing metrics between point clouds and meshes](sections/shape_metrics) (e.g. Chamfer Distance, Hausdorff Distance, etc...).
+* [Computing metrics between point clouds](sections/shape_metrics) (e.g. Chamfer Distance, Hausdorff Distance, etc...).
 * [Making a Mesh a Watertight Manifold](sections/watertight_manifold).
 * [Computing signed distances to triangle meshes](sections/mesh_sdf).
 * [Estimating normals for point clouds](sections/point_cloud_normal_estimation).
 * [Computing normals for triangle meshes](sections/mesh_normal_estimation).
 * [Fast ray/mesh intersection](sections/ray_mesh_intersection).
+* [Generating Surfels from Point Clouds](sections/surfels).
 * [Surface mesh smoothing](sections/mesh_smoothing).
 
 
