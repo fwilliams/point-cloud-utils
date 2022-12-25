@@ -3,9 +3,9 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://www.fwilliams.info/point-cloud-utils/sections/mesh_sdf/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://www.fwilliams.info/point-cloud-utils/sections/mesh_decimation/" />
       <link rel="shortcut icon" href="../../img/favicon.ico" />
-    <title>Computing Signed Distances (SDFs) to Meshes - Point Cloud Utils</title>
+    <title>Decimating a Mesh - Point Cloud Utils</title>
     <link rel="stylesheet" href="../../css/theme.css" />
     <link rel="stylesheet" href="../../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
@@ -13,9 +13,9 @@
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Computing Signed Distances (SDFs) to Meshes";
-        var mkdocs_page_input_path = "sections/mesh_sdf.md";
-        var mkdocs_page_url = "/point-cloud-utils/sections/mesh_sdf/";
+        var mkdocs_page_name = "Decimating a Mesh";
+        var mkdocs_page_input_path = "sections/mesh_decimation.md";
+        var mkdocs_page_url = "/point-cloud-utils/sections/mesh_decimation/";
       </script>
     
     <script src="../../js/jquery-3.6.0.min.js" defer></script>
@@ -57,13 +57,7 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../watertight_manifold/">Making a Mesh a Watertight Manifold</a>
                   </li>
-                  <li class="toctree-l1 current"><a class="reference internal current" href="./">Computing Signed Distances (SDFs) to Meshes</a>
-    <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#sdf-overview">SDF Overview</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#computing-an-sdf-to-a-mesh">Computing an SDF to a Mesh</a>
-    </li>
-    </ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../mesh_sdf/">Computing Signed Distances (SDFs) to Meshes</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../point_cloud_normal_estimation/">Estimating Normals for Point Clouds</a>
                   </li>
@@ -75,7 +69,9 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../mesh_smoothing/">Smoothing a Mesh</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../mesh_decimation/">Decimating a Mesh</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="./">Decimating a Mesh</a>
+    <ul class="current">
+    </ul>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../computing_connected_components_of_a_mesh/">Computing Connected Components of a Mesh</a>
                   </li>
@@ -106,9 +102,9 @@
   <ul class="wy-breadcrumbs">
     <li><a href="../.." class="icon icon-home" alt="Docs"></a> &raquo;</li>
           <li>Functionality &raquo;</li>
-      <li>Computing Signed Distances (SDFs) to Meshes</li>
+      <li>Decimating a Mesh</li>
     <li class="wy-breadcrumbs-aside">
-          <a href="https://github.com/fwilliams/point-cloud-utils/tree/master/docs/docs/sections/mesh_sdf.md" class="icon icon-github"> Edit on GitHub</a>
+          <a href="https://github.com/fwilliams/point-cloud-utils/tree/master/docs/docs/sections/mesh_decimation.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
   </ul>
   <hr/>
@@ -116,53 +112,13 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="computing-signed-distances-sdfs-to-meshes">Computing Signed Distances (SDFs) to Meshes</h1>
-<p>Many applications require a <a href="https://en.wikipedia.org/wiki/Signed_distance_function">signed distance function (SDF) representation for a 3D shape</a>. For example, many shape reconstruction neural networks such as <a href="https://arxiv.org/abs/1901.05103">DeepSDF</a> require such a representation for training. Unfortunately, most 3D shape data is stored as a triangle mesh, making SDFs not readily available. Point-Cloud-Utils makes it very easy to extract signed distances from a triangle mesh. </p>
-<div class="admonition note">
-<p class="admonition-title">Remark about mesh quality</p>
-<p>To extract an SDF for a triangle mesh, the mesh must be of relatively good quality (manifold, watertight, no sliver triangles, etc...). To clean up a mesh for SDF extraction see <a href="../watertight_manifold">Making a triangle mesh watertight</a>.</p>
-</div>
-<h2 id="sdf-overview">SDF Overview</h2>
-<p>A <em>signed distance function</em> <span class="arithmatex">\(f : \mathbb{R}^3 \rightarrow \mathbb{R}\)</span> maps 3D points <span class="arithmatex">\(x \in \mathbb{R}^3\)</span> to the nearest distance between <span class="arithmatex">\(x\)</span> and some surface <span class="arithmatex">\(S\)</span>. In other words:
-$$
-f(x) = \min_{x' \in S} |x - x'|_2
-$$
-The zero level set of the SDF <span class="arithmatex">\(f\)</span> are precisely the set of points which lie on the surface. <em>i.e.</em>
-$$
-S = {x : f(x) = 0}
-$$
-The image below shows a plot of the SDF for the boundary of the letters PCU. </p>
-<p align="center">
-    <img src="../../imgs/pcu_sdf_2.png" alt="Signed distance function for the letters PCU" style="width:85%">
-    <figcaption style="text-align: center; font-style: italic;">Level sets of the signed distance function for the letters PCU. The zero level set (surface) is colored as a white line.</figcaption>
-</p>
-
-<h2 id="computing-an-sdf-to-a-mesh">Computing an SDF to a Mesh</h2>
-<p>We can compute the signed distance of a set of points in Point-Cloud-Utils in the following way:</p>
-<pre><code class="language-python">import numpy as np
-import point_cloud_utils as pcu
-
-# 1000 random query points to compute the SDF at
-query_pts = np.random.rand(1000, 3)
-
-v, f = pcu.load_mesh_vf(&quot;bunny.ply&quot;)
-
-# sdf is the signed distance for each query point
-# fid is the nearest face to each query point on the mesh
-# bc are the barycentric coordinates of the nearest point to each query point within the face
-sdf, fid, bc = pcu.signed_distance_to_mesh(query_pts, v, f)
-</code></pre>
-<p>Below we plot the sampled points colored by their SDF values:</p>
-<p align="center">
-    <img src="../../imgs/bunny_sdf.png" alt="Signed distance values for points around a mesh" style="width:80%">
-    <figcaption style="text-align: center; font-style: italic;">A thousand points sammpled around the bunny colored by their signed distance values.</figcaption>
-</p>
+                <h1 id="decimating-a-mesh">Decimating a Mesh</h1>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../watertight_manifold/" class="btn btn-neutral float-left" title="Making a Mesh a Watertight Manifold"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../point_cloud_normal_estimation/" class="btn btn-neutral float-right" title="Estimating Normals for Point Clouds">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../mesh_smoothing/" class="btn btn-neutral float-left" title="Smoothing a Mesh"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../computing_connected_components_of_a_mesh/" class="btn btn-neutral float-right" title="Computing Connected Components of a Mesh">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -189,10 +145,10 @@ sdf, fid, bc = pcu.signed_distance_to_mesh(query_pts, v, f)
         </span>
     
     
-      <span><a href="../watertight_manifold/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../mesh_smoothing/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../point_cloud_normal_estimation/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../computing_connected_components_of_a_mesh/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>

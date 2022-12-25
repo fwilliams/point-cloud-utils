@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://www.fwilliams.info/point-cloud-utils/sections/point_cloud_resampling/" />
       <link rel="shortcut icon" href="../../img/favicon.ico" />
-    <title>Point Cloud Resampling - Point Cloud Utils</title>
+    <title>Resampling Point Clouds - Point Cloud Utils</title>
     <link rel="stylesheet" href="../../css/theme.css" />
     <link rel="stylesheet" href="../../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
@@ -13,7 +13,7 @@
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Point Cloud Resampling";
+        var mkdocs_page_name = "Resampling Point Clouds";
         var mkdocs_page_input_path = "sections/point_cloud_resampling.md";
         var mkdocs_page_url = "/point-cloud-utils/sections/point_cloud_resampling/";
       </script>
@@ -47,9 +47,9 @@
               </ul>
               <p class="caption"><span class="caption-text">Functionality</span></p>
               <ul class="current">
-                  <li class="toctree-l1"><a class="reference internal" href="../mesh_io/">Mesh I/O</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../mesh_io/">Mesh and Point Cloud I/O</a>
                   </li>
-                  <li class="toctree-l1 current"><a class="reference internal current" href="./">Point Cloud Resampling</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="./">Resampling Point Clouds</a>
     <ul class="current">
     <li class="toctree-l2"><a class="reference internal" href="#binning-points-in-a-voxel-grid">Binning points in a voxel grid</a>
     </li>
@@ -61,21 +61,31 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../mesh_sampling/">Generating Point Samples on a Mesh</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../shape_metrics/">Shape Metrics</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../shape_metrics/">Point Cloud Metrics</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../watertight_manifold/">Making a Mesh a Watertight Manifold</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../mesh_sdf/">Computing SDFs from Triangle Meshes</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../mesh_sdf/">Computing Signed Distances (SDFs) to Meshes</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../point_cloud_normal_estimation/">Estimating Normals for a Point Cloud</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../point_cloud_normal_estimation/">Estimating Normals for Point Clouds</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../mesh_normal_estimation/">Computing Mesh Normals</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../ray_mesh_intersection/">Ray/Mesh Intersection</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../ray_surfel_intersection/">Ray/Surfel Intersection</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../surfels/">Generating Surfels from Point Clouds</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../mesh_smoothing/">Mesh Smoothing</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../mesh_smoothing/">Smoothing a Mesh</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../mesh_decimation/">Decimating a Mesh</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../computing_connected_components_of_a_mesh/">Computing Connected Components of a Mesh</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../deduplicating_point_clouds_and_meshes/">Deduplicating Point Clouds and Meshes</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../calculating_mesh_face_areas/">Calculating Mesh Face Areas</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../consistently_orienting_mesh_faces/">Consistently Orienting Mesh Faces</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">API Reference</span></p>
@@ -98,7 +108,7 @@
   <ul class="wy-breadcrumbs">
     <li><a href="../.." class="icon icon-home" alt="Docs"></a> &raquo;</li>
           <li>Functionality &raquo;</li>
-      <li>Point Cloud Resampling</li>
+      <li>Resampling Point Clouds</li>
     <li class="wy-breadcrumbs-aside">
           <a href="https://github.com/fwilliams/point-cloud-utils/tree/master/docs/docs/sections/point_cloud_resampling.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
@@ -108,7 +118,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="point-cloud-re-sampling">Point Cloud Re-Sampling</h1>
+                <h1 id="resampling-point-clouds">Resampling Point Clouds</h1>
 <p>Point Cloud Utils provides tools for re-sampling a point cloud in several ways.</p>
 <div class="admonition note">
 <p class="admonition-title">Data in examples</p>
@@ -207,7 +217,7 @@ n_dedup = n[idx_i]
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../mesh_io/" class="btn btn-neutral float-left" title="Mesh I/O"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../mesh_io/" class="btn btn-neutral float-left" title="Mesh and Point Cloud I/O"><span class="icon icon-circle-arrow-left"></span> Previous</a>
         <a href="../mesh_sampling/" class="btn btn-neutral float-right" title="Generating Point Samples on a Mesh">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 

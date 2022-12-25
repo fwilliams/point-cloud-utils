@@ -3,9 +3,9 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://www.fwilliams.info/point-cloud-utils/sections/ray_surfel_intersection/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://www.fwilliams.info/point-cloud-utils/sections/removing_unreferenced_mesh_vertices/" />
       <link rel="shortcut icon" href="../../img/favicon.ico" />
-    <title>Ray/Surfel Intersection - Point Cloud Utils</title>
+    <title>Removing Unreferenced Mesh Vertices - Point Cloud Utils</title>
     <link rel="stylesheet" href="../../css/theme.css" />
     <link rel="stylesheet" href="../../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
@@ -13,9 +13,9 @@
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Ray/Surfel Intersection";
-        var mkdocs_page_input_path = "sections/ray_surfel_intersection.md";
-        var mkdocs_page_url = "/point-cloud-utils/sections/ray_surfel_intersection/";
+        var mkdocs_page_name = "Removing Unreferenced Mesh Vertices";
+        var mkdocs_page_input_path = "sections/removing_unreferenced_mesh_vertices.md";
+        var mkdocs_page_url = "/point-cloud-utils/sections/removing_unreferenced_mesh_vertices/";
       </script>
     
     <script src="../../js/jquery-3.6.0.min.js" defer></script>
@@ -46,28 +46,38 @@
                 </li>
               </ul>
               <p class="caption"><span class="caption-text">Functionality</span></p>
-              <ul class="current">
-                  <li class="toctree-l1"><a class="reference internal" href="../mesh_io/">Mesh I/O</a>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../mesh_io/">Mesh and Point Cloud I/O</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../point_cloud_resampling/">Point Cloud Resampling</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../point_cloud_resampling/">Resampling Point Clouds</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../mesh_sampling/">Generating Point Samples on a Mesh</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../shape_metrics/">Shape Metrics</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../shape_metrics/">Point Cloud Metrics</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../watertight_manifold/">Making a Mesh a Watertight Manifold</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../mesh_sdf/">Computing SDFs from Triangle Meshes</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../mesh_sdf/">Computing Signed Distances (SDFs) to Meshes</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../point_cloud_normal_estimation/">Estimating Normals for a Point Cloud</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../point_cloud_normal_estimation/">Estimating Normals for Point Clouds</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../mesh_normal_estimation/">Computing Mesh Normals</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../ray_mesh_intersection/">Ray/Mesh Intersection</a>
                   </li>
-                  <li class="toctree-l1 current"><a class="reference internal current" href="./">Ray/Surfel Intersection</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../surfels/">Generating Surfels from Point Clouds</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../mesh_smoothing/">Mesh Smoothing</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../mesh_smoothing/">Smoothing a Mesh</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../mesh_decimation/">Decimating a Mesh</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../computing_connected_components_of_a_mesh/">Computing Connected Components of a Mesh</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../deduplicating_point_clouds_and_meshes/">Deduplicating Point Clouds and Meshes</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../calculating_mesh_face_areas/">Calculating Mesh Face Areas</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../consistently_orienting_mesh_faces/">Consistently Orienting Mesh Faces</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">API Reference</span></p>
@@ -89,10 +99,9 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href="../.." class="icon icon-home" alt="Docs"></a> &raquo;</li>
-          <li>Functionality &raquo;</li>
-      <li>Ray/Surfel Intersection</li>
+      <li>Removing Unreferenced Mesh Vertices</li>
     <li class="wy-breadcrumbs-aside">
-          <a href="https://github.com/fwilliams/point-cloud-utils/tree/master/docs/docs/sections/ray_surfel_intersection.md" class="icon icon-github"> Edit on GitHub</a>
+          <a href="https://github.com/fwilliams/point-cloud-utils/tree/master/docs/docs/sections/removing_unreferenced_mesh_vertices.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
   </ul>
   <hr/>
@@ -100,14 +109,10 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                
+                <h1 id="removing-unreferenced-mesh-vertices">Removing Unreferenced Mesh Vertices</h1>
               
             </div>
           </div><footer>
-    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../ray_mesh_intersection/" class="btn btn-neutral float-left" title="Ray/Mesh Intersection"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../mesh_smoothing/" class="btn btn-neutral float-right" title="Mesh Smoothing">Next <span class="icon icon-circle-arrow-right"></span></a>
-    </div>
 
   <hr/>
 
@@ -133,10 +138,6 @@
         </span>
     
     
-      <span><a href="../ray_mesh_intersection/" style="color: #fcfcfc">&laquo; Previous</a></span>
-    
-    
-      <span><a href="../mesh_smoothing/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>

@@ -16,6 +16,31 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>https://www.fwilliams.info/point-cloud-utils/sections/calculating_mesh_face_areas/</loc>
+         <lastmod>2022-12-25</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://www.fwilliams.info/point-cloud-utils/sections/computing_connected_components_of_a_mesh/</loc>
+         <lastmod>2022-12-25</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://www.fwilliams.info/point-cloud-utils/sections/consistently_orienting_mesh_faces/</loc>
+         <lastmod>2022-12-25</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://www.fwilliams.info/point-cloud-utils/sections/deduplicating_point_clouds_and_meshes/</loc>
+         <lastmod>2022-12-25</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://www.fwilliams.info/point-cloud-utils/sections/mesh_decimation/</loc>
+         <lastmod>2022-12-25</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>https://www.fwilliams.info/point-cloud-utils/sections/mesh_io/</loc>
          <lastmod>2022-12-25</lastmod>
          <changefreq>daily</changefreq>
@@ -56,12 +81,17 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.fwilliams.info/point-cloud-utils/sections/ray_surfel_intersection/</loc>
+         <loc>https://www.fwilliams.info/point-cloud-utils/sections/removing_unreferenced_mesh_vertices/</loc>
          <lastmod>2022-12-25</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://www.fwilliams.info/point-cloud-utils/sections/shape_metrics/</loc>
+         <lastmod>2022-12-25</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://www.fwilliams.info/point-cloud-utils/sections/surfels/</loc>
          <lastmod>2022-12-25</lastmod>
          <changefreq>daily</changefreq>
     </url>

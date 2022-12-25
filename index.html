@@ -49,27 +49,37 @@
               </ul>
               <p class="caption"><span class="caption-text">Functionality</span></p>
               <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="sections/mesh_io/">Mesh I/O</a>
+                  <li class="toctree-l1"><a class="reference internal" href="sections/mesh_io/">Mesh and Point Cloud I/O</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="sections/point_cloud_resampling/">Point Cloud Resampling</a>
+                  <li class="toctree-l1"><a class="reference internal" href="sections/point_cloud_resampling/">Resampling Point Clouds</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="sections/mesh_sampling/">Generating Point Samples on a Mesh</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="sections/shape_metrics/">Shape Metrics</a>
+                  <li class="toctree-l1"><a class="reference internal" href="sections/shape_metrics/">Point Cloud Metrics</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="sections/watertight_manifold/">Making a Mesh a Watertight Manifold</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="sections/mesh_sdf/">Computing SDFs from Triangle Meshes</a>
+                  <li class="toctree-l1"><a class="reference internal" href="sections/mesh_sdf/">Computing Signed Distances (SDFs) to Meshes</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="sections/point_cloud_normal_estimation/">Estimating Normals for a Point Cloud</a>
+                  <li class="toctree-l1"><a class="reference internal" href="sections/point_cloud_normal_estimation/">Estimating Normals for Point Clouds</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="sections/mesh_normal_estimation/">Computing Mesh Normals</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="sections/ray_mesh_intersection/">Ray/Mesh Intersection</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="sections/ray_surfel_intersection/">Ray/Surfel Intersection</a>
+                  <li class="toctree-l1"><a class="reference internal" href="sections/surfels/">Generating Surfels from Point Clouds</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="sections/mesh_smoothing/">Mesh Smoothing</a>
+                  <li class="toctree-l1"><a class="reference internal" href="sections/mesh_smoothing/">Smoothing a Mesh</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="sections/mesh_decimation/">Decimating a Mesh</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="sections/computing_connected_components_of_a_mesh/">Computing Connected Components of a Mesh</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="sections/deduplicating_point_clouds_and_meshes/">Deduplicating Point Clouds and Meshes</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="sections/calculating_mesh_face_areas/">Calculating Mesh Face Areas</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="sections/consistently_orienting_mesh_faces/">Consistently Orienting Mesh Faces</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">API Reference</span></p>
@@ -138,16 +148,22 @@ pcu.save_mesh_v(&quot;my_point_cloud_trimmed.ply&quot;, keep_points)
 <h2 id="core-features">Core Features</h2>
 <p>Point Cloud Utils includes utilities to perform the following tasks:</p>
 <ul>
-<li><a href="sections/mesh_io">Reading and writing meshes and point clouds from disk</a>. Point Cloud Utils can handle any file that can be opened in MeshLab.</li>
-<li><a href="sections/point_cloud_resampling">Resampling point clouds</a> to have different distributions.</li>
-<li><a href="sections/mesh_sampling">Generating point samples on a mesh</a>.</li>
-<li><a href="sections/shape_metrics">Computing metrics between point clouds and meshes</a> (e.g. Chamfer Distance, Hausdorff Distance, etc...).</li>
+<li><a href="sections/mesh_io">Mesh and Point Cloud I/O</a>. Point Cloud Utils can handle any file that can be opened in MeshLab.</li>
+<li><a href="sections/point_cloud_resampling">Resampling Point Clouds</a> to have different distributions.</li>
+<li><a href="sections/mesh_sampling">Generating Point Samples on a Mesh</a>.</li>
+<li><a href="sections/shape_metrics">Computing Metrics Between Point Clouds</a> (e.g. Chamfer Distance, Hausdorff Distance, etc...).</li>
 <li><a href="sections/watertight_manifold">Making a Mesh a Watertight Manifold</a>.</li>
-<li><a href="sections/mesh_sdf">Computing signed distances to triangle meshes</a>.</li>
-<li><a href="sections/point_cloud_normal_estimation">Estimating normals for point clouds</a>.</li>
-<li><a href="sections/mesh_normal_estimation">Computing normals for triangle meshes</a>.</li>
-<li><a href="sections/ray_mesh_intersection">Fast ray/mesh intersection</a>.</li>
-<li><a href="sections/mesh_smoothing">Surface mesh smoothing</a>.</li>
+<li><a href="sections/mesh_sdf">Computing Signed Distances (SDFs) to Meshes</a>.</li>
+<li><a href="sections/point_cloud_normal_estimation">Estimating Normals for Point Clouds</a>.</li>
+<li><a href="sections/mesh_normal_estimation">Computing Mesh Normals</a>.</li>
+<li><a href="sections/ray_mesh_intersection">Ray/Mesh Intersection</a>.</li>
+<li><a href="sections/surfels">Generating Surfels from Point Clouds</a>.</li>
+<li><a href="sections/mesh_smoothing">Smooting a Mesh</a>.</li>
+<li><a href="sections/mesh_decimation">Decimating a Mesh</a>.</li>
+<li><a href="sections/computing_connected_components_of_a_mesh/">Computing Connected Components of a Mesh</a>.</li>
+<li><a href="sections/deduplicating_point_clouds_and_meshes">Deduplicating Point Clouds and Meshes</a>.</li>
+<li><a href="sections/calculating_mesh_face_areas">Calculating Mesh Face Areas</a>.</li>
+<li><a href="sections/consistently_orienting_mesh_faces/">Consistently Orienting Mesh Faces</a></li>
 </ul>
 <h2 id="api-reference"><a href="sections/api_reference/">API Reference</a></h2>
 <p>All available functions and classes are listed in the <a href="sections/api_reference/">API reference</a></p>
@@ -155,7 +171,7 @@ pcu.save_mesh_v(&quot;my_point_cloud_trimmed.ply&quot;, keep_points)
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="sections/mesh_io/" class="btn btn-neutral float-right" title="Mesh I/O">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="sections/mesh_io/" class="btn btn-neutral float-right" title="Mesh and Point Cloud I/O">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -205,5 +221,5 @@ pcu.save_mesh_v(&quot;my_point_cloud_trimmed.ply&quot;, keep_points)
 
 <!--
 MkDocs version : 1.4.2
-Build Date UTC : 2022-12-25 02:48:31.801062+00:00
+Build Date UTC : 2022-12-25 14:43:16.759924+00:00
 -->

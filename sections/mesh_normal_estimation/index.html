@@ -47,33 +47,43 @@
               </ul>
               <p class="caption"><span class="caption-text">Functionality</span></p>
               <ul class="current">
-                  <li class="toctree-l1"><a class="reference internal" href="../mesh_io/">Mesh I/O</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../mesh_io/">Mesh and Point Cloud I/O</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../point_cloud_resampling/">Point Cloud Resampling</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../point_cloud_resampling/">Resampling Point Clouds</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../mesh_sampling/">Generating Point Samples on a Mesh</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../shape_metrics/">Shape Metrics</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../shape_metrics/">Point Cloud Metrics</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../watertight_manifold/">Making a Mesh a Watertight Manifold</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../mesh_sdf/">Computing SDFs from Triangle Meshes</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../mesh_sdf/">Computing Signed Distances (SDFs) to Meshes</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../point_cloud_normal_estimation/">Estimating Normals for a Point Cloud</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../point_cloud_normal_estimation/">Estimating Normals for Point Clouds</a>
                   </li>
                   <li class="toctree-l1 current"><a class="reference internal current" href="./">Computing Mesh Normals</a>
     <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#computing-vertex-normals-for-a-mesh">Computing Vertex Normals for a Mesh</a>
+    <li class="toctree-l2"><a class="reference internal" href="#per-vertex-normals">Per-Vertex Normals</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#computing-face-normals-for-a-mesh">Computing Face Normals for a Mesh</a>
+    <li class="toctree-l2"><a class="reference internal" href="#per-face-normals-for-a-mesh">Per-Face Normals for a Mesh</a>
     </li>
     </ul>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../ray_mesh_intersection/">Ray/Mesh Intersection</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../ray_surfel_intersection/">Ray/Surfel Intersection</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../surfels/">Generating Surfels from Point Clouds</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../mesh_smoothing/">Mesh Smoothing</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../mesh_smoothing/">Smoothing a Mesh</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../mesh_decimation/">Decimating a Mesh</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../computing_connected_components_of_a_mesh/">Computing Connected Components of a Mesh</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../deduplicating_point_clouds_and_meshes/">Deduplicating Point Clouds and Meshes</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../calculating_mesh_face_areas/">Calculating Mesh Face Areas</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../consistently_orienting_mesh_faces/">Consistently Orienting Mesh Faces</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">API Reference</span></p>
@@ -106,9 +116,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="computing-normals-for-a-triangle-mesh">Computing Normals for a Triangle Mesh</h1>
+                <h1 id="computing-mesh-normals">Computing Mesh Normals</h1>
 <p>Point-Cloud-Utils lets you easily compute both vertex and face normals for a mesh</p>
-<h2 id="computing-vertex-normals-for-a-mesh">Computing Vertex Normals for a Mesh</h2>
+<h2 id="per-vertex-normals">Per-Vertex Normals</h2>
 <pre><code class="language-python">import point_cloud_utils as pcu
 
 v, f = pcu.load_mesh_vf(&quot;bunny.ply&quot;)
@@ -121,7 +131,7 @@ n = pcu.estimate_mesh_normals(v, f)
     <figcaption style="text-align: center; font-style: italic;">Estimating vertex normals for a triangle mesh.</figcaption>
 </p>
 
-<h2 id="computing-face-normals-for-a-mesh">Computing Face Normals for a Mesh</h2>
+<h2 id="per-face-normals-for-a-mesh">Per-Face Normals for a Mesh</h2>
 <pre><code class="language-python">import point_cloud_utils as pcu
 
 v, f = pcu.load_mesh_vf(&quot;bunny.ply&quot;)
@@ -137,7 +147,7 @@ n = pcu.estimate_mesh_face_normals(v, f)
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../point_cloud_normal_estimation/" class="btn btn-neutral float-left" title="Estimating Normals for a Point Cloud"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../point_cloud_normal_estimation/" class="btn btn-neutral float-left" title="Estimating Normals for Point Clouds"><span class="icon icon-circle-arrow-left"></span> Previous</a>
         <a href="../ray_mesh_intersection/" class="btn btn-neutral float-right" title="Ray/Mesh Intersection">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
