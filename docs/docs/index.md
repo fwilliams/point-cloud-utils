@@ -11,7 +11,7 @@ pip install point-cloud-utils
 ```
 
 ## A very simple example
-Point Cloud Utils uses numpy arrays as fundamental data structure, making it very easy to integrate with existing numerical code.
+Point Cloud Utils uses NumPy arrays as fundamental data structure, making it very easy to integrate with existing numerical code.
 For example, here's how to remove all points in a point cloud which are greater than some distance from a mesh.
 
 ``` py
