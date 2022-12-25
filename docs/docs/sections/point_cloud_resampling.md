@@ -79,7 +79,7 @@ n_sampled = n[idx]
 ```
 
 <p align="center">
-  <img src="../../imgs/poisson_disk_crop.tx.png" style="width: 50%;"alt="Downsampling a point cloud according to a blue noise distribution so that points are approximately evenly spaced">
+  <img src="../../imgs/poisson_disk_crop.tx.png" style="width: 70%;"alt="Downsampling a point cloud according to a blue noise distribution so that points are approximately evenly spaced">
   <figcaption style="text-align: center; font-style: italic;">Downsampling the blue point cloud according to a blue noise distribution so that the resulting points (yellow) are approximately evenly spaced</figcaption>
 </p>
 

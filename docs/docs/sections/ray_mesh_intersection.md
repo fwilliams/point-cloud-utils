@@ -7,7 +7,7 @@ You can call `ray_mesh_intersection` to compute the intersection between a colle
 import point_cloud_utils as pcu
 import numpy as np
 
-v, f = pcu.load_mesh_vf("cube_twist.obj")
+v, f = pcu.load_mesh_vf("bunny.ply")
 
 # Generate a raster grid of Rays looking down the +Z axis
 x, y = np.mgrid[-0.5:0.5:32j, -0.5:0.5:32j]
@@ -37,7 +37,7 @@ You can call `ray_mesh_intersection` to compute the intersection between a colle
 import point_cloud_utils as pcu
 import numpy as np
 
-v, f = pcu.load_mesh_vf("cube_twist.obj")
+v, f = pcu.load_mesh_vf("bunny.ply")
 
 # Generate a raster grid of Rays looking down the +Z axis
 x, y = np.mgrid[-0.5:0.5:32j, -0.5:0.5:32j]
