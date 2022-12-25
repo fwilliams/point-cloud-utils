@@ -3,7 +3,10 @@
 </p>
 
 **Point Cloud Utils** is an _easy-to-use_ Python library for processing
-and manipulating 3D point clouds and meshes.
+and manipulating 3D point clouds and meshes. 
+
+!!! note
+    In spite of its name, Point Cloud Utils should really be thought of as a general purpose geometry library, used for more than operatint on point clouds.
 
 ## Installation
 ``` shell
@@ -40,7 +43,7 @@ pcu.save_mesh_v("my_point_cloud_trimmed.ply", keep_points)
 
 
 
-## Core Features
+## Functionality
 Point Cloud Utils includes utilities to perform the following tasks:
 
 * [Mesh and Point Cloud I/O](sections/mesh_io). Point Cloud Utils can handle any file that can be opened in MeshLab.
@@ -61,6 +64,10 @@ Point Cloud Utils includes utilities to perform the following tasks:
 * [Calculating Mesh Face Areas](sections/calculating_mesh_face_areas).
 * [Consistently Orienting Mesh Faces](sections/consistently_orienting_mesh_faces.md)
 
+## Recipes for Common Tasks
+We include recipes for common geometry tasks that you should be able to copy paste into your existing codebase. These only depend on Point-Cloud-Utils, NumPy and the Python standard library making them very easy to integrate with your code.
+
+* [Cleaning ShapeNet and Generating an SDF Dataset](sections/cleaning_shapenet)
 
 ## [API Reference](sections/api_reference.md)
 All available functions and classes are listed in the [API reference](sections/api_reference.md)

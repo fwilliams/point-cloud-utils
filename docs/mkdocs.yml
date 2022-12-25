@@ -23,6 +23,8 @@ nav:
       - "Deduplicating Point Clouds and Meshes": sections/deduplicating_point_clouds_and_meshes.md
       - "Calculating Mesh Face Areas": sections/calculating_mesh_face_areas.md
       - "Consistently Orienting Mesh Faces": sections/consistently_orienting_mesh_faces.md
+  - Recipes:
+      - "Making a ShapeNet SDF dataset": sections/cleaning_shapenet.md
   - API Reference:
       - "API Reference": sections/api_reference.md
 theme:
