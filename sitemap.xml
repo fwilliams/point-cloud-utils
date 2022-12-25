@@ -21,6 +21,11 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>https://www.fwilliams.info/point-cloud-utils/sections/cleaning_shapenet/</loc>
+         <lastmod>2022-12-25</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>https://www.fwilliams.info/point-cloud-utils/sections/closest_point_on_mesh/</loc>
          <lastmod>2022-12-25</lastmod>
          <changefreq>daily</changefreq>
