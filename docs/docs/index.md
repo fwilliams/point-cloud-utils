@@ -55,7 +55,8 @@ Point Cloud Utils includes utilities to perform the following tasks:
 * [Generating Surfels from Point Clouds](sections/surfels).
 * [Smooting a Mesh](sections/mesh_smoothing).
 * [Decimating a Mesh](sections/mesh_decimation).
-* [Computing Connected Components of a Mesh](sections/computing_connected_components_of_a_mesh.md).
+* [Finding Closest Points Between Point Clouds and Meshes](sections/closest_point_on_mesh).
+* [Computing Connected Components of a Mesh](sections/computing_connected_components_of_a_mesh).
 * [Deduplicating Point Clouds and Meshes](sections/deduplicating_point_clouds_and_meshes).
 * [Calculating Mesh Face Areas](sections/calculating_mesh_face_areas).
 * [Consistently Orienting Mesh Faces](sections/consistently_orienting_mesh_faces.md)

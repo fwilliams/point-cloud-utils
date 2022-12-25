@@ -18,6 +18,7 @@ nav:
       - "Generating Surfels from Point Clouds": sections/surfels.md
       - "Smoothing a Mesh": sections/mesh_smoothing.md
       - "Decimating a Mesh": sections/mesh_decimation.md
+      - "Finding Closest Points Between Point Clouds and Meshes": sections/closest_point_on_mesh.md
       - "Computing Connected Components of a Mesh": sections/computing_connected_components_of_a_mesh.md
       - "Deduplicating Point Clouds and Meshes": sections/deduplicating_point_clouds_and_meshes.md
       - "Calculating Mesh Face Areas": sections/calculating_mesh_face_areas.md
