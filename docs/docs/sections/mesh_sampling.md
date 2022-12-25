@@ -1,9 +1,6 @@
 # Generating Point Samples on a Mesh
 Point Cloud Utils provides tools for generating point samples on a triangle mesh.
 
-!!! note "Data in examples"
-    In all the examples, below we first load [the point cloud here](https://github.com/fwilliams/point-cloud-utils/blob/master/data/wheel.ply)
-
 !!! note "Representing mesh-surface samples in Point Cloud Utils"
     Point Cloud Utils returns samples on the surface of a mesh using [*Barycentric Coordinates*](https://en.wikipedia.org/wiki/Barycentric_coordinate_system). *i.e.* each sample is encoded as:
 

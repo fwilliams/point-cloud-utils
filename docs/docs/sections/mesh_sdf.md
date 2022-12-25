@@ -40,3 +40,17 @@ Below we plot the sampled points colored by their SDF values:
     <img src="../../imgs/bunny_sdf.png" alt="Signed distance values for points around a mesh" style="width:80%">
     <figcaption style="text-align: center; font-style: italic;">A thousand points sammpled around the bunny colored by their signed distance values.</figcaption>
 </p>
+
+!!! note "Representing mesh-surface samples in Point Cloud Utils"
+    Point Cloud Utils returns samples on the surface of a mesh using [*Barycentric Coordinates*](https://en.wikipedia.org/wiki/Barycentric_coordinate_system). *i.e.* each sample is encoded as:
+
+     1. The index of the mesh face containing it (usually referred to as `fid`)
+     2. The barycentric coordinates of the point within that face (usually referred to as `bc`)
+
+    <p align="center">
+      <img src="../../imgs/barycentric_coords.png" alt="Barycentric coordinates illustration" style="width:80%">
+      <figcaption style="text-align: center; font-style: italic;">Encoding surface samples as barycentric coordinates. The teal point is the barycentric combination with weights $(\alpha, \beta, \gamma)$ in face 3.</figcaption>
+    </p>
+    The reason for encoding points in this way is that it allows us to interpolate any quantity stored at the vertices (including their positions) of a mesh to the sample positions, and thus sample vertex attributes.
+
+    To recover vertex quantities from `fid`, `bc` pairs use the function `pcu.interpolate_barycentric_coords(f, fid, bc, vertex_quantity)`
