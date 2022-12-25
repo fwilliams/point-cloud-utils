@@ -126,17 +126,17 @@
                 <h1 id="generating-point-samples-on-a-mesh">Generating Point Samples on a Mesh</h1>
 <p>Point Cloud Utils provides tools for generating point samples on a triangle mesh.</p>
 <div class="admonition note">
-<p class="admonition-title">Data in examples</p>
-<p>In all the examples, below we first load <a href="https://github.com/fwilliams/point-cloud-utils/blob/master/data/wheel.ply">the point cloud here</a></p>
-</div>
-<div class="admonition note">
 <p class="admonition-title">Representing mesh-surface samples in Point Cloud Utils</p>
 <p>Point Cloud Utils returns samples on the surface of a mesh using <a href="https://en.wikipedia.org/wiki/Barycentric_coordinate_system"><em>Barycentric Coordinates</em></a>. <em>i.e.</em> each sample is encoded as:</p>
 <ol>
 <li>The index of the mesh face containing it (usually referred to as <code>fid</code>)</li>
 <li>The barycentric coordinates of the point within that face (usually referred to as <code>bc</code>)</li>
 </ol>
-<p>The reason for encoding points in this way is that it allows us to interpolate any quantity stored at the vertices (including their positions) of a mesh to the sample positions, and thus sample vertex attributes.</p>
+<p><p align="center">
+  <img src="../../imgs/barycentric_coords.png" alt="Barycentric coordinates illustration" style="width:80%">
+  <figcaption style="text-align: center; font-style: italic;">Encoding surface samples as barycentric coordinates. The teal point is the barycentric combination with weights <span class="arithmatex">\((\alpha, \beta, \gamma)\)</span> in face 3.</figcaption>
+</p>
+The reason for encoding points in this way is that it allows us to interpolate any quantity stored at the vertices (including their positions) of a mesh to the sample positions, and thus sample vertex attributes.</p>
 <p>To recover vertex quantities from <code>fid</code>, <code>bc</code> pairs use the function <code>pcu.interpolate_barycentric_coords(f, fid, bc, vertex_quantity)</code></p>
 </div>
 <h2 id="generating-random-samples-on-a-mesh">Generating random samples on a mesh</h2>
