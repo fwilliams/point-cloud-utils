@@ -120,6 +120,17 @@
             <div class="section" itemprop="articleBody">
               
                 <h1 id="calculating-mesh-face-areas">Calculating Mesh Face Areas</h1>
+<p>You can easily calculate mesh face areas in Point-Cloud-Utils</p>
+<pre><code>import point_cloud_utils as pcu
+
+v, f = pcu.load_mesh_vf(&quot;bunny.ply&quot;)
+
+areas = pcu.mesh_face_areas(v, f)
+</code></pre>
+<p align="center">
+    <img src="../../imgs/face_areas.png" alt="Mesh colored by face areas" style="width:70%">
+    <figcaption style="text-align: center; font-style: italic;">Mesh colored by face areas.</figcaption>
+</p>
               
             </div>
           </div><footer>
