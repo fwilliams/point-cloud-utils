@@ -120,6 +120,20 @@
             <div class="section" itemprop="articleBody">
               
                 <h1 id="decimating-a-mesh">Decimating a Mesh</h1>
+<p>Point Cloud Utils supports mesh decimation using the <a href="https://www.cs.cmu.edu/~./garland/Papers/quadrics.pdf">Quadric Edge Collapse</a> algorithm.</p>
+<pre><code class="language-python">import numpy as np
+import point_cloud_utils as pcu
+
+v, f = pcu.load_mesh_vf(&quot;bunny.ply&quot;)
+
+v_quarter, f_quarter, _, _ = pcu.decimate_triangle_mesh(v, v, max_faces=f.shape[0]//4)
+
+v_eighth, f_eighth, _, _ = pcu.decimate_triangle_mesh(v, v, max_faces=f.shape[0]//8)
+</code></pre>
+<p align="center">
+    <img src="../../imgs/decimation.png" alt="Decimation hierarchy of meshes" style="width:100%">
+    <figcaption style="text-align: center; font-style: italic;"><b>From Left to Right:</b> full mesh, a quarter of the number of faces, an eighth the number of faces.</figcaption>
+</p>
               
             </div>
           </div><footer>
