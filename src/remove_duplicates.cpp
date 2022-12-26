@@ -58,9 +58,10 @@ Args:
     return_index: If true, return indices to map between input and output
 
 Returns:
-    x_new : \#x_new x 3 Point cloud with duplicates removed
-    svi : \#x x 1 indices so that x_new = x[svi] (only returned if return_index is True)
-    svj : \#x_new x 1 indices so that x = x_new[svj] (only returned if return_index is True)
+    v_out : \#v x 3 array of mesh vertices with duplicates removed
+    f_out : \#f x 3 array of mesh faces corresponding to the deduplicated mesh
+    svi : \#x x 1 indices so that v_out = v[svi] (only returned if return_index is True)
+    svj : \#x_new x 1 indices so that v = v_out[svj] (only returned if return_index is True)
 
 See also:
     deduplicate_point_cloud
