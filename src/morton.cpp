@@ -24,8 +24,8 @@ Returns:
 
 )Qu8mg5v7";
 npe_function(morton_add)
-npe_arg(codes_1, dense_int, dense_long, dense_longlong)
-npe_arg(codes_2, dense_int, dense_long, dense_longlong)
+npe_arg(codes_1, dense_uint, dense_ulong, dense_ulonglong)
+npe_arg(codes_2, dense_uint, dense_ulong, dense_ulonglong)
 npe_default_arg(num_threads, int, -1)
 npe_doc(morton_add)
 npe_begin_code()
@@ -104,8 +104,8 @@ Returns:
 
 )Qu8mg5v7";
 npe_function(morton_subtract)
-npe_arg(codes_1, dense_int, dense_long, dense_longlong)
-npe_arg(codes_2, dense_int, dense_long, dense_longlong)
+npe_arg(codes_1, dense_uint, dense_ulong, dense_ulonglong)
+npe_arg(codes_2, dense_uint, dense_ulong, dense_ulonglong)
 npe_default_arg(num_threads, int, -1)
 npe_doc(morton_subtract)
 npe_begin_code()
