@@ -1,5 +1,6 @@
 <p align="center">
-  <img src="imgs/logo_solarized_tint.png">
+  <img src="imgs/logo_crop.svg">
+  <img src="imgs/pcu_teaser_3.svg">
 </p>
 
 **Point Cloud Utils** is an _easy-to-use_ Python library for processing
