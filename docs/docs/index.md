@@ -6,7 +6,7 @@
 and manipulating 3D point clouds and meshes. 
 
 !!! note
-    In spite of its name, Point Cloud Utils should really be thought of as a general purpose geometry library, used for more than operatint on point clouds.
+    In spite of its name, Point Cloud Utils should really be thought of as a general purpose geometry library, used for more than operating on point clouds.
 
 ## Installation
 ``` shell
@@ -62,7 +62,8 @@ Point Cloud Utils includes utilities to perform the following tasks:
 * [Computing Connected Components of a Mesh](sections/computing_connected_components_of_a_mesh).
 * [Deduplicating Point Clouds and Meshes](sections/deduplicating_point_clouds_and_meshes).
 * [Calculating Mesh Face Areas](sections/calculating_mesh_face_areas).
-* [Consistently Orienting Mesh Faces](sections/consistently_orienting_mesh_faces.md)
+* [Consistently Orienting Mesh Faces](sections/consistently_orienting_mesh_faces.md).
+* [Morton Encoding/Decoding a Point Cloud](sections/morton_coding.md).
 
 ## Recipes for Common Tasks
 We include recipes for common geometry tasks that you should be able to copy paste into your existing codebase. These only depend on Point-Cloud-Utils, NumPy and the Python standard library making them very easy to integrate with your code.
