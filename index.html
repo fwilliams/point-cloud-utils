@@ -83,6 +83,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="sections/consistently_orienting_mesh_faces/">Consistently Orienting Mesh Faces</a>
                   </li>
+                  <li class="toctree-l1"><a class="" href="sections/morton_coding">Morton Encoding/Decoding a Point Cloud</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">Recipes</span></p>
               <ul>
@@ -126,7 +128,7 @@
 and manipulating 3D point clouds and meshes. </p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>In spite of its name, Point Cloud Utils should really be thought of as a general purpose geometry library, used for more than operatint on point clouds.</p>
+<p>In spite of its name, Point Cloud Utils should really be thought of as a general purpose geometry library, used for more than operating on point clouds.</p>
 </div>
 <h2 id="installation">Installation</h2>
 <pre><code class="language-shell">pip install point-cloud-utils
@@ -175,7 +177,8 @@ pcu.save_mesh_v(&quot;my_point_cloud_trimmed.ply&quot;, keep_points)
 <li><a href="sections/computing_connected_components_of_a_mesh">Computing Connected Components of a Mesh</a>.</li>
 <li><a href="sections/deduplicating_point_clouds_and_meshes">Deduplicating Point Clouds and Meshes</a>.</li>
 <li><a href="sections/calculating_mesh_face_areas">Calculating Mesh Face Areas</a>.</li>
-<li><a href="sections/consistently_orienting_mesh_faces/">Consistently Orienting Mesh Faces</a></li>
+<li><a href="sections/consistently_orienting_mesh_faces/">Consistently Orienting Mesh Faces</a>.</li>
+<li><a href="sections/morton_coding/">Morton Encoding/Decoding a Point Cloud</a>.</li>
 </ul>
 <h2 id="recipes-for-common-tasks">Recipes for Common Tasks</h2>
 <p>We include recipes for common geometry tasks that you should be able to copy paste into your existing codebase. These only depend on Point-Cloud-Utils, NumPy and the Python standard library making them very easy to integrate with your code.</p>
@@ -238,5 +241,5 @@ pcu.save_mesh_v(&quot;my_point_cloud_trimmed.ply&quot;, keep_points)
 
 <!--
 MkDocs version : 1.4.2
-Build Date UTC : 2022-12-26 15:31:11.075734+00:00
+Build Date UTC : 2022-12-27 03:08:15.306495+00:00
 -->
