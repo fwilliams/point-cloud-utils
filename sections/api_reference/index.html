@@ -1560,19 +1560,24 @@ some threshold</p>
     </thead>
     <tbody>
         <tr>
-<td><code>x_new</code></td>          <td>
+<td><code>v_out</code></td>          <td>
           </td>
-          <td><p>#x_new x 3 Point cloud with duplicates removed</p></td>
+          <td><p>#v x 3 array of mesh vertices with duplicates removed</p></td>
+        </tr>
+        <tr>
+<td><code>f_out</code></td>          <td>
+          </td>
+          <td><p>#f x 3 array of mesh faces corresponding to the deduplicated mesh</p></td>
         </tr>
         <tr>
 <td><code>svi</code></td>          <td>
           </td>
-          <td><p>#x x 1 indices so that x_new = x[svi] (only returned if return_index is True)</p></td>
+          <td><p>#x x 1 indices so that v_out = v[svi] (only returned if return_index is True)</p></td>
         </tr>
         <tr>
 <td><code>svj</code></td>          <td>
           </td>
-          <td><p>#x_new x 1 indices so that x = x_new[svj] (only returned if return_index is True)</p></td>
+          <td><p>#x_new x 1 indices so that v = v_out[svj] (only returned if return_index is True)</p></td>
         </tr>
     </tbody>
   </table>
@@ -3780,7 +3785,7 @@ Point Cloud Utils currently supports PLY, OBJ, STL, OFF, VRML 2.0, X3D, COLLADA,
   <div class="doc doc-contents first">
   
       <p>make_mesh_watertight(v: numpy.ndarray, f: numpy.ndarray, resolution: float = 20000, seed: int = -1) -&gt; Tuple[object, object]</p>
-<p>Convert a mesh into a watertight manifold</p>
+<p>Convert a mesh into a watertight manifold using the <a href="https://arxiv.org/abs/1802.01698">Manifold</a> algorithm.</p>
 
   <p><strong>Parameters:</strong></p>
   <table>
@@ -3815,7 +3820,16 @@ Point Cloud Utils currently supports PLY, OBJ, STL, OFF, VRML 2.0, X3D, COLLADA,
           <td><code>resolution</code></td>
           <td>
           </td>
-          <td><p>A resolution parameter for the algorithm</p></td>
+          <td><p>Resolution parameter proportional to the number of output faces. Default 20_000. (It represents the target number of leaf nodes in the octree).</p></td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+        <tr>
+          <td><code>seed</code></td>
+          <td>
+          </td>
+          <td><p>A random seed to make make the algorithm deterministic. Pass -1 for random. (default -1)</p></td>
           <td>
               <em>required</em>
           </td>
@@ -4596,7 +4610,7 @@ If set to a positive value, will use a more robust curvature estimation method (
         <tr>
 <td><code>morton_codes</code></td>          <td>
           </td>
-          <td><p>an (n,)-shaped shaped array of added morton codes</p></td>
+          <td><p>an (n,)-shaped shaped array of subtractd morton codes (i.e. codes_1 - codes_2)</p></td>
         </tr>
     </tbody>
   </table>
