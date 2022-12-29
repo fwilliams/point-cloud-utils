@@ -14,6 +14,9 @@ and manipulating 3D point clouds and meshes.
 pip install point-cloud-utils
 ```
 
+## [Source Code](https://github.com/fwilliams/point-cloud-utils)
+Point Cloud Utils is open source with the GPL-v2 license. The [source code is available on GitHub](https://github.com/fwilliams/point-cloud-utils)
+
 ## A very simple example
 Point Cloud Utils uses NumPy arrays as fundamental data structure, making it very easy to integrate with existing numerical code.
 For example, here's how to remove all points in a point cloud which are greater than some distance from a mesh.
@@ -73,3 +76,18 @@ We include recipes for common geometry tasks that you should be able to copy pas
 
 ## [API Reference](sections/api_reference.md)
 All available functions and classes are listed in the [API reference](sections/api_reference.md)
+
+## About
+**Author:** [Francis Williams](https://www.fwilliams.info). 
+<br>
+**Source Code:** [https://github.com/fwilliams/point-cloud-utils](https://github.com/fwilliams/point-cloud-utils)
+<br><br>
+If Point Cloud Utils contributes to an academic publication, cite it as:
+```
+@misc{point-cloud-utils,
+  title = {Point Cloud Utils},
+  author = {Francis Williams},
+  note = {https://www.github.com/fwilliams/point-cloud-utils},
+  year = {2022}
+}
+```

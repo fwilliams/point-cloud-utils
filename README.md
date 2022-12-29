@@ -1,5 +1,8 @@
-![Point Cloud Utils Logo](docs/docs/imgs/logo_solarized_tint.png)
+![Point Cloud Utils Logo](docs/docs/imgs/logo_crop.png)
+![Point Cloud Utils Teaser](docs/docs/imgs/pcu_teaser_3.png)
 <h4 align="center"><i>A Python library for common tasks on 3D point clouds and meshes</i></h4>
+
+<h2 align="center"><a href="https://fwilliams.info/point-cloud-utils">Documentation</a></h2>
 
 --------------------------
 ![build workflow](https://github.com/fwilliams/point-cloud-utils/actions/workflows/build-wheels-and-publish-to-pipy.yml/badge.svg)

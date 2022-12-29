@@ -100,7 +100,7 @@ Args:
     num_threads : Number of threads to use. If set to -1, will use all available CPUs. If set to 0, will run in serial. Default is -1.
 
 Returns:
-    morton_codes : an (n,)-shaped shaped array of added morton codes
+    morton_codes : an (n,)-shaped shaped array of subtractd morton codes (i.e. codes_1 - codes_2)
 
 )Qu8mg5v7";
 npe_function(morton_subtract)

@@ -21,6 +21,8 @@ from ._pointcloud_normals import estimate_point_cloud_normals_knn, estimate_poin
 from ._ray_mesh_intersector import RayMeshIntersector
 from ._ray_point_cloud_intersector import ray_surfel_intersection, surfel_geometry, RaySurfelIntersector
 
+MORTON_MIN = -1048576
+MORTON_MAX = 1048576
 
 def mesh_mean_and_gaussian_curvatures(v, f, r=-1.0):
     """
