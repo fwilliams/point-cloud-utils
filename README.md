@@ -3,7 +3,7 @@
 <!-- <h4 align="center"><i>A Python library for common tasks on 3D point clouds and meshes</i></h4> -->
 <h3 align="center"><b>Point Cloud Utils</b> is an <i>easy-to-use</i> Python library for processing and manipulating 3D point clouds and meshes. </h3>
 
-<h2 align="center"><a href="https://fwilliams.info/point-cloud-utils/"><u>Documentation</u></a></h2>
+<h2 align="center"><a href="https://www.fwilliams.info/point-cloud-utils/"><u>Documentation</u></a></h2>
 
 --------------------------
 ![build workflow](https://github.com/fwilliams/point-cloud-utils/actions/workflows/build-wheels-and-publish-to-pipy.yml/badge.svg)
