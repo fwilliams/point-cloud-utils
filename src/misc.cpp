@@ -9,30 +9,18 @@
 
 
 const char* ds_voxel_mesh = R"igl_Qu8mg5v7(
-Given a 3D grid of voxels representing an indicator function
-(<= 0 meaning outside and > 0 meaning inside), construct a
-triangular mesh of the boundary cells
+Given a 3D grid of voxels representing an indicator function (<= 0 meaning outside and > 0 meaning inside), construct a triangular mesh of the boundary cells
 
-Parameters
-----------
-data: Flat list of voxel data
-nx: Number of voxels in the x axis
-ny: Number of voxels in the y axis
-nz: Number of voxels in the z axis
+Args:
+    data : Flat list of voxel data
+    nx : Number of voxels in the x axis
+    ny : Number of voxels in the y axis
+    nz : Number of voxels in the z axis
 
-Returns
--------
-v : array of shape [n, 3] of n vertices for the mesh
-f : array of shape [m, 3] of m faces for the mesh
+Returns:
+    v : array of shape [n, 3] of n vertices for the mesh
+    f : array of shape [m, 3] of m faces for the mesh
 
-See also
---------
-
-Notes
------
-
-Examples
---------
 )igl_Qu8mg5v7";
 
 npe_function(voxel_mesh)

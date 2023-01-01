@@ -513,11 +513,7 @@ void write_mesh_vcg(std::string filename, pybind11::array& v_positions, pybind11
 
 }
 
-const char* ds_load_mesh = R"igl_Qu8mg5v7(
-Load a mesh
-)igl_Qu8mg5v7";
 npe_function(load_mesh_internal)
-npe_doc(ds_load_mesh)
 npe_arg(filename, std::string)
 npe_default_arg(dtype, npe::dtype, "float64")
 npe_begin_code()
@@ -559,11 +555,7 @@ npe_end_code()
 
 
 
-const char* ds_save_mesh = R"igl_Qu8mg5v7(
-Save a mesh
-)igl_Qu8mg5v7";
 npe_function(save_mesh_internal)
-npe_doc(ds_save_mesh)
 npe_arg(filename, std::string)
 
 npe_arg(v_positions, pybind11::array)

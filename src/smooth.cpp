@@ -28,25 +28,15 @@ class VCGMesh : public tri::TriMesh<std::vector<VCGMeshVertex>, std::vector<VCGM
 const char* laplacian_smooth_mesh_doc = R"igl_Qu8mg5v7(
 Smooth a mesh using Laplacian smoothing
 
-Parameters
-----------
-v : #v by 3 Matrix of mesh vertex 3D positions
-f : #f by 3 Matrix of face (triangle) indices
-num_iters : Number of smoothing iterations
-use_cotan_weights : Whether to use cotagent weighting (False by default)
+Args:
+    v : \#v by 3 Matrix of mesh vertex 3D positions
+    f : \#f by 3 Matrix of face (triangle) indices
+    num_iters : Number of smoothing iterations
+    use_cotan_weights : Whether to use cotagent weighting (False by default)
 
-Returns
--------
-n : list of vertex normals of shape #v by 3
+Returns:
+    n : list of vertex normals of shape #v by 3
 
-See also
---------
-
-Notes
------
-
-Examples
---------
 )igl_Qu8mg5v7";
 npe_function(laplacian_smooth_mesh)
 npe_doc(laplacian_smooth_mesh_doc)

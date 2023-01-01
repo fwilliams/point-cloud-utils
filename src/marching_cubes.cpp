@@ -8,33 +8,29 @@
 const char* marching_cubes_sparse_voxel_grid_doc = R"Qu8mg5v7(
 Run marching cubes on a hex mesh representing a sparse voxel grid (see also sparse_voxel_grid_to_hex_mesh)
 
-Parameters
-----------
-grid_scalars: An (n,) shaped array of scalar values at each hex mesh vertex
-grid_coordinates: An (n, 3) shaped array of hex mesh vertices
-cube_indices: An (m, 8) shaped array of indices into grid_coordinates where cube_indices[i, :] are the indices of
-              the 8 points forming the i^th cube
-              Note the cube indices must be ordered as:
-              [[0, 0, 0],
-               [1, 0, 0],
-               [1, 1, 0],
-               [0, 1, 0],
-               [0, 0, 1],
-               [1, 0, 1],
-               [1, 1, 1],
-               [0, 1, 1]]
-              where [i, j, k] indicates the offset along the (x, y, z) axes from the bottom, back, left
-              corner of the cube
-isovalue: Which level set to extract
+Args:
+    grid_scalars : An (n,) shaped array of scalar values at each hex mesh vertex
+    grid_coordinates : An (n, 3) shaped array of hex mesh vertices
+    cube_indices : An (m, 8) shaped array of indices into grid_coordinates where cube_indices[i, :] are the indices of the 8 points forming the i^th cube
+                  Note the cube indices must be ordered as:
+                  [[0, 0, 0],
+                  [1, 0, 0],
+                  [1, 1, 0],
+                  [0, 1, 0],
+                  [0, 0, 1],
+                  [1, 0, 1],
+                  [1, 1, 1],
+                  [0, 1, 1]]
+                  where [i, j, k] indicates the offset along the (x, y, z) axes from the bottom, back, left
+                  corner of the cube
+    isovalue : Which level set to extract
 
-Returns
--------
-v: A (#v, 3) array of triangle mesh vertices
-f: A (#f, 3) array of indices into v where f[i, :] are the indices into vof the 3 points forming the i^th triangle
+Returns:
+    v : A (#v, 3) array of triangle mesh vertices
+    f : A (#f, 3) array of indices into v where f[i, :] are the indices into vof the 3 points forming the i^th triangle
 
-See Also
---------
-sparse_voxel_grid_to_hex_mesh
+See Also:
+    sparse_voxel_grid_to_hex_mesh
 )Qu8mg5v7";
 npe_function(marching_cubes_sparse_voxel_grid)
 npe_arg(grid_scalars, dense_float, dense_double)

@@ -14,3 +14,5 @@ dist
 .eggs
 .idea
 test.ply
+*.ini
+*.pyc

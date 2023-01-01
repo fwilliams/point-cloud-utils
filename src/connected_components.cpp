@@ -14,12 +14,12 @@ namespace {
     using Index = typename Eigen::SparseMatrix<Atype>::Index;
     using SparseMatrixRowIter = typename Eigen::SparseMatrix<Atype>::InnerIterator;
     assert(adjacency_matrix.cols() == adjacency_matrix.rows() && "A should be square");
-    
+
     const auto num_vertices = adjacency_matrix.rows();
 
     // A value of num_vertices  means not yet visited
     out_vertex_components.setConstant(num_vertices, 1, num_vertices);
-    
+
     for(Eigen::Index f = 0; f < num_vertices; f += 1) {
       const CountType current_component = out_component_counts.size();
       CountType num_vertices_in_component = 0;
@@ -69,22 +69,15 @@ namespace {
 const char* connected_components_doc = R"igl_Qu8mg5v7(
 Determine the connected components of a mesh
 
-Parameters
-----------
-v: (#v, 3)-shaped array of mesh vertex positions (one vertex position per row)
-f: (#f, 3)-shaped array of mesh face indexes into v (a row (fi, fj, fk) indicate the 3 vertices of a face)
+Args:
+  v : (\#v, 3)-shaped array of mesh vertex positions (one vertex position per row)
+  f : (\#f, 3)-shaped array of mesh face indexes into v (a row (fi, fj, fk) indicate the 3 vertices of a face)
 
-Returns
--------
-A tuple (cv, nv, cf, nf) where:
-  - cv is a (#vertices,)-shaped array of integer indexes (starting from 0) indicating which
-    component each vertex belongs to. i.e. cv[i] is the component of the vertex v[i].
-  - nv is the number of vertices in each connected component. i.e. nv[j] is the number of vertices
-    in component j
-  - cf is a (#faces,)-shaped array of integer indexes (starting from 0) indicating which
-    component each face belongs to. i.e. cf[i] is the component of the face f[i].
-  - nf is the number of faces in each connected component. i.e. nf[j] is the number of faces in
-    component j
+Returns:
+  cv : a (\#vertices,)-shaped array of integer indexes (starting from 0) indicating which component each vertex belongs to. i.e. cv[i] is the component of the vertex v[i].
+  nv : the number of vertices in each connected component. i.e. nv[j] is the number of vertices in component j
+  cf : a (\#faces,)-shaped array of integer indexes (starting from 0) indicating which component each face belongs to. i.e. cf[i] is the component of the face f[i].
+  nf : the number of faces in each connected component. i.e. nf[j] is the number of faces in component j
 )igl_Qu8mg5v7";
 npe_function(connected_components)
 npe_doc(connected_components_doc)
@@ -111,7 +104,7 @@ npe_begin_code()
         f_counts(face_component, 0) += 1;
     }
 
-    return std::make_tuple(npe::move(c_v), npe::move(v_counts), 
+    return std::make_tuple(npe::move(c_v), npe::move(v_counts),
                            npe::move(c_f), npe::move(f_counts));
 }
 npe_end_code()

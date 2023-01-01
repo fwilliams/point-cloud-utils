@@ -154,15 +154,13 @@ const char* lloyd_2d_doc = R"Qu8mg5v7(
 Generate n samples in the unit square, [0, 1]^2 using Lloyd's algorithm
 (https://en.wikipedia.org/wiki/Lloyd%27s_algorithm).
 
-Parameters
-----------
-n : The number of 2d point samples to generate
-num_lloyd : The number of Lloyd iterations to do (default 10)
-num_newton : The number of Newton iterations to do when computing Voronoi diagrams (default 10)
+Args:
+  n : The number of 2d point samples to generate
+  num_lloyd : The number of Lloyd iterations to do (default 10)
+  num_newton : The number of Newton iterations to do when computing Voronoi diagrams (default 10)
 
-Returns
--------
-A n by 2 array of point samples in the unit square [0, 1]^2
+Returns:
+  lloyd_points : a (n, 2)-shaped array of point samples in the unit square [0, 1]^2
 
 )Qu8mg5v7";
 npe_function(lloyd_2d)
@@ -202,15 +200,13 @@ const char* lloyd_3d_doc = R"Qu8mg5v7(
 Generate n samples in the unit cube, [0, 1]^3 using Lloyd's algorithm
 (https://en.wikipedia.org/wiki/Lloyd%27s_algorithm).
 
-Parameters
-----------
-n : The number of 3d point samples to generate
-num_lloyd : The number of Lloyd iterations to do (default 10)
-num_newton : The number of Newton iterations to do when computing Voronoi diagrams (default 10)
+Args:
+  n : The number of 3d point samples to generate
+  num_lloyd : The number of Lloyd iterations to do (default 10)
+  num_newton : The number of Newton iterations to do when computing Voronoi diagrams (default 10)
 
-Returns
--------
-A n by 3 array of point samples in the unit square [0, 1]^3
+Returns:
+  lloyd_pts : a (n, 3)-shaped array of point samples in the unit square [0, 1]^3
 
 )Qu8mg5v7";
 npe_function(lloyd_3d)
@@ -277,15 +273,12 @@ npe_end_code()
 const char* voronoi_centroids_unit_cube_doc = R"Qu8mg5v7(
 Compute the centroids of a 3d voronoi diagram restricted to the unit cube [0, 1]^3
 
-Parameters
-----------
-centers: A [n, 3] array where each row is a point in a voronoi diagram restricted to
-         the unit cube [0, 1]^3
+Args:
+  centers : A [n, 3] array where each row is a point in a voronoi diagram restricted to
+           the unit cube [0, 1]^3
 
-Returns
--------
-A [n, 3] array of centroids where each row is the centroid of the corresponding
-voronoi cell in the input centers.
+Returns:
+  voronoi_ctrs : a [n, 3] array of centroids where each row is the centroid of the corresponding voronoi cell in the input centers.
 
 )Qu8mg5v7";
 npe_function(voronoi_centroids_unit_cube)
@@ -349,17 +342,15 @@ const char* sample_mesh_lloyd_doc = R"Qu8mg5v7(
 Generate n samples on a surface defined by a triangle mesh using
 Lloyd's algorithm (https://en.wikipedia.org/wiki/Lloyd%27s_algorithm).
 
-Parameters
-----------
-v : A #v by 3 array where each row is a vertex of the input mesh
-f : A #f by 3 array of indices into `v` where each row is a triangle of the input mesh.
-n : The number of surface samples to generate
-num_lloyd : The number of Lloyd iterations to do (default 10)
-num_newton : The number of Newton iterations to do when computing Voronoi diagrams (default 10)
+Args:
+  v : A #v by 3 array where each row is a vertex of the input mesh
+  f : A #f by 3 array of indices into `v` where each row is a triangle of the input mesh.
+  n : The number of surface samples to generate
+  num_lloyd : The number of Lloyd iterations to do (default 10)
+  num_newton : The number of Newton iterations to do when computing Voronoi diagrams (default 10)
 
-Returns
--------
-A n by 3 array of point samples on the input surface defined by (v, f)
+Returns:
+  lloyd_pts : a (n, 3)-shaped array of point samples on the input surface defined by (v, f)
 
 )Qu8mg5v7";
 

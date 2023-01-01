@@ -106,21 +106,18 @@ void shortest_distances_nanoflann(Source& query_mat,
 const char* k_nearest_neighbors_doc = R"Qu8mg5v7(
 Compute the k nearest neighbors (L2 distance) from each point in the query point cloud to the dataset point cloud.
 
-Parameters
-----------
-query_points : n by 3 array of representing a set of n points (each row is a point of dimension 3).
-dataset_points : m by 3 array of representing a set of m points (each row is a point of dimension 3).
-k      : the number of nearest neighbors to query per point.
-squared_distances : If set to True, then return squared L2 distances. Default is False.
-max_points_per_leaf : The maximum number of points per leaf node in the KD tree used by this function.
-                      Default is 10.
-num_threads : Number of threads to use. If set to -1, will use all available CPUs. If set to 0, will run in serial. Default is -1.
+Args:
+    query_points : n by 3 array of representing a set of n points (each row is a point of dimension 3).
+    dataset_points : m by 3 array of representing a set of m points (each row is a point of dimension 3).
+    k : the number of nearest neighbors to query per point.
+    squared_distances : If set to True, then return squared L2 distances. Default is False.
+    max_points_per_leaf : The maximum number of points per leaf node in the KD tree used by this function. Default is 10.
+    num_threads : Number of threads to use. If set to -1, will use all available CPUs. If set to 0, will run in serial. Default is -1.
 
-Returns
--------
-A pair `(dists, corrs)` where dists and corrs have shape (n, k). `dists[i, k]` contains the k^th shortest
- L2 distance from the point `query_points[i, :]` to `dataset_points`. `corrs[i, k]` contains the index into
-`dataset_points` of the k^th nearest point to `query_points[i, :]`.
+Returns:
+    dists : An (n, k)-shaped array such that `dists[i,k]` contains the k^th shortest L2 distance from the point `query_points[i, :]` to `dataset_points`
+    corrs : An (n, k)-shaped array such that `corrs[i,k]` contains the index into `dataset_points` of the k^th nearest point to `query_points[i, :]`
+
 )Qu8mg5v7";
 
 npe_function(k_nearest_neighbors)
@@ -172,28 +169,24 @@ npe_end_code()
 const char* one_sided_hausdorff_distance_doc = R"Qu8mg5v7(
 Compute the one sided Hausdorff distance from source to target
 
-Parameters
-----------
-source : n by 3 array of representing a set of n points (each row is a point of dimension 3)
-target : m by 3 array of representing a set of m points (each row is a point of dimension 3)
-return_index : Optionally return the index pair `(i, j)` into source and target such that
-               `source[i, :]` and `target[j, :]` are the two points with maximum shortest distance.
-squared_distances : If set to True, then return squared L2 distances.
-max_points_per_leaf : the maximum number of points per leaf node in the KD tree used by this function. Default is 10.
+Args:
+    source : n by 3 array of representing a set of n points (each row is a point of dimension 3)
+    target : m by 3 array of representing a set of m points (each row is a point of dimension 3)
+    return_index : Optionally return the index pair `(i, j)` into source and target such that `source[i, :]` and `target[j, :]` are the two points with maximum shortest distance.
+    squared_distances : If set to True, then return squared L2 distances.
+    max_points_per_leaf : the maximum number of points per leaf node in the KD tree used by this function. Default is 10.
 
-Returns
--------
-The largest shortest distance, `d` between each point in `source` and the points in `target`.
-If `return_index` is set, then this function returns a tuple (d, i, j) where `d` is as described above
-and `(i, j)` are such that `source[i, :]` and `target[j, :]` are the two points with maximum shortest
-distance.
+Returns:
+    d : The largest shortest distance, `d` between each point in `source` and the points in `target`.
+    i : (n,)-shaped array of indices such that `source[i, :]` and `target[j, :]` are the two points with maximum shortest distance.
+    j : (m,)-shaped array of indices such that `source[i, :]` and `target[j, :]` are the two points with maximum shortest distance.
 
 )Qu8mg5v7";
 
 npe_function(one_sided_hausdorff_distance)
 npe_arg(source, dense_float, dense_double)
 npe_arg(target, npe_matches(source))
-npe_default_arg(return_index, bool, false)
+npe_default_arg(return_index, bool, true)
 npe_default_arg(squared_distances, bool, false)
 npe_default_arg(max_points_per_leaf, int, 10)
 npe_doc(one_sided_hausdorff_distance_doc)

@@ -91,22 +91,18 @@ npe_end_code()
 const char* ray_mesh_intersection_doc = R"Qu8mg5v7(
 Compute intersection between a set of rays and a triangle mesh
 
-Parameters
-----------
-v : #v by 3 array of vertex positions (each row is a vertex)
-f : #f by 3 Matrix of face (triangle) indices
-ray_o : array of shape (#rays, 3) of ray origins (one per row) or a single array of shape (3,) to use
-ray_d : array of shape (#rays, 3) of ray directions (one per row)
-ray_near : an optional floating point value indicating the distance along each ray to start searching (default 0.0)
-ray_far : an optional floating point value indicating the maximum distance along each ray to search (default inf)
+Args:
+    v : \#v by 3 array of vertex positions (each row is a vertex)
+    f : \#f by 3 Matrix of face (triangle) indices
+    ray_o : array of shape (#rays, 3) of ray origins (one per row) or a single array of shape (3,) to use
+    ray_d : array of shape (#rays, 3) of ray directions (one per row)
+    ray_near : an optional floating point value indicating the distance along each ray to start searching (default 0.0)
+    ray_far : an optional floating point value indicating the maximum distance along each ray to search (default inf)
 
-Returns
--------
-A tuple (f_id, bc, t) where:
-  - f_id is an array of shape (#rays,) representing the face id hit by each ray
-  - bc is an array of shape (#rays, 3) where each row is the barycentric coordinates
-    within each face of the ray intersection
-  - t is the distance along each ray to the intersection
+Returns:
+    f_id : an array of shape (#rays,) representing the face id hit by each ray
+    bc : an array of shape (#rays, 3) where each row is the barycentric coordinates within each face of the ray intersection
+    t : the distance along each ray to the intersection
 )Qu8mg5v7";
 npe_function(ray_mesh_intersection)
 npe_arg(v, dense_float, dense_double)

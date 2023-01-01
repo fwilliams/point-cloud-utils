@@ -10,18 +10,12 @@
 const char* orient_mesh_faces_doc = R"igl_Qu8mg5v7(
 Consistently orient faces of a mesh within each connected component
 
-Parameters
-----------
-f : (#f, 3)-shaped NumPy array of face (triangle) indices
+Args:
+    f : (#f, 3)-shaped NumPy array of face (triangle) indices
 
-Returns
--------
-oriented_faces  : (#f, 3)-shaped NumPy array of faces which are consistently oriented
-face_components : (#f,)-shaped NumPy array of connected component ids 
-                  (i.e. face_components[i] is the component id of facef[i]) 
-
-See also
---------
+Returns:
+    oriented_faces  : (#f, 3)-shaped NumPy array of faces which are consistently oriented
+    face_components : (#f,)-shaped NumPy array of connected component ids (i.e. face_components[i] is the component id of facef[i])
 
 )igl_Qu8mg5v7";
 npe_function(orient_mesh_faces)
