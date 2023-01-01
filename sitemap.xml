@@ -2,117 +2,122 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://www.fwilliams.info/point-cloud-utils/</loc>
-         <lastmod>2022-12-29</lastmod>
+         <lastmod>2023-01-01</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://www.fwilliams.info/point-cloud-utils/about/</loc>
-         <lastmod>2022-12-29</lastmod>
+         <lastmod>2023-01-01</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://www.fwilliams.info/point-cloud-utils/sections/api_reference/</loc>
-         <lastmod>2022-12-29</lastmod>
+         <lastmod>2023-01-01</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://www.fwilliams.info/point-cloud-utils/sections/calculating_mesh_face_areas/</loc>
-         <lastmod>2022-12-29</lastmod>
+         <lastmod>2023-01-01</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://www.fwilliams.info/point-cloud-utils/sections/cleaning_shapenet/</loc>
-         <lastmod>2022-12-29</lastmod>
+         <lastmod>2023-01-01</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://www.fwilliams.info/point-cloud-utils/sections/closest_point_on_mesh/</loc>
-         <lastmod>2022-12-29</lastmod>
+         <lastmod>2023-01-01</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://www.fwilliams.info/point-cloud-utils/sections/computing_connected_components_of_a_mesh/</loc>
-         <lastmod>2022-12-29</lastmod>
+         <lastmod>2023-01-01</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://www.fwilliams.info/point-cloud-utils/sections/consistently_orienting_mesh_faces/</loc>
-         <lastmod>2022-12-29</lastmod>
+         <lastmod>2023-01-01</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://www.fwilliams.info/point-cloud-utils/sections/deduplicating_point_clouds_and_meshes/</loc>
-         <lastmod>2022-12-29</lastmod>
+         <lastmod>2023-01-01</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://www.fwilliams.info/point-cloud-utils/sections/mesh_decimation/</loc>
-         <lastmod>2022-12-29</lastmod>
+         <lastmod>2023-01-01</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://www.fwilliams.info/point-cloud-utils/sections/mesh_io/</loc>
-         <lastmod>2022-12-29</lastmod>
+         <lastmod>2023-01-01</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://www.fwilliams.info/point-cloud-utils/sections/mesh_normal_estimation/</loc>
-         <lastmod>2022-12-29</lastmod>
+         <lastmod>2023-01-01</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://www.fwilliams.info/point-cloud-utils/sections/mesh_sampling/</loc>
-         <lastmod>2022-12-29</lastmod>
+         <lastmod>2023-01-01</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://www.fwilliams.info/point-cloud-utils/sections/mesh_sdf/</loc>
-         <lastmod>2022-12-29</lastmod>
+         <lastmod>2023-01-01</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://www.fwilliams.info/point-cloud-utils/sections/mesh_smoothing/</loc>
-         <lastmod>2022-12-29</lastmod>
+         <lastmod>2023-01-01</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://www.fwilliams.info/point-cloud-utils/sections/morton_coding/</loc>
-         <lastmod>2022-12-29</lastmod>
+         <lastmod>2023-01-01</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://www.fwilliams.info/point-cloud-utils/sections/point_cloud_normal_estimation/</loc>
-         <lastmod>2022-12-29</lastmod>
+         <lastmod>2023-01-01</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://www.fwilliams.info/point-cloud-utils/sections/point_cloud_resampling/</loc>
-         <lastmod>2022-12-29</lastmod>
+         <lastmod>2023-01-01</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://www.fwilliams.info/point-cloud-utils/sections/ray_mesh_intersection/</loc>
-         <lastmod>2022-12-29</lastmod>
+         <lastmod>2023-01-01</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://www.fwilliams.info/point-cloud-utils/sections/removing_unreferenced_mesh_vertices/</loc>
-         <lastmod>2022-12-29</lastmod>
+         <lastmod>2023-01-01</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://www.fwilliams.info/point-cloud-utils/sections/shape_metrics/</loc>
-         <lastmod>2022-12-29</lastmod>
+         <lastmod>2023-01-01</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://www.fwilliams.info/point-cloud-utils/sections/surfels/</loc>
-         <lastmod>2022-12-29</lastmod>
+         <lastmod>2023-01-01</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://www.fwilliams.info/point-cloud-utils/sections/watertight_manifold/</loc>
-         <lastmod>2022-12-29</lastmod>
+         <lastmod>2023-01-01</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://www.fwilliams.info/point-cloud-utils/sections/watertight_mesh/</loc>
+         <lastmod>2023-01-01</lastmod>
          <changefreq>daily</changefreq>
     </url>
 </urlset>
