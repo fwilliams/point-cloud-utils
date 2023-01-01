@@ -35,7 +35,6 @@ v, f = pcu.load_mesh_vf("bunny.ply")
 # bc are the barycentric coordinates of the nearest point to each query point within the face
 sdf, fid, bc = pcu.signed_distance_to_mesh(query_pts, v, f)
 ```
-
 Below we plot the sampled points colored by their SDF values:
 <p align="center">
     <img src="../../imgs/bunny_sdf.png" alt="Signed distance values for points around a mesh" style="width:80%">
