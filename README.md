@@ -830,3 +830,4 @@ p = np.random.rand(1000, 3)
 # w has shape (1000,) where w[i] is the sign (positive for outside, negative for inside) of p[i]
 w = pcu.triangle_soup_fast_winding_number(v, f, p.astype(v.dtype))
 ```
+
