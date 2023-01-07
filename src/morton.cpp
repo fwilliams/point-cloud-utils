@@ -315,7 +315,7 @@ Args:
     codes : an (n)-shaped array of morton codes
     qcodes : an (m)-shaped array of query codes
     k : an integer representing the number of nearest neighbors
-    sort_dist : (optional, defaults to True) whether to return the nearest neigbors in distance sorted order
+    sort_dist : (optional, defaults to True) whether to return the nearest neighbors in distance sorted order
 
 Returns:
     nn_idx : an (m, k)-shaped array of indices into codes
