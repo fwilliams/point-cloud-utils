@@ -22,7 +22,7 @@ include(numpyeigen) # This will define Eigen3::Eigen if we enabled NPE_WITH_EIGE
 
 download_dep(igl
         GIT_REPOSITORY https://github.com/fwilliams/libigl.git
-        GIT_TAG stable
+        GIT_TAG stable_with_macos_hotfix
 )
 
 download_dep(tinyply
