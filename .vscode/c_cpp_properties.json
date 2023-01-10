@@ -9,7 +9,7 @@
                 "${workspaceFolder}/external/vcglib",
                 "${workspaceFolder}/external/nanoflann",
                 "${workspaceFolder}/external/manifold/src",
-                "${workspaceFolder}/external/igl",
+                "${workspaceFolder}/external/igl/include",
                 "${workspaceFolder}/external/glm",
                 "${workspaceFolder}/external/embree/include",
                 "${workspaceFolder}/external/geogram/src/lib",

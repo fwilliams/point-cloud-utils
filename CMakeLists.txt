@@ -14,11 +14,16 @@ set(EXTERNAL_DEP_DIR ${CMAKE_CURRENT_SOURCE_DIR}/external)
 include(DownloadExternalDeps)
 download_dep(numpyeigen
   GIT_REPOSITORY https://github.com/fwilliams/numpyeigen.git
-  GIT_TAG 4916d926aa2b939bd8f625c7537563a1575dafe9
+  GIT_TAG 9caa29b4bb49c17e6436710894a1fadeeb1eaee2
 )
 list(APPEND CMAKE_MODULE_PATH ${EXTERNAL_DEP_DIR}/numpyeigen/cmake)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 include(numpyeigen) # This will define Eigen3::Eigen if we enabled NPE_WITH_EIGEN
+
+download_dep(igl
+        GIT_REPOSITORY https://github.com/fwilliams/libigl.git
+        GIT_TAG stable_with_macos_hotfix
+)
 
 download_dep(tinyply
         GIT_REPOSITORY https://github.com/fwilliams/tinyply.git
@@ -80,7 +85,7 @@ set(EMBREE_DIR "${EXTERNAL_DEP_DIR}/embree")
 if(NOT TARGET embree)
   download_dep(embree
     GIT_REPOSITORY https://github.com/embree/embree.git
-    GIT_TAG        v3.12.1
+    GIT_TAG        v3.13.5
   )
 
   # Note: On macOS, building embree as a static lib can only be done with a single ISA target.
@@ -166,6 +171,7 @@ target_include_directories(_pcu_internal PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/ext
 target_include_directories(_pcu_internal PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
 target_include_directories(_pcu_internal PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/external/nanoflann)
 target_include_directories(_pcu_internal PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/external)
+target_include_directories(_pcu_internal PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/external/igl/include)
 target_include_directories(_pcu_internal PRIVATE ${EMBREE_DIR}/include)
 target_link_libraries(_pcu_internal PRIVATE embree)
 target_link_libraries(_pcu_internal PRIVATE geogram)
