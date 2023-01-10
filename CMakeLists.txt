@@ -3,7 +3,9 @@ project(point-cloud-utils)
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_BUILD_TYPE "Release")
 
-option(GEOGRAM_WITH_HLBFGS "Non-linear solver (Yang Liu's HLBFGS)"             ON)
+if(NOT ${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+  option(GEOGRAM_WITH_HLBFGS "Non-linear solver (Yang Liu's HLBFGS)"             ON)
+endif()
 #option(NPE_WITH_EIGEN      "Whether to use the bundled version of Eigen"       ON)
 option(EIGEN_WITH_MKL      "Whether to build Eigen with intel MKL or not"      OFF)
 
@@ -107,24 +109,24 @@ endif()
 #target_compile_definitions(igl_embree INTERFACE -DEMBREE_STATIC_LIB)
 
 
-# Build geogram
-set(THIRD_PARTY_DIR ${EXTERNAL_DEP_DIR})
-include(geogram)
-if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-  SET_TARGET_PROPERTIES(geogram PROPERTIES COMPILE_FLAGS -fopenmp LINK_FLAGS -fopenmp)
-  target_compile_options(geogram PUBLIC    -fopenmp)
-  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fopenmp")
+if(NOT ${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+  # Build geogram
+  set(THIRD_PARTY_DIR ${EXTERNAL_DEP_DIR})
+  include(geogram)
+  if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+    SET_TARGET_PROPERTIES(geogram PROPERTIES COMPILE_FLAGS -fopenmp LINK_FLAGS -fopenmp)
+    target_compile_options(geogram PUBLIC    -fopenmp)
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fopenmp")
 
-  find_package(OpenMP REQUIRED)
-  if(NOT TARGET OpenMP::OpenMP_CXX)
-    target_compile_options(OpenMP_TARGET INTERFACE ${OpenMP_CXX_FLAGS})
-    find_package(Threads REQUIRED)
-    target_link_libraries(OpenMP_TARGET INTERFACE Threads::Threads)
-    target_link_libraries(OpenMP_TARGET INTERFACE ${OpenMP_CXX_FLAGS})
+    find_package(OpenMP REQUIRED)
+    if(NOT TARGET OpenMP::OpenMP_CXX)
+      target_compile_options(OpenMP_TARGET INTERFACE ${OpenMP_CXX_FLAGS})
+      find_package(Threads REQUIRED)
+      target_link_libraries(OpenMP_TARGET INTERFACE Threads::Threads)
+      target_link_libraries(OpenMP_TARGET INTERFACE ${OpenMP_CXX_FLAGS})
+    endif()
   endif()
 endif()
-
-
 
 # Create the python module
 npe_add_module(_pcu_internal
@@ -132,7 +134,6 @@ npe_add_module(_pcu_internal
   ${CMAKE_CURRENT_SOURCE_DIR}/src/sample_mesh.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/sample_point_cloud.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/point_cloud_distance.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/lloyd.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/meshio.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/mesh_normals.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/point_cloud_normals.cpp
@@ -160,9 +161,18 @@ npe_add_module(_pcu_internal
   hack_extra_ray_mesh_bindings
   )
 
+if(NOT ${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+  npe_add_module(_pcu_internal
+    BINDING_SOURCES
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/lloyd.cpp
+    )
+endif()
+
 # TODO: Make common into its own library that we link statically
 target_sources(_pcu_internal PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/common/morton_code.cpp)
-target_sources(_pcu_internal PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/common/geogram_utils.cpp)
+if(NOT ${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+  target_sources(_pcu_internal PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/common/geogram_utils.cpp)
+endif()
 target_sources(_pcu_internal PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/common/embree_intersector.cpp)
 target_sources(_pcu_internal PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/external/vcglib/wrap/ply/plylib.cpp)
 # target_sources(_pcu_internal PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/external/tinyply/source/tinyply.cpp)
@@ -174,7 +184,9 @@ target_include_directories(_pcu_internal PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/ext
 target_include_directories(_pcu_internal PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/external/igl/include)
 target_include_directories(_pcu_internal PRIVATE ${EMBREE_DIR}/include)
 target_link_libraries(_pcu_internal PRIVATE embree)
-target_link_libraries(_pcu_internal PRIVATE geogram)
+if(NOT ${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+  target_link_libraries(_pcu_internal PRIVATE geogram)
+endif()
 target_link_libraries(_pcu_internal PRIVATE manifold)
 # target_link_libraries(_pcu_internal PRIVATE mls_utils)
 set_target_properties(_pcu_internal PROPERTIES COMPILE_FLAGS "-fvisibility=hidden -msse3")

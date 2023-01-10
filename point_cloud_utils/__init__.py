@@ -1,12 +1,11 @@
 from warnings import warn
-
+import sys
 
 from ._pcu_internal import sample_mesh_poisson_disk, sample_mesh_random, \
     downsample_point_cloud_poisson_disk, estimate_mesh_vertex_normals, \
     estimate_mesh_face_normals, orient_mesh_faces, \
     k_nearest_neighbors, one_sided_hausdorff_distance, \
     morton_encode, morton_decode, morton_knn, \
-    lloyd_2d, lloyd_3d, voronoi_centroids_unit_cube, sample_mesh_lloyd, \
     deduplicate_point_cloud, deduplicate_mesh_vertices, signed_distance_to_mesh, \
     closest_points_on_mesh, connected_components, ray_mesh_intersection, laplacian_smooth_mesh, \
     make_mesh_watertight, mesh_principal_curvatures, \
@@ -14,12 +13,18 @@ from ._pcu_internal import sample_mesh_poisson_disk, sample_mesh_random, \
     sparse_voxel_grid_boundary, marching_cubes_sparse_voxel_grid, decimate_triangle_mesh, \
     remove_unreferenced_mesh_vertices, mesh_face_areas, triangle_soup_fast_winding_number
 
+if sys.platform == 'darwin':
+    from ._pcu_internal import lloyd_2d, lloyd_3d, sample_mesh_lloyd, voronoi_centroids_unit_cube
+
 from ._sinkhorn import *
 from ._mesh_io import *
 from ._octree import *
 from ._pointcloud_normals import estimate_point_cloud_normals_knn, estimate_point_cloud_normals_ball
 from ._ray_mesh_intersector import RayMeshIntersector
 from ._ray_point_cloud_intersector import ray_surfel_intersection, surfel_geometry, RaySurfelIntersector
+
+
+
 
 MORTON_MIN = -1048576
 MORTON_MAX = 1048576
