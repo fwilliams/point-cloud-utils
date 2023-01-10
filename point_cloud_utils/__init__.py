@@ -1,5 +1,5 @@
 from warnings import warn
-import sys
+import platform
 
 from ._pcu_internal import sample_mesh_poisson_disk, sample_mesh_random, \
     downsample_point_cloud_poisson_disk, estimate_mesh_vertex_normals, \
@@ -13,7 +13,7 @@ from ._pcu_internal import sample_mesh_poisson_disk, sample_mesh_random, \
     sparse_voxel_grid_boundary, marching_cubes_sparse_voxel_grid, decimate_triangle_mesh, \
     remove_unreferenced_mesh_vertices, mesh_face_areas, triangle_soup_fast_winding_number
 
-if sys.platform == 'darwin':
+if platform.machine == 'arm64':
     from ._pcu_internal import lloyd_2d, lloyd_3d, sample_mesh_lloyd, voronoi_centroids_unit_cube
 
 from ._sinkhorn import *

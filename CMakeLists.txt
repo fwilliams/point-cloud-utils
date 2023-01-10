@@ -3,7 +3,7 @@ project(point-cloud-utils)
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_BUILD_TYPE "Release")
 
-if(NOT ${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+if(NOT ${CMAKE_SYSTEM_PROCESSOR} MATCHES "(amd64)|(AMD64)")
   option(GEOGRAM_WITH_HLBFGS "Non-linear solver (Yang Liu's HLBFGS)"             ON)
 endif()
 #option(NPE_WITH_EIGEN      "Whether to use the bundled version of Eigen"       ON)
@@ -109,7 +109,7 @@ endif()
 #target_compile_definitions(igl_embree INTERFACE -DEMBREE_STATIC_LIB)
 
 
-if(NOT ${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+if(NOT ${CMAKE_SYSTEM_PROCESSOR} MATCHES "(amd64)|(AMD64)")
   # Build geogram
   set(THIRD_PARTY_DIR ${EXTERNAL_DEP_DIR})
   include(geogram)
@@ -161,7 +161,7 @@ npe_add_module(_pcu_internal
   hack_extra_ray_mesh_bindings
   )
 
-if(NOT ${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+if(NOT ${CMAKE_SYSTEM_PROCESSOR} MATCHES "(amd64)|(AMD64)")
   npe_add_module(_pcu_internal
     BINDING_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/lloyd.cpp
@@ -170,7 +170,7 @@ endif()
 
 # TODO: Make common into its own library that we link statically
 target_sources(_pcu_internal PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/common/morton_code.cpp)
-if(NOT ${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+if(NOT ${CMAKE_SYSTEM_PROCESSOR} MATCHES "(amd64)|(AMD64)")
   target_sources(_pcu_internal PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/common/geogram_utils.cpp)
 endif()
 target_sources(_pcu_internal PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/common/embree_intersector.cpp)
@@ -184,7 +184,7 @@ target_include_directories(_pcu_internal PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/ext
 target_include_directories(_pcu_internal PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/external/igl/include)
 target_include_directories(_pcu_internal PRIVATE ${EMBREE_DIR}/include)
 target_link_libraries(_pcu_internal PRIVATE embree)
-if(NOT ${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+if(NOT ${CMAKE_SYSTEM_PROCESSOR} MATCHES "(amd64)|(AMD64)")
   target_link_libraries(_pcu_internal PRIVATE geogram)
 endif()
 target_link_libraries(_pcu_internal PRIVATE manifold)
