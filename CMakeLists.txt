@@ -128,7 +128,7 @@ if(NOT ${CMAKE_SYSTEM_PROCESSOR} MATCHES "(arm64)|(ARM64)")
   endif()
 endif()
 
-set(my_BINDING_SOURCES 
+set(PCU_BINDING_SOURCES 
   ${CMAKE_CURRENT_SOURCE_DIR}/src/sample_mesh.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/sample_point_cloud.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/point_cloud_distance.cpp
@@ -154,19 +154,19 @@ set(my_BINDING_SOURCES
   ${CMAKE_CURRENT_SOURCE_DIR}/src/face_areas.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/fast_winding_numbers.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/orient_mesh_faces.cpp
-  EXTRA_MODULE_FUNCTIONS
-  hack_extra_bindings
-  hack_extra_ray_mesh_bindings
   )
 
 if (NOT ${CMAKE_SYSTEM_PROCESSOR} MATCHES "(arm64)|(ARM64)")
-    set(my_BINDING_SOURCES ${my_BINDING_SOURCES} ${CMAKE_CURRENT_SOURCE_DIR}/src/lloyd.cpp)
+    set(PCU_BINDING_SOURCES ${PCU_BINDING_SOURCES} ${CMAKE_CURRENT_SOURCE_DIR}/src/lloyd.cpp)
 endif()
 
 # Create the python module
 npe_add_module(_pcu_internal
   BINDING_SOURCES
-  ${my_BINDING_SOURCES}
+  ${PCU_BINDING_SOURCES}
+  EXTRA_MODULE_FUNCTIONS
+  hack_extra_bindings
+  hack_extra_ray_mesh_bindings
 )
 
 # TODO: Make common into its own library that we link statically
