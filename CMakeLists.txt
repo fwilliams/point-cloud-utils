@@ -9,12 +9,14 @@ option(GEOGRAM_WITH_HLBFGS "Non-linear solver (Yang Liu's HLBFGS)"             O
 option(EIGEN_WITH_MKL      "Whether to build Eigen with intel MKL or not"      OFF)
 
 
-if(NOT ${CMAKE_SYSTEM_PROCESSOR} MATCHES "(arm64)|(ARM64)")
-# Turn this off if you want to build on Arm.
-option(NATIVE_SSE          "Whether to use the default optimization setup"     ON)
+if(${CMAKE_SYSTEM_PROCESSOR} MATCHES "(arm64)|(ARM64)")
+  set(USING_ARM ON)
 else()
-option(NATIVE_SSE          "Whether to use the default optimization setup"     OFF)
+  set(USING_ARM OFF)
 endif()
+
+# Turn this off if you want to build on Arm.
+option(NATIVE_SSE          "Whether to use the default optimization setup"     ${USING_ARM})
 
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
