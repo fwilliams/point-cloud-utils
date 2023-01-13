@@ -499,6 +499,10 @@ def save_mesh_vfn(filename, v, f, n, dtype=np.float32):
     save_triangle_mesh(filename, v=v, f=f, vn=n, dtype=dtype)
 
 
+def save_mesh_vfc(filename, v, f, c, dtype=np.float32):
+    save_triangle_mesh(filename, v=v, f=f, vc=c, dtype=dtype)
+
+
 def save_mesh_vfnc(filename, v, f, n, c, dtype=np.float32):
     """
     Save a triangle mesh consisting of vertex positions, face indices, vertex normals, and vertex colors.
@@ -614,6 +618,24 @@ def load_mesh_vf(filename, dtype=float):
     """
     ret = load_triangle_mesh(filename, dtype=dtype)
     return ret.v, ret.f
+
+
+def load_mesh_vfc(filename, dtype=float):
+    """
+    Load a triangle mesh consisting of vertex positions and face indices.
+    Point Cloud Utils currently supports PLY, OBJ, STL, OFF, VRML 2.0, X3D, COLLADA, 3DS.
+
+    Args:
+      filename : Path to the file to be loaded. Must have a valid extension.
+      dtype : The floating point type of loaded data (`np.float32` or `np.float64`)
+
+    Returns:
+      v : An (n, 3)-shaped numpy array of coordinates
+      f : An (m, 3)-shaped integer numpy array of face indices into v
+      c : An (n, 3)-shaped or (n, 4)-shaped numpy array of per-vertex RGB or RGBA colors (from 0.0 to 1.0)
+    """
+    ret = load_triangle_mesh(filename, dtype=dtype)
+    return ret.v, ret.f, ret.vc
 
 
 def load_mesh_vfn(filename, dtype=float):

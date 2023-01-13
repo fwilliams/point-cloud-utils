@@ -16,3 +16,10 @@ dist
 test.ply
 *.ini
 *.pyc
+cmake-build-debug/
+cmake-build-release/
+external/embree/
+external/manifold/
+external/simde/
+external/tinyply/
+external/numpyeigen/
