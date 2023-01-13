@@ -21,13 +21,13 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: Set up QEMU
         if: runner.os == 'Linux'
         uses: docker/setup-qemu-action@v2
         with:
           platforms: all
-          
+
       - name: Build wheels
         env:
           # Skip 32-bit builds, MUSL libc, and pypy

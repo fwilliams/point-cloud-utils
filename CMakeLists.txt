@@ -9,7 +9,23 @@ endif()
 #option(NPE_WITH_EIGEN      "Whether to use the bundled version of Eigen"       ON)
 option(EIGEN_WITH_MKL      "Whether to build Eigen with intel MKL or not"      OFF)
 
+
+if(NOT ${CMAKE_SYSTEM_PROCESSOR} MATCHES "(arm64)|(ARM64)")
+# Turn this off if you want to build on Arm.
+option(NATIVE_SSE          "Whether to use the default optimization setup"     ON)
+else()
+option(NATIVE_SSE          "Whether to use the default optimization setup"     OFF)
+endif()
+
+
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
+
+if(NOT NATIVE_SSE)
+  # set this to empty so it is not later set to -msse<version>
+  # also high-jack for deprecated compile warnings.
+  set(FLAGS_SSE2 "-flax-vector-conversions")
+  add_compile_definitions(NO_NATIVE_SSE)
+endif()
 
 # Download NumpyEigen if we haven't already
 set(EXTERNAL_DEP_DIR ${CMAKE_CURRENT_SOURCE_DIR}/external)
@@ -31,6 +47,15 @@ download_dep(tinyply
         GIT_REPOSITORY https://github.com/fwilliams/tinyply.git
         GIT_TAG point_cloud_utils
 )
+
+if(NOT NATIVE_SSE)
+  # igl has sse hardcoded, so use simde to redirect to the platforms native simd instructions.
+  download_dep(simde
+          GIT_REPOSITORY https://github.com/simd-everywhere/simde.git
+          GIT_TAG dd0b662fd8cf4b1617dbbb4d08aa053e512b08e4
+          )
+endif()
+
 
 # Build manifold as a static lib
 download_dep(manifold
@@ -109,22 +134,21 @@ endif()
 #target_compile_definitions(igl_embree INTERFACE -DEMBREE_STATIC_LIB)
 
 
-if(NOT ${CMAKE_SYSTEM_PROCESSOR} MATCHES "(arm64)|(ARM64)")
-  # Build geogram
-  set(THIRD_PARTY_DIR ${EXTERNAL_DEP_DIR})
-  include(geogram)
-  if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-    SET_TARGET_PROPERTIES(geogram PROPERTIES COMPILE_FLAGS -fopenmp LINK_FLAGS -fopenmp)
-    target_compile_options(geogram PUBLIC    -fopenmp)
-    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fopenmp")
+# Build geogram
+set(THIRD_PARTY_DIR ${EXTERNAL_DEP_DIR})
+include(geogram)
 
-    find_package(OpenMP REQUIRED)
-    if(NOT TARGET OpenMP::OpenMP_CXX)
-      target_compile_options(OpenMP_TARGET INTERFACE ${OpenMP_CXX_FLAGS})
-      find_package(Threads REQUIRED)
-      target_link_libraries(OpenMP_TARGET INTERFACE Threads::Threads)
-      target_link_libraries(OpenMP_TARGET INTERFACE ${OpenMP_CXX_FLAGS})
-    endif()
+if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+  SET_TARGET_PROPERTIES(geogram PROPERTIES COMPILE_FLAGS -fopenmp LINK_FLAGS -fopenmp)
+  target_compile_options(geogram PUBLIC    -fopenmp)
+  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fopenmp")
+
+  find_package(OpenMP REQUIRED)
+  if(NOT TARGET OpenMP::OpenMP_CXX)
+    target_compile_options(OpenMP_TARGET INTERFACE ${OpenMP_CXX_FLAGS})
+    find_package(Threads REQUIRED)
+    target_link_libraries(OpenMP_TARGET INTERFACE Threads::Threads)
+    target_link_libraries(OpenMP_TARGET INTERFACE ${OpenMP_CXX_FLAGS})
   endif()
 endif()
 
@@ -156,9 +180,7 @@ set(PCU_BINDING_SOURCES
   ${CMAKE_CURRENT_SOURCE_DIR}/src/orient_mesh_faces.cpp
   )
 
-if (NOT ${CMAKE_SYSTEM_PROCESSOR} MATCHES "(arm64)|(ARM64)")
-    set(PCU_BINDING_SOURCES ${PCU_BINDING_SOURCES} ${CMAKE_CURRENT_SOURCE_DIR}/src/lloyd.cpp)
-endif()
+  set(PCU_BINDING_SOURCES ${PCU_BINDING_SOURCES} ${CMAKE_CURRENT_SOURCE_DIR}/src/lloyd.cpp)
 
 # Create the python module
 npe_add_module(_pcu_internal
@@ -171,9 +193,7 @@ npe_add_module(_pcu_internal
 
 # TODO: Make common into its own library that we link statically
 target_sources(_pcu_internal PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/common/morton_code.cpp)
-if(NOT ${CMAKE_SYSTEM_PROCESSOR} MATCHES "(arm64)|(ARM64)")
-  target_sources(_pcu_internal PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/common/geogram_utils.cpp)
-endif()
+target_sources(_pcu_internal PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/common/geogram_utils.cpp)
 target_sources(_pcu_internal PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/common/embree_intersector.cpp)
 target_sources(_pcu_internal PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/external/vcglib/wrap/ply/plylib.cpp)
 # target_sources(_pcu_internal PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/external/tinyply/source/tinyply.cpp)
@@ -185,12 +205,14 @@ target_include_directories(_pcu_internal PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/ext
 target_include_directories(_pcu_internal PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/external/igl/include)
 target_include_directories(_pcu_internal PRIVATE ${EMBREE_DIR}/include)
 target_link_libraries(_pcu_internal PRIVATE embree)
-if(NOT ${CMAKE_SYSTEM_PROCESSOR} MATCHES "(arm64)|(ARM64)")
-  target_link_libraries(_pcu_internal PRIVATE geogram)
-endif()
+target_link_libraries(_pcu_internal PRIVATE geogram)
 target_link_libraries(_pcu_internal PRIVATE manifold)
 # target_link_libraries(_pcu_internal PRIVATE mls_utils)
-set_target_properties(_pcu_internal PROPERTIES COMPILE_FLAGS "-fvisibility=hidden -msse3")
+if(NATIVE_SSE)
+  set_target_properties(_pcu_internal PROPERTIES COMPILE_FLAGS "-fvisibility=hidden -msse3")
+else()
+  set_target_properties(_pcu_internal PROPERTIES COMPILE_FLAGS "-fvisibility=hidden")
+endif()
 
 if(MSVC)
   target_compile_options(_pcu_internal PRIVATE
