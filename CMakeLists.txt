@@ -6,8 +6,17 @@ set(CMAKE_BUILD_TYPE "Release")
 option(GEOGRAM_WITH_HLBFGS "Non-linear solver (Yang Liu's HLBFGS)"             ON)
 #option(NPE_WITH_EIGEN      "Whether to use the bundled version of Eigen"       ON)
 option(EIGEN_WITH_MKL      "Whether to build Eigen with intel MKL or not"      OFF)
+# Turn this off if you want to build on Arm.
+option(NATIVE_SSE          "Whether to use the default optimization setup"     ON)
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
+
+if(NOT NATIVE_SSE)
+  # set this to empty so it is not later set to -msse<version>
+  # also high-jack for deprecated compile warnings.
+  set(FLAGS_SSE2 "-flax-vector-conversions")
+  add_compile_definitions(NO_NATIVE_SSE)
+endif()
 
 # Download NumpyEigen if we haven't already
 set(EXTERNAL_DEP_DIR ${CMAKE_CURRENT_SOURCE_DIR}/external)
@@ -29,6 +38,15 @@ download_dep(tinyply
         GIT_REPOSITORY https://github.com/fwilliams/tinyply.git
         GIT_TAG point_cloud_utils
 )
+
+if(NOT NATIVE_SSE)
+  # igl has sse hardcoded, so use simde to redirect to the platforms native simd instructions.
+  download_dep(simde
+          GIT_REPOSITORY https://github.com/simd-everywhere/simde.git
+          GIT_TAG dd0b662fd8cf4b1617dbbb4d08aa053e512b08e4
+          )
+endif()
+
 
 # Build manifold as a static lib
 download_dep(manifold
@@ -110,6 +128,7 @@ endif()
 # Build geogram
 set(THIRD_PARTY_DIR ${EXTERNAL_DEP_DIR})
 include(geogram)
+
 if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
   SET_TARGET_PROPERTIES(geogram PROPERTIES COMPILE_FLAGS -fopenmp LINK_FLAGS -fopenmp)
   target_compile_options(geogram PUBLIC    -fopenmp)
@@ -177,7 +196,11 @@ target_link_libraries(_pcu_internal PRIVATE embree)
 target_link_libraries(_pcu_internal PRIVATE geogram)
 target_link_libraries(_pcu_internal PRIVATE manifold)
 # target_link_libraries(_pcu_internal PRIVATE mls_utils)
-set_target_properties(_pcu_internal PROPERTIES COMPILE_FLAGS "-fvisibility=hidden -msse3")
+if(NATIVE_SSE)
+  set_target_properties(_pcu_internal PROPERTIES COMPILE_FLAGS "-fvisibility=hidden -msse3")
+else()
+  set_target_properties(_pcu_internal PROPERTIES COMPILE_FLAGS "-fvisibility=hidden")
+endif()
 
 if(MSVC)
   target_compile_options(_pcu_internal PRIVATE

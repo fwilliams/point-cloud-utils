@@ -55,12 +55,14 @@
  */
 
 #ifdef GEO_OS_LINUX
-#  if defined(GEO_OS_EMSCRIPTEN) 
+#  if defined(GEO_OS_EMSCRIPTEN)
 #    define GEO_USE_DUMMY_ATOMICS
 #  elif defined(GEO_OS_RASPBERRY)
 #    define GEO_USE_ARM32_ATOMICS
 #  elif defined(GEO_OS_ANDROID)
 #    define GEO_USE_ANDROID_ATOMICS
+#  elif defined(NO_NATIVE_SSE)
+#    define GEO_USE_DUMMY_ATOMICS
 #  else
 #    define GEO_USE_X86_ATOMICS
 #  endif
