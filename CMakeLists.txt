@@ -3,11 +3,21 @@ project(point-cloud-utils)
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_BUILD_TYPE "Release")
 
+
 option(GEOGRAM_WITH_HLBFGS "Non-linear solver (Yang Liu's HLBFGS)"             ON)
 #option(NPE_WITH_EIGEN      "Whether to use the bundled version of Eigen"       ON)
 option(EIGEN_WITH_MKL      "Whether to build Eigen with intel MKL or not"      OFF)
+
+
+if(${CMAKE_SYSTEM_PROCESSOR} MATCHES "(arm64)|(ARM64)")
+  set(USING_ARM ON)
+else()
+  set(USING_ARM OFF)
+endif()
+
 # Turn this off if you want to build on Arm.
-option(NATIVE_SSE          "Whether to use the default optimization setup"     ON)
+option(NATIVE_SSE          "Whether to use the default optimization setup"     ${USING_ARM})
+
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
@@ -23,7 +33,7 @@ set(EXTERNAL_DEP_DIR ${CMAKE_CURRENT_SOURCE_DIR}/external)
 include(DownloadExternalDeps)
 download_dep(numpyeigen
   GIT_REPOSITORY https://github.com/fwilliams/numpyeigen.git
-  GIT_TAG 9caa29b4bb49c17e6436710894a1fadeeb1eaee2
+  GIT_TAG d0eb06b4670dd939b2e11ab9a58e380180377fc6
 )
 list(APPEND CMAKE_MODULE_PATH ${EXTERNAL_DEP_DIR}/numpyeigen/cmake)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
@@ -143,15 +153,10 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
   endif()
 endif()
 
-
-
-# Create the python module
-npe_add_module(_pcu_internal
-  BINDING_SOURCES
+set(PCU_BINDING_SOURCES 
   ${CMAKE_CURRENT_SOURCE_DIR}/src/sample_mesh.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/sample_point_cloud.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/point_cloud_distance.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/lloyd.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/meshio.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/mesh_normals.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/point_cloud_normals.cpp
@@ -174,10 +179,18 @@ npe_add_module(_pcu_internal
   ${CMAKE_CURRENT_SOURCE_DIR}/src/face_areas.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/fast_winding_numbers.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/orient_mesh_faces.cpp
+  )
+
+  set(PCU_BINDING_SOURCES ${PCU_BINDING_SOURCES} ${CMAKE_CURRENT_SOURCE_DIR}/src/lloyd.cpp)
+
+# Create the python module
+npe_add_module(_pcu_internal
+  BINDING_SOURCES
+  ${PCU_BINDING_SOURCES}
   EXTRA_MODULE_FUNCTIONS
   hack_extra_bindings
   hack_extra_ray_mesh_bindings
-  )
+)
 
 # TODO: Make common into its own library that we link statically
 target_sources(_pcu_internal PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/common/morton_code.cpp)
