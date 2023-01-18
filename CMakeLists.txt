@@ -10,14 +10,14 @@ option(EIGEN_WITH_MKL      "Whether to build Eigen with intel MKL or not"      O
 
 
 if(${CMAKE_SYSTEM_PROCESSOR} MATCHES "(arm64)|(ARM64)")
-  set(USING_ARM ON)
+  set(NOT_USING_ARM OFF)
 else()
-  set(USING_ARM OFF)
+  set(NOT_USING_ARM ON)
 endif()
 
 # Turn this off if you want to build on Arm.
-option(NATIVE_SSE          "Whether to use the default optimization setup"     ${USING_ARM})
-
+# option(NATIVE_SSE          "Whether to use the default optimization setup"     ${USING_ARM})
+set(NATIVE_SSE ${NOT_USING_ARM})
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
@@ -153,7 +153,7 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
   endif()
 endif()
 
-set(PCU_BINDING_SOURCES 
+set(PCU_BINDING_SOURCES
   ${CMAKE_CURRENT_SOURCE_DIR}/src/sample_mesh.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/sample_point_cloud.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/point_cloud_distance.cpp

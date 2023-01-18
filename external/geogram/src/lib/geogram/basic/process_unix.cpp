@@ -13,7 +13,7 @@
  *  * Neither the name of the ALICE Project-Team nor the names of its
  *  contributors may be used to endorse or promote products derived from this
  *  software without specific prior written permission.
- * 
+ *
  *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  *  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  *  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -36,9 +36,9 @@
  *     http://www.loria.fr/~levy
  *
  *     ALICE Project
- *     LORIA, INRIA Lorraine, 
+ *     LORIA, INRIA Lorraine,
  *     Campus Scientifique, BP 239
- *     54506 VANDOEUVRE LES NANCY CEDEX 
+ *     54506 VANDOEUVRE LES NANCY CEDEX
  *     FRANCE
  *
  */
@@ -72,7 +72,11 @@
 
 #ifdef GEO_OS_APPLE
 #include <mach-o/dyld.h>
+#if defined(NO_NATIVE_SSE)
+#include "../simde/simde/x86/sse.h"
+#else
 #include <xmmintrin.h>
+#endif
 #endif
 
 #define GEO_USE_PTHREAD_MANAGER
@@ -175,7 +179,7 @@ namespace {
         /** \copydoc GEO::ThreadManager::leave_critical_section() */
 	void leave_critical_section() override {
 #if defined(GEO_OS_RASPBERRY)
-            unlock_mutex_arm32(&mutex_);	    
+            unlock_mutex_arm32(&mutex_);
 #elif defined(GEO_OS_ANDROID)
             unlock_mutex_android(&mutex_);
 #else
@@ -232,7 +236,7 @@ namespace {
 
     private:
 #if defined(GEO_OS_RASPBERRY)
-        arm32_mutex_t mutex_;	
+        arm32_mutex_t mutex_;
 #elif defined(GEO_OS_ANDROID)
         android_mutex_t mutex_;
 #else
@@ -254,7 +258,7 @@ namespace {
     GEO_NORETURN_DECL void abnormal_program_termination(
         const char* message = nullptr
     ) GEO_NORETURN;
-    
+
     void abnormal_program_termination(const char* message) {
         if(message != nullptr) {
             // Do not use Logger here!
@@ -271,7 +275,7 @@ namespace {
      * \param[in] signal signal number
      */
     GEO_NORETURN_DECL void signal_handler(int signal) GEO_NORETURN;
-    
+
     void signal_handler(int signal) {
         const char* sigstr = strsignal(signal);
         std::ostringstream os;
@@ -289,7 +293,7 @@ namespace {
     GEO_NORETURN_DECL void fpe_signal_handler(
         int signal, siginfo_t* si, void* data
     ) GEO_NORETURN;
-    
+
     void fpe_signal_handler(int signal, siginfo_t* si, void* data) {
         geo_argused(signal);
         geo_argused(data);
@@ -346,7 +350,7 @@ namespace {
      * Catches unexpected C++ exceptions
      */
     GEO_NORETURN_DECL void unexpected_handler() GEO_NORETURN;
-    
+
     void unexpected_handler() {
         abnormal_program_termination("function unexpected() was called");
     }
@@ -355,7 +359,7 @@ namespace {
      * Catches uncaught C++ exceptions
      */
     GEO_NORETURN_DECL void terminate_handler() GEO_NORETURN;
-    
+
     void terminate_handler() {
         abnormal_program_termination("function terminate() was called");
     }
@@ -364,7 +368,7 @@ namespace {
      * Catches allocation errors
      */
     GEO_NORETURN_DECL void memory_exhausted_handler() GEO_NORETURN;
-    
+
     void memory_exhausted_handler() {
         abnormal_program_termination("memory exhausted");
     }
@@ -399,7 +403,7 @@ namespace GEO {
             return index_t(nb_cores);
 #elif defined GEO_OS_EMSCRIPTEN
 	    return 1;
-#else	    
+#else
             return index_t(sysconf(_SC_NPROCESSORS_ONLN));
 #endif
         }
@@ -413,7 +417,7 @@ namespace GEO {
             }
             return result;
 #else
-            // The following method seems to be more 
+            // The following method seems to be more
             // reliable than  getrusage() under Linux.
             // It works for both Linux and Android.
             size_t result = 0;
@@ -430,18 +434,18 @@ namespace GEO {
         }
 
         size_t os_max_used_memory() {
-            // The following method seems to be more 
+            // The following method seems to be more
             // reliable than  getrusage() under Linux.
             // It works for both Linux and Android.
             size_t result = 0;
             LineInput in("/proc/self/status");
-            
+
             // Some versions of Unix may not have the proc
             // filesystem (or a different organization)
             if(!in.OK()) {
                 return result;
             }
-            
+
             while(!in.eof() && in.get_line()) {
                 in.get_fields();
                 if(in.field_matches(0,"VmPeak:")) {
@@ -476,13 +480,13 @@ namespace GEO {
 #ifdef GEO_OS_EMSCRIPTEN
             geo_argused(flag);
             geo_argused(excepts);
-#else            
+#else
             if(flag) {
                 feenableexcept(excepts);
             } else {
                 fedisableexcept(excepts);
             }
-#endif            
+#endif
             return true;
 #endif
         }
@@ -511,7 +515,7 @@ namespace GEO {
             signal(SIGILL, signal_handler);
             signal(SIGBUS, signal_handler);
 
-            // Use sigaction for SIGFPE as it provides more details 
+            // Use sigaction for SIGFPE as it provides more details
             // about the error.
             struct sigaction sa, old_sa;
             sa.sa_flags = SA_SIGINFO;
@@ -552,15 +556,15 @@ namespace GEO {
             }
             return std::string("");
 #endif
-        }        
-        
+        }
+
     }
 }
 
-#else 
+#else
 
 // Declare a dummy variable so that
-// MSVC does not complain that it 
+// MSVC does not complain that it
 // generated an empty object file.
 int dummy_process_unix_compiled = 1;
 
