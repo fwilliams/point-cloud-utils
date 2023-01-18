@@ -73,7 +73,12 @@
 #ifdef GEO_OS_APPLE
 #include <mach-o/dyld.h>
 #if defined(NO_NATIVE_SSE)
-#include "../simde/simde/x86/sse.h"
+/*
+ * NATIVE_ALIASES shouldn't really be used for true multiplatform development, or any development really,
+ * but since we are switching out the headers completely and only use sse2.h on platforms without SSE, this should be fine.
+ */
+#define SIMDE_ENABLE_NATIVE_ALIASES
+#include "../../../../../simde/simde/x86/sse.h"
 #else
 #include <xmmintrin.h>
 #endif
