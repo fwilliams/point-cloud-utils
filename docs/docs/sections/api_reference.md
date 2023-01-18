@@ -270,6 +270,16 @@
 
 ----------------
 
+::: point_cloud_utils.load_mesh_vfc
+    handler: python
+    options:
+        show_root_heading: true
+        show_source: false
+
+
+
+----------------
+
 ::: point_cloud_utils.load_mesh_vfn
     handler: python
     options:
@@ -551,6 +561,16 @@
 ----------------
 
 ::: point_cloud_utils.save_mesh_vf
+    handler: python
+    options:
+        show_root_heading: true
+        show_source: false
+
+
+
+----------------
+
+::: point_cloud_utils.save_mesh_vfc
     handler: python
     options:
         show_root_heading: true
