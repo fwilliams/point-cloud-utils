@@ -496,7 +496,7 @@ import numpy as np
 a = np.random.rand(100, 3)
 b = np.random.rand(100, 3)
 
-# M is a 100x100 array where each entry  (i, j) is the squared distance between point a[i, :] and b[j, :]
+# M is a 100x100 array where each entry  (i, j) is the L2 distance between point a[i, :] and b[j, :]
 M = pcu.pairwise_distances(a, b)
 
 # w_a and w_b are masses assigned to each point. In this case each point is weighted equally.
