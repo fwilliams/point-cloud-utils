@@ -106,6 +106,7 @@ class TestDenseBindings(unittest.TestCase):
         self.assertEqual(nms.shape, pts.shape)
         self.assertGreater(pts.shape[0], 0)
         self.assertEqual(pts.shape[1], 3)
+        self.assertGreater(abs(nms[0, 0]), 1e-7)
 
         # With RBG colors
         c = np.random.rand(v.shape[0], 3)
