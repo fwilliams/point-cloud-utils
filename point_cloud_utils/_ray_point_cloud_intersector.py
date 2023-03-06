@@ -40,7 +40,7 @@ def surfel_geometry(p, n, r=0.1, subdivs=7):
     """
     from ._pcu_internal import point_cloud_splatting_geometry_internal_
     r = _validate_point_radius_internal(p, r)
-    return point_cloud_splatting_geometry_internal_(p, n, "circle", r, subdivs)
+    return point_cloud_splatting_geometry_internal_(p, n, "circle", r.astype(p.dtype), subdivs)
 
 
 def ray_surfel_intersection(p, n, ray_o, ray_d, r=0.1, subdivs=4, ray_near=0.0, ray_far=np.inf):
@@ -64,7 +64,7 @@ def ray_surfel_intersection(p, n, ray_o, ray_d, r=0.1, subdivs=4, ray_near=0.0, 
     """
     from ._pcu_internal import ray_point_cloud_intersection_internal_
     r = _validate_point_radius_internal(p, r)
-    return ray_point_cloud_intersection_internal_(p, n, ray_o, ray_d, "circle", r, subdivs, ray_near, ray_far)
+    return ray_point_cloud_intersection_internal_(p, n, ray_o, ray_d, "circle", r.astype(p.dtype), subdivs, subdivs, ray_near, ray_far)
 
 
 class RaySurfelIntersector:
@@ -91,7 +91,7 @@ class RaySurfelIntersector:
         self.r = r
         self.num_subdivs = subdivs
         self.__internal_intersector = _RayMeshIntersectorInternal()
-        self.__num_faces_per_geom = _populate_ray_point_cloud_intersector_internal(p, n, "circle", r, subdivs,
+        self.__num_faces_per_geom = _populate_ray_point_cloud_intersector_internal(p, n, "circle", r, subdivs, subdivs,
                                                                                    self.__internal_intersector)
 
     def intersect_rays(self, ray_o, ray_d, ray_near=0.0, ray_far=np.inf):

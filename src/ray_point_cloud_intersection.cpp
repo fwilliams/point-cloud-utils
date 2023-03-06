@@ -47,15 +47,19 @@ namespace {
     }
 
     template <typename T1, typename T2, typename T3>
-    GeometryType validate_point_geometry(T1 v, T2 n, T3 geometry_radius, int geometry_subdivisions, std::string geometry_type) {
+    GeometryType validate_point_geometry(T1 v, T2 n, T3 geometry_radius, int geometry_subdivisions_1, int geometry_subdivisions_2, std::string geometry_type) {
         validate_point_cloud_normals(v, n);
 
         if (geometry_radius.rows() != v.rows() || geometry_radius.cols() != 1) {
             throw pybind11::value_error("Invalid shape for geometry_radius, must have one row per vertex.");
         }
 
-        if (geometry_subdivisions < 4) {
-            throw pybind11::value_error("Invalid geometry_subdivisions is less than or equal to 4.");
+        if (geometry_subdivisions_1 < 4) {
+            throw pybind11::value_error("Invalid geometry_subdivisions_1 is less than or equal to 4.");
+        }
+
+        if (geometry_subdivisions_2 < 4) {
+            throw pybind11::value_error("Invalid geometry_subdivisions_1 is less than or equal to 4.");
         }
 
         return geometry_type_from_string(geometry_type);
@@ -87,24 +91,90 @@ namespace {
         return R;
     }
 
+
+    template <typename OutScalar>
+    void make_sphere_geometry(int stackCount, int sectorCount, double radius, int indexOffset, int vertexOffset,
+                              double baseX, double baseY, double baseZ,
+                              Eigen::Matrix<OutScalar, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>& vertices,
+                              Eigen::Matrix<int, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>& indices) {
+        double x, y, z, xy;                              // vertex position
+        double nx, ny, nz, lengthInv = 1.0 / radius;    // vertex normal
+        double s, t;                                     // vertex texCoord
+
+        double sectorStep = 2 * M_PI / sectorCount;
+        double stackStep = M_PI / stackCount;
+        double sectorAngle, stackAngle;
+
+        int currentVertex = vertexOffset;
+        for(int i = 0; i <= stackCount; ++i) {
+            stackAngle = M_PI / 2 - i * stackStep;      // starting from pi/2 to -pi/2
+            xy = radius * cos(stackAngle);             // r * cos(u)
+            z = radius * sin(stackAngle);              // r * sin(u)
+
+            // add (sectorCount+1) vertices per stack
+            // the first and last vertices have same position and normal, but different tex coords
+            for(int j = 0; j <= sectorCount; ++j)
+            {
+                sectorAngle = j * sectorStep;           // starting from 0 to 2pi
+
+                // vertex position (x, y, z)
+                x = xy * cos(sectorAngle);             // r * cos(u) * cos(v)
+                y = xy * sin(sectorAngle);             // r * cos(u) * sin(v)
+                vertices(currentVertex, 0) = (OutScalar) baseX + x;
+                vertices(currentVertex, 1) = (OutScalar) baseY + y;
+                vertices(currentVertex, 2) = (OutScalar) baseZ + z;
+                currentVertex += 1;
+            }
+        }
+
+        int currentIndex = indexOffset;
+        int k1, k2;
+        for(int i = 0; i < stackCount; ++i)
+        {
+            k1 = i * (sectorCount + 1);     // beginning of current stack
+            k2 = k1 + sectorCount + 1;      // beginning of next stack
+
+            for(int j = 0; j < sectorCount; ++j, ++k1, ++k2)
+            {
+                // 2 triangles per sector excluding first and last stacks
+                // k1 => k2 => k1+1
+                if(i != 0)
+                {
+                    indices(currentIndex, 0) = vertexOffset + k1;
+                    indices(currentIndex, 1) = vertexOffset + k2;
+                    indices(currentIndex, 2) = vertexOffset + k1 + 1;
+                    currentIndex += 1;
+                }
+
+                // k1+1 => k2 => k2+1
+                if(i != (stackCount-1))
+                {
+                    indices(currentIndex, 0) = vertexOffset + k1 + 1;
+                    indices(currentIndex, 1) = vertexOffset + k2;
+                    indices(currentIndex, 2) = vertexOffset + k2 + 1;
+                    currentIndex += 1;
+                }
+            }
+        }
+    }
+
     template <typename TypeV, typename TypeN, typename TypeR, typename OutScalar>
-    int generate_splat_geometry(GeometryType geometry_type, int geometry_subdivisions,
-                                 const TypeV& v, const TypeN& n, const TypeR& geometry_radius,
-                                 Eigen::Matrix<OutScalar, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>& out_v,
-                                 Eigen::Matrix<int, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>& out_f) {
+    int generate_splat_geometry(GeometryType geometry_type, int geometry_subdivisions_1, int geometry_subdivisions_2,
+                                const TypeV& v, const TypeN& n, const TypeR& geometry_radius,
+                                Eigen::Matrix<OutScalar, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>& out_v,
+                                Eigen::Matrix<int, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>& out_f) {
 
         int num_vertices_per_geom = 0;
         int num_faces_per_geom = 0;
         switch (geometry_type) {
             case GeometryType::SPHERE: {
-                num_vertices_per_geom = geometry_subdivisions * (geometry_subdivisions - 2) + 2;
-                num_faces_per_geom = (geometry_subdivisions - 1) * (2 * geometry_subdivisions);
-                throw std::runtime_error("Not implemented.");
+                num_vertices_per_geom = (geometry_subdivisions_1 + 1) * (geometry_subdivisions_2 + 1);
+                num_faces_per_geom = (geometry_subdivisions_1 - 1) * geometry_subdivisions_2 * 2;
                 break;
             }
             case GeometryType::CIRCLE: {
-                num_vertices_per_geom = geometry_subdivisions + 1;
-                num_faces_per_geom = geometry_subdivisions;
+                num_vertices_per_geom = geometry_subdivisions_1 + 1;
+                num_faces_per_geom = geometry_subdivisions_1;
                 break;
             }
             default: {
@@ -152,7 +222,13 @@ namespace {
                     break;
                 }
                 case GeometryType::SPHERE: {
-                    throw std::runtime_error("Not implemented.");
+                    make_sphere_geometry(geometry_subdivisions_1, geometry_subdivisions_2,
+                                         geometry_radius(i, 0),
+                                         base_offset_f, base_offset_v,
+                                         v(i, 0), v(i, 1), v(i, 2),
+                                         out_v, out_f);
+                    // throw std::runtime_error("Not implemented.");
+                    break;
                 }
             }
         }
@@ -194,18 +270,21 @@ npe_arg(v, dense_float, dense_double)
 npe_arg(n, npe_matches(v))
 npe_arg(geometry_type, std::string)
 npe_arg(geometry_radius, npe_matches(v))
-npe_default_arg(geometry_subdivisions, int, 4)
+npe_default_arg(geometry_subdivisions_1, int, 4)
+npe_default_arg(geometry_subdivisions_2, int, 4)
 npe_arg(isector, std::shared_ptr<igl::embree::EmbreeIntersector>)
 npe_begin_code()
     using MatrixI = Eigen::Matrix<int, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>;
     using MatrixF = Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>;
 
     GeometryType geom_type = validate_point_geometry(v, n, geometry_radius,
-                                                     geometry_subdivisions, geometry_type);
+                                                     geometry_subdivisions_1,
+                                                     geometry_subdivisions_2,
+                                                     geometry_type);
     MatrixF geom_vertices;
     MatrixI geom_faces;
 
-    int num_faces_per_geometry = generate_splat_geometry(geom_type, geometry_subdivisions,
+    int num_faces_per_geometry = generate_splat_geometry(geom_type, geometry_subdivisions_1, geometry_subdivisions_2,
                                                          v, n, geometry_radius, geom_vertices, geom_faces);
     isector->init(geom_vertices, geom_faces, true /*is_static*/);
 
@@ -244,14 +323,15 @@ npe_arg(v, dense_float, dense_double)
 npe_arg(n, npe_matches(v))
 npe_arg(geometry_type, std::string)
 npe_arg(geometry_radius, npe_matches(v))
-npe_default_arg(geometry_subdivisions, int, 4)
+npe_default_arg(geometry_subdivisions_1, int, 4)
+npe_default_arg(geometry_subdivisions_2, int, 4)
 npe_begin_code()
 {
     GeometryType geom_type = geometry_type_from_string(geometry_type);
     Eigen::Matrix<npe_Scalar_v, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> geom_vertices;
     Eigen::Matrix<int, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> geom_faces;
 
-    generate_splat_geometry(geom_type, geometry_subdivisions, v, n, geometry_radius,
+    generate_splat_geometry(geom_type, geometry_subdivisions_1, geometry_subdivisions_2, v, n, geometry_radius,
                             geom_vertices, geom_faces);
 
 
@@ -267,7 +347,8 @@ npe_arg(ray_o, npe_matches(v))
 npe_arg(ray_d, npe_matches(v))
 npe_arg(geometry_type, std::string)
 npe_arg(geometry_radius, npe_matches(v))
-npe_default_arg(geometry_subdivisions, int, 4)
+npe_default_arg(geometry_subdivisions_1, int, 4)
+npe_default_arg(geometry_subdivisions_2, int, 4)
 npe_default_arg(ray_near, double, 0.0)
 npe_default_arg(ray_far, double, std::numeric_limits<double>::infinity())
 npe_begin_code()
@@ -278,12 +359,14 @@ npe_begin_code()
 
         bool use_single_ray_origin = validate_rays(ray_o, ray_d);
         GeometryType geom_type = validate_point_geometry(v, n, geometry_radius,
-                                                         geometry_subdivisions, geometry_type);
+                                                         geometry_subdivisions_1,
+                                                         geometry_subdivisions_2,
+                                                         geometry_type);
 
         MatrixF geom_vertices;
         MatrixI geom_faces;
 
-        int num_faces_per_geometry = generate_splat_geometry(geom_type, geometry_subdivisions,
+        int num_faces_per_geometry = generate_splat_geometry(geom_type, geometry_subdivisions_1, geometry_subdivisions_2,
                                                              v, n, geometry_radius, geom_vertices, geom_faces);
 
         igl::embree::EmbreeIntersector isector;

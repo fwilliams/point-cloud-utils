@@ -1,5 +1,25 @@
 # API Reference
 
+::: point_cloud_utils.MORTON_MAX
+    handler: python
+    options:
+        show_root_heading: true
+        show_source: false
+
+
+
+----------------
+
+::: point_cloud_utils.MORTON_MIN
+    handler: python
+    options:
+        show_root_heading: true
+        show_source: false
+
+
+
+----------------
+
 ::: point_cloud_utils.RayMeshIntersector
     handler: python
     options:
@@ -331,6 +351,16 @@
 ----------------
 
 ::: point_cloud_utils.make_mesh_watertight
+    handler: python
+    options:
+        show_root_heading: true
+        show_source: false
+
+
+
+----------------
+
+::: point_cloud_utils.make_spheres_for_pointcloud
     handler: python
     options:
         show_root_heading: true
