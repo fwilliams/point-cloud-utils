@@ -200,18 +200,17 @@ void load_mesh_ply(const std::string& filename, std::unordered_map<std::string, 
         // std::cout << "\t[ply_header] Comment: " << c << std::endl;
     }
 
+    // Auxillary elements that arent vertex or face elements in the PLY file
+    std::unordered_map<std::string, std::unordered_map<std::string, std::shared_ptr<tinyply::PlyData>>> aux_metadata;
+
     // Set up loaders for custom vertex and face attributes
     std::vector<std::pair<std::string, std::shared_ptr<tinyply::PlyData>>> custom_vertex_attribs;
     std::vector<std::pair<std::string, std::shared_ptr<tinyply::PlyData>>> custom_face_attribs;
     for (const auto & e : plyf.get_elements()) {
         // std::cout << "\t[ply_header] element: " << e.name << " (" << e.size << ")" << std::endl;
-        if (e.name != "vertex" && e.name != "face") {
-            std::cerr << "Warning: Element [" << e.name << "] is not supported and will be ignored" << std::endl;
-            continue;
-        }
 
         for (const auto & p : e.properties) {
-            // std::cout << "\t[ply_header] \tproperty: " << p.name << " (type=" << tinyply::PropertyTable[p.propertyType].str << ")";
+            // std::cout << "\t[ply_header] \tproperty: " << p.name << " (type=" << tinyply::PropertyTable[p.propertyType].str << ")" << std::endl;
             if (loaded_properties[e.name].find(p.name) == loaded_properties[e.name].end()) {
                 if (e.name == "vertex") {
                     std::shared_ptr<tinyply::PlyData> dataptr;
@@ -221,7 +220,7 @@ void load_mesh_ply(const std::string& filename, std::unordered_map<std::string, 
                         dataptr = plyf.request_properties_from_element(e.name, { p.name });
                     }
                     custom_vertex_attribs.push_back(std::make_pair(p.name, dataptr));
-                } else {
+                } else if (e.name == "face") {
                     std::shared_ptr<tinyply::PlyData> dataptr;
                     if (p.isList) {
                         dataptr = plyf.request_properties_from_element(e.name, { p.name }, p.listCount);
@@ -229,6 +228,21 @@ void load_mesh_ply(const std::string& filename, std::unordered_map<std::string, 
                         dataptr = plyf.request_properties_from_element(e.name, { p.name });
                     }
                     custom_face_attribs.push_back(std::make_pair(p.name, dataptr));
+                } else {
+                    std::shared_ptr<tinyply::PlyData> dataptr;
+                    if (p.isList) {
+                        dataptr = plyf.request_properties_from_element(e.name, { p.name }, p.listCount);
+                    } else {
+                        dataptr = plyf.request_properties_from_element(e.name, { p.name });
+                    }
+                    if (aux_metadata.find(e.name) == aux_metadata.end()) {
+                        aux_metadata.insert(std::make_pair(e.name, std::unordered_map<std::string, std::shared_ptr<tinyply::PlyData>>()));
+                    }
+                    auto& element_dict = aux_metadata.at(e.name);
+                    if (element_dict.find(p.name) != element_dict.end()) {
+                        throw std::runtime_error("Duplicate key " + e.name + "::" + p.name);
+                    }
+                    element_dict.insert(std::make_pair(p.name, dataptr));
                 }
             }
             // if (p.isList) { std::cout << " (list_type=" << tinyply::PropertyTable[p.listType].str << ")"; }
@@ -250,6 +264,19 @@ void load_mesh_ply(const std::string& filename, std::unordered_map<std::string, 
         std::string attrib_name = custom_face_attribs[i].first;
         std::shared_ptr<tinyply::PlyData> attrib = custom_face_attribs[i].second;
         face_attribs.insert(std::make_pair(attrib_name, (pybind11::object) ply_data_to_array(attrib)));
+    }
+
+    std::unordered_map<std::string, pybind11::object> aux_data;
+    for (auto elem = aux_metadata.begin(); elem != aux_metadata.end(); elem++) {
+        std::unordered_map<std::string, std::shared_ptr<tinyply::PlyData>> props_map = elem->second;
+        std::unordered_map<std::string, pybind11::object> elem_props_data;
+        std::string elem_name = elem->first;
+        for (auto prop = props_map.begin(); prop != props_map.end(); prop++) {
+            std::string prop_name = prop->first;
+            elem_props_data.insert(std::make_pair(prop_name, (pybind11::object) ply_data_to_array(prop->second)));
+        }
+        pybind11::dict elem_props_pyobject = pybind11::cast(elem_props_data);
+        aux_data.insert(std::make_pair(elem_name, elem_props_pyobject));
     }
 
     std::unordered_map<std::string, pybind11::object> vertex_ret;
@@ -314,10 +341,13 @@ void load_mesh_ply(const std::string& filename, std::unordered_map<std::string, 
     pybind11::list ret_normalmaps = pybind11::list();
     pybind11::list ret_textures = pybind11::cast(texture_files);
 
+    pybind11::dict ret_aux_data = pybind11::cast(aux_data);
+
     ret["vertex_data"] = ret_vertex_data;
     ret["face_data"] = ret_face_data;
     ret["textures"] = ret_textures;
     ret["normal_maps"] = ret_normalmaps;
+    ret["auxillary_data"] = ret_aux_data;
 }
 
 
@@ -470,7 +500,7 @@ void save_mesh_ply(std::string filename,
         pybind11::str key = (pybind11::str) kv->first;
         pybind11::array value = pybind11::array::ensure(kv->second);
         if (value.shape(0) != num_vertices) {
-            throw pybind11::value_error("Invalid vertex attribute " + std::string(key) + 
+            throw pybind11::value_error("Invalid vertex attribute " + std::string(key) +
                                         ". Must have same number of rows as vertices.");
         }
         size_t num_cols = 1;

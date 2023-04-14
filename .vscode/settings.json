@@ -71,7 +71,15 @@
         "typeinfo": "cpp",
         "valarray": "cpp",
         "variant": "cpp",
-        "geometry": "cpp"
+        "geometry": "cpp",
+        "cfenv": "cpp",
+        "compare": "cpp",
+        "concepts": "cpp",
+        "csignal": "cpp",
+        "regex": "cpp",
+        "numbers": "cpp",
+        "semaphore": "cpp",
+        "stop_token": "cpp"
     },
     "python.linting.enabled": true,
     "python.linting.pylintEnabled": true,

@@ -189,6 +189,7 @@ class TriangleMesh:
         self.face_data = TriangleMesh.FaceData()
         self.textures = []
         self.normal_maps = []
+        self.aux_data = {}
         if filename is not None:
             self.load(filename, dtype=dtype)
 
@@ -340,6 +341,9 @@ class TriangleMesh:
         self.normal_maps = mesh_dict["normal_maps"]
         vret = mesh_dict["vertex_data"]
         fret = mesh_dict["face_data"]
+
+        self.aux_data = mesh_dict["auxillary_data"] if "auxillary_data" in mesh_dict else {}
+
         for k, v in vret.items():
             if k in ("alpha", "colors"):
                 self.vertex_data._set_color(k, v)
