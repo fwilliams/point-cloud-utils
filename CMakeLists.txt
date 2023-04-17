@@ -179,6 +179,7 @@ set(PCU_BINDING_SOURCES
   ${CMAKE_CURRENT_SOURCE_DIR}/src/face_areas.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/fast_winding_numbers.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/orient_mesh_faces.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/mesh_for_voxels.cpp
   )
 
   set(PCU_BINDING_SOURCES ${PCU_BINDING_SOURCES} ${CMAKE_CURRENT_SOURCE_DIR}/src/lloyd.cpp)

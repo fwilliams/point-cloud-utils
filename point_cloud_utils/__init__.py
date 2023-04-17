@@ -12,7 +12,8 @@ from ._pcu_internal import sample_mesh_poisson_disk, sample_mesh_random, \
     make_mesh_watertight, mesh_principal_curvatures, \
     morton_add, morton_subtract, point_cloud_fast_winding_number, \
     sparse_voxel_grid_boundary, marching_cubes_sparse_voxel_grid, decimate_triangle_mesh, \
-    remove_unreferenced_mesh_vertices, mesh_face_areas, triangle_soup_fast_winding_number
+    remove_unreferenced_mesh_vertices, mesh_face_areas, triangle_soup_fast_winding_number, \
+    _voxel_mesh_internal
 
 from ._sinkhorn import *
 from ._mesh_io import *
@@ -24,7 +25,46 @@ from ._ray_point_cloud_intersector import ray_surfel_intersection, surfel_geomet
 MORTON_MIN = -1048576
 MORTON_MAX = 1048576
 
-def pointcloud_sphere_geometry(p, r, num_stacks, num_slices):
+
+def _coord3d_to_array(coord, dtype = np.float64):
+    if not hasattr(coord, "__len__") or len(coord) != 3:
+        raise ValueError("expected 3D coordinate")
+
+    if isinstance(coord, np.ndarray):
+        return np.array([c.item() for c in coord], dtype=dtype)
+    else:
+        return np.array([c for c in coord], dtype=dtype)
+
+
+def _number_or_coord3d_to_array(coord_or_number, dtype=np.float64):
+    if isinstance(coord_or_number, (float, int)):
+        return np.array([coord_or_number] * 3, dtype=dtype)
+
+    return _coord3d_to_array(coord_or_number, dtype=dtype)
+
+
+
+def voxel_grid_mesh(ijk, voxel_size=np.array((1., 1., 1.)), voxel_origin=np.array((0., 0., 0.))):
+    """
+    Generate a triangle mesh of cubes for voxel coordinates ijk. The [0, 0, 0] voxel has its
+    bottom-back-left corner at voxel_origin and each voxel has voxel_size.
+
+    Args:
+        ijk np.ndarray: [num_voxels, 3] array of integer voxel coordinates
+        voxel_size: Float or triple representing the size of each voxel.
+                    Defaults to np.array((1., 1., 1.)).
+        voxel_origin: Bottom-back-left coordinate of the [0, 0, 0] voxel.
+                      Defaults to np.array((0., 0., 0.)).
+
+    Returns:
+        v: Numpy array of vertices for the cube mesh
+        f: Numpy array of faces for the cube mesh
+    """
+    return _voxel_mesh_internal(ijk, _coord3d_to_array(voxel_origin, dtype=np.float64),
+                                _number_or_coord3d_to_array(voxel_size, dtype=np.float64))
+
+
+def pointcloud_sphere_mesh(p, r, num_stacks, num_slices):
     """
     Generate sphere geometry for a point cloud (i.e. one sphere per point)
 
