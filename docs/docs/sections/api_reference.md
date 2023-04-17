@@ -360,16 +360,6 @@
 
 ----------------
 
-::: point_cloud_utils.make_spheres_for_pointcloud
-    handler: python
-    options:
-        show_root_heading: true
-        show_source: false
-
-
-
-----------------
-
 ::: point_cloud_utils.marching_cubes_sparse_voxel_grid
     handler: python
     options:
@@ -491,6 +481,16 @@
 ----------------
 
 ::: point_cloud_utils.point_cloud_fast_winding_number
+    handler: python
+    options:
+        show_root_heading: true
+        show_source: false
+
+
+
+----------------
+
+::: point_cloud_utils.pointcloud_sphere_mesh
     handler: python
     options:
         show_root_heading: true
@@ -751,6 +751,16 @@
 ----------------
 
 ::: point_cloud_utils.voronoi_centroids_unit_cube
+    handler: python
+    options:
+        show_root_heading: true
+        show_source: false
+
+
+
+----------------
+
+::: point_cloud_utils.voxel_grid_mesh
     handler: python
     options:
         show_root_heading: true
