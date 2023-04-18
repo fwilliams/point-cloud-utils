@@ -66,9 +66,9 @@ namespace {
                 vertex += vox_origin;
                 vertex = vertex.eval();
 
-                out_v(i * 8 + vi, 0) = v_world[0];
-                out_v(i * 8 + vi, 1) = v_world[1];
-                out_v(i * 8 + vi, 2) = v_world[2];
+                out_v(i * 8 + vi, 0) = vertex[0];
+                out_v(i * 8 + vi, 1) = vertex[1];
+                out_v(i * 8 + vi, 2) = vertex[2];
             }
 
             for (int fi = 0; fi < 12; fi += 1) {
