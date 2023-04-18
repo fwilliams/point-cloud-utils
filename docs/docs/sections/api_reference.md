@@ -500,6 +500,16 @@
 
 ----------------
 
+::: point_cloud_utils.pointcloud_surfel_mesh
+    handler: python
+    options:
+        show_root_heading: true
+        show_source: false
+
+
+
+----------------
+
 ::: point_cloud_utils.quantize_subdivided_sparse_voxel_grid
     handler: python
     options:
@@ -711,16 +721,6 @@
 ----------------
 
 ::: point_cloud_utils.subdivide_sparse_voxel_grid
-    handler: python
-    options:
-        show_root_heading: true
-        show_source: false
-
-
-
-----------------
-
-::: point_cloud_utils.surfel_geometry
     handler: python
     options:
         show_root_heading: true
