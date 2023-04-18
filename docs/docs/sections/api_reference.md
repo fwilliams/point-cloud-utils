@@ -760,7 +760,7 @@
 
 ----------------
 
-::: point_cloud_utils.voxel_grid_mesh
+::: point_cloud_utils.voxel_grid_geometry
     handler: python
     options:
         show_root_heading: true
