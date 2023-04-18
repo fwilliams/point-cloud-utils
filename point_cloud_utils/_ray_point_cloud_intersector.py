@@ -1,5 +1,7 @@
 import numpy as np
 
+from ._point_cloud_geometry import _validate_point_radius_internal
+
 
 def ray_surfel_intersection(p, n, ray_o, ray_d, r=0.1, subdivs=4, ray_near=0.0, ray_far=np.inf):
     """
@@ -7,8 +9,8 @@ def ray_surfel_intersection(p, n, ray_o, ray_d, r=0.1, subdivs=4, ray_near=0.0, 
     with the point normals)
 
     Args:
-        p : \#p by 3 array of vertex positions (each row is a vertex)
-        n : \#p by 3 Matrix of vertex normals (each row is a vertex)
+        p : \\#p by 3 array of vertex positions (each row is a vertex)
+        n : \\#p by 3 Matrix of vertex normals (each row is a vertex)
         ray_o : array of shape (#rays, 3) of ray origins (one per row) or a single array of shape (3,) to use
         ray_d : array of shape (#rays, 3) of ray directions (one per row)
         r : Array or Scalar describing the size of each geometry element (Either one radius per vertex, or a global size for the whole point cloud)
@@ -36,8 +38,8 @@ class RaySurfelIntersector:
         point cloud converted to circular patches oriented with the point normals
 
         Args:
-            p : \#p by 3 array of vertex positions (each row is a vertex)
-            n : \#p by 3 Matrix of vertex normals (each row is a vertex)
+            p : \\#p by 3 array of vertex positions (each row is a vertex)
+            n : \\#p by 3 Matrix of vertex normals (each row is a vertex)
             r : Array or Scalar describing the size of each geometry element (Either one radius per vertex, or a global size for the whole point cloud)
             subdivs : Number of times to subdivide the patch geometry for each point (i.e. # tris per cicle)
         """
