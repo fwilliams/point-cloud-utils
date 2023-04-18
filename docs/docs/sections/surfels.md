@@ -18,7 +18,7 @@ p, n = pcu.load_mesh_vn("wheel.ply")
 surfel_rad = np.ones(p.shape[0], dtype=p.dtype) * 0.33
 
 # A triangle mesh representing surfel geometry
-v, f = pcu.ray_surfel_intersection(p, n, surfel_rad)
+v, f = pcu.pointcloud_surfel_mesh(p, n, surfel_rad)
 ```
 
 ## Ray Tracing Surfels
@@ -44,8 +44,8 @@ ray_o = np.repeat(ray_o[None, :], ray_d.shape[0], axis=0)  # Repeat the ray orig
 
 # pid is the id of each intersected point (or -1 for misses)
 # t is the distance along each ray to the intersected surfel
-pid, t = pcu.ray_surfel_intersection(p.astype(ray_o.dtype), 
-                                     n.astype(ray_o.dtype), 
+pid, t = pcu.ray_surfel_intersection(p.astype(ray_o.dtype),
+                                     n.astype(ray_o.dtype),
                                      ray_o, ray_d, surfel_rad)
 ```
 <p align="center">

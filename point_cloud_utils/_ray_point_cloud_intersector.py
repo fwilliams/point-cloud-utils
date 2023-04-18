@@ -1,48 +1,6 @@
 import numpy as np
 
 
-def _validate_point_radius_internal(p, r):
-    if not isinstance(r, np.ndarray):
-        if np.isscalar(r):
-            r = r * np.ones(p.shape[0])
-        elif isinstance(r, list) or isinstance(r, tuple):
-            r = np.array(r).astype(p.dtype)
-        else:
-            raise ValueError("Argument r must be a scalar or numpy array with the same number of rows as p")
-
-    if r.shape[0] != p.shape[0]:
-        raise ValueError("Argument r have the same number of rows as p")
-
-    if len(r.shape) != 1:
-        r = np.squeeze(r)
-
-    if len(r.shape) != 1:
-        raise ValueError("Invalid shape for argument r, must have shape (N,) or (N, 1)")
-
-    return r
-
-
-def surfel_geometry(p, n, r=0.1, subdivs=7):
-    """
-    Generate geometry for a point cloud encoded as surfels (i.e. circular patches centered at each point and oriented
-    perpendicularly to each normal)
-
-    Args:
-        p : \#p by 3 array of vertex positions (each row is a vertex)
-        n : \#p by 3 array of vertex normals (each row is a vertex)
-        r : Array or Scalar describing the size of each geometry element (Either one radius per vertex, or a global size for the whole point cloud)
-        subdivs : Number of times to subdivide the patch geometry for each point (i.e. # tris per cicle)
-
-    Returns:
-        verts : an array of shape (#output_vertices, 3)
-        faces : an array of shape (#output_faces, 3) indexing into verts
-
-    """
-    from ._pcu_internal import point_cloud_splatting_geometry_internal_
-    r = _validate_point_radius_internal(p, r)
-    return point_cloud_splatting_geometry_internal_(p, n, "circle", r.astype(p.dtype), subdivs)
-
-
 def ray_surfel_intersection(p, n, ray_o, ray_d, r=0.1, subdivs=4, ray_near=0.0, ray_far=np.inf):
     """
     Compute intersection between a set of rays and a point cloud converted to surfels (i.e. circular patches oriented

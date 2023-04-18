@@ -440,7 +440,7 @@ class TestDenseBindings(unittest.TestCase):
         _, n = pcu.estimate_point_cloud_normals_ball(v, 0.2)
         self.assertEqual(n.shape, v.shape)
 
-    def skip_test_morton_coding_big_data(self):
+    def test_morton_coding_big_data(self):
         import point_cloud_utils as pcu
         import numpy as np
         import os
@@ -464,10 +464,9 @@ class TestDenseBindings(unittest.TestCase):
         qcodes = pcu.morton_encode(qpts_int)
 
         nn_idx = pcu.morton_knn(codes_sorted, qcodes, 7)
-        codes_sorted[nn_idx]
         self.assertEqual(nn_idx.shape, (num_qpts, 7))
 
-    def skip_test_morton_coding_small_data(self):
+    def test_morton_coding_small_data(self):
         import point_cloud_utils as pcu
         import numpy as np
         div = 1.0 / 1000.0
@@ -487,7 +486,7 @@ class TestDenseBindings(unittest.TestCase):
         codes_sorted[nn_idx]
         self.assertEqual(nn_idx.shape, (10000, 7))
 
-    def skip_test_morton_coding_tiny_data(self):
+    def test_morton_coding_tiny_data(self):
         import point_cloud_utils as pcu
         import numpy as np
         div = 1.0 / 1000.0
@@ -714,7 +713,6 @@ class TestDenseBindings(unittest.TestCase):
         cv, nv, cf, nf = pcu.connected_components(v, f)
         self.assertEqual(nv.sum(), v.shape[0])
         self.assertEqual(nf.sum(), f.shape[0])
-
 
     def test_triangle_soup_fast_winding_number(self):
         import point_cloud_utils as pcu
