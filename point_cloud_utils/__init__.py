@@ -21,7 +21,7 @@ from ._octree import *
 from ._pointcloud_normals import estimate_point_cloud_normals_knn, estimate_point_cloud_normals_ball
 from ._ray_mesh_intersector import RayMeshIntersector
 from ._ray_point_cloud_intersector import ray_surfel_intersection, RaySurfelIntersector
-from ._point_cloud_geometry import voxel_grid_mesh, pointcloud_sphere_mesh, pointcloud_surfel_mesh
+from ._point_cloud_geometry import voxel_grid_geometry, pointcloud_sphere_mesh, pointcloud_surfel_mesh
 
 MORTON_MIN = -1048576
 MORTON_MAX = 1048576

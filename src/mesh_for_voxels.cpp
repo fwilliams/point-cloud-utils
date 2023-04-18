@@ -9,7 +9,7 @@
 namespace {
 
     template <typename MatrixIJK>
-    void generate_cube_mesh(Eigen::Vector3d vox_origin, Eigen::Vector3d vox_size,
+    void generate_cube_mesh(Eigen::Vector3d vox_origin, Eigen::Vector3d vox_size, double gap_fraction,
                             const MatrixIJK& in_ijk,
                             Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>& out_v,
                             Eigen::Matrix<int, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>& out_f) {
@@ -42,14 +42,14 @@ namespace {
 
 
         std::array<float, 24> vertices = {
-            -1.0, -1.0,  1.0, //0
-             1.0, -1.0,  1.0, //1
-            -1.0,  1.0,  1.0, //2
-             1.0,  1.0,  1.0, //3
-            -1.0, -1.0, -1.0, //4
-             1.0, -1.0, -1.0, //5
-            -1.0,  1.0, -1.0, //6
-             1.0,  1.0, -1.0  //7
+             0.0, 0.0, 1.0, //0
+             1.0, 0.0, 1.0, //1
+             0.0, 1.0, 1.0, //2
+             1.0, 1.0, 1.0, //3
+             0.0, 0.0, 0.0, //4
+             1.0, 0.0, 0.0, //5
+             0.0, 1.0, 0.0, //6
+             1.0, 1.0, 0.0  //7
         };
 
         out_v.resize(8 * in_ijk.rows(), 3);
@@ -57,11 +57,15 @@ namespace {
 
         for (int i = 0; i < in_ijk.rows(); i += 1) {
             for (int vi = 0; vi < 8; vi += 1) {
-                Eigen::Vector3d v_world((vertices[vi*3+0] * 0.5 + (float) in_ijk(i, 0) + 0.5)* vox_size[0],
-                                        (vertices[vi*3+1] * 0.5 + (float) in_ijk(i, 1) + 0.5)* vox_size[1],
-                                        (vertices[vi*3+2] * 0.5 + (float) in_ijk(i, 2) + 0.5)* vox_size[0]);
-                v_world += vox_origin;
-                v_world = v_world.eval();
+                Eigen::Vector3d vertex(vertices[vi * 3 + 0] * (1.0 - gap_fraction) + 0.5 * gap_fraction,
+                                       vertices[vi * 3 + 1] * (1.0 - gap_fraction) + 0.5 * gap_fraction,
+                                       vertices[vi * 3 + 2] * (1.0 - gap_fraction) + 0.5 * gap_fraction);
+                Eigen::Vector3d voxel_translation(in_ijk(i, 0), in_ijk(i, 1), in_ijk(i, 2));
+                vertex += voxel_translation;
+                vertex.array() *= vox_size.array();
+                vertex += vox_origin;
+                vertex = vertex.eval();
+
                 out_v(i * 8 + vi, 0) = v_world[0];
                 out_v(i * 8 + vi, 1) = v_world[1];
                 out_v(i * 8 + vi, 2) = v_world[2];
@@ -79,6 +83,7 @@ namespace {
 
 npe_function(_voxel_mesh_internal)
 npe_arg(ijk, dense_int, dense_long, dense_longlong)
+npe_arg(gap_fraction, double)
 npe_arg(vox_origin, dense_double)
 npe_arg(vox_size, dense_double)
 npe_begin_code()
@@ -95,12 +100,16 @@ npe_begin_code()
     }
 
     Eigen::Vector3d vsize = vox_size;
+
+    if (vsize[0] <= 0.0 || vsize[1] <= 0.0 || vsize[2] <= 0.0) {
+        throw pybind11::value_error("Voxel size must be positive");
+    }
     Eigen::Vector3d vorgn = vox_origin;
 
     MatrixF geom_vertices;
     MatrixI geom_faces;
 
-    generate_cube_mesh(vorgn, vsize, ijk, geom_vertices, geom_faces);
+    generate_cube_mesh(vorgn, vsize, gap_fraction, ijk, geom_vertices, geom_faces);
 
     return std::make_tuple(npe::move(geom_vertices), npe::move(geom_faces));
 npe_end_code()
