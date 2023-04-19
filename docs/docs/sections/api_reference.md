@@ -110,16 +110,6 @@
 
 ----------------
 
-::: point_cloud_utils.dilate_sparse_voxel_grid
-    handler: python
-    options:
-        show_root_heading: true
-        show_source: false
-
-
-
-----------------
-
 ::: point_cloud_utils.downsample_point_cloud_on_voxel_grid
     handler: python
     options:
@@ -141,16 +131,6 @@
 ----------------
 
 ::: point_cloud_utils.earth_movers_distance
-    handler: python
-    options:
-        show_root_heading: true
-        show_source: false
-
-
-
-----------------
-
-::: point_cloud_utils.erode_sparse_voxel_grid
     handler: python
     options:
         show_root_heading: true
@@ -191,6 +171,16 @@
 ----------------
 
 ::: point_cloud_utils.estimate_point_cloud_normals_knn
+    handler: python
+    options:
+        show_root_heading: true
+        show_source: false
+
+
+
+----------------
+
+::: point_cloud_utils.flood_fill_3d
     handler: python
     options:
         show_root_heading: true
@@ -490,7 +480,7 @@
 
 ----------------
 
-::: point_cloud_utils.pointcloud_sphere_mesh
+::: point_cloud_utils.pointcloud_sphere_geometry
     handler: python
     options:
         show_root_heading: true
@@ -500,17 +490,7 @@
 
 ----------------
 
-::: point_cloud_utils.pointcloud_surfel_mesh
-    handler: python
-    options:
-        show_root_heading: true
-        show_source: false
-
-
-
-----------------
-
-::: point_cloud_utils.quantize_subdivided_sparse_voxel_grid
+::: point_cloud_utils.pointcloud_surfel_geometry
     handler: python
     options:
         show_root_heading: true
@@ -700,47 +680,7 @@
 
 ----------------
 
-::: point_cloud_utils.sparse_voxel_grid_from_pointcloud
-    handler: python
-    options:
-        show_root_heading: true
-        show_source: false
-
-
-
-----------------
-
-::: point_cloud_utils.sparse_voxel_grid_to_hex_mesh
-    handler: python
-    options:
-        show_root_heading: true
-        show_source: false
-
-
-
-----------------
-
-::: point_cloud_utils.subdivide_sparse_voxel_grid
-    handler: python
-    options:
-        show_root_heading: true
-        show_source: false
-
-
-
-----------------
-
 ::: point_cloud_utils.triangle_soup_fast_winding_number
-    handler: python
-    options:
-        show_root_heading: true
-        show_source: false
-
-
-
-----------------
-
-::: point_cloud_utils.unquantize_subdivided_sparse_voxel_grid
     handler: python
     options:
         show_root_heading: true
@@ -761,6 +701,16 @@
 ----------------
 
 ::: point_cloud_utils.voxel_grid_geometry
+    handler: python
+    options:
+        show_root_heading: true
+        show_source: false
+
+
+
+----------------
+
+::: point_cloud_utils.voxelize_triangle_mesh
     handler: python
     options:
         show_root_heading: true
