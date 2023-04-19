@@ -102,6 +102,9 @@ The following dependencies are required to install with `pip`:
 - [Ray/Surfel intersection](#ray-surfel-intersection)
 - [Computing curvature on a mesh](#computing-curvature-on-a-mesh)
 - [Computing a consistent inside/outside for a triangle soup](#computing-a-consistent-inside-and-outside-for-a-triangle-soup)
+- [Voxelizing a triangle mesh](#voxelizing-a-triangle-mesh)
+- [Flood filling a dense grid](#flood-filling-a-dense-grid)
+- [Generating a mesh for a voxel grid](#generating-a-mesh-for-a-voxel-grid)
 
 
 ### Loading meshes and point clouds
@@ -831,4 +834,47 @@ p = np.random.rand(1000, 3)
 w = pcu.triangle_soup_fast_winding_number(v, f, p.astype(v.dtype))
 ```
 
+### Voxelizing a triangle mesh
+You can get a list of voxels which intersect a mesh as follows:
+```python
+import point_cloud_utils as pcu
 
+v, f = pcu.load_mesh_vf("mesh.ply")  # Load some mesh
+
+voxel_size = 1.0 / 128  # size of each voxel
+voxel_origin = [0., 0., 0.]  # Coordinate mapping to the bottom-left-back corner of the (0, 0, 0) voxel
+
+# [num_vox, 3] array of integer coordinates for each voxel intersecting the mesh
+ijk = pcu.voxelize_triangle_mesh(v, f, voxel_size, voxel_origin)
+```
+
+### Flood filling a dense grid
+If you have a 3D grid, you can flood fill it starting from a coordinate as follows:
+```python
+import point_cloud_utils as pcu
+
+# Grid of 0/1 values (but we also support floats/doubles/etc...)
+grid = (np.random.rand([128, 128, 128]) > 0.5).astype(np.int32)
+
+fill_value = 2  # Fill starting from [0, 0, 0] with the value 2
+
+pcu.flood_fill_3d(grid, [0, 0, 0], fill_value)
+```
+
+### Generating a mesh for a voxel grid
+Suppose you an array `ijk` of integer voxel coordinates. You may wish to plot the associated voxel grid.
+You can do this via the `voxel_grid_geometry` function as follows
+
+```python
+import point_cloud_utils as pcu
+
+voxel_size = 1.0 / 200.0 # Size of each voxel
+voxel_origin = [0.0, 0.0, 0.0]  # The position of the bottom-back-left corner of the (0, 0, 0) voxel
+
+gap_fraction = 0.01  # Generate an optional small gap between voxels which can look nice -- this is a fraction of the voxel size
+
+ijk = np.random.randint(-100, 100, size=(128, 3))  # Generate 128 random voxels in [-100, 100]^3
+
+# vox_v, vox_f are vertices/faces of mesh for voxel grid
+vox_v, vox_f = pcu.voxel_grid_geoemtry(ijk, v, gap_fraction=gap_fraction, voxel_size=voxel_size, voxel_origin=voxel_origin)
+```
