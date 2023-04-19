@@ -42,7 +42,7 @@ def _validate_point_radius_internal(p, r):
     return r
 
 
-def voxel_grid_mesh(ijk, gap_fraction=0.0, voxel_size=np.array((1., 1., 1.)), voxel_origin=np.array((0., 0., 0.))):
+def voxel_grid_geometry(ijk, gap_fraction=0.0, voxel_size=np.array((1., 1., 1.)), voxel_origin=np.array((0., 0., 0.))):
     """
     Generate a triangle mesh of cubes for voxel coordinates ijk. The [0, 0, 0] voxel has its
     bottom-back-left corner at voxel_origin and each voxel has voxel_size.
@@ -64,7 +64,7 @@ def voxel_grid_mesh(ijk, gap_fraction=0.0, voxel_size=np.array((1., 1., 1.)), vo
                                 _number_or_coord3d_to_array(voxel_size, dtype=np.float64))
 
 
-def pointcloud_sphere_mesh(p, r, num_stacks, num_slices):
+def pointcloud_sphere_geometry(p, r, num_stacks, num_slices):
     """
     Generate sphere geometry for a point cloud (i.e. one sphere per point)
 
@@ -83,7 +83,7 @@ def pointcloud_sphere_mesh(p, r, num_stacks, num_slices):
     return point_cloud_splatting_geometry_internal_(p, p, "sphere", r.astype(p.dtype), num_stacks, num_slices)
 
 
-def pointcloud_surfel_mesh(p, n, r=0.1, subdivs=7):
+def pointcloud_surfel_geometry(p, n, r=0.1, subdivs=7):
     """
     Generate geometry for a point cloud encoded as surfels (i.e. circular patches centered at each point and oriented
     perpendicularly to each normal)
