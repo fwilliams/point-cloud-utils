@@ -180,6 +180,8 @@ set(PCU_BINDING_SOURCES
   ${CMAKE_CURRENT_SOURCE_DIR}/src/fast_winding_numbers.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/orient_mesh_faces.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/mesh_for_voxels.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/flood_fill_3d.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/voxelize_triangle_mesh.cpp
   )
 
   set(PCU_BINDING_SOURCES ${PCU_BINDING_SOURCES} ${CMAKE_CURRENT_SOURCE_DIR}/src/lloyd.cpp)

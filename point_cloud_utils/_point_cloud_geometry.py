@@ -42,7 +42,7 @@ def _validate_point_radius_internal(p, r):
     return r
 
 
-def voxel_grid_geometry(ijk, gap_fraction=0.0, voxel_size=np.array((1., 1., 1.)), voxel_origin=np.array((0., 0., 0.))):
+def voxel_grid_mesh(ijk, gap_fraction=0.0, voxel_size=np.array((1., 1., 1.)), voxel_origin=np.array((0., 0., 0.))):
     """
     Generate a triangle mesh of cubes for voxel coordinates ijk. The [0, 0, 0] voxel has its
     bottom-back-left corner at voxel_origin and each voxel has voxel_size.
