@@ -3,9 +3,9 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://www.fwilliams.info/point-cloud-utils/sections/surfels/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://www.fwilliams.info/point-cloud-utils/sections/voxelizing_a_triangle_mesh/" />
       <link rel="shortcut icon" href="../../img/favicon.ico" />
-    <title>Generating Surfels from Point Clouds - Point Cloud Utils</title>
+    <title>Voxelizing a Triangle Mesh - Point Cloud Utils</title>
     <link rel="stylesheet" href="../../css/theme.css" />
     <link rel="stylesheet" href="../../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
@@ -13,9 +13,9 @@
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Generating Surfels from Point Clouds";
-        var mkdocs_page_input_path = "sections/surfels.md";
-        var mkdocs_page_url = "/point-cloud-utils/sections/surfels/";
+        var mkdocs_page_name = "Voxelizing a Triangle Mesh";
+        var mkdocs_page_input_path = "sections/voxelizing_a_triangle_mesh.md";
+        var mkdocs_page_url = "/point-cloud-utils/sections/voxelizing_a_triangle_mesh/";
       </script>
     
     <script src="../../js/jquery-3.6.0.min.js" defer></script>
@@ -46,7 +46,7 @@
                 </li>
               </ul>
               <p class="caption"><span class="caption-text">Functionality</span></p>
-              <ul class="current">
+              <ul>
                   <li class="toctree-l1"><a class="reference internal" href="../mesh_io/">Mesh and Point Cloud I/O</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../point_cloud_resampling/">Resampling Point Clouds</a>
@@ -65,19 +65,7 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../ray_mesh_intersection/">Ray/Mesh Intersection</a>
                   </li>
-                  <li class="toctree-l1 current"><a class="reference internal current" href="./">Generating Surfels from Point Clouds</a>
-    <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#generating-surfel-geometry-from-an-oriented-point-cloud">Generating Surfel Geometry from an Oriented Point Cloud</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#ray-tracing-surfels">Ray Tracing Surfels</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#one-off-ray-surfel-intersection">One off Ray-Surfel Intersection</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#repeated-ray-surfel-intersection-with-raysurfelintersector">Repeated Ray-Surfel Intersection with RaySurfelIntersector</a>
-    </li>
-        </ul>
-    </li>
-    </ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../surfels/">Generating Surfels from Point Clouds</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../mesh_smoothing/">Smoothing a Mesh</a>
                   </li>
@@ -120,10 +108,9 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href="../.." class="icon icon-home" alt="Docs"></a> &raquo;</li>
-          <li>Functionality &raquo;</li>
-      <li>Generating Surfels from Point Clouds</li>
+      <li>Voxelizing a Triangle Mesh</li>
     <li class="wy-breadcrumbs-aside">
-          <a href="https://github.com/fwilliams/point-cloud-utils/tree/master/docs/docs/sections/surfels.md" class="icon icon-github"> Edit on GitHub</a>
+          <a href="https://github.com/fwilliams/point-cloud-utils/tree/master/docs/docs/sections/voxelizing_a_triangle_mesh.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
   </ul>
   <hr/>
@@ -131,103 +118,35 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="generating-surfels-from-point-clouds">Generating Surfels from Point Clouds</h1>
-<p>A <em>Surfel</em> or <em>SURF</em>ace <em>EL</em>ement is a small, flat piece of geometry centered at a point and facing perpendicularly to that points normal. With dense enough points, surfels can be used as a surface representation. The figure below illustrates a surfel representation for a model.</p>
-<p align="center">
-    <img src="../../imgs/surfels_figure.png" alt="Surfel representation for a wheel" style="width:80%">
-    <figcaption style="text-align: center; font-style: italic;">Surfel representation for the wheel model. In the zoom, note how the surface is a collection of tiny circular patches.</figcaption>
-</p>
-
-<h2 id="generating-surfel-geometry-from-an-oriented-point-cloud">Generating Surfel Geometry from an Oriented Point Cloud</h2>
-<p>Point Cloud Utils lets you easily generate surfel geometry from a point cloud</p>
+                <h1 id="voxelizing-a-triangle-mesh">Voxelizing a Triangle Mesh</h1>
+<p>Point-Cloud-Utils supports rasterizing triangle meshes to voxels as well as generating cube meshes from those voxels.</p>
 <pre><code class="language-python">import numpy as np
 import point_cloud_utils as pcu
 
-# Load points and normals
-p, n = pcu.load_mesh_vn(&quot;wheel.ply&quot;)
+vox_size = 1.0 / 256.0  # Size of each voxel
+vox_origin = [0, 0, 0]  # location of the bottom-left-back corner of the [0, 0, 0] voxel
+v, f = pcu.load_mesh_vf(&quot;truck.ply&quot;)
 
-# Constant surfel radius of 0.33 per point
-surfel_rad = np.ones(p.shape[0], dtype=p.dtype) * 0.33
+# Voxelize the input mesh, vox_ijk is an array of integer voxel coordinates
+vox_ijk = pcu.voxelize_triangle_mesh(vox_ijk, vox_size, vox_origin)
 
-# A triangle mesh representing surfel geometry
-v, f = pcu.pointcloud_surfel_mesh(p, n, surfel_rad)
-</code></pre>
-<h2 id="ray-tracing-surfels">Ray Tracing Surfels</h2>
-<p>Point Cloud Utils lets you perform fast ray-surfel queries using intel Embree. The API is very similar to the <a href="../ray_mesh_intersection">Ray-Mesh Intersection API</a>. There is a functional interface for one-off queries, and a class (<code>RaySurfelIntersector</code>) for repeated queries.</p>
-<h3 id="one-off-ray-surfel-intersection">One off Ray-Surfel Intersection</h3>
-<p>You can compute one-off ray-surfel interesection queries with <code>ray_surfel_intersection</code></p>
-<pre><code class="language-python">import numpy as np
-import point_cloud_utils as pcu
-
-# Constant surfel radius of 0.33 per point.
-surfel_rad = np.ones(p.shape[0], dtype=p.dtype) * 0.33
-
-# Generate a raster grid of Rays looking down the +Z axis
-x, y = np.mgrid[-0.5:0.5:32j, -0.5:0.5:32j]
-ray_d = np.stack([x.flatten(), y.flatten(), np.ones_like(x.flatten())], axis=-1)
-ray_d /= np.linalg.norm(ray_d, axis=-1, keepdims=True)  # Normalize ray directions -- shape [N, 3]
-
-# Rays originating at -Z looking down the Z-axis
-ray_o = np.array([0.0, 0.0, -75.0])
-ray_o = np.repeat(ray_o[None, :], ray_d.shape[0], axis=0)  # Repeat the ray origin so there is one per ray -- shape [N, 3]
-
-# pid is the id of each intersected point (or -1 for misses)
-# t is the distance along each ray to the intersected surfel
-pid, t = pcu.ray_surfel_intersection(p.astype(ray_o.dtype),
-                                     n.astype(ray_o.dtype),
-                                     ray_o, ray_d, surfel_rad)
+# Generate a cube mesh of voxels with a spacing of 0.02 voxels between each cube
+cube_v, cube_f = pcu.voxel_grid_geometry(vox_ijk, vox_size, vox_origin, gap_fraction=0.02)
 </code></pre>
 <p align="center">
-    <img src="../../imgs/ray_surfel_1.png" alt="One off ray-surfel intersection" style="width:80%">
-    <figcaption style="text-align: center; font-style: italic;">One off ray surfel intersection queries using `ray_surfel_intersection`.</figcaption>
-</p>
-
-<h3 id="repeated-ray-surfel-intersection-with-raysurfelintersector">Repeated Ray-Surfel Intersection with <code>RaySurfelIntersector</code></h3>
-<p>You can do repeated ray-surfel intersection queries to the same geometry using the <code>RaySurfelIntersector</code> class:</p>
-<pre><code class="language-python">import numpy as np
-import point_cloud_utils as pcu
-
-# Load points and normals
-p, n = pcu.load_mesh_vn(&quot;wheel.ply&quot;)
-
-# Constant surfel radius of 0.33 per point.
-surfel_rad = np.ones(p.shape[0], dtype=p.dtype) * 0.33
-
-# Generate a raster grid of Rays looking down the +Z axis
-x, y = np.mgrid[-0.5:0.5:32j, -0.5:0.5:32j]
-ray_d = np.stack([x.flatten(), y.flatten(), np.ones_like(x.flatten())], axis=-1)
-ray_d /= np.linalg.norm(ray_d, axis=-1, keepdims=True)  # Normalize ray directions -- shape [N, 3]
-
-# Rays originating at -Z looking down the Z-axis
-ray_o = np.array([0.0, 0.0, -75.0])
-ray_o = np.repeat(ray_o[None, :], ray_d.shape[0], axis=0)  # Repeat the ray origin so there is one per ray -- shape [N, 3]
-
-# Generate new rays via a random rotation
-random_rotation = np.linalg.svd(np.random.randn(3, 3))[0]
-ray_o2 = np.ascontiguousarray((random_rotation @ ray_o.T).T)
-ray_d2 = np.ascontiguousarray((random_rotation @ ray_d.T).T)
-
-intersector = pcu.RaySurfelIntersetor(p, n, surfel_rad)
-
-# pid is the id of each intersected point (or -1 for misses)
-# t is the distance along each ray to the intersected surfel
-pid, t = isect.intersect_rays(ray_o, ray_d)
-
-# pid2 is the id of each intersected point (or -1 for misses)
-# t2 is the distance along each ray to the intersected surfel
-pid2, t2 = isect.intersect_rays(ray_o2, ray_d2)
-</code></pre>
-<p align="center">
-    <img src="../../imgs/ray_surfel_2.png" alt="Repeated ray-surfel intersection" style="width:80%">
-    <figcaption style="text-align: center; font-style: italic;">Repeated ray-surfel intersection queries on the same geometry using `RaySurfelIntersector`.</figcaption>
+  <div class="row">
+    <div class="column" style="float: left; width: 50%; padding: 5px;">
+      <img src="../../imgs/voxelize_1.png" alt="Mesh to voxelize" style="width:100%">
+    </div>
+    <div class="column" style="float: left; width: 50%; padding: 5px;">
+      <img src="../../imgs/voxelize_2.png" alt="Vizualized voxels with gaps" style="width:100%">
+    </div>
+  </div>
+  <figcaption style="text-align: center; font-style: italic;"><b>Left:</b> Input mesh to voxelize. <b>Right:</b> Visualization of voxelized mesh.</figcaption>
 </p>
               
             </div>
           </div><footer>
-    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../ray_mesh_intersection/" class="btn btn-neutral float-left" title="Ray/Mesh Intersection"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../mesh_smoothing/" class="btn btn-neutral float-right" title="Smoothing a Mesh">Next <span class="icon icon-circle-arrow-right"></span></a>
-    </div>
 
   <hr/>
 
@@ -253,10 +172,6 @@ pid2, t2 = isect.intersect_rays(ray_o2, ray_d2)
         </span>
     
     
-      <span><a href="../ray_mesh_intersection/" style="color: #fcfcfc">&laquo; Previous</a></span>
-    
-    
-      <span><a href="../mesh_smoothing/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>

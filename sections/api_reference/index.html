@@ -93,6 +93,10 @@
               <ul class="current">
                   <li class="toctree-l1 current"><a class="reference internal current" href="./">API Reference</a>
     <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#point_cloud_utils.MORTON_MAX">MORTON_MAX</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#point_cloud_utils.MORTON_MIN">MORTON_MIN</a>
+    </li>
     <li class="toctree-l2"><a class="reference internal" href="#point_cloud_utils.RayMeshIntersector">RayMeshIntersector</a>
         <ul>
     <li class="toctree-l3"><a class="reference internal" href="#point_cloud_utils._ray_mesh_intersector.RayMeshIntersector.__init__">__init__()</a>
@@ -145,15 +149,11 @@
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#point_cloud_utils.deduplicate_point_cloud">deduplicate_point_cloud()</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#point_cloud_utils.dilate_sparse_voxel_grid">dilate_sparse_voxel_grid()</a>
-    </li>
     <li class="toctree-l2"><a class="reference internal" href="#point_cloud_utils.downsample_point_cloud_on_voxel_grid">downsample_point_cloud_on_voxel_grid()</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#point_cloud_utils.downsample_point_cloud_poisson_disk">downsample_point_cloud_poisson_disk()</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#point_cloud_utils.earth_movers_distance">earth_movers_distance()</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#point_cloud_utils.erode_sparse_voxel_grid">erode_sparse_voxel_grid()</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#point_cloud_utils.estimate_mesh_face_normals">estimate_mesh_face_normals()</a>
     </li>
@@ -162,6 +162,8 @@
     <li class="toctree-l2"><a class="reference internal" href="#point_cloud_utils.estimate_point_cloud_normals_ball">estimate_point_cloud_normals_ball()</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#point_cloud_utils.estimate_point_cloud_normals_knn">estimate_point_cloud_normals_knn()</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#point_cloud_utils.flood_fill_3d">flood_fill_3d()</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#point_cloud_utils.hausdorff_distance">hausdorff_distance()</a>
     </li>
@@ -180,6 +182,8 @@
     <li class="toctree-l2"><a class="reference internal" href="#point_cloud_utils.load_mesh_vc">load_mesh_vc()</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#point_cloud_utils.load_mesh_vf">load_mesh_vf()</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#point_cloud_utils.load_mesh_vfc">load_mesh_vfc()</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#point_cloud_utils.load_mesh_vfn">load_mesh_vfn()</a>
     </li>
@@ -219,7 +223,9 @@
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#point_cloud_utils.point_cloud_fast_winding_number">point_cloud_fast_winding_number()</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#point_cloud_utils.quantize_subdivided_sparse_voxel_grid">quantize_subdivided_sparse_voxel_grid()</a>
+    <li class="toctree-l2"><a class="reference internal" href="#point_cloud_utils.pointcloud_sphere_geometry">pointcloud_sphere_geometry()</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#point_cloud_utils.pointcloud_surfel_geometry">pointcloud_surfel_geometry()</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#point_cloud_utils.ray_mesh_intersection">ray_mesh_intersection()</a>
     </li>
@@ -239,6 +245,8 @@
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#point_cloud_utils.save_mesh_vf">save_mesh_vf()</a>
     </li>
+    <li class="toctree-l2"><a class="reference internal" href="#point_cloud_utils.save_mesh_vfc">save_mesh_vfc()</a>
+    </li>
     <li class="toctree-l2"><a class="reference internal" href="#point_cloud_utils.save_mesh_vfn">save_mesh_vfn()</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#point_cloud_utils.save_mesh_vfnc">save_mesh_vfnc()</a>
@@ -255,19 +263,13 @@
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#point_cloud_utils.sparse_voxel_grid_boundary">sparse_voxel_grid_boundary()</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#point_cloud_utils.sparse_voxel_grid_from_pointcloud">sparse_voxel_grid_from_pointcloud()</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#point_cloud_utils.sparse_voxel_grid_to_hex_mesh">sparse_voxel_grid_to_hex_mesh()</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#point_cloud_utils.subdivide_sparse_voxel_grid">subdivide_sparse_voxel_grid()</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#point_cloud_utils.surfel_geometry">surfel_geometry()</a>
-    </li>
     <li class="toctree-l2"><a class="reference internal" href="#point_cloud_utils.triangle_soup_fast_winding_number">triangle_soup_fast_winding_number()</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#point_cloud_utils.unquantize_subdivided_sparse_voxel_grid">unquantize_subdivided_sparse_voxel_grid()</a>
-    </li>
     <li class="toctree-l2"><a class="reference internal" href="#point_cloud_utils.voronoi_centroids_unit_cube">voronoi_centroids_unit_cube()</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#point_cloud_utils.voxel_grid_geometry">voxel_grid_geometry()</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#point_cloud_utils.voxelize_triangle_mesh">voxelize_triangle_mesh()</a>
     </li>
     </ul>
                   </li>
@@ -298,6 +300,46 @@
             <div class="section" itemprop="articleBody">
               
                 <h1 id="api-reference">API Reference</h1>
+
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h2 id="point_cloud_utils.MORTON_MAX" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">point_cloud_utils</span><span class="o">.</span><span class="n">MORTON_MAX</span> <span class="o">=</span> <span class="mi">1048576</span></code>
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-module-attribute"><code>module-attribute</code></small>
+  </span>
+
+</h2>
+
+
+  <div class="doc doc-contents first">
+  </div>
+
+</div><hr />
+
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h2 id="point_cloud_utils.MORTON_MIN" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">point_cloud_utils</span><span class="o">.</span><span class="n">MORTON_MIN</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1048576</span></code>
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-module-attribute"><code>module-attribute</code></small>
+  </span>
+
+</h2>
+
+
+  <div class="doc doc-contents first">
+  </div>
+
+</div><hr />
 
 
 <div class="doc doc-object doc-class">
@@ -1689,79 +1731,6 @@ svj : #x_new x 1 indices so that x = x_new[svj]</p></td>
 
 
 
-<h2 id="point_cloud_utils.dilate_sparse_voxel_grid" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">point_cloud_utils</span><span class="o">.</span><span class="n">dilate_sparse_voxel_grid</span><span class="p">(</span><span class="n">grid_coordinates</span><span class="p">,</span> <span class="n">count</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></code>
-
-</h2>
-
-
-  <div class="doc doc-contents first">
-  
-      <p>Perform binary dilation on a sparse voxel grid, using a 3x3 filter of ones applied count times.
-i.e. convolve the filter:
-    [[1, 1, 1],
-     [1, 1, 1],
-     [1, 1, 1]]
-with the sparse voxel grid.</p>
-
-  <p><strong>Parameters:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Description</th>
-        <th>Default</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td><code>grid_coordinates</code></td>
-          <td>
-          </td>
-          <td><p>An (n, 3) shaped integer array of voxels coordinates in the sparse voxel grid</p></td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-        <tr>
-          <td><code>count</code></td>
-          <td>
-          </td>
-          <td><p>The number of iterations of binary dilation to run</p></td>
-          <td>
-                <code>1</code>
-          </td>
-        </tr>
-    </tbody>
-  </table>
-
-  <p><strong>Returns:</strong></p>
-  <table>
-    <thead>
-      <tr>
-<th>Name</th>        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-<td><code>dilated_grid_coordinates</code></td>          <td>
-          </td>
-          <td><p>An (m, 3) integer array encoding the coordinates of the sparse voxel grid after dilation</p></td>
-        </tr>
-    </tbody>
-  </table>
-
-  </div>
-
-</div><hr />
-
-
-<div class="doc doc-object doc-function">
-
-
-
 <h2 id="point_cloud_utils.downsample_point_cloud_on_voxel_grid" class="doc doc-heading">
 <code class="highlight language-python"><span class="n">point_cloud_utils</span><span class="o">.</span><span class="n">downsample_point_cloud_on_voxel_grid</span><span class="p">(</span><span class="n">voxel_size</span><span class="p">,</span> <span class="n">points</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">min_bound</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_bound</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">min_points_per_voxel</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></code>
 
@@ -2097,79 +2066,6 @@ This implementation is numerically stable with float32.</p>
 <td><code>P</code></td>          <td>
           </td>
           <td><p>An (n, m)-shaped array of correspondences between point clouds p and q</p></td>
-        </tr>
-    </tbody>
-  </table>
-
-  </div>
-
-</div><hr />
-
-
-<div class="doc doc-object doc-function">
-
-
-
-<h2 id="point_cloud_utils.erode_sparse_voxel_grid" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">point_cloud_utils</span><span class="o">.</span><span class="n">erode_sparse_voxel_grid</span><span class="p">(</span><span class="n">grid_coordinates</span><span class="p">,</span> <span class="n">count</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></code>
-
-</h2>
-
-
-  <div class="doc doc-contents first">
-  
-      <p>Perform binary erosion on a sparse voxel grid, using a 3x3 filter of ones applied count times.
-i.e. take the negation of the convolution of the filter:
-    [[1, 1, 1],
-     [1, 1, 1],
-     [1, 1, 1]]
-with the sparse voxel grid.</p>
-
-  <p><strong>Parameters:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Description</th>
-        <th>Default</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td><code>grid_coordinates</code></td>
-          <td>
-          </td>
-          <td><p>An (n, 3) shaped integer array of voxels coordinates in the sparse voxel grid</p></td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-        <tr>
-          <td><code>count</code></td>
-          <td>
-          </td>
-          <td><p>The number of iterations of binary erosion to run</p></td>
-          <td>
-                <code>1</code>
-          </td>
-        </tr>
-    </tbody>
-  </table>
-
-  <p><strong>Returns:</strong></p>
-  <table>
-    <thead>
-      <tr>
-<th>Name</th>        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-<td><code>eroded_grid_coordinates</code></td>          <td>
-          </td>
-          <td><p>An (m, 3) integer array encoding the coordinates of the sparse voxel grid after erosion</p></td>
         </tr>
     </tbody>
   </table>
@@ -2593,6 +2489,87 @@ which are all facing the same direction, and align the final normal directions.<
   <summary>See Also</summary>
   <p>estimate_pointcloud_normals_ball</p>
 </details>
+  </div>
+
+</div><hr />
+
+
+<div class="doc doc-object doc-function">
+
+
+
+<h2 id="point_cloud_utils.flood_fill_3d" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">point_cloud_utils</span><span class="o">.</span><span class="n">flood_fill_3d</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">start_coord</span><span class="p">,</span> <span class="n">fill_value</span><span class="p">)</span></code>
+
+</h2>
+
+
+  <div class="doc doc-contents first">
+  
+      <p>Flood fill a 3D grid starting from_start_coord with fill_value. This will return a
+copy of grid where the region in the input grid which is connected to start_coord
+and shares the value of start_coord is set to fill_value.</p>
+
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>grid</code></td>
+          <td>
+                <code><span title="numpy">np</span>.<span title="numpy.ndarray">ndarray</span></code>
+          </td>
+          <td><p>[w, h, d] array of scalars as input to the flood fill</p></td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+        <tr>
+          <td><code>start_coord</code></td>
+          <td>
+          </td>
+          <td><p>(i, j, k) integer coordinate to start the flood fill</p></td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+        <tr>
+          <td><code>fill_value</code></td>
+          <td>
+          </td>
+          <td><p>scalar value to flood fill</p></td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+<th>Name</th>        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+<td><code>_type_</code></td>          <td>
+          </td>
+          <td><p>A flood filled copy of grid where all voxels which are connected to start_coord
+    are set to fill_value</p></td>
+        </tr>
+    </tbody>
+  </table>
+
   </div>
 
 </div><hr />
@@ -3374,6 +3351,85 @@ Point Cloud Utils currently supports PLY, OBJ, STL, OFF, VRML 2.0, X3D, COLLADA,
 <td><code>f</code></td>          <td>
           </td>
           <td><p>An (m, 3)-shaped integer numpy array of face indices into v</p></td>
+        </tr>
+    </tbody>
+  </table>
+
+  </div>
+
+</div><hr />
+
+
+<div class="doc doc-object doc-function">
+
+
+
+<h2 id="point_cloud_utils.load_mesh_vfc" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">point_cloud_utils</span><span class="o">.</span><span class="n">load_mesh_vfc</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span></code>
+
+</h2>
+
+
+  <div class="doc doc-contents first">
+  
+      <p>Load a triangle mesh consisting of vertex positions, face indices, and vertex colors.
+Point Cloud Utils currently supports PLY, OBJ, STL, OFF, VRML 2.0, X3D, COLLADA, 3DS.</p>
+
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>filename</code></td>
+          <td>
+          </td>
+          <td><p>Path to the file to be loaded. Must have a valid extension.</p></td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+        <tr>
+          <td><code>dtype</code></td>
+          <td>
+          </td>
+          <td><p>The floating point type of loaded data (<code>np.float32</code> or <code>np.float64</code>)</p></td>
+          <td>
+                <code>float</code>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+<th>Name</th>        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+<td><code>v</code></td>          <td>
+          </td>
+          <td><p>An (n, 3)-shaped numpy array of coordinates</p></td>
+        </tr>
+        <tr>
+<td><code>f</code></td>          <td>
+          </td>
+          <td><p>An (m, 3)-shaped integer numpy array of face indices into v</p></td>
+        </tr>
+        <tr>
+<td><code>c</code></td>          <td>
+          </td>
+          <td><p>An (n, 3)-shaped or (n, 4)-shaped numpy array of per-vertex RGB or RGBA colors (from 0.0 to 1.0)</p></td>
         </tr>
     </tbody>
   </table>
@@ -4508,7 +4564,7 @@ If set to a positive value, will use a more robust curvature estimation method (
           <td><code>sort_dist</code></td>
           <td>
           </td>
-          <td><p>(optional, defaults to True) whether to return the nearest neigbors in distance sorted order</p></td>
+          <td><p>(optional, defaults to True) whether to return the nearest neighbors in distance sorted order</p></td>
           <td>
               <em>required</em>
           </td>
@@ -4972,17 +5028,15 @@ at a set of query points</p>
 
 
 
-<h2 id="point_cloud_utils.quantize_subdivided_sparse_voxel_grid" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">point_cloud_utils</span><span class="o">.</span><span class="n">quantize_subdivided_sparse_voxel_grid</span><span class="p">(</span><span class="n">fractional_grid_coordinates</span><span class="p">,</span> <span class="n">num_subdivs</span><span class="p">)</span></code>
+<h2 id="point_cloud_utils.pointcloud_sphere_geometry" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">point_cloud_utils</span><span class="o">.</span><span class="n">pointcloud_sphere_geometry</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">num_stacks</span><span class="p">,</span> <span class="n">num_slices</span><span class="p">)</span></code>
 
 </h2>
 
 
   <div class="doc doc-contents first">
   
-      <p>subdivide_sparse_voxel_grid returns fractional voxel coordinates (since we are subdividing an integer grid).
-This function transforms these fractional coordinates into integer coordinates. This operation can be undone
-with unquantize_subdivided_sparse_voxel_grid</p>
+      <p>Generate sphere geometry for a point cloud (i.e. one sphere per point)</p>
 
   <p><strong>Parameters:</strong></p>
   <table>
@@ -4996,20 +5050,37 @@ with unquantize_subdivided_sparse_voxel_grid</p>
     </thead>
     <tbody>
         <tr>
-          <td><code>fractional_grid_coordinates</code></td>
+          <td><code>p</code></td>
           <td>
           </td>
-          <td><p>An (n, 3) shaped array of fractional voxels coordinates returned by
-                        subdivide_sparse_voxel_grid</p></td>
+          <td><p>#p by 3 array of vertex positions (each row is a vertex)</p></td>
           <td>
               <em>required</em>
           </td>
         </tr>
         <tr>
-          <td><code>num_subdivs</code></td>
+          <td><code>r</code></td>
           <td>
           </td>
-          <td><p>The number of subdivision iterations used to compute fractional_grid_coordinates</p></td>
+          <td><p>Array or Scalar describing the radius along each axis (Either one radius per vertex, or a global size for the whole point cloud)</p></td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+        <tr>
+          <td><code>num_stacks</code></td>
+          <td>
+          </td>
+          <td><p>Number of latitudal subdivisions</p></td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+        <tr>
+          <td><code>num_slices</code></td>
+          <td>
+          </td>
+          <td><p>Number of longitudal subdivisions</p></td>
           <td>
               <em>required</em>
           </td>
@@ -5027,18 +5098,110 @@ with unquantize_subdivided_sparse_voxel_grid</p>
     </thead>
     <tbody>
         <tr>
-<td><code>quantized_grid_coordinates</code></td>          <td>
+<td><code>verts</code></td>          <td>
           </td>
-          <td><p>An (n, 3) shaped array of quantized grid coordinates</p></td>
+          <td><p>an array of shape (#output_vertices, 3)</p></td>
+        </tr>
+        <tr>
+<td><code>faces</code></td>          <td>
+          </td>
+          <td><p>an array of shape (#output_faces, 3) indexing into verts</p></td>
         </tr>
     </tbody>
   </table>
 
-<details class="see-also">
-  <summary>See Also</summary>
-  <p>subdivide_sparse_voxel_grid
-unquantize_subdivided_sparse_voxel_grid</p>
-</details>
+  </div>
+
+</div><hr />
+
+
+<div class="doc doc-object doc-function">
+
+
+
+<h2 id="point_cloud_utils.pointcloud_surfel_geometry" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">point_cloud_utils</span><span class="o">.</span><span class="n">pointcloud_surfel_geometry</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">subdivs</span><span class="o">=</span><span class="mi">7</span><span class="p">)</span></code>
+
+</h2>
+
+
+  <div class="doc doc-contents first">
+  
+      <p>Generate geometry for a point cloud encoded as surfels (i.e. circular patches centered at each point and oriented
+perpendicularly to each normal)</p>
+
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>p</code></td>
+          <td>
+          </td>
+          <td><p>#p by 3 array of vertex positions (each row is a vertex)</p></td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+        <tr>
+          <td><code>n</code></td>
+          <td>
+          </td>
+          <td><p>#p by 3 array of vertex normals (each row is a vertex)</p></td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+        <tr>
+          <td><code>r</code></td>
+          <td>
+          </td>
+          <td><p>Array or Scalar describing the size of each geometry element (Either one radius per vertex, or a global size for the whole point cloud)</p></td>
+          <td>
+                <code>0.1</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>subdivs</code></td>
+          <td>
+          </td>
+          <td><p>Number of times to subdivide the patch geometry for each point (i.e. # tris per cicle)</p></td>
+          <td>
+                <code>7</code>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+<th>Name</th>        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+<td><code>verts</code></td>          <td>
+          </td>
+          <td><p>an array of shape (#output_vertices, 3)</p></td>
+        </tr>
+        <tr>
+<td><code>faces</code></td>          <td>
+          </td>
+          <td><p>an array of shape (#output_faces, 3) indexing into verts</p></td>
+        </tr>
+    </tbody>
+  </table>
+
   </div>
 
 </div><hr />
@@ -5923,6 +6086,85 @@ Point Cloud Utils currently supports PLY, OBJ, STL, OFF, VRML 2.0, X3D, COLLADA,
 
 
 
+<h2 id="point_cloud_utils.save_mesh_vfc" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">point_cloud_utils</span><span class="o">.</span><span class="n">save_mesh_vfc</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span></code>
+
+</h2>
+
+
+  <div class="doc doc-contents first">
+  
+      <p>Save a triangle mesh consisting of vertex positions, face indices, and vertex colors.
+Point Cloud Utils currently supports PLY, OBJ, STL, OFF, VRML 2.0, X3D, COLLADA, 3DS.</p>
+
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>filename</code></td>
+          <td>
+          </td>
+          <td><p>Path to the file to be saved. Must have a valid extension.</p></td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+        <tr>
+          <td><code>v</code></td>
+          <td>
+          </td>
+          <td><p>An (n, 3)-shaped numpy array of coordinates</p></td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+        <tr>
+          <td><code>f</code></td>
+          <td>
+          </td>
+          <td><p>An (m, 3)-shaped integer numpy array of face indices into v</p></td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+        <tr>
+          <td><code>c</code></td>
+          <td>
+          </td>
+          <td><p>An (n, 3)-shaped or (n, 4)-shaped numpy array of per-vertex RGB or RGBA colors (from 0.0 to 1.0)</p></td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+        <tr>
+          <td><code>dtype</code></td>
+          <td>
+          </td>
+          <td><p>The floating point written to the file (<code>np.float32</code> or <code>np.float64</code>)</p></td>
+          <td>
+                <code>np.float32</code>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+  </div>
+
+</div><hr />
+
+
+<div class="doc doc-object doc-function">
+
+
+
 <h2 id="point_cloud_utils.save_mesh_vfn" class="doc doc-heading">
 <code class="highlight language-python"><span class="n">point_cloud_utils</span><span class="o">.</span><span class="n">save_mesh_vfn</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span></code>
 
@@ -6720,336 +6962,6 @@ This implementation is numerically stable with float32.</p>
 
 
 
-<h2 id="point_cloud_utils.sparse_voxel_grid_from_pointcloud" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">point_cloud_utils</span><span class="o">.</span><span class="n">sparse_voxel_grid_from_pointcloud</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">voxel_size</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">))</span></code>
-
-</h2>
-
-
-  <div class="doc doc-contents first">
-  
-      <p>Construct a sparse voxel grid containing a point cloud, optionally returning the voxel index for each point.</p>
-
-  <p><strong>Parameters:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Description</th>
-        <th>Default</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td><code>points</code></td>
-          <td>
-          </td>
-          <td><p>An (n, 3) shaped array of points (one per row)</p></td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-        <tr>
-          <td><code>voxel_size</code></td>
-          <td>
-          </td>
-          <td><p>Either a scalar representing the sidelength of a voxel or a triple representing the sidelength of a
-        voxel along each axis.</p></td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-        <tr>
-          <td><code>origin</code></td>
-          <td>
-          </td>
-          <td><p>The origin of the point cloud corresponding to the bottom, back, left corner of the (0, 0, 0) voxel.</p></td>
-          <td>
-                <code>(0.0, 0.0, 0.0)</code>
-          </td>
-        </tr>
-    </tbody>
-  </table>
-
-  <p><strong>Returns:</strong></p>
-  <table>
-    <thead>
-      <tr>
-<th>Name</th>        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-<td><code>grid_coordinates</code></td>          <td>
-          </td>
-          <td><p>An (n, 3)-shaped array of integer grid coordinates corresponding to voxels in the sparse grid</p></td>
-        </tr>
-        <tr>
-<td><code>point_to_vox_idx</code></td>          <td>
-          </td>
-          <td><p>An (#points,)-shaped array where the i^th entry point_to_vox_idx[i] is the index into
-            grid_coordinates of of the voxel containing points[i]</p></td>
-        </tr>
-    </tbody>
-  </table>
-
-  </div>
-
-</div><hr />
-
-
-<div class="doc doc-object doc-function">
-
-
-
-<h2 id="point_cloud_utils.sparse_voxel_grid_to_hex_mesh" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">point_cloud_utils</span><span class="o">.</span><span class="n">sparse_voxel_grid_to_hex_mesh</span><span class="p">(</span><span class="n">grid_coordinates</span><span class="p">,</span> <span class="n">voxel_size</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span></code>
-
-</h2>
-
-
-  <div class="doc doc-contents first">
-  
-      <p>Convert a sparse voxel grid where the voxel indices represent the centers of each voxel coordinate into a
-hexahedral mesh.</p>
-<p>i.e. a pair of arrays (v, c) where v has shape (n, 3) and each row is a vertex position
-     and c has shape (m, 8) where the i^th row c[i, :] are the indices into v of the 8 corners of the i^th cube</p>
-
-  <p><strong>Parameters:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Description</th>
-        <th>Default</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td><code>grid_coordinates</code></td>
-          <td>
-          </td>
-          <td><p>An (n, 3) shaped integer array of voxels coordinates in the sparse voxel grid</p></td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-        <tr>
-          <td><code>voxel_size</code></td>
-          <td>
-          </td>
-          <td><p>Either a scalar encoding the length of one voxel along an axis or a triple encoding the length of a
-        voxel on each of 3 axes</p></td>
-          <td>
-                <code>1.0</code>
-          </td>
-        </tr>
-        <tr>
-          <td><code>origin</code></td>
-          <td>
-          </td>
-          <td><p>A triple encoding a global offset for the hex mesh (i.e. all vertices will have origin added to them).
-    Default is (0.0, 0.0, 0.0).</p></td>
-          <td>
-                <code>(0.0, 0.0, 0.0)</code>
-          </td>
-        </tr>
-        <tr>
-          <td><code>dtype</code></td>
-          <td>
-          </td>
-          <td><p>The scalar type of vertices to return.
-Default is np.float64.</p></td>
-          <td>
-                <code>np.float64</code>
-          </td>
-        </tr>
-    </tbody>
-  </table>
-
-  <p><strong>Returns:</strong></p>
-  <table>
-    <thead>
-      <tr>
-<th>Name</th>        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-<td><code>vertices</code></td>          <td>
-          </td>
-          <td><p>An (n, 3) shaped array where each row vertices[i, :] is a vertex position in the hex mesh</p></td>
-        </tr>
-        <tr>
-<td><code>cubes</code></td>          <td>
-          </td>
-          <td><p>An (m, 8) shaped array of indices into v where each row cubes[j, :] are indices of the 8 points forming
-the j^th cube</p></td>
-        </tr>
-    </tbody>
-  </table>
-
-  </div>
-
-</div><hr />
-
-
-<div class="doc doc-object doc-function">
-
-
-
-<h2 id="point_cloud_utils.subdivide_sparse_voxel_grid" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">point_cloud_utils</span><span class="o">.</span><span class="n">subdivide_sparse_voxel_grid</span><span class="p">(</span><span class="n">grid_coordinates</span><span class="p">,</span> <span class="n">num_subdivs</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></code>
-
-</h2>
-
-
-  <div class="doc doc-contents first">
-  
-      <p>Subdivide a sparse voxel grid such that every subdivision round splits each voxel into 8 subvoxels.</p>
-
-  <p><strong>Parameters:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Description</th>
-        <th>Default</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td><code>grid_coordinates</code></td>
-          <td>
-          </td>
-          <td><p>An (n, 3) shaped integer array of voxels coordinates in the sparse voxel grid</p></td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-        <tr>
-          <td><code>num_subdivs</code></td>
-          <td>
-          </td>
-          <td><p>The number of subdivision iterations to perform</p></td>
-          <td>
-                <code>1</code>
-          </td>
-        </tr>
-    </tbody>
-  </table>
-
-<details class="new_grid_coordinates">
-  <summary>An (m, 3) shaped array containing (fractional) coordinates representing the subdivided grid</summary>
-  <p>voxel grid. To convert to integer coordinates you can run:
-integer_grid_coords = quantize_subdivided_sparse_voxel_grid(num_subdivs)</p>
-</details>
-  </div>
-
-</div><hr />
-
-
-<div class="doc doc-object doc-function">
-
-
-
-<h2 id="point_cloud_utils.surfel_geometry" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">point_cloud_utils</span><span class="o">.</span><span class="n">surfel_geometry</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">subdivs</span><span class="o">=</span><span class="mi">7</span><span class="p">)</span></code>
-
-</h2>
-
-
-  <div class="doc doc-contents first">
-  
-      <p>Generate geometry for a point cloud encoded as surfels (i.e. circular patches centered at each point and oriented
-perpendicularly to each normal)</p>
-
-  <p><strong>Parameters:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Description</th>
-        <th>Default</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td><code>p</code></td>
-          <td>
-          </td>
-          <td><p>#p by 3 array of vertex positions (each row is a vertex)</p></td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-        <tr>
-          <td><code>n</code></td>
-          <td>
-          </td>
-          <td><p>#p by 3 array of vertex normals (each row is a vertex)</p></td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-        <tr>
-          <td><code>r</code></td>
-          <td>
-          </td>
-          <td><p>Array or Scalar describing the size of each geometry element (Either one radius per vertex, or a global size for the whole point cloud)</p></td>
-          <td>
-                <code>0.1</code>
-          </td>
-        </tr>
-        <tr>
-          <td><code>subdivs</code></td>
-          <td>
-          </td>
-          <td><p>Number of times to subdivide the patch geometry for each point (i.e. # tris per cicle)</p></td>
-          <td>
-                <code>7</code>
-          </td>
-        </tr>
-    </tbody>
-  </table>
-
-  <p><strong>Returns:</strong></p>
-  <table>
-    <thead>
-      <tr>
-<th>Name</th>        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-<td><code>verts</code></td>          <td>
-          </td>
-          <td><p>an array of shape (#output_vertices, 3)</p></td>
-        </tr>
-        <tr>
-<td><code>faces</code></td>          <td>
-          </td>
-          <td><p>an array of shape (#output_faces, 3) indexing into verts</p></td>
-        </tr>
-    </tbody>
-  </table>
-
-  </div>
-
-</div><hr />
-
-
-<div class="doc doc-object doc-function">
-
-
-
 <h2 id="point_cloud_utils.triangle_soup_fast_winding_number" class="doc doc-heading">
 <code class="highlight language-python"><span class="n">point_cloud_utils</span><span class="o">.</span><span class="n">triangle_soup_fast_winding_number</span><span class="p">()</span></code>
   
@@ -7138,80 +7050,6 @@ at a set of query points</p>
 
 
 
-<h2 id="point_cloud_utils.unquantize_subdivided_sparse_voxel_grid" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">point_cloud_utils</span><span class="o">.</span><span class="n">unquantize_subdivided_sparse_voxel_grid</span><span class="p">(</span><span class="n">quantized_grid_coordinates</span><span class="p">,</span> <span class="n">num_subdivs</span><span class="p">)</span></code>
-
-</h2>
-
-
-  <div class="doc doc-contents first">
-  
-      <p>Undo quantization done by quantize_subdivided_sparse_voxel_grid.</p>
-
-  <p><strong>Parameters:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Description</th>
-        <th>Default</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td><code>quantized_grid_coordinates</code></td>
-          <td>
-          </td>
-          <td><p>An (n, 3) shaped array of quantized voxels coordinates returned by
-                        quantize_subdivided_sparse_voxel_grid</p></td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-        <tr>
-          <td><code>num_subdivs</code></td>
-          <td>
-          </td>
-          <td><p>The number of subdivision iterations used to compute the original fractional coordinates</p></td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-    </tbody>
-  </table>
-
-  <p><strong>Returns:</strong></p>
-  <table>
-    <thead>
-      <tr>
-<th>Name</th>        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-<td><code>fractional_grid_coordinates</code></td>          <td>
-          </td>
-          <td><p>An (n, 3) shaped array of fractional grid coordinates</p></td>
-        </tr>
-    </tbody>
-  </table>
-
-<details class="see-also">
-  <summary>See Also</summary>
-  <p>subdivide_sparse_voxel_grid
-quantize_subdivided_sparse_voxel_grid</p>
-</details>
-  </div>
-
-</div><hr />
-
-
-<div class="doc doc-object doc-function">
-
-
-
 <h2 id="point_cloud_utils.voronoi_centroids_unit_cube" class="doc doc-heading">
 <code class="highlight language-python"><span class="n">point_cloud_utils</span><span class="o">.</span><span class="n">voronoi_centroids_unit_cube</span><span class="p">()</span></code>
   
@@ -7282,6 +7120,192 @@ quantize_subdivided_sparse_voxel_grid</p>
 <td><code>lloyd_pts</code></td>          <td>
           </td>
           <td><p>a (n, 3)-shaped array of point samples in the unit square [0, 1]^3</p></td>
+        </tr>
+    </tbody>
+  </table>
+
+  </div>
+
+</div><hr />
+
+
+<div class="doc doc-object doc-function">
+
+
+
+<h2 id="point_cloud_utils.voxel_grid_geometry" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">point_cloud_utils</span><span class="o">.</span><span class="n">voxel_grid_geometry</span><span class="p">(</span><span class="n">ijk</span><span class="p">,</span> <span class="n">voxel_size</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">((</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)),</span> <span class="n">voxel_origin</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">((</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)),</span> <span class="n">gap_fraction</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span></code>
+
+</h2>
+
+
+  <div class="doc doc-contents first">
+  
+      <p>Generate a triangle mesh of cubes for voxel coordinates ijk. The [0, 0, 0] voxel has its
+bottom-back-left corner at voxel_origin and each voxel has voxel_size.</p>
+
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>ijk</code></td>
+          <td>
+                <code><span title="numpy">np</span>.<span title="numpy.ndarray">ndarray</span></code>
+          </td>
+          <td><p>[num_voxels, 3] array of integer voxel coordinates</p></td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+        <tr>
+          <td><code>voxel_size</code></td>
+          <td>
+          </td>
+          <td><p>Float or triple representing the size of each voxel.
+        Defaults to np.array((1., 1., 1.)).</p></td>
+          <td>
+                <code>np.array((1.0, 1.0, 1.0))</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>voxel_origin</code></td>
+          <td>
+          </td>
+          <td><p>Bottom-back-left coordinate of the [0, 0, 0] voxel.
+          Defaults to np.array((0., 0., 0.)).</p></td>
+          <td>
+                <code>np.array((0.0, 0.0, 0.0))</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>gap_fraction</code></td>
+          <td>
+          </td>
+          <td><p>Fraction of a voxel to leave as a gap between voxels (default 0.0)</p></td>
+          <td>
+                <code>0.0</code>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+<th>Name</th>        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+<td><code>v</code></td>          <td>
+          </td>
+          <td><p>Numpy array of vertices for the cube mesh</p></td>
+        </tr>
+        <tr>
+<td><code>f</code></td>          <td>
+          </td>
+          <td><p>Numpy array of faces for the cube mesh</p></td>
+        </tr>
+    </tbody>
+  </table>
+
+  </div>
+
+</div><hr />
+
+
+<div class="doc doc-object doc-function">
+
+
+
+<h2 id="point_cloud_utils.voxelize_triangle_mesh" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">point_cloud_utils</span><span class="o">.</span><span class="n">voxelize_triangle_mesh</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">voxel_size</span><span class="p">,</span> <span class="n">voxel_origin</span><span class="p">)</span></code>
+
+</h2>
+
+
+  <div class="doc doc-contents first">
+  
+      <p>Return ijk coordinates of voxels which intersect the given mesh.
+Each voxel is assumed to have size voxel_size (scalar or triple of floats) and
+the (0, 0, 0) voxel has its bottom-back-left corner at voxel_origin</p>
+
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>v</code></td>
+          <td>
+                <code><span title="numpy">np</span>.<span title="numpy.ndarray">ndarray</span></code>
+          </td>
+          <td><p>[num_vertices, 3] array of triangle mesh vertices</p></td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+        <tr>
+          <td><code>f</code></td>
+          <td>
+                <code><span title="numpy">np</span>.<span title="numpy.ndarray">ndarray</span></code>
+          </td>
+          <td><p>[num_faces, 3] array of face indexes into v</p></td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+        <tr>
+          <td><code>voxel_size</code></td>
+          <td>
+          </td>
+          <td><p>A float or triple specifying the size of each voxel</p></td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+        <tr>
+          <td><code>voxel_origin</code></td>
+          <td>
+          </td>
+          <td><p>A float or triple specifying the the position of the
+          bottom-back-left corner of the (0, 0, 0) voxel</p></td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+<th>Name</th>        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+<td><code>ijk</code></td>          <td>
+          </td>
+          <td><p>[num_vox, 3] array of integer ijk coordinates for each voxel intersecting the mesh</p></td>
         </tr>
     </tbody>
   </table>
