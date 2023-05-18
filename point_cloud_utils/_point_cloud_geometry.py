@@ -42,18 +42,18 @@ def _validate_point_radius_internal(p, r):
     return r
 
 
-def voxel_grid_geometry(ijk, gap_fraction=0.0, voxel_size=np.array((1., 1., 1.)), voxel_origin=np.array((0., 0., 0.))):
+def voxel_grid_geometry(ijk, voxel_size=np.array((1., 1., 1.)), voxel_origin=np.array((0., 0., 0.)), gap_fraction=0.0):
     """
     Generate a triangle mesh of cubes for voxel coordinates ijk. The [0, 0, 0] voxel has its
     bottom-back-left corner at voxel_origin and each voxel has voxel_size.
 
     Args:
         ijk np.ndarray: [num_voxels, 3] array of integer voxel coordinates
-        gap_fraction: scalar between [0, 1) indicating how much of a gap to leave between voxels
         voxel_size: Float or triple representing the size of each voxel.
                     Defaults to np.array((1., 1., 1.)).
         voxel_origin: Bottom-back-left coordinate of the [0, 0, 0] voxel.
                       Defaults to np.array((0., 0., 0.)).
+        gap_fraction: Fraction of a voxel to leave as a gap between voxels (default 0.0)
 
     Returns:
         v: Numpy array of vertices for the cube mesh

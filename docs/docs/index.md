@@ -4,7 +4,7 @@
 </p>
 
 **Point Cloud Utils** is an _easy-to-use_ Python library for processing
-and manipulating 3D point clouds and meshes. 
+and manipulating 3D point clouds and meshes.
 
 !!! note
     In spite of its name, Point Cloud Utils should really be thought of as a general purpose geometry library, used for more than operating on point clouds.
@@ -68,6 +68,7 @@ Point Cloud Utils includes utilities to perform the following tasks:
 * [Calculating Mesh Face Areas](sections/calculating_mesh_face_areas).
 * [Consistently Orienting Mesh Faces](sections/consistently_orienting_mesh_faces.md).
 * [Morton Encoding/Decoding a Point Cloud](sections/morton_coding.md).
+* [Voxelizing a Triangle Mesh](sections/voxelizing_a_triangle_mesh.md).
 
 ## Recipes for Common Tasks
 We include recipes for common geometry tasks that you should be able to copy paste into your existing codebase. These only depend on Point-Cloud-Utils, NumPy and the Python standard library making them very easy to integrate with your code.
@@ -78,7 +79,7 @@ We include recipes for common geometry tasks that you should be able to copy pas
 All available functions and classes are listed in the [API reference](sections/api_reference.md)
 
 ## About
-**Author:** [Francis Williams](https://www.fwilliams.info). 
+**Author:** [Francis Williams](https://www.fwilliams.info).
 <br>
 **Source Code:** [https://github.com/fwilliams/point-cloud-utils](https://github.com/fwilliams/point-cloud-utils)
 <br><br>
