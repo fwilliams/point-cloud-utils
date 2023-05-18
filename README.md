@@ -876,5 +876,5 @@ gap_fraction = 0.01  # Generate an optional small gap between voxels which can l
 ijk = np.random.randint(-100, 100, size=(128, 3))  # Generate 128 random voxels in [-100, 100]^3
 
 # vox_v, vox_f are vertices/faces of mesh for voxel grid
-vox_v, vox_f = pcu.voxel_grid_geoemtry(ijk, v, gap_fraction=gap_fraction, voxel_size=voxel_size, voxel_origin=voxel_origin)
+vox_v, vox_f = pcu.voxel_grid_geoemtry(ijk, v, voxel_size=voxel_size, voxel_origin=voxel_origin, gap_fraction=gap_fraction)
 ```
