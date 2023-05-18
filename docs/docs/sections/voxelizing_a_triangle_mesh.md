@@ -18,11 +18,11 @@ cube_v, cube_f = pcu.voxel_grid_geometry(vox_ijk, vox_size, vox_origin, gap_frac
 
 <p align="center">
   <div class="row">
-    <div class="column" style="float: left; width: 50%; padding: 5px;">
-      <img src="../../imgs/voxelize_1.png" alt="Mesh to voxelize" style="width:100%">
+    <div class="column" style="float: left; width: 47%; padding: 5px;">
+      <img src="../../imgs/voxelize_2.png" alt="Mesh to voxelize" style="width:100%">
     </div>
-    <div class="column" style="float: left; width: 50%; padding: 5px;">
-      <img src="../../imgs/voxelize_2.png" alt="Vizualized voxels with gaps" style="width:100%">
+    <div class="column" style="float: left; width: 49%; padding: 5px;">
+      <img src="../../imgs/voxelize_1.png" alt="Vizualized voxels with gaps" style="width:100%">
     </div>
   </div>
   <figcaption style="text-align: center; font-style: italic;"><b>Left:</b> Input mesh to voxelize. <b>Right:</b> Visualization of voxelized mesh.</figcaption>

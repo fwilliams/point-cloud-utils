@@ -24,6 +24,7 @@ nav:
       - "Calculating Mesh Face Areas": sections/calculating_mesh_face_areas.md
       - "Consistently Orienting Mesh Faces": sections/consistently_orienting_mesh_faces.md
       - "Morton Encoding/Decoding a Point Cloud" : sections/morton_coding
+      - "Voxelizing a Triangle Mesh" : sections/voxelizing_a_triangle_mesh
   - Recipes:
       - "Making a ShapeNet SDF dataset": sections/cleaning_shapenet.md
   - API Reference:
