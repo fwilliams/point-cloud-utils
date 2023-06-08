@@ -10,7 +10,7 @@ vox_origin = [0, 0, 0]  # location of the bottom-left-back corner of the [0, 0, 
 v, f = pcu.load_mesh_vf("truck.ply")
 
 # Voxelize the input mesh, vox_ijk is an array of integer voxel coordinates
-vox_ijk = pcu.voxelize_triangle_mesh(vox_ijk, vox_size, vox_origin)
+vox_ijk = pcu.voxelize_triangle_mesh(v, f, vox_size, vox_origin)
 
 # Generate a cube mesh of voxels with a spacing of 0.02 voxels between each cube
 cube_v, cube_f = pcu.voxel_grid_geometry(vox_ijk, vox_size, vox_origin, gap_fraction=0.02)
