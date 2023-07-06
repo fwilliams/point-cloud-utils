@@ -18,7 +18,7 @@ p, n = pcu.load_mesh_vn("wheel.ply")
 surfel_rad = np.ones(p.shape[0], dtype=p.dtype) * 0.33
 
 # A triangle mesh representing surfel geometry
-v, f = pcu.pointcloud_surfel_mesh(p, n, surfel_rad)
+v, f = pcu.pointcloud_surfel_geometry(p, n, surfel_rad)
 ```
 
 ## Ray Tracing Surfels
