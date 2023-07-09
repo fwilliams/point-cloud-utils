@@ -60,8 +60,8 @@ endif()
 
 # Build manifold as a static lib
 download_dep(manifold
-  GIT_REPOSITORY https://github.com/hjwdzh/Manifold.git
-  GIT_TAG 81fd342e578e29fc15fb75d2b4d1e3c821fe33cb
+  GIT_REPOSITORY https://github.com/AppledoreM/Manifold
+  GIT_TAG 28e335f8bfde0721f39fc439e362727c6ad47987
 )
 set(MANIFOLD_SRC_DIR ${EXTERNAL_DEP_DIR}/manifold/src)
 set(
