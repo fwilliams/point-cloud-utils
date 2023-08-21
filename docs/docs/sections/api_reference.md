@@ -80,6 +80,26 @@
 
 ----------------
 
+::: point_cloud_utils.cube_mesh
+    handler: python
+    options:
+        show_root_heading: true
+        show_source: false
+
+
+
+----------------
+
+::: point_cloud_utils.cylinder_mesh
+    handler: python
+    options:
+        show_root_heading: true
+        show_source: false
+
+
+
+----------------
+
 ::: point_cloud_utils.decimate_triangle_mesh
     handler: python
     options:
@@ -671,6 +691,16 @@
 ----------------
 
 ::: point_cloud_utils.sparse_voxel_grid_boundary
+    handler: python
+    options:
+        show_root_heading: true
+        show_source: false
+
+
+
+----------------
+
+::: point_cloud_utils.sphere_mesh
     handler: python
     options:
         show_root_heading: true

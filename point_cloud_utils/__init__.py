@@ -22,7 +22,7 @@ from ._ray_mesh_intersector import RayMeshIntersector
 from ._ray_point_cloud_intersector import ray_surfel_intersection, RaySurfelIntersector
 from ._point_cloud_geometry import voxel_grid_geometry, pointcloud_sphere_geometry, pointcloud_surfel_geometry
 from ._voxels import flood_fill_3d, voxelize_triangle_mesh
-
+from ._mesh_primitives import sphere_mesh, cube_mesh, cylinder_mesh
 
 MORTON_MIN = -1048576
 MORTON_MAX = 1048576
