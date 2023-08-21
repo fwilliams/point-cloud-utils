@@ -70,6 +70,16 @@
 
 ----------------
 
+::: point_cloud_utils.cone_mesh
+    handler: python
+    options:
+        show_root_heading: true
+        show_source: false
+
+
+
+----------------
+
 ::: point_cloud_utils.connected_components
     handler: python
     options:

@@ -1,17 +1,17 @@
 import numpy as np
 
-# These are all writen by ChatGPT lol
+# These are all writen by ChatGPT lol :)
 
-def cylinder_mesh(radius, height, sides, top=True, bottom=True):
+def cylinder_mesh(radius, height, sides=16, top=True, bottom=True):
     """
-    Generate a triangle mesh for a cylinder.
+    Generate a triangle mesh for a cylinder centered at the origin aligned with the y-axis.
     
     Args:
         radius (float) : Radius of the cylinder.
         height (float) : Height of the cylinder.
-        sides (int) : Number of sides (segments) for the cylinder.
-        top (bool) : Include top face if True.
-        bottom (bool) : Include bottom face if True.
+        sides (int) : Number of sides (segments) for the cylinder (default = 16).
+        top (bool) : Include top face if True (default = True).
+        bottom (bool) : Include bottom face if True (default = True).
         
     Returns:
         vertices (np.ndarray) : List of vertex coordinates (shape = (v, 3)).
@@ -79,11 +79,11 @@ def cylinder_mesh(radius, height, sides, top=True, bottom=True):
 
 def cube_mesh():
     """
-    Generate a triangle mesh for a cube.
+    Generate a triangle mesh for a unit cube centered at the origin.
 
     Returns:
-        v (np.ndarray) : Mesh vertices as an (n, 3)-shaped NumPy array
-        f (np.ndarray) : Mesh face indices as an (f, 3)-shaped NumPy array
+        vertices (np.ndarray) : Mesh vertices as an (n, 3)-shaped NumPy array
+        faces (np.ndarray) : Mesh face indices as an (f, 3)-shaped NumPy array
     """
     size = 0.5
     vertices = [
@@ -115,14 +115,14 @@ def cube_mesh():
 
 def sphere_mesh(subdivisions=3):
     """
-    Generate a triangle mesh approximating a unit sphere centered at the origin by subdividing an isocahedron
+    Generate a triangle mesh approximating a unit sphere centered at the origin by subdividing an isocahedron.
     
     Args:
-        subdivisions (int) : Number of times to subdivide an isocahedron to get the mesh 
+        subdivisions (int) : Number of times to subdivide an isocahedron to get the mesh (default = 3).
 
     Returns:
-        v (np.ndarray) : Mesh vertices as an (n, 3)-shaped NumPy array
-        f (np.ndarray) : Mesh face indices as an (f, 3)-shaped NumPy array
+        vertices (np.ndarray) : Mesh vertices as an (n, 3)-shaped NumPy array
+        faces (np.ndarray) : Mesh face indices as an (f, 3)-shaped NumPy array
     """
 
     if not isinstance(subdivisions, int):
@@ -206,3 +206,51 @@ def sphere_mesh(subdivisions=3):
     vertices /= np.linalg.norm(vertices, axis=1, keepdims=True)
     
     return vertices, triangles
+
+
+def cone_mesh(radius, height, sides=16, bottom=True):
+    """
+    Generate a triangle mesh for a cone centered at the origin and pointing up the y-axis.
+
+    Args:
+        radius (float): Radius of the cone's base.
+        height (float): Height of the cone.
+        sides (int): Number of segments used to approximate the circular base (default = 16).
+        bottom (bool): Whether to include faces for the bottom/base of the code (default = True).
+
+    Returns:
+        vertices (np.ndarray) : Mesh vertices as an (n, 3)-shaped NumPy array
+        faces (np.ndarray) : Mesh face indices as an (f, 3)-shaped NumPy array
+    """
+    vertices = []
+    faces = []
+
+    # Generate vertices for the cone sides
+    for i in range(sides):
+        angle = 2 * np.pi * i / sides
+        x = radius * np.cos(angle)
+        y = -height/2
+        z = radius * np.sin(angle)
+        vertices.append((x, y, z))
+
+    # Apex of the cone
+    vertices.append((0.0, height/2, 0.0))
+
+    # Generate faces for the cone sides
+    for i in range(sides):
+        if i == sides - 1:
+            faces.append((i, sides, 0))
+        else:
+            faces.append((i, sides, i + 1))
+
+    # Generate faces for the base
+    if bottom:
+        base_center = len(vertices)
+        vertices.append((0.0, 0.0, 0.0))
+        for i in range(sides):
+            if i == sides - 1:
+                faces.append((i, 0, base_center))
+            else:
+                faces.append((i, i + 1, base_center))
+
+    return np.array(vertices), np.array(faces)
