@@ -523,13 +523,12 @@ class TestDenseBindings(unittest.TestCase):
         import numpy as np
 
         # v is a nv by 3 NumPy array of vertices
-        v = pcu.load_mesh_v(os.path.join(self.test_path, "duplicated_pcloud.ply"))
+        v, f = pcu.load_mesh_vf(os.path.join(self.test_path, "bunny_duplicates.ply"))
 
-        v2, idx_v_to_v2, idx_v2_to_v, f2= pcu.deduplicate_point_cloud(v, 1e-11, return_index=True)
+        v2, f2, idx_v_to_v2, idx_v2_to_v = pcu.deduplicate_mesh_vertices(v, f, 1e-11, return_index=True)
         self.assertLess(v2.shape[0], v.shape[0])
         self.assertTrue(np.all(np.equal(v2[idx_v2_to_v], v)))
         self.assertTrue(np.all(np.equal(v[idx_v_to_v2], v2)))
-        self.assertTrue(v2.shape[0] == f2.shape[0])
         self.assertTrue(v2.shape[1] == 3)
         self.assertTrue(f2.shape[1] == 3)
 
