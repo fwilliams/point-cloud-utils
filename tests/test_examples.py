@@ -517,6 +517,20 @@ class TestDenseBindings(unittest.TestCase):
         self.assertLess(v2.shape[0], v.shape[0])
         self.assertTrue(np.all(np.equal(v2[idx_v2_to_v], v)))
         self.assertTrue(np.all(np.equal(v[idx_v_to_v2], v2)))
+        
+    def test_remove_duplicate_mesh(self):
+        import point_cloud_utils as pcu
+        import numpy as np
+
+        # v is a nv by 3 NumPy array of vertices
+        v, f = pcu.load_mesh_vf(os.path.join(self.test_path, "bunny_duplicates.ply"))
+
+        v2, f2, idx_v_to_v2, idx_v2_to_v = pcu.deduplicate_mesh_vertices(v, f, 1e-11, return_index=True)
+        self.assertLess(v2.shape[0], v.shape[0])
+        self.assertTrue(np.all(np.equal(v2[idx_v2_to_v], v)))
+        self.assertTrue(np.all(np.equal(v[idx_v_to_v2], v2)))
+        self.assertTrue(v2.shape[1] == 3)
+        self.assertTrue(f2.shape[1] == 3)
 
     def test_downsample_mesh_voxel_grid(self):
         import point_cloud_utils as pcu

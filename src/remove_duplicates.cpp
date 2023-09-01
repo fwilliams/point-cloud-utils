@@ -82,7 +82,7 @@ npe_begin_code()
     Eigen::Matrix<int32_t, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> svi;
     Eigen::Matrix<int32_t, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> svj;
 
-    igl::remove_duplicate_vertices(v_copy, f_copy, epsilon, v_out, f_out, svi, svj);
+    igl::remove_duplicate_vertices(v_copy, f_copy, epsilon, v_out, svi, svj, f_out);
 
     if (return_index) {
         return pybind11::cast(std::make_tuple(npe::move(v_out), npe::move(f_out), npe::move(svi), npe::move(svj)));
