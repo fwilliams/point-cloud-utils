@@ -16,7 +16,7 @@ Returns:
 )Qu8mg5v7";
 npe_function(mesh_face_areas)
 npe_arg(v, dense_float, dense_double)
-npe_arg(f, dense_int, dense_long, dense_longlong)
+npe_arg(f, dense_int32, dense_int64)
 npe_default_arg(num_threads, int, -1)
 npe_doc(triangle_mesh_face_areas_doc)
 npe_begin_code()

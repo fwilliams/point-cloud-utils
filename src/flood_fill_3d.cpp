@@ -53,7 +53,7 @@ void flood_fill(EigenMat& grid,
 
 
 npe_function(_flood_fill_3d_internal)
-npe_arg(grid, dense_int, dense_long, dense_longlong, dense_float, dense_double)
+npe_arg(grid, dense_int32, dense_int64, dense_float, dense_double)
 npe_arg(seed_x, int)
 npe_arg(seed_y, int)
 npe_arg(seed_z, int)

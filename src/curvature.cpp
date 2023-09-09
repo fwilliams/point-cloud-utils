@@ -45,7 +45,7 @@ Returns:
 )Qu8mg5v7";
 npe_function(mesh_principal_curvatures)
 npe_arg(v, dense_float, dense_double)
-npe_arg(f, dense_int, dense_long, dense_longlong)
+npe_arg(f, dense_int32, dense_int64, dense_uint32, dense_uint64)
 npe_default_arg(r, double, -1.0)
 npe_doc(mesh_principal_curvatures_doc)
 npe_begin_code()
@@ -94,7 +94,7 @@ npe_end_code()
 //)Qu8mg5v7";
 //npe_function(mesh_mean_and_gaussian_curvatures)
 //npe_arg(v, dense_float, dense_double)
-//npe_arg(f, dense_int, dense_long, dense_longlong)
+//npe_arg(f, dense_int32, dense_int64)
 //npe_doc(mesh_mean_and_gaussian_curvatures_doc)
 //npe_begin_code()
 //{
@@ -122,7 +122,7 @@ npe_end_code()
 //)Qu8mg5v7";
 //npe_function(pointcloud_apss_curvature)
 //npe_arg(v, dense_float, dense_double)
-//npe_arg(f, dense_int, dense_long, dense_longlong)
+//npe_arg(f, dense_int32, dense_int64)
 //npe_doc(pointcloud_apss_curvature_doc)
 //npe_begin_code()
 //{

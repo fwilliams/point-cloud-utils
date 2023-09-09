@@ -41,7 +41,7 @@ Returns:
 npe_function(laplacian_smooth_mesh)
 npe_doc(laplacian_smooth_mesh_doc)
 npe_arg(v, dense_float, dense_double)
-npe_arg(f, dense_int, dense_longlong, dense_uint, dense_ulonglong)
+npe_arg(f, dense_int32, dense_int64, dense_uint32, dense_uint64)
 npe_arg(num_iters, int)
 npe_default_arg(use_cotan_weights, bool, false)
 npe_begin_code()

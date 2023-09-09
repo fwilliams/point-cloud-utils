@@ -67,7 +67,7 @@ void voxelize_triangle_mesh(const VertexMat& v, const FaceMat& f,
 
 npe_function(_voxelize_triangle_mesh_internal)
 npe_arg(v, dense_float, dense_double)
-npe_arg(f, dense_int, dense_long, dense_longlong)
+npe_arg(f, dense_int32, dense_int64, dense_uint32, dense_uint64)
 npe_arg(vox_origin, dense_double)
 npe_arg(vox_size, npe_matches(vox_origin))
 npe_begin_code()

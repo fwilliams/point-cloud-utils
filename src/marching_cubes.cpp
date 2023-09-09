@@ -35,7 +35,7 @@ See Also:
 npe_function(marching_cubes_sparse_voxel_grid)
 npe_arg(grid_scalars, dense_float, dense_double)
 npe_arg(grid_coordinates, dense_float, dense_double)
-npe_arg(cube_indices, dense_int, dense_long, dense_longlong)
+npe_arg(cube_indices, dense_int32, dense_int64, dense_uint32, dense_uint64)
 npe_arg(isovalue, double)
 npe_doc(marching_cubes_sparse_voxel_grid_doc)
 npe_begin_code()

@@ -24,8 +24,8 @@ Returns:
 
 )Qu8mg5v7";
 npe_function(morton_add)
-npe_arg(codes_1, dense_uint, dense_ulong, dense_ulonglong)
-npe_arg(codes_2, dense_uint, dense_ulong, dense_ulonglong)
+npe_arg(codes_1, dense_uint32, dense_uint64)
+npe_arg(codes_2, dense_uint32, dense_uint64)
 npe_default_arg(num_threads, int, -1)
 npe_doc(morton_add)
 npe_begin_code()
@@ -104,8 +104,8 @@ Returns:
 
 )Qu8mg5v7";
 npe_function(morton_subtract)
-npe_arg(codes_1, dense_uint, dense_ulong, dense_ulonglong)
-npe_arg(codes_2, dense_uint, dense_ulong, dense_ulonglong)
+npe_arg(codes_1, dense_uint32, dense_uint64)
+npe_arg(codes_2, dense_uint32, dense_uint64)
 npe_default_arg(num_threads, int, -1)
 npe_doc(morton_subtract)
 npe_begin_code()
@@ -183,7 +183,7 @@ Returns:
 
 )Qu8mg5v7";
 npe_function(morton_encode)
-npe_arg(pts, dense_int, dense_long, dense_longlong)
+npe_arg(pts, dense_int32, dense_int64)
 npe_default_arg(num_threads, int, -1)
 npe_doc(morton_encode)
 npe_begin_code()
@@ -251,7 +251,7 @@ Returns:
 
 )Qu8mg5v7";
 npe_function(morton_decode)
-npe_arg(codes, dense_uint, dense_ulong, dense_ulonglong)
+npe_arg(codes, dense_uint32, dense_uint64)
 npe_doc(morton_decode)
 npe_default_arg(num_threads, int, -1)
 npe_begin_code()
@@ -322,7 +322,7 @@ Returns:
 
 )Qu8mg5v7";
 npe_function(morton_knn)
-npe_arg(codes, dense_uint, dense_ulong, dense_ulonglong)
+npe_arg(codes, dense_uint32, dense_uint64)
 npe_arg(qcodes, npe_matches(codes))
 npe_arg(k, int)
 npe_default_arg(sort_dist, bool, true)

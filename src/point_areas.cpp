@@ -15,7 +15,7 @@ Returns:
 )igl_Qu8mg5v7";
 npe_function(estimate_point_cloud_areas)
 npe_arg(p, dense_float, dense_double)
-npe_arg(i, dense_int, dense_long, dense_longlong)
+npe_arg(i, dense_int32, dense_int64, dense_uint32, dense_uint64)
 npe_arg(n, npe_matches(v))
 npe_doc(estimate_point_cloud_areas_doc)
 npe_begin_code()

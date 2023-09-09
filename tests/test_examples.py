@@ -601,8 +601,8 @@ class TestDenseBindings(unittest.TestCase):
         p22 = o2[mask2] + t2[mask2, np.newaxis] * d[mask2]
         self.assertTrue(np.allclose(p21, p22, atol=1e-5))
 
-        self.assertTrue(np.alltrue(mask1 == mask2))
-        self.assertTrue(np.alltrue(fid2 == fid1))
+        self.assertTrue(np.all(mask1 == mask2))
+        self.assertTrue(np.all(fid2 == fid1))
         self.assertTrue(np.allclose(bc2, bc1))
         self.assertTrue(np.allclose(t1, t2))
 

@@ -159,7 +159,7 @@ npe_end_code()
 
 
 npe_function(dilate_sparse_voxel_grid_internal)
-npe_arg(grid_coordinates, dense_int, dense_long, dense_longlong)
+npe_arg(grid_coordinates, dense_int32, dense_int64, dense_uint32, dense_uint64)
 npe_begin_code()
 {
     validate_sparse_voxel_grid(grid_coordinates);
@@ -244,7 +244,7 @@ npe_end_code()
 
 
 npe_function(erode_sparse_voxel_grid_internal)
-npe_arg(grid_coordinates, dense_int, dense_long, dense_longlong)
+npe_arg(grid_coordinates, dense_int32, dense_int64, dense_uint32, dense_uint64)
 npe_begin_code()
 {
     validate_sparse_voxel_grid(grid_coordinates);
@@ -327,7 +327,7 @@ npe_end_code()
 
 
 npe_function(subdivide_sparse_voxel_grid_internal)
-npe_arg(grid_coordinates, dense_int, dense_long, dense_longlong)
+npe_arg(grid_coordinates, dense_int32, dense_int64, dense_uint32, dense_uint64)
 npe_begin_code()
 {
     validate_sparse_voxel_grid(grid_coordinates);
@@ -383,7 +383,7 @@ npe_end_code()
 
 
 npe_function(sparse_voxel_grid_to_hex_mesh_internal)
-npe_arg(grid_coordinates, dense_int, dense_long, dense_longlong)
+npe_arg(grid_coordinates, dense_int32, dense_int64, dense_uint32, dense_uint64)
 npe_arg(gx, double)  // voxel size along x
 npe_arg(gy, double)  // voxel size along y
 npe_arg(gz, double)  // voxel size along z
@@ -471,7 +471,7 @@ Returns:
 
 )Qu8mg5v7";
 npe_function(sparse_voxel_grid_boundary)
-npe_arg(grid_coordinates, dense_int, dense_long, dense_longlong)
+npe_arg(grid_coordinates, dense_int32, dense_int64, dense_uint32, dense_uint64)
 // npe_doc(sparse_voxel_grid_boundary_doc)
 npe_begin_code()
 {

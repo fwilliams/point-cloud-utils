@@ -22,7 +22,7 @@ Returns:
 )Qu8mg5v7";
 npe_function(decimate_triangle_mesh)
 npe_arg(v, dense_float, dense_double)
-npe_arg(f, dense_int, dense_long, dense_longlong)
+npe_arg(f, dense_int32, dense_int64, dense_uint32, dense_uint64)
 npe_arg(max_faces, int)
 npe_default_arg(decimation_heuristic, std::string, "shortest_edge")
 npe_doc(decimate_triangle_mesh_doc)

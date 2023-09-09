@@ -18,7 +18,7 @@ Returns:
 )igl_Qu8mg5v7";
 npe_function(make_mesh_watertight)
 npe_arg(v, dense_float, dense_double)
-npe_arg(f, dense_int, dense_long, dense_longlong)
+npe_arg(f, dense_int32, dense_int64, dense_uint32, dense_uint64)
 npe_default_arg(resolution, double, 20000)
 npe_default_arg(seed, int, -1)
 npe_doc(make_mesh_watertight_doc)

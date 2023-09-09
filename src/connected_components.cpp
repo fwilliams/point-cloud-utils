@@ -82,7 +82,7 @@ Returns:
 npe_function(connected_components)
 npe_doc(connected_components_doc)
 npe_arg(v, dense_float, dense_double)
-npe_arg(f, dense_int, dense_long, dense_longlong)
+npe_arg(f, dense_int32, dense_int64, dense_uint32, dense_uint64)
 npe_begin_code()
 {
     Eigen::SparseMatrix<npe_Scalar_f> A;
