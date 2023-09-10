@@ -38,6 +38,9 @@ struct AccumulatedPoint {
     void AddPoint(const PointT& point, const AttribVecT& attrib) {
         point_ += point;
         if (attrib.cols() > 0) {
+            if (attrib_.cols() == 0) {
+                attrib_.resize(1, attrib.cols());
+            }
             attrib_ += attrib;
         }
         num_of_points_ += 1;
