@@ -23,7 +23,7 @@ Returns:
 npe_function(remove_unreferenced_mesh_vertices)
 npe_doc(remove_unreferenced_mesh_vertices_doc)
 npe_arg(v, dense_float, dense_double)
-npe_arg(f, dense_int, dense_longlong, dense_uint, dense_ulonglong)
+npe_arg(f, dense_int32, dense_int64, dense_uint32, dense_uint64)
 npe_begin_code()
 {
     validate_mesh(v, f);

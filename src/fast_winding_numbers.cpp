@@ -19,7 +19,7 @@ Returns:
 )igl_Qu8mg5v7";
 npe_function(triangle_soup_fast_winding_number)
 npe_arg(v, dense_float, dense_double)
-npe_arg(f, dense_int, dense_long, dense_longlong)
+npe_arg(f, dense_int32, dense_int64, dense_uint32, dense_uint64)
 npe_arg(p, npe_matches(v))
 npe_doc(triangle_soup_fast_winding_number_doc)
 npe_begin_code()

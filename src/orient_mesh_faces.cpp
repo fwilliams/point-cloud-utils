@@ -20,7 +20,7 @@ Returns:
 )igl_Qu8mg5v7";
 npe_function(orient_mesh_faces)
 npe_doc(orient_mesh_faces_doc)
-npe_arg(f, dense_int, dense_longlong, dense_uint, dense_ulonglong)
+npe_arg(f, dense_int32, dense_int64, dense_uint32, dense_uint64)
 npe_default_arg(weighting_type, std::string, std::string("uniform"))
 npe_begin_code()
 {

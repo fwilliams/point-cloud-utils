@@ -25,7 +25,7 @@ Notes:
 npe_function(closest_points_on_mesh)
 npe_arg(p, dense_float, dense_double)
 npe_arg(v, npe_matches(p))
-npe_arg(f, dense_int, dense_longlong, dense_uint, dense_ulonglong)
+npe_arg(f, dense_int32, dense_int64, dense_uint32, dense_uint64)
 npe_doc(closest_points_on_mesh_doc)
 npe_begin_code()
 {

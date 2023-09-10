@@ -126,7 +126,7 @@ Returns:
 )Qu8mg5v7";
 npe_function(sample_mesh_poisson_disk)
 npe_arg(v, dense_float, dense_double)
-npe_arg(f, dense_int, dense_longlong, dense_uint, dense_ulonglong)
+npe_arg(f, dense_int32, dense_int64, dense_uint32, dense_uint64)
 npe_arg(num_samples, int)
 npe_default_arg(radius, double, 0.0)
 npe_default_arg(use_geodesic_distance, bool, true)
@@ -231,7 +231,7 @@ Returns:
 )Qu8mg5v7";
 npe_function(sample_mesh_random)
 npe_arg(v, dense_float, dense_double)
-npe_arg(f, dense_int, dense_longlong, dense_uint, dense_ulonglong)
+npe_arg(f, dense_int32, dense_int64, dense_uint32, dense_uint64)
 npe_arg(num_samples, int)
 npe_default_arg(random_seed, unsigned int, 0)
 npe_doc(sample_mesh_random_doc)

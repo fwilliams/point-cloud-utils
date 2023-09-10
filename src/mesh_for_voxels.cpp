@@ -13,7 +13,6 @@ namespace {
                             const MatrixIJK& in_ijk,
                             Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>& out_v,
                             Eigen::Matrix<int, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>& out_f) {
-
         std::array<int, 36> indices = {
             //Top
             2, 7, 6,
@@ -60,7 +59,7 @@ namespace {
                 Eigen::Vector3d vertex(vertices[vi * 3 + 0] * (1.0 - gap_fraction) + 0.5 * gap_fraction,
                                        vertices[vi * 3 + 1] * (1.0 - gap_fraction) + 0.5 * gap_fraction,
                                        vertices[vi * 3 + 2] * (1.0 - gap_fraction) + 0.5 * gap_fraction);
-                Eigen::Vector3d voxel_translation(in_ijk(i, 0), in_ijk(i, 1), in_ijk(i, 2));
+                Eigen::Vector3d voxel_translation((double) in_ijk(i, 0), (double) in_ijk(i, 1), (double) in_ijk(i, 2));
                 vertex += voxel_translation;
                 vertex.array() *= vox_size.array();
                 vertex += vox_origin;
@@ -82,10 +81,10 @@ namespace {
 
 
 npe_function(_voxel_mesh_internal)
-npe_arg(ijk, dense_int, dense_long, dense_longlong)
+npe_arg(ijk, dense_int32, dense_int64, dense_uint32, dense_uint64)
 npe_arg(gap_fraction, double)
-npe_arg(vox_origin, dense_double)
-npe_arg(vox_size, dense_double)
+npe_arg(vox_origin, dense_float, dense_double)
+npe_arg(vox_size, dense_float, dense_double)
 npe_begin_code()
     using MatrixI = Eigen::Matrix<int, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>;
     using MatrixF = Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>;
@@ -99,12 +98,12 @@ npe_begin_code()
         throw pybind11::value_error("Invalid shape");
     }
 
-    Eigen::Vector3d vsize = vox_size;
+    Eigen::Vector3d vsize = vox_size.template cast<double>();
 
     if (vsize[0] <= 0.0 || vsize[1] <= 0.0 || vsize[2] <= 0.0) {
         throw pybind11::value_error("Voxel size must be positive");
     }
-    Eigen::Vector3d vorgn = vox_origin;
+    Eigen::Vector3d vorgn = vox_origin.template cast<double>();
 
     MatrixF geom_vertices;
     MatrixI geom_faces;

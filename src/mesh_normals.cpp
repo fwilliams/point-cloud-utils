@@ -24,7 +24,7 @@ Returns:
 npe_function(estimate_mesh_vertex_normals)
 npe_doc(estimate_mesh_vertex_normals_doc)
 npe_arg(v, dense_float, dense_double)
-npe_arg(f, dense_int, dense_longlong, dense_uint, dense_ulonglong)
+npe_arg(f, dense_int32, dense_int64, dense_uint32, dense_uint64)
 npe_default_arg(weighting_type, std::string, std::string("uniform"))
 npe_begin_code()
 {
@@ -65,7 +65,7 @@ Returns:
 npe_function(estimate_mesh_face_normals)
 npe_doc(estimate_mesh_face_normals_doc)
 npe_arg(v, dense_float, dense_double)
-npe_arg(f, dense_int, dense_longlong, dense_uint, dense_ulonglong)
+npe_arg(f, dense_int32, dense_int64, dense_uint32, dense_uint64)
 npe_begin_code()
 {
     validate_mesh(v, f);

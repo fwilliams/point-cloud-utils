@@ -15,7 +15,8 @@
                 "${workspaceFolder}/external/geogram/src/lib",
                 "${workspaceFolder}/src",
                 "${workspaceFolder}/external",
-                "${env:CONDA_PREFIX}/envs/point-cloud-utils/include/python3.9"
+                "${env:CONDA_PREFIX}/envs/point-cloud-utils/include/python3.10",
+                "${env:CONDA_PREFIX}/envs/point-cloud-utils/lib/python3.10/site-packages/numpy/core/include/"
             ],
             "macFrameworkPath": [
                 "${default}"

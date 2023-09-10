@@ -21,7 +21,7 @@ void voxelize_triangle_mesh(const VertexMat& v, const FaceMat& f,
         Eigen::Vector3d v2(v(f(fi, 2), 0), v(f(fi, 2), 1), v(f(fi, 2), 2));
 
         double minx, miny, minz, maxx, maxy, maxz;
-        int num_w, num_h, num_d, inix, iniy, iniz;
+        int inix, iniy, iniz, inox, inoy, inoz;
         minx = std::min(v0[0], std::min(v1[0], v2[0]));
         miny = std::min(v0[1], std::min(v1[1], v2[1]));
         minz = std::min(v0[2], std::min(v1[2], v2[2]));
@@ -32,15 +32,16 @@ void voxelize_triangle_mesh(const VertexMat& v, const FaceMat& f,
         inix = static_cast<int>(std::floor((minx - voxel_origin[0]) / voxel_size[0]));
         iniy = static_cast<int>(std::floor((miny - voxel_origin[1]) / voxel_size[1]));
         iniz = static_cast<int>(std::floor((minz - voxel_origin[2]) / voxel_size[2]));
-        num_w = static_cast<int>((std::round((maxx - minx) / voxel_size[0]))) + 2;
-        num_h = static_cast<int>((std::round((maxy - miny) / voxel_size[1]))) + 2;
-        num_d = static_cast<int>((std::round((maxz - minz) / voxel_size[2]))) + 2;
 
-        for (int widx = inix; widx < inix + num_w; widx++) {
-            for (int hidx = iniy; hidx < iniy + num_h; hidx++) {
-                for (int didx = iniz; didx < iniz + num_d; didx++) {
+        inox = static_cast<int>(std::ceil((maxx - voxel_origin[0]) / voxel_size[0]));
+        inoy = static_cast<int>(std::ceil((maxy - voxel_origin[1]) / voxel_size[1]));
+        inoz = static_cast<int>(std::ceil((maxz - voxel_origin[2]) / voxel_size[2]));
+
+        for (int widx = inix; widx <= inix; widx++) {
+            for (int hidx = iniy; hidx <= inoy; hidx++) {
+                for (int didx = iniz; didx <= inoz; didx++) {
                     const Eigen::Vector3d vox_pos = Eigen::Vector3d(widx, hidx, didx).array() * voxel_size.array();
-                    const Eigen::Vector3d box_center = (voxel_origin + box_half_size + vox_pos).eval();
+                    const Eigen::Vector3d box_center = (voxel_origin + vox_pos).eval();
 
                     double* tri_verts[3] = {const_cast<double*>(v0.data()),
                                             const_cast<double*>(v1.data()),
@@ -66,7 +67,7 @@ void voxelize_triangle_mesh(const VertexMat& v, const FaceMat& f,
 
 npe_function(_voxelize_triangle_mesh_internal)
 npe_arg(v, dense_float, dense_double)
-npe_arg(f, dense_int, dense_long, dense_longlong)
+npe_arg(f, dense_int32, dense_int64, dense_uint32, dense_uint64)
 npe_arg(vox_origin, dense_double)
 npe_arg(vox_size, npe_matches(vox_origin))
 npe_begin_code()

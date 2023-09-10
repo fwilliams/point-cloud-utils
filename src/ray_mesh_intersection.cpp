@@ -18,7 +18,7 @@ void hack_extra_ray_mesh_bindings(pybind11::module& m) {
 
 npe_function(_populate_ray_intersector_internal)
 npe_arg(v, dense_float, dense_double)
-npe_arg(f, dense_int, dense_longlong)
+npe_arg(f, dense_int32, dense_int64, dense_uint32, dense_uint64)
 npe_arg(isector, std::shared_ptr<igl::embree::EmbreeIntersector>)
 npe_begin_code()
     igl::embree::EmbreeIntersector::PointMatrixType v_copy = v.template cast<float>();
@@ -106,7 +106,7 @@ Returns:
 )Qu8mg5v7";
 npe_function(ray_mesh_intersection)
 npe_arg(v, dense_float, dense_double)
-npe_arg(f, dense_int, dense_longlong)
+npe_arg(f, dense_int32, dense_int64, dense_uint32, dense_uint64)
 npe_arg(ray_o, npe_matches(v))
 npe_arg(ray_d, npe_matches(v))
 npe_default_arg(ray_near, double, 0.0)

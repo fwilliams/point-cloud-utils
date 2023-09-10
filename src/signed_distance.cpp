@@ -22,7 +22,7 @@ Returns:
 npe_function(signed_distance_to_mesh)
 npe_arg(p, dense_float, dense_double)
 npe_arg(v, npe_matches(p))
-npe_arg(f, dense_int, dense_long, dense_longlong)
+npe_arg(f, dense_int32, dense_int64, dense_uint32, dense_uint64)
 npe_default_arg(lower_bound, float, -std::numeric_limits<float>::infinity())
 npe_default_arg(upper_bound, float, std::numeric_limits<float>::infinity())
 npe_doc(signed_distance_doc)
