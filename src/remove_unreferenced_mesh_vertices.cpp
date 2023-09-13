@@ -28,7 +28,8 @@ npe_begin_code()
 {
     validate_mesh(v, f);
     npe_Matrix_v v_out;
-    npe_Matrix_f f_out, corr_f, corr_v;
+    npe_Matrix_f f_out;
+    Eigen::Matrix<npe_Scalar_f, Eigen::Dynamic, 1> corr_f, corr_v;
     igl::remove_unreferenced(v, f, v_out, f_out, corr_f, corr_v);
 
     return std::make_tuple(npe::move(v_out), npe::move(f_out), npe::move(corr_v), npe::move(corr_f));

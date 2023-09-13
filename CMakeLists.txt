@@ -40,8 +40,8 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 include(numpyeigen) # This will define Eigen3::Eigen if we enabled NPE_WITH_EIGEN
 
 download_dep(igl
-        GIT_REPOSITORY https://github.com/fwilliams/libigl.git
-        GIT_TAG stable_with_macos_hotfix
+        GIT_REPOSITORY https://github.com/libigl/libigl.git
+        GIT_TAG main
 )
 
 download_dep(tinyply
