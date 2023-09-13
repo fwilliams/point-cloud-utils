@@ -85,5 +85,6 @@
     "python.linting.pylintEnabled": true,
     "cmake.environment": {
         "PATH": "${env:CONDA_PREFIX}/envs/point_cloud_utils/bin:${env:PATH}"
-    }
+    },
+    "cmake.configureOnOpen": false
 }
