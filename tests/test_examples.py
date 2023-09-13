@@ -31,9 +31,9 @@ class TestDenseBindings(unittest.TestCase):
         f_idx, bc = pcu.sample_mesh_random(v, f, num_samples=v.shape[0] * 4)
         v_dense = (v[f[f_idx]] * bc[:, np.newaxis]).sum(1)
 
-        s_idx = pcu.downsample_point_cloud_poisson_disk(v_dense, 0, 0.1*bbox_diag, random_seed=1234567)
-        s_idx2 = pcu.downsample_point_cloud_poisson_disk(v_dense, 0, 0.1*bbox_diag, random_seed=1234567)
-        s_idx3 = pcu.downsample_point_cloud_poisson_disk(v_dense, 0, 0.1 * bbox_diag, random_seed=7654321)
+        s_idx = pcu.downsample_point_cloud_poisson_disk(v_dense, 0.1*bbox_diag, random_seed=1234567)
+        s_idx2 = pcu.downsample_point_cloud_poisson_disk(v_dense, 0.1*bbox_diag, random_seed=1234567)
+        s_idx3 = pcu.downsample_point_cloud_poisson_disk(v_dense, 0.1 * bbox_diag, random_seed=7654321)
         self.assertTrue(np.all(s_idx == s_idx2))
         if s_idx3.shape == s_idx.shape:
             self.assertFalse(np.all(s_idx == s_idx3))
@@ -43,9 +43,9 @@ class TestDenseBindings(unittest.TestCase):
         # Ensure we can request more samples than vertices and get something reasonable
         s_idx_0 = pcu.downsample_point_cloud_poisson_disk(v_dense, 2*v_dense.shape[0], random_seed=1234567)
 
-        s_idx = pcu.downsample_point_cloud_poisson_disk(v_dense, 1000, random_seed=1234567)
-        s_idx2 = pcu.downsample_point_cloud_poisson_disk(v_dense, 1000, random_seed=1234567)
-        s_idx3 = pcu.downsample_point_cloud_poisson_disk(v_dense, 1000, random_seed=7654321)
+        s_idx = pcu.downsample_point_cloud_poisson_disk(v_dense, 0., target_num_samples=1000, random_seed=1234567)
+        s_idx2 = pcu.downsample_point_cloud_poisson_disk(v_dense, 0., target_num_samples=1000, random_seed=1234567)
+        s_idx3 = pcu.downsample_point_cloud_poisson_disk(v_dense, 0., target_num_samples=1000, random_seed=7654321)
         self.assertTrue(np.all(s_idx == s_idx2))
         if s_idx3.shape == s_idx.shape:
             self.assertFalse(np.all(s_idx == s_idx3))
