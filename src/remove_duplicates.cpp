@@ -69,7 +69,7 @@ See also:
 npe_function(deduplicate_mesh_vertices)
 npe_doc(remove_duplicate_mesh_vertices_doc)
 npe_arg(v, dense_float, dense_double)
-npe_arg(f, dense_int32, dense_int64, dense_uint32, dense_uint64)
+npe_arg(f, dense_int32, dense_int64)
 npe_arg(epsilon, double)
 npe_default_arg(return_index, bool, true)
 npe_begin_code()

@@ -79,7 +79,8 @@
         "regex": "cpp",
         "numbers": "cpp",
         "semaphore": "cpp",
-        "stop_token": "cpp"
+        "stop_token": "cpp",
+        "sparsecholesky": "cpp"
     },
     "python.linting.enabled": true,
     "python.linting.pylintEnabled": true,
