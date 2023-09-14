@@ -145,6 +145,7 @@ download_dep(geogram
 )
 set(THIRD_PARTY_DIR ${EXTERNAL_DEP_DIR})
 include(geogram)
+target_compile_definitions(geogram PUBLIC _LIBCPP_ENABLE_CXX17_REMOVED_UNEXPECTED_FUNCTIONS)
 if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
   SET_TARGET_PROPERTIES(geogram PROPERTIES COMPILE_FLAGS -fopenmp LINK_FLAGS -fopenmp)
   target_compile_options(geogram PUBLIC    -fopenmp)
