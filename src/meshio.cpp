@@ -13,6 +13,9 @@
 #include "common/common.h"
 #include "common/strutil.h"
 #include "common/ply_loader.h"
+#include "common/off_loader.h"
+#include "common/stl_loader.h"
+#include "common/obj_loader.h"
 #include "common/numpy_utils.h"
 
 
@@ -517,81 +520,47 @@ void write_mesh_vcg(std::string filename, pybind11::array& v_positions, pybind11
 
 npe_function(load_mesh_internal)
 npe_arg(filename, std::string)
-npe_default_arg(dtype, npe::dtype, "float64")
+npe_arg(dtype, npe::dtype)
 npe_begin_code()
 {
     if (strutil::ends_with(strutil::to_lower(strutil::trim_copy(filename)), "ply")) {
-        std::unordered_map<std::string, pybind11::object> ret;
-        load_mesh_ply(filename, ret);
-        return ret;
+        return load_mesh_ply(filename);
     } else if (strutil::ends_with(strutil::to_lower(strutil::trim_copy(filename)), "off")) {
-        std::unordered_map<std::string, pybind11::object> ret;
-        Eigen::MatrixXd v;
-        Eigen::MatrixXi f;
-        igl::readOFF(filename, v, f);
-        std::unordered_map<std::string, pybind11::object> vertex_ret;
-        vertex_ret.insert(std::make_pair("positions", npe::move(v)));
-        std::unordered_map<std::string, pybind11::object> face_ret;
-        face_ret.insert(std::make_pair("vertex_ids", npe::move(f)));
-        pybind11::dict ret_vertex_data = pybind11::cast(vertex_ret);
-        pybind11::dict ret_face_data = pybind11::cast(face_ret);     
-        std::vector<std::string> ret_textures, ret_normalmaps;
-        ret["vertex_data"] = ret_vertex_data;
-        ret["face_data"] = ret_face_data;   
-        ret["textures"] = pybind11::cast(ret_textures);
-        ret["normal_maps"] = pybind11::cast(ret_normalmaps);
-        return ret;
+        return load_mesh_off(filename);
     } else if (strutil::ends_with(strutil::to_lower(strutil::trim_copy(filename)), "stl")) {
-        std::unordered_map<std::string, pybind11::object> ret;
-        Eigen::MatrixXd v, n;
-        Eigen::MatrixXi f;
-        std::ifstream file;
-        file.open(filename);
-        if (file.fail()) {
-            throw pybind11::value_error("Failed to open file " + filename);
-        }
-        igl::readSTL(file, v, f, n);
-        std::unordered_map<std::string, pybind11::object> vertex_ret;
-        vertex_ret.insert(std::make_pair("positions", npe::move(v)));
-        if (n.rows() > 0) {
-            vertex_ret.insert(std::make_pair("normals", npe::move(n)));
-        }
-        std::unordered_map<std::string, pybind11::object> face_ret;
-        face_ret.insert(std::make_pair("vertex_ids", npe::move(f)));
-        pybind11::dict ret_vertex_data = pybind11::cast(vertex_ret);
-        pybind11::dict ret_face_data = pybind11::cast(face_ret);     
-        std::vector<std::string> ret_textures, ret_normalmaps;
-        ret["vertex_data"] = ret_vertex_data;
-        ret["face_data"] = ret_face_data;   
-        ret["textures"] = pybind11::cast(ret_textures);
-        ret["normal_maps"] = pybind11::cast(ret_normalmaps);
-        return ret;
-    }
-    CMesh m;
-    int mask = 0;
-    tri::io::Importer<CMesh>::LoadMask(filename.c_str(), mask);
-
-    int err = tri::io::Importer<CMesh>::Open(m, filename.c_str());
-    if (err) {
-        if(tri::io::Importer<CMesh>::ErrorCritical(err)) {
-            throw pybind11::value_error("Error during loading " + filename + ": '" + tri::io::Importer<CMesh>::ErrorMsg(err) + "'");
-        } else{
-            std::string warning_str = "Noncritical error (" + std::to_string(err) + ") during loading " +
-                    filename + ": '" + tri::io::Importer<CMesh>::ErrorMsg(err) + "'";
-            runtime_warning(warning_str);
-        }
+        return load_mesh_stl(filename);
+    } else if (strutil::ends_with(strutil::to_lower(strutil::trim_copy(filename)), "obj")) {
+        return load_mesh_obj(filename);
+    } else {
+        throw pybind11::value_error("File extension type not supported for file " + filename + " (must be .ply, .off, .stl, or .obj)");
     }
 
-    std::unordered_map<std::string, pybind11::object> ret;
-    if (dtype.equal(npe::dtype("float64"))) {
-        load_mesh_vcg<double>(m, mask, ret);
-    } else if (dtype.equal(npe::dtype("float32"))) {
-        load_mesh_vcg<float>(m, mask, ret);
-    } else{
-        throw pybind11::value_error("Invalid dtype. Must be one of float32 or float64");
-    }
+    
+    // CMesh m;
+    // int mask = 0;
+    // tri::io::Importer<CMesh>::LoadMask(filename.c_str(), mask);
 
-    return ret;
+    // int err = tri::io::Importer<CMesh>::Open(m, filename.c_str());
+    // if (err) {
+    //     if(tri::io::Importer<CMesh>::ErrorCritical(err)) {
+    //         throw pybind11::value_error("Error during loading " + filename + ": '" + tri::io::Importer<CMesh>::ErrorMsg(err) + "'");
+    //     } else{
+    //         std::string warning_str = "Noncritical error (" + std::to_string(err) + ") during loading " +
+    //                 filename + ": '" + tri::io::Importer<CMesh>::ErrorMsg(err) + "'";
+    //         runtime_warning(warning_str);
+    //     }
+    // }
+
+    // std::unordered_map<std::string, pybind11::object> ret;
+    // if (dtype.equal(npe::dtype("float64"))) {
+    //     load_mesh_vcg<double>(m, mask, ret);
+    // } else if (dtype.equal(npe::dtype("float32"))) {
+    //     load_mesh_vcg<float>(m, mask, ret);
+    // } else{
+    //     throw pybind11::value_error("Invalid dtype. Must be one of float32 or float64");
+    // }
+
+    // return ret;
 
 
 }
@@ -635,6 +604,32 @@ npe_begin_code()
 {
     if (strutil::ends_with(strutil::to_lower(strutil::trim_copy(filename)), "ply")) {
         save_mesh_ply(filename,
+                      v_positions,
+                      v_normals,
+                      v_texcoords,
+                      v_colors,
+                      v_quality,
+                      v_radius,
+                      v_texids,
+                      v_flags,
+                      f_vertex_ids,
+                      f_normals,
+                      f_colors,
+                      f_quality,
+                      f_flags,
+                      w_colors,
+                      w_normals,
+                      w_texcoords,
+                      w_texids,
+                      custom_v_attribs,
+                      custom_f_attribs,
+                      textures,
+                      normal_maps,
+                      dtype_f,
+                      dtype_i);
+        return;
+    } else if (strutil::ends_with(strutil::to_lower(strutil::trim_copy(filename)), "obj")) {
+        save_mesh_obj(filename,
                       v_positions,
                       v_normals,
                       v_texcoords,
