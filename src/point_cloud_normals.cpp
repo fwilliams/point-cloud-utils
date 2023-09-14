@@ -6,6 +6,7 @@
 #include <tuple>
 #include <cmath>
 #include <thread>
+#include <random>
 
 #if defined(_OPENMP)
 #include <omp.h>
@@ -76,7 +77,7 @@ std::tuple<bool, Eigen::RowVector3d> estimate_local_normal_rbf(const KdTreeType&
     }
 
     if (max_pts_per_ball > 0) {
-        std::random_shuffle(out_nbrs.begin(), out_nbrs.end());
+        std::shuffle(out_nbrs.begin(), out_nbrs.end(), std::default_random_engine(rand()));
         founds = std::min((size_t) max_pts_per_ball, founds);
     }
 
@@ -353,7 +354,7 @@ npe_begin_code()
     } else {
         throw pybind11::value_error("Invalid weight_function, must be one of 'constant' or 'rbf'.");
     }
-
+    
     auto normal_estimator = [&](int pt_index) {
         return estimate_local_normal_rbf(tree, points, view_dirs, pt_index, radius,
                                          min_pts_per_ball, max_pts_per_ball, drop_angle_threshold,
