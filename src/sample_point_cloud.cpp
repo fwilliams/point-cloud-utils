@@ -1,7 +1,4 @@
 #include <npe.h>
-#include <vcg/complex/complex.h>
-#include <vcg/complex/algorithms/point_sampling.h>
-#include <vcg/complex/algorithms/clustering.h>
 
 #include <fstream>
 #include <iostream>
