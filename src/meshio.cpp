@@ -654,6 +654,32 @@ npe_begin_code()
                       dtype_f,
                       dtype_i);
         return;
+    } else if (strutil::ends_with(strutil::to_lower(strutil::trim_copy(filename)), "stl")) {
+        save_mesh_stl(filename,
+                      v_positions,
+                      v_normals,
+                      v_texcoords,
+                      v_colors,
+                      v_quality,
+                      v_radius,
+                      v_texids,
+                      v_flags,
+                      f_vertex_ids,
+                      f_normals,
+                      f_colors,
+                      f_quality,
+                      f_flags,
+                      w_colors,
+                      w_normals,
+                      w_texcoords,
+                      w_texids,
+                      custom_v_attribs,
+                      custom_f_attribs,
+                      textures,
+                      normal_maps,
+                      dtype_f,
+                      dtype_i);
+        return;
     }
 
     if (dtype_f.equal(pybind11::dtype::of<std::float_t>())) {

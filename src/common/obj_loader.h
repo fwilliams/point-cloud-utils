@@ -202,11 +202,11 @@ void save_mesh_obj(std::string filename,
     bool has_w_texcoords = assert_shape_and_dtype(w_texcoords, "w_texcoords", dtype_f, {-num_faces, 3, 2});
     bool has_w_texids = assert_shape_and_dtype(w_texids, "w_texids", dtype_i, {-num_faces, 3});
 
-    if (dtype_f != pybind11::dtype("f") && dtype_f != pybind11::dtype("d")) {
+    if (!dtype_f.equal(pybind11::dtype("f")) && !dtype_f.equal(pybind11::dtype("d"))) {
         throw pybind11::value_error("Vertex data must be float32 or float64");
     }
 
-    if (dtype_i != pybind11::dtype("i") && dtype_i != pybind11::dtype("l")) {
+    if (!dtype_i.equal(pybind11::dtype("i")) && !dtype_i.equal(pybind11::dtype("l"))) {
         throw pybind11::value_error("Vertex data must be int32 or int64");
     }
 
@@ -230,12 +230,24 @@ void save_mesh_obj(std::string filename,
         std::string warning_str = "Face flags are ignored by obj files";
         PyErr_Warn(PyExc_RuntimeWarning, warning_str.c_str());
     }
+    if (has_w_texcoords) {
+        std::string warning_str = "Wedge texcoords are ignored by obj files";
+        PyErr_Warn(PyExc_RuntimeWarning, warning_str.c_str());
+    }
+    if (has_w_texids) {
+        std::string warning_str = "Wedge texids are ignored by obj files";
+        PyErr_Warn(PyExc_RuntimeWarning, warning_str.c_str());
+    }
     if (has_v_quality) {
         std::string warning_str = "Vertex quality is ignored by obj files";
         PyErr_Warn(PyExc_RuntimeWarning, warning_str.c_str());
     }
     if (has_v_radius) {
         std::string warning_str = "Vertex radius is ignored by obj files";
+        PyErr_Warn(PyExc_RuntimeWarning, warning_str.c_str());
+    }
+    if (has_v_texids) {
+        std::string warning_str = "Vertex texture ids is ignored by stl files";
         PyErr_Warn(PyExc_RuntimeWarning, warning_str.c_str());
     }
     if (has_v_flags) {
@@ -247,10 +259,10 @@ void save_mesh_obj(std::string filename,
     for (int i = 0; i < num_vertices; i += 1) {
         outstream << "v ";
         for (int j = 0; j < 3; j++) {
-            if (dtype_f == pybind11::dtype("f")) {
+            if (dtype_f.equal(pybind11::dtype("f"))) {
                 float value = *((float*)v_positions.data(i, j));
                 outstream << value << " ";
-            } else if (dtype_f == pybind11::dtype("d")) {
+            } else if (dtype_f.equal(pybind11::dtype("d"))) {
                 double value = *((double*)v_positions.data(i, j));
                 outstream << value << " ";
             }
@@ -260,10 +272,10 @@ void save_mesh_obj(std::string filename,
                 throw pybind11::value_error("Cannot specify both vertex colors and face colors");
             }
             for (int j = 0; j < 3; j++) {
-                if (dtype_f == pybind11::dtype("f")) {
+                if (dtype_f.equal(pybind11::dtype("f"))) {
                     float value = *((float*)v_colors.data(i, j));
                     outstream << value << " ";
-                } else if (dtype_f == pybind11::dtype("d")) {
+                } else if (dtype_f.equal(pybind11::dtype("d"))) {
                     double value = *((double*)v_colors.data(i, j));
                     outstream << value << " ";
                 }
@@ -274,10 +286,10 @@ void save_mesh_obj(std::string filename,
         if (has_v_normals) {
             outstream << "vn ";
             for (int j = 0; j < 3; j++) {
-                if (dtype_f == pybind11::dtype("f")) {
+                if (dtype_f.equal(pybind11::dtype("f"))) {
                     float value = *((float*)v_normals.data(i, j));
                     outstream << value << " ";
-                } else if (dtype_f == pybind11::dtype("d")) {
+                } else if (dtype_f.equal(pybind11::dtype("d"))) {
                     double value = *((double*)v_normals.data(i, j));
                     outstream << value << " ";
                 }
@@ -289,10 +301,10 @@ void save_mesh_obj(std::string filename,
             outstream << "vt ";
             int num_texcoords = v_texcoords.shape()[1];
             for (int j = 0; j < num_texcoords; j++) {
-                if (dtype_f == pybind11::dtype("f")) {
+                if (dtype_f.equal(pybind11::dtype("f"))) {
                     float value = *((float*)v_texcoords.data(i, j));
                     outstream << value << " ";
-                } else if (dtype_f == pybind11::dtype("d")) {
+                } else if (dtype_f.equal(pybind11::dtype("d"))) {
                     double value = *((double*)v_texcoords.data(i, j));
                     outstream << value << " ";
                 }
@@ -305,7 +317,7 @@ void save_mesh_obj(std::string filename,
         for (int i = 0; i < num_faces; i += 1) {
             outstream << "f ";
             for (int j = 0; j < 3; j++) {
-                if (dtype_i == pybind11::dtype("i")) {
+                if (dtype_i.equal(pybind11::dtype("i"))) {
                     int32_t value = *((int32_t*)f_vertex_ids.data(i, j)) + 1;
                     outstream << value << "/";
                     if (has_v_texcoords) {
@@ -315,7 +327,7 @@ void save_mesh_obj(std::string filename,
                     if (has_v_normals) {
                         outstream << value;
                     }
-                } else if (dtype_i == pybind11::dtype("l")) {
+                } else if (dtype_i.equal(pybind11::dtype("l"))) {
                     int64_t value = *((int64_t*)f_vertex_ids.data(i, j)) + 1;
                     outstream << value << "/";
                     if (has_v_texcoords) {

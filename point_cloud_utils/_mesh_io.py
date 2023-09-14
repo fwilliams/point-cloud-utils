@@ -226,7 +226,7 @@ class TriangleMesh:
         """
         An (m, 3)-shaped array containing this mesh's per-face normals (None if no face normals)
         """
-        return self.vertex_data.normals
+        return self.face_data.normals
 
     @property
     def fc(self):
