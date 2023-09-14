@@ -9,11 +9,12 @@ from ._pcu_internal import sample_mesh_poisson_disk, sample_mesh_random, \
     lloyd_2d, lloyd_3d, voronoi_centroids_unit_cube, sample_mesh_lloyd, \
     deduplicate_point_cloud, deduplicate_mesh_vertices, signed_distance_to_mesh, \
     closest_points_on_mesh, connected_components, ray_mesh_intersection, laplacian_smooth_mesh, \
-    make_mesh_watertight, mesh_principal_curvatures, \
+    make_mesh_watertight, \
     morton_add, morton_subtract, point_cloud_fast_winding_number, \
     sparse_voxel_grid_boundary, marching_cubes_sparse_voxel_grid, decimate_triangle_mesh, \
     remove_unreferenced_mesh_vertices, mesh_face_areas, triangle_soup_fast_winding_number, \
     _voxel_mesh_internal
+    # mesh_principal_curvatures, \
 
 from ._sinkhorn import *
 from ._mesh_io import *
@@ -28,24 +29,24 @@ MORTON_MIN = -1048576
 MORTON_MAX = 1048576
 
 
-def mesh_mean_and_gaussian_curvatures(v, f, r=-1.0):
-    """
-    Estimate mean and Gaussian curvatures for a mesh
+# def mesh_mean_and_gaussian_curvatures(v, f, r=-1.0):
+#     """
+#     Estimate mean and Gaussian curvatures for a mesh
 
-    Args:
-        v : \#v by 3 Matrix of mesh vertex 3D positions
-        f : \#f by 3 Matrix of face (triangle) indices
-        r : optional floating point radius of neighborhood to consider when estimating curvature
-            If set to a positive value, will use a more robust curvature estimation method (but may require some tuning)
+#     Args:
+#         v : \#v by 3 Matrix of mesh vertex 3D positions
+#         f : \#f by 3 Matrix of face (triangle) indices
+#         r : optional floating point radius of neighborhood to consider when estimating curvature
+#             If set to a positive value, will use a more robust curvature estimation method (but may require some tuning)
 
-    Returns:
-        kh : an array of shape (#v,) of per-vertex mean curvatures
-        kg : an array of shape (#v,) of per-vertex Gaussian curvatures
+#     Returns:
+#         kh : an array of shape (#v,) of per-vertex mean curvatures
+#         kg : an array of shape (#v,) of per-vertex Gaussian curvatures
 
-    """
-    k1, k2, _, _ = mesh_principal_curvatures(v, f, r)
+#     """
+#     k1, k2, _, _ = mesh_principal_curvatures(v, f, r)
 
-    return 0.5 * (k1 + k2), (k1 * k2)
+#     return 0.5 * (k1 + k2), (k1 * k2)
 
 
 def hausdorff_distance(x, y, return_index=False, squared_distances=False, max_points_per_leaf=10):
