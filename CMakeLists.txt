@@ -139,6 +139,10 @@ endif()
 
 
 # Build geogram
+download_dep(geogram
+             GIT_REPOSITORY https://github.com/fwilliams/geogram-pcu.git
+             GIT_TAG        main
+)
 set(THIRD_PARTY_DIR ${EXTERNAL_DEP_DIR})
 include(geogram)
 if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
