@@ -30,8 +30,8 @@ std::unordered_map<std::string, pybind11::object> load_mesh_obj(const std::strin
         PyErr_Warn(PyExc_RuntimeWarning, warning_str.c_str());
     }
 
-    Eigen::MatrixXd v, n, tc, c, vw;
-    Eigen::MatrixXi f, mat_ids;
+    Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> v, n, tc, c, vw;
+    Eigen::Matrix<int64_t, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> f, mat_ids;
 
     auto& attrib = reader.GetAttrib();
     auto& shapes = reader.GetShapes();
