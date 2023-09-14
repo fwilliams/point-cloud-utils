@@ -85,7 +85,7 @@ void save_mesh_stl(std::string filename,
     }
 
     if (has_v_normals) {
-        std::string warning_str = "Face normals are ignored by stl files";
+        std::string warning_str = "Vertex normals are ignored by stl files";
         PyErr_Warn(PyExc_RuntimeWarning, warning_str.c_str());
     }
     if (has_f_colors) {
@@ -148,10 +148,6 @@ void save_mesh_stl(std::string filename,
             }
         }
     }
-
-    std::cerr << "Gonna write " << num_vertices << " vertices" << std::endl;
-    std::cerr << "v.shape = " << v.rows() << std::endl;
-    std::cerr << "vn.shape = " << fn.rows() << std::endl;
 
     if (has_f_normals && !has_f_vertex_ids) {
         throw pybind11::value_error("Can't have face normals and no faces");
