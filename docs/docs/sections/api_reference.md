@@ -400,26 +400,6 @@
 
 ----------------
 
-::: point_cloud_utils.mesh_mean_and_gaussian_curvatures
-    handler: python
-    options:
-        show_root_heading: true
-        show_source: false
-
-
-
-----------------
-
-::: point_cloud_utils.mesh_principal_curvatures
-    handler: python
-    options:
-        show_root_heading: true
-        show_source: false
-
-
-
-----------------
-
 ::: point_cloud_utils.morton_add
     handler: python
     options:
