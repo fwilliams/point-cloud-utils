@@ -8,7 +8,7 @@
     <title>Voxelizing a Triangle Mesh - Point Cloud Utils</title>
     <link rel="stylesheet" href="../../css/theme.css" />
     <link rel="stylesheet" href="../../css/theme_extra.css" />
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
         <link href="../../assets/_mkdocstrings.css" rel="stylesheet" />
     
       <script>
@@ -18,12 +18,11 @@
         var mkdocs_page_url = "/point-cloud-utils/sections/voxelizing_a_triangle_mesh/";
       </script>
     
-    <script src="../../js/jquery-3.6.0.min.js" defer></script>
     <!--[if lt IE 9]>
       <script src="../../js/html5shiv.min.js"></script>
     <![endif]-->
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
-      <script>hljs.initHighlightingOnLoad();</script> 
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
 </head>
 
 <body class="wy-body-for-nav" role="document">
@@ -35,7 +34,7 @@
           <a href="../.." class="icon icon-home"> Point Cloud Utils
         </a><div role="search">
   <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
-      <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
   </form>
 </div>
       </div>
@@ -109,8 +108,8 @@
       <div class="wy-nav-content">
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
-    <li><a href="../.." class="icon icon-home" alt="Docs"></a> &raquo;</li>
-      <li>Voxelizing a Triangle Mesh</li>
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a> &raquo;</li>
+      <li class="breadcrumb-item active">Voxelizing a Triangle Mesh</li>
     <li class="wy-breadcrumbs-aside">
           <a href="https://github.com/fwilliams/point-cloud-utils/tree/master/docs/docs/sections/voxelizing_a_triangle_mesh.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
@@ -130,7 +129,7 @@ vox_origin = [0, 0, 0]  # location of the bottom-left-back corner of the [0, 0, 
 v, f = pcu.load_mesh_vf(&quot;truck.ply&quot;)
 
 # Voxelize the input mesh, vox_ijk is an array of integer voxel coordinates
-vox_ijk = pcu.voxelize_triangle_mesh(vox_ijk, vox_size, vox_origin)
+vox_ijk = pcu.voxelize_triangle_mesh(v, f, vox_size, vox_origin)
 
 # Generate a cube mesh of voxels with a spacing of 0.02 voxels between each cube
 cube_v, cube_f = pcu.voxel_grid_geometry(vox_ijk, vox_size, vox_origin, gap_fraction=0.02)
@@ -177,17 +176,18 @@ cube_v, cube_f = pcu.voxel_grid_geometry(vox_ijk, vox_size, vox_origin, gap_frac
     
   </span>
 </div>
-    <script>var base_url = '../..';</script>
-    <script src="../../js/theme_extra.js" defer></script>
-    <script src="../../js/theme.js" defer></script>
-      <script src="../../javascripts/mathjax.js" defer></script>
-      <script src="https://polyfill.io/v3/polyfill.min.js?features=es6" defer></script>
-      <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" defer></script>
-      <script src="../../search/main.js" defer></script>
-    <script defer>
-        window.onload = function () {
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../javascripts/mathjax.js"></script>
+      <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
             SphinxRtdTheme.Navigation.enable(true);
-        };
+        });
     </script>
 
 </body>
