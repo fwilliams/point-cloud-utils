@@ -32,8 +32,8 @@ npe_begin_code()
     validate_point_cloud(points);
     Eigen::Matrix<npe_Scalar_points, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> x_copy = points;
     Eigen::Matrix<npe_Scalar_points, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> x_out;
-    Eigen::Matrix<int32_t, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> svi;
-    Eigen::Matrix<int32_t, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> svj;
+    Eigen::Matrix<int32_t, Eigen::Dynamic, 1> svj;
+    Eigen::Matrix<int32_t, Eigen::Dynamic, 1> svi;
 
     igl::remove_duplicate_vertices(x_copy, epsilon, x_out, svi, svj);
 
@@ -69,7 +69,7 @@ See also:
 npe_function(deduplicate_mesh_vertices)
 npe_doc(remove_duplicate_mesh_vertices_doc)
 npe_arg(v, dense_float, dense_double)
-npe_arg(f, dense_int32, dense_int64, dense_uint32, dense_uint64)
+npe_arg(f, dense_int32, dense_int64)
 npe_arg(epsilon, double)
 npe_default_arg(return_index, bool, true)
 npe_begin_code()
@@ -79,8 +79,8 @@ npe_begin_code()
     Eigen::Matrix<npe_Scalar_f, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> f_copy = f;
     Eigen::Matrix<npe_Scalar_v, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> v_out;
     Eigen::Matrix<npe_Scalar_f, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> f_out;
-    Eigen::Matrix<int32_t, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> svi;
-    Eigen::Matrix<int32_t, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> svj;
+    Eigen::Matrix<int32_t, Eigen::Dynamic, 1> svi;
+    Eigen::Matrix<int32_t, Eigen::Dynamic, 1> svj;
 
     igl::remove_duplicate_vertices(v_copy, f_copy, epsilon, v_out, svi, svj, f_out);
 

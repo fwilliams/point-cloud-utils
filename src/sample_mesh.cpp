@@ -1,109 +1,16 @@
 #include <npe.h>
-#include <vcg/complex/complex.h>
-#include <vcg/complex/algorithms/point_sampling.h>
-#include <vcg/complex/algorithms/clustering.h>
 
 #include <fstream>
 #include <iostream>
 #include <functional>
+#include <cstdlib>
+
+
+#include <igl/random_points_on_mesh.h>
+#include <igl/blue_noise.h>
+#include <igl/doublearea.h>
 
 #include "common/common.h"
-#include "common/vcg_utils.h"
-
-
-namespace {
-
-using namespace vcg;
-class VCGMeshEdge;
-class VCGMeshFace;
-class VCGMeshVertex;
-struct VCGMeshUsedTypes : public UsedTypes<	Use<VCGMeshVertex>   ::AsVertexType,
-                                            Use<VCGMeshEdge>     ::AsEdgeType,
-                                            Use<VCGMeshFace>     ::AsFaceType>{};
-class VCGMeshVertex  : public Vertex<VCGMeshUsedTypes, vertex::Coord3d, vertex::Normal3d, vertex::BitFlags> {};
-class VCGMeshFace    : public Face<VCGMeshUsedTypes, face::FFAdj,  face::Normal3d, face::VertexRef, face::BitFlags> {};
-class VCGMeshEdge    : public Edge<VCGMeshUsedTypes>{};
-class VCGMesh : public tri::TriMesh<std::vector<VCGMeshVertex>, std::vector<VCGMeshFace>, std::vector<VCGMeshEdge>> {};
-
-
-/*
- * Use this to sample vertex indices when we are sampling from a point cloud
- */
-template <class MeshType, class BCType>
-class EigenBarycentricSampler
-{
-public:
-    typedef typename MeshType::FaceType    FaceType;
-    typedef typename MeshType::CoordType   CoordType;
-
-    // The mesh we are sampling from
-    MeshType* sampled_mesh;
-    MeshType* output_mesh;
-
-    // Indices into the mesh vertex array, this is an eigen matrix of some type
-    typedef Eigen::Matrix<std::ptrdiff_t, Eigen::Dynamic, 1> IndexArray;
-    IndexArray& indices;
-
-    // Barycentric coordinates of each sampled vertex
-    BCType& barycentric_coords;
-
-    // Number of vertices
-    int vcount = 0;
-
-    bool perFaceNormal;  // default false; if true the sample normal is the face normal, otherwise it is interpolated
-
-    EigenBarycentricSampler(MeshType* in_mesh, MeshType* output_mesh, BCType& out_bc, IndexArray& out_face_idxs) :
-        sampled_mesh(in_mesh), output_mesh(output_mesh), barycentric_coords(out_bc), indices(out_face_idxs), perFaceNormal(false) {
-    }
-
-    void trim() {
-        barycentric_coords.conservativeResize(vcount, 3);
-        indices.conservativeResize(vcount, 1);
-    }
-
-    void reset() {
-        vcount = 0;
-    }
-
-    void maybe_resize()  {
-        // If we are about to overflow indexes, double its size
-        if (barycentric_coords.rows() <= vcount) {
-            const int n_rows = barycentric_coords.rows() == 0 ? 1024 : barycentric_coords.rows();
-            barycentric_coords.conservativeResize(2 * n_rows, 3);
-        }
-        if (indices.size() <= vcount) {
-            const int n_rows = indices.size() == 0 ? 1024 : indices.size();
-            barycentric_coords.conservativeResize(2 * n_rows, 1);
-        }
-    }
-
-    void AddFace(const FaceType &f, CoordType p) {
-        maybe_resize();
-        std::ptrdiff_t f_offset = &f - &*(sampled_mesh->face.begin());
-        indices(vcount, 0) = f_offset;
-        barycentric_coords(vcount, 0) = p[0];
-        barycentric_coords(vcount, 1) = p[1];
-        barycentric_coords(vcount, 2) = p[2];
-        vcount += 1;
-
-        if (output_mesh != nullptr) {
-            tri::Allocator<MeshType>::AddVertices(*output_mesh, 1);
-            output_mesh->vert.back().P() = f.cP(0) * p[0] + f.cP(1) * p[1] +f.cP(2) * p[2];
-            if(perFaceNormal) {
-                output_mesh->vert.back().N() = f.cN();
-            } else {
-                output_mesh->vert.back().N() = f.cV(0)->N() * p[0] + f.cV(1)->N() * p[1] + f.cV(2)->N() * p[2];
-            }
-            if(tri::HasPerVertexQuality(*output_mesh)) {
-               output_mesh->vert.back().Q() = f.cV(0)->Q() * p[0] + f.cV(1)->Q() * p[1] + f.cV(2)->Q() * p[2];
-            }
-        }
-    }
-}; // end class EigenVertexIndexSampler
-
-} // namespace
-
-
 
 
 const char* sample_mesh_poisson_disk_doc = R"Qu8mg5v7(
@@ -126,7 +33,7 @@ Returns:
 )Qu8mg5v7";
 npe_function(sample_mesh_poisson_disk)
 npe_arg(v, dense_float, dense_double)
-npe_arg(f, dense_int32, dense_int64, dense_uint32, dense_uint64)
+npe_arg(f, dense_int32, dense_int64)
 npe_arg(num_samples, int)
 npe_default_arg(radius, double, 0.0)
 npe_default_arg(use_geodesic_distance, bool, true)
@@ -146,71 +53,23 @@ npe_begin_code()
         throw pybind11::value_error("sample_num_tolerance must be in (0, 1]");
     }
 
-    typedef VCGMesh MeshType;
-    typedef EigenDenseLike<npe_Matrix_v> EigenRetBC;
-    typedef EigenVertexIndexSampler<MeshType> PoissonDiskSampler;
-    typedef EigenBarycentricSampler<VCGMesh, EigenRetBC> MonteCarloSampler;
-
-    VCGMesh input_mesh;
-    vcg_mesh_from_vf(v, f, input_mesh);
-    typename tri::SurfaceSampling<MeshType, PoissonDiskSampler>::PoissonDiskParam pp;
-    //    int t0 = clock();
-
-    if(radius > 0 && num_samples <= 0) {
-        num_samples = tri::SurfaceSampling<MeshType, PoissonDiskSampler>::ComputePoissonSampleNum(input_mesh, radius);
+    if (random_seed != 0) {
+        srand(random_seed);
     }
 
-    pp.pds.sampleNum = num_samples;
-    pp.randomSeed = random_seed;
-    pp.geodesicDistanceFlag = use_geodesic_distance;
-    pp.bestSampleChoiceFlag = best_choice_sampling;
-
-    // Dense barycentric coordinates and face indices
-    const int num_dense_samples = std::max(10000, int(num_samples * oversampling_factor));
-    EigenRetBC dense_bc(num_dense_samples, 3);
-    typename MonteCarloSampler::IndexArray dense_fi(num_dense_samples);
-    MeshType montecarlo_mesh;
-    MonteCarloSampler mcSampler(&input_mesh, &montecarlo_mesh, dense_bc, dense_fi);
-
-    // We overallocate a bit because we could end up with more samples
-    typename PoissonDiskSampler::IndexArray dense_vi(int(num_samples * (1.0 + sample_num_tolerance)));
-    PoissonDiskSampler pdSampler(montecarlo_mesh, dense_vi);
-
-    if(random_seed > 0) {
-        tri::SurfaceSampling<MeshType, MonteCarloSampler>::SamplingRandomGenerator().initialize(random_seed);
-        // tri::SurfaceSampling<MeshType, PoissonDiskSampler>::SamplingRandomGenerator().initialize(random_seed);
+    if(radius <= 0 && num_samples > 0) {
+        const double total_area = [&](){Eigen::VectorXd A; igl::doublearea(v,f,A);return A.array().sum()/2;}();
+        if (total_area <= 0) {
+            throw pybind11::value_error("Mesh has zero area");
+        }
+        radius = sqrt(total_area / (0.7 * M_PI * num_samples)); // 0.7 is a density factor
     }
 
-    // Generate dense samples on the mesh
-    tri::SurfaceSampling<MeshType, MonteCarloSampler>::Montecarlo(input_mesh, mcSampler, num_dense_samples);
-    tri::UpdateBounding<MeshType>::Box(montecarlo_mesh);
-    //    int t1=clock();
-    //    pp.pds.montecarloTime = t1-t0;
+    EigenDenseLike<npe_Matrix_v> ret_bc, ret_p;
+    Eigen::Matrix<npe_Scalar_f, Eigen::Dynamic, 1> ret_fi;
+    igl::blue_noise(v, f, (npe_Scalar_v) radius, ret_bc, ret_fi, ret_p);
 
-    // TODO: Adaptive radius would be nice actually!
-    const double radiusVariance = 1;
-    if(radiusVariance !=1)
-    {
-      pp.adaptiveRadiusFlag = true;
-      pp.radiusVariance = radiusVariance;
-    }
 
-    if (radius <= 0.0 && num_samples > 0) {
-        tri::SurfaceSampling<MeshType, PoissonDiskSampler>::PoissonDiskPruningByNumber(pdSampler, montecarlo_mesh, num_samples, radius, pp, sample_num_tolerance);
-
-    } else {
-        tri::SurfaceSampling<MeshType, PoissonDiskSampler>::PoissonDiskPruning(pdSampler, montecarlo_mesh, radius, pp);
-    }
-    //    int t2=clock();
-    //    pp.pds.totalTime = t2-t0;
-
-    EigenRetBC ret_bc(pdSampler.vcount, 3);
-    typename MonteCarloSampler::IndexArray ret_fi(pdSampler.vcount);
-    for (int i = 0; i < pdSampler.vcount; i++) {
-        const std::ptrdiff_t dense_idx = dense_vi[i];
-        ret_bc.row(i) = dense_bc.row(dense_idx);
-        ret_fi[i] = dense_fi[dense_idx];
-    }
     return std::make_tuple(npe::move(ret_fi), npe::move(ret_bc));
 }
 npe_end_code()
@@ -239,24 +98,18 @@ npe_begin_code()
 {
     validate_mesh(v, f);
 
-    typedef EigenDenseLike<npe_Matrix_v> EigenRetBC;
-    typedef EigenBarycentricSampler<VCGMesh, EigenRetBC> MonteCarloSampler;
-
-    VCGMesh m;
-    vcg_mesh_from_vf(v, f, m);
-
-    EigenRetBC ret_bc(num_samples, 3);
-    typename MonteCarloSampler::IndexArray ret_fi(num_samples);
-
-    MonteCarloSampler mrs(&m, nullptr, ret_bc, ret_fi);
-
-    if(random_seed > 0) {
-        tri::SurfaceSampling<VCGMesh, MonteCarloSampler>::SamplingRandomGenerator().initialize(random_seed);
+    if (num_samples <= 0) {
+        throw pybind11::value_error("num_samples must be positive");
     }
 
-    tri::SurfaceSampling<VCGMesh, MonteCarloSampler>::Montecarlo(m, mrs, num_samples);
+    if (random_seed != 0) {
+        srand(random_seed);
+    }
 
-    mrs.trim();
+    EigenDenseLike<npe_Matrix_v> ret_bc, ret_p;
+    Eigen::Matrix<npe_Scalar_f, Eigen::Dynamic, 1> ret_fi;
+
+    igl::random_points_on_mesh(num_samples, v, f, ret_bc, ret_fi, ret_p);
     return std::make_tuple(npe::move(ret_fi), npe::move(ret_bc));
 }
 npe_end_code()

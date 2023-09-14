@@ -117,7 +117,9 @@ std::shared_ptr<tinyply::PlyData> request_properties_from_element(
 }
 
 
-void load_mesh_ply(const std::string& filename, std::unordered_map<std::string, pybind11::object>& ret) {
+std::unordered_map<std::string, pybind11::object> load_mesh_ply(const std::string& filename) {
+    std::unordered_map<std::string, pybind11::object> ret;
+
     tinyply::PlyFile plyf;
     std::ifstream filestream (filename, std::ifstream::binary);
 
@@ -348,6 +350,8 @@ void load_mesh_ply(const std::string& filename, std::unordered_map<std::string, 
     ret["textures"] = ret_textures;
     ret["normal_maps"] = ret_normalmaps;
     ret["auxillary_data"] = ret_aux_data;
+
+    return ret;
 }
 
 

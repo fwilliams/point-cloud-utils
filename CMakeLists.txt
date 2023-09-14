@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.10)
 project(point-cloud-utils)
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_BUILD_TYPE "Release")
 
 
@@ -32,40 +32,44 @@ endif()
 set(EXTERNAL_DEP_DIR ${CMAKE_CURRENT_SOURCE_DIR}/external)
 include(DownloadExternalDeps)
 download_dep(numpyeigen
-  GIT_REPOSITORY https://github.com/fwilliams/numpyeigen.git
-  GIT_TAG master
+             GIT_REPOSITORY https://github.com/fwilliams/numpyeigen.git
+             GIT_TAG master
 )
 list(APPEND CMAKE_MODULE_PATH ${EXTERNAL_DEP_DIR}/numpyeigen/cmake)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 include(numpyeigen) # This will define Eigen3::Eigen if we enabled NPE_WITH_EIGEN
 
 download_dep(igl
-        GIT_REPOSITORY https://github.com/fwilliams/libigl.git
-        GIT_TAG stable_with_macos_hotfix
+             GIT_REPOSITORY https://github.com/libigl/libigl.git
+             GIT_TAG main
 )
 
 download_dep(tinyply
-        GIT_REPOSITORY https://github.com/fwilliams/tinyply.git
-        GIT_TAG point_cloud_utils
+             GIT_REPOSITORY https://github.com/ddiakopoulos/tinyply.git
+             GIT_TAG 2.4
+)
+
+download_dep(tinyobjloader
+             GIT_REPOSITORY https://github.com/tinyobjloader/tinyobjloader.git
+             GIT_TAG release
 )
 
 if(NOT NATIVE_SSE)
   # igl has sse hardcoded, so use simde to redirect to the platforms native simd instructions.
   download_dep(simde
-          GIT_REPOSITORY https://github.com/simd-everywhere/simde.git
-          GIT_TAG dd0b662fd8cf4b1617dbbb4d08aa053e512b08e4
-          )
+               GIT_REPOSITORY https://github.com/simd-everywhere/simde.git
+               GIT_TAG dd0b662fd8cf4b1617dbbb4d08aa053e512b08e4
+  )
 endif()
 
 
 # Build manifold as a static lib
 download_dep(manifold
-  GIT_REPOSITORY https://github.com/AppledoreM/Manifold
-  GIT_TAG 28e335f8bfde0721f39fc439e362727c6ad47987
+             GIT_REPOSITORY https://github.com/AppledoreM/Manifold
+             GIT_TAG 28e335f8bfde0721f39fc439e362727c6ad47987
 )
 set(MANIFOLD_SRC_DIR ${EXTERNAL_DEP_DIR}/manifold/src)
-set(
-    manifold_SRC
+set(manifold_SRC
     ${MANIFOLD_SRC_DIR}/BVH.cpp
     ${MANIFOLD_SRC_DIR}/BVH.h
     ${MANIFOLD_SRC_DIR}/Intersection.cpp
@@ -93,7 +97,6 @@ endif()
 # add_library(mls_utils STATIC ${mls_utils_SRC})
 # set_target_properties(mls_utils PROPERTIES LINKER_LANGUAGE CXX)
 # target_include_directories(mls_utils PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/external)
-# target_include_directories(mls_utils PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/external/vcglib)
 # target_include_directories(mls_utils PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
 # target_include_directories(mls_utils PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/external/numpyeigen/external/eigen)
 
@@ -112,8 +115,8 @@ endif()
 set(EMBREE_DIR "${EXTERNAL_DEP_DIR}/embree")
 if(NOT TARGET embree)
   download_dep(embree
-    GIT_REPOSITORY https://github.com/embree/embree.git
-    GIT_TAG        v3.13.5
+               GIT_REPOSITORY https://github.com/embree/embree.git
+               GIT_TAG        v3.13.5
   )
 
   # Note: On macOS, building embree as a static lib can only be done with a single ISA target.
@@ -136,9 +139,13 @@ endif()
 
 
 # Build geogram
+download_dep(geogram
+             GIT_REPOSITORY https://github.com/fwilliams/geogram-pcu.git
+             GIT_TAG        main
+)
 set(THIRD_PARTY_DIR ${EXTERNAL_DEP_DIR})
 include(geogram)
-
+target_compile_definitions(geogram PUBLIC _LIBCPP_ENABLE_CXX17_REMOVED_UNEXPECTED_FUNCTIONS)
 if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
   SET_TARGET_PROPERTIES(geogram PROPERTIES COMPILE_FLAGS -fopenmp LINK_FLAGS -fopenmp)
   target_compile_options(geogram PUBLIC    -fopenmp)
@@ -199,14 +206,13 @@ npe_add_module(_pcu_internal
 target_sources(_pcu_internal PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/common/morton_code.cpp)
 target_sources(_pcu_internal PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/common/geogram_utils.cpp)
 target_sources(_pcu_internal PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/common/embree_intersector.cpp)
-target_sources(_pcu_internal PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/external/vcglib/wrap/ply/plylib.cpp)
 # target_sources(_pcu_internal PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/external/tinyply/source/tinyply.cpp)
 target_include_directories(_pcu_internal PRIVATE ${EXTERNAL_DEP_DIR}/tinyply/source)
-target_include_directories(_pcu_internal PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/external/vcglib)
 target_include_directories(_pcu_internal PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
 target_include_directories(_pcu_internal PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/external/nanoflann)
 target_include_directories(_pcu_internal PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/external)
 target_include_directories(_pcu_internal PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/external/igl/include)
+target_include_directories(_pcu_internal PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/external/tinyobjloader)
 target_include_directories(_pcu_internal PRIVATE ${EMBREE_DIR}/include)
 target_link_libraries(_pcu_internal PRIVATE embree)
 target_link_libraries(_pcu_internal PRIVATE geogram)
@@ -231,6 +237,7 @@ if(MSVC)
     /wd4996 # this function or variable may be unsafe
     # This one is when using bools in adjacency matrices
     /wd4804 #'+=': unsafe use of type 'bool' in operation
+    /bigobj # Required for large projects
   )
 endif()
 
@@ -245,4 +252,3 @@ endif()
 
 enable_testing()
 add_subdirectory(tests)
-

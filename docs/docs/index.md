@@ -15,7 +15,7 @@ pip install point-cloud-utils
 ```
 
 ## [Source Code](https://github.com/fwilliams/point-cloud-utils)
-Point Cloud Utils is open source with the GPL-v2 license. The [source code is available on GitHub](https://github.com/fwilliams/point-cloud-utils)
+Point Cloud Utils is open source under the MIT license. The [source code is available on GitHub](https://github.com/fwilliams/point-cloud-utils)
 
 ## A very simple example
 Point Cloud Utils uses NumPy arrays as fundamental data structure, making it very easy to integrate with existing numerical code.

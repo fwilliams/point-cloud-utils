@@ -88,7 +88,7 @@ def main():
 
     setuptools.setup(
         name="point-cloud-utils",
-        version="0.29.7",
+        version="0.30.0",
         author="Francis Williams",
         author_email="francis@fwilliams.info",
         description="A Python library for common tasks on 3D point clouds and meshes",
@@ -99,7 +99,7 @@ def main():
         classifiers=[
             "Programming Language :: C++",
             "Programming Language :: Python :: 3",
-            "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+            "License :: OSI Approved :: MIT License",
         ],
         ext_modules=[CMakeExtension('point_cloud_utils', cmake_args=cmake_args, exclude_arch=exclude_arch)],
         cmdclass=dict(build_ext=CMakeBuild),

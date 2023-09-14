@@ -59,7 +59,8 @@ npe_begin_code()
     validate_point_cloud_normals(p, n);
     validate_point_cloud(q, false /* allow_0 */);
     EigenDenseLike<npe_Matrix_p> w;
-    igl::fast_winding_number(p, n, a, q, w);
+    Eigen::Matrix<npe_Scalar_p, Eigen::Dynamic, 1> a_vec{a.reshaped()};
+    igl::fast_winding_number(p, n, a_vec, q, w);
 
     return npe::move(w);
 }

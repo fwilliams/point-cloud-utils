@@ -313,10 +313,11 @@ import numpy as np
 # n is a nv by 3 NumPy array of vertex normals
 v, n = pcu.load_mesh_vn("my_model.ply")
 
-# Downsample a point cloud by approximately 50% so that the sampled points approximately
-# follow a blue noise distribution
+# Downsample a point cloud so that all the points are separated by approximately a fixed value
+# i.e. the downsampled points follow a blue noise distribution
 # idx is an array of integer indices into v indicating which samples to keep
-idx = pcu.downsample_point_cloud_poisson_disk(v, num_samples=int(0.5*v.shape[0]))
+radius = 0.01  
+idx = pcu.downsample_point_cloud_poisson_disk(v, radius)
 
 # Use the indices to get the sample positions and normals
 v_sampled = v[idx]

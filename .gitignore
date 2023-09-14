@@ -24,3 +24,5 @@ external/simde/
 external/tinyply/
 external/numpyeigen/
 external/igl/
+external/geogram/
+external/tinyobjloader/

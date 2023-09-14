@@ -1,28 +1,11 @@
 #include <npe.h>
-#include <vcg/complex/complex.h>
-#include <vcg/complex/algorithms/smooth.h>
 #include <igl/per_vertex_normals.h>
 #include <string>
 
-#include "common/vcg_utils.h"
 #include "common/common.h"
+#include <igl/cotmatrix.h>
+#include <igl/barycenter.h>
 
-
-namespace {
-
-using namespace vcg;
-class VCGMeshEdge;
-class VCGMeshFace;
-class VCGMeshVertex;
-struct VCGMeshUsedTypes : public UsedTypes<	Use<VCGMeshVertex>   ::AsVertexType,
-        Use<VCGMeshEdge>     ::AsEdgeType,
-        Use<VCGMeshFace>     ::AsFaceType>{};
-class VCGMeshVertex  : public Vertex<VCGMeshUsedTypes, vertex::Coord3d, vertex::Normal3d, vertex::BitFlags> {};
-class VCGMeshFace    : public Face<VCGMeshUsedTypes, face::FFAdj,  face::Normal3d, face::VertexRef, face::BitFlags> {};
-class VCGMeshEdge    : public Edge<VCGMeshUsedTypes>{};
-class VCGMesh : public tri::TriMesh<std::vector<VCGMeshVertex>, std::vector<VCGMeshFace>, std::vector<VCGMeshEdge>> {};
-
-}
 
 
 const char* laplacian_smooth_mesh_doc = R"igl_Qu8mg5v7(
@@ -31,8 +14,8 @@ Smooth a mesh using Laplacian smoothing
 Args:
     v : \#v by 3 Matrix of mesh vertex 3D positions
     f : \#f by 3 Matrix of face (triangle) indices
-    num_iters : Number of smoothing iterations
-    use_cotan_weights : Whether to use cotagent weighting (False by default)
+    num_iters : Number of smoothing iterations to perform
+    step_size : Step size per iteration (default is 1e-4)
 
 Returns:
     n : list of vertex normals of shape #v by 3
@@ -41,8 +24,9 @@ Returns:
 npe_function(laplacian_smooth_mesh)
 npe_doc(laplacian_smooth_mesh_doc)
 npe_arg(v, dense_float, dense_double)
-npe_arg(f, dense_int32, dense_int64, dense_uint32, dense_uint64)
+npe_arg(f, dense_int32, dense_int64)
 npe_arg(num_iters, int)
+npe_default_arg(step_size, double, 1e-1)
 npe_default_arg(use_cotan_weights, bool, false)
 npe_begin_code()
 {
@@ -54,20 +38,42 @@ npe_begin_code()
         return npe::move(v);
     }
 
-    VCGMesh m;
-    vcg_mesh_from_vf(v, f, m);
+    // Heuristic but kind of works maybe???
+    if (use_cotan_weights) {
+        step_size *= 1e-3;
+    }
+    Eigen::SparseMatrix<npe_Scalar_v> L;
+    Eigen::SparseMatrix<npe_Scalar_v> M(v.rows(), v.rows());
+    M.setIdentity();
+    EigenDenseLike<npe_Matrix_v> u = v;
+    EigenDenseLike<npe_Matrix_v> barycenter;
+    Eigen::Matrix<npe_Scalar_v, Eigen::Dynamic, 1> dblA;
+    igl::cotmatrix(v, f, L);
+    
+    for (int iter = 0; iter < num_iters; iter += 1) {
+        if (use_cotan_weights) {
+            igl::massmatrix(u, f, igl::MASSMATRIX_TYPE_BARYCENTRIC, M);
+        }
+        const auto & S = (M - step_size*L);
 
-    vcg::tri::Smooth<VCGMesh>::VertexCoordLaplacian(m, num_iters, false /* SmoothSelected */, use_cotan_weights);
+        Eigen::SimplicialLLT<Eigen::SparseMatrix<npe_Scalar_v>> solver(S);
+        u = solver.solve(M*u).eval();
 
-    npe_Matrix_v vsmooth(m.vn, 3);
-    int vcount = 0;
-    for (VCGMesh::VertexIterator vit = m.vert.begin(); vit != m.vert.end(); vit++) {
-        vsmooth(vcount, 0) = vit->P()[0];
-        vsmooth(vcount, 1) = vit->P()[1];
-        vsmooth(vcount, 2) = vit->P()[2];
-        vcount += 1;
+        if (use_cotan_weights) {
+            igl::doublearea(u, f, dblA);
+            double area = 0.5*dblA.sum();
+            igl::barycenter(u, f, barycenter);
+            
+            Eigen::Matrix<npe_Scalar_v, 1, 3> centroid(0,0,0);
+            for(int i = 0; i < barycenter.rows();i++) {
+                centroid += 0.5*dblA(i)/area*barycenter.row(i);
+            }
+            u.rowwise() -= centroid;
+            u.array() /= sqrt(area);
+            u.rowwise() += centroid;
+        }
     }
 
-    return npe::move(vsmooth);
+    return npe::move(u);
 }
 npe_end_code()
