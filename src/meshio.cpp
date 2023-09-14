@@ -7,6 +7,8 @@
 #include <npe.h>
 #include <npe_typedefs.h>
 #include <pybind11/stl.h>
+#include <igl/readOFF.h>
+#include <igl/readSTL.h>
 
 #include "common/common.h"
 #include "common/strutil.h"
@@ -521,6 +523,48 @@ npe_begin_code()
     if (strutil::ends_with(strutil::to_lower(strutil::trim_copy(filename)), "ply")) {
         std::unordered_map<std::string, pybind11::object> ret;
         load_mesh_ply(filename, ret);
+        return ret;
+    } else if (strutil::ends_with(strutil::to_lower(strutil::trim_copy(filename)), "off")) {
+        std::unordered_map<std::string, pybind11::object> ret;
+        Eigen::MatrixXd v;
+        Eigen::MatrixXi f;
+        igl::readOFF(filename, v, f);
+        std::unordered_map<std::string, pybind11::object> vertex_ret;
+        vertex_ret.insert(std::make_pair("positions", npe::move(v)));
+        std::unordered_map<std::string, pybind11::object> face_ret;
+        face_ret.insert(std::make_pair("vertex_ids", npe::move(f)));
+        pybind11::dict ret_vertex_data = pybind11::cast(vertex_ret);
+        pybind11::dict ret_face_data = pybind11::cast(face_ret);     
+        std::vector<std::string> ret_textures, ret_normalmaps;
+        ret["vertex_data"] = ret_vertex_data;
+        ret["face_data"] = ret_face_data;   
+        ret["textures"] = pybind11::cast(ret_textures);
+        ret["normal_maps"] = pybind11::cast(ret_normalmaps);
+        return ret;
+    } else if (strutil::ends_with(strutil::to_lower(strutil::trim_copy(filename)), "stl")) {
+        std::unordered_map<std::string, pybind11::object> ret;
+        Eigen::MatrixXd v, n;
+        Eigen::MatrixXi f;
+        std::ifstream file;
+        file.open(filename);
+        if (file.fail()) {
+            throw pybind11::value_error("Failed to open file " + filename);
+        }
+        igl::readSTL(file, v, f, n);
+        std::unordered_map<std::string, pybind11::object> vertex_ret;
+        vertex_ret.insert(std::make_pair("positions", npe::move(v)));
+        if (n.rows() > 0) {
+            vertex_ret.insert(std::make_pair("normals", npe::move(n)));
+        }
+        std::unordered_map<std::string, pybind11::object> face_ret;
+        face_ret.insert(std::make_pair("vertex_ids", npe::move(f)));
+        pybind11::dict ret_vertex_data = pybind11::cast(vertex_ret);
+        pybind11::dict ret_face_data = pybind11::cast(face_ret);     
+        std::vector<std::string> ret_textures, ret_normalmaps;
+        ret["vertex_data"] = ret_vertex_data;
+        ret["face_data"] = ret_face_data;   
+        ret["textures"] = pybind11::cast(ret_textures);
+        ret["normal_maps"] = pybind11::cast(ret_normalmaps);
         return ret;
     }
     CMesh m;
