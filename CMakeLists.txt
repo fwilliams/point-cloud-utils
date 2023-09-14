@@ -231,6 +231,7 @@ if(MSVC)
     /wd4996 # this function or variable may be unsafe
     # This one is when using bools in adjacency matrices
     /wd4804 #'+=': unsafe use of type 'bool' in operation
+    /bigobj # Required for large projects
   )
 endif()
 
