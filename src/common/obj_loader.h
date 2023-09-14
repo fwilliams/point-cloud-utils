@@ -1,8 +1,14 @@
 #include <npe.h>
 
 #include <string>
-#include <filesystem>
 #include <unordered_map>
+
+#ifdef __APPLE__
+#include <cstdlib>
+#include <libgen.h>
+#else
+#include <filesystem>
+#endif
 
 #define TINYOBJLOADER_IMPLEMENTATION
 #include <tiny_obj_loader.h>
@@ -12,8 +18,17 @@
 
 std::unordered_map<std::string, pybind11::object> load_mesh_obj(const std::string& filename) {
 
-    std::filesystem::path abspath = std::filesystem::absolute(filename);
-    std::string dir = abspath.parent_path().string();
+    #ifdef __APPLE__
+        if (filename.size() >= PATH_MAX) {
+            throw pybind11::value_error("Filename is too long");
+        }
+        char resolved_path[PATH_MAX]; 
+        realpath(filename.c_str(), resolved_path); 
+        std::string dir = std::string(dirname(resolved_path));
+    #else
+        std::filesystem::path abspath = std::filesystem::absolute(filename);
+        std::string dir = abspath.parent_path().string();
+    #endif
 
     tinyobj::ObjReaderConfig reader_config;
     reader_config.mtl_search_path = dir; // Path to material files
