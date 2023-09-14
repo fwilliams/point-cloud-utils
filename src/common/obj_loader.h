@@ -7,8 +7,6 @@
 #define TINYOBJLOADER_IMPLEMENTATION
 #include <tiny_obj_loader.h>
 
-#include <igl/writeOBJ.h>
-
 #include "common/numpy_utils.h"
 
 
