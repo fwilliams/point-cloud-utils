@@ -41,7 +41,7 @@ include(numpyeigen) # This will define Eigen3::Eigen if we enabled NPE_WITH_EIGE
 
 download_dep(igl
              GIT_REPOSITORY https://github.com/libigl/libigl.git
-             GIT_TAG main
+             GIT_TAG 6868413
 )
 
 download_dep(tinyply
