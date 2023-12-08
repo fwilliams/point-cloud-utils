@@ -8,7 +8,7 @@ import point_cloud_utils as pcu
 v, f = pcu.load_mesh_vf("bunny.ply")
 
 # n is a NumPy array with the same shape as v containing vertex normals
-n = pcu.estimate_mesh_normals(v, f)
+n = pcu.estimate_mesh_vertex_normals(v, f)
 ```
 <p align="center">
     <img src="../../imgs/mesh_vertex_normals_2.png" alt="Estimated vertex normals for a triangle mesh" style="width:70%">
