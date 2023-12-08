@@ -400,66 +400,6 @@ void save_mesh_ply(std::string filename,
         ply_type_f = tinyply::Type::FLOAT64;
     }
 
-    if (has_w_texcoords) {
-        plyf.add_properties_to_element(
-                "face", { "texcoords" }, ply_type_f, num_faces,
-                reinterpret_cast<std::uint8_t*>(w_texcoords.mutable_data()), tinyply::Type::UINT8, 6);
-    }
-    if (has_w_texids) {
-        plyf.add_properties_to_element(
-                "face", { "texnumber" }, ply_type_i, num_faces,
-                reinterpret_cast<std::uint8_t*>(w_texcoords.mutable_data()), tinyply::Type::INVALID, 0);
-    }
-
-
-    if (has_f_vertex_ids) {
-        plyf.add_properties_to_element(
-                "face", { "vertex_indices" }, ply_type_i, num_faces,
-                reinterpret_cast<std::uint8_t*>(f_vertex_ids.mutable_data()), tinyply::Type::UINT8, 3);
-    }
-    if (has_f_normals) {
-        plyf.add_properties_to_element(
-                "face", { "nx", "ny", "z" }, ply_type_f, num_faces,
-                reinterpret_cast<std::uint8_t*>(f_normals.mutable_data()), tinyply::Type::INVALID, 0);
-    }
-    if (has_f_colors) {
-        plyf.add_properties_to_element(
-                "face", { "red", "green", "blue", "alpha" }, ply_type_f, num_faces,
-                reinterpret_cast<std::uint8_t*>(f_colors.mutable_data()), tinyply::Type::INVALID, 0);
-    }
-    if (has_f_quality) {
-        plyf.add_properties_to_element(
-                "face", { "quality" }, ply_type_f, num_faces,
-                reinterpret_cast<std::uint8_t*>(f_quality.mutable_data()), tinyply::Type::INVALID, 0);
-    }
-    if (has_f_flags) {
-        plyf.add_properties_to_element(
-                "face", { "flags" }, ply_type_i, num_faces,
-                reinterpret_cast<std::uint8_t*>(f_flags.mutable_data()), tinyply::Type::INVALID, 0);
-    }
-    for (auto kv = custom_f_attribs.begin(); kv != custom_f_attribs.end(); kv++) {
-        pybind11::str key = (pybind11::str) kv->first;
-        pybind11::array value = pybind11::array::ensure(kv->second);
-        if (value.shape(0) != num_faces) {
-            throw pybind11::value_error("Invalid face attribute " + std::string(key) + ". Must have same number of rows as faces.");
-        }
-        size_t num_cols = 1;
-        for (int i = 1; i < value.ndim(); i += 1) {
-            num_cols *= value.shape(i);
-        }
-        if (num_cols == 0) {
-            throw pybind11::value_error("Invalid face attribute " + std::string(key) + " has zero elements.");
-        }
-        try {
-            tinyply::Type ply_dtype = dtype_to_ply_type(value.dtype());
-            plyf.add_properties_to_element(
-                    "face", { key }, ply_dtype, num_vertices,
-                    reinterpret_cast<std::uint8_t*>(value.mutable_data()), tinyply::Type::UINT8, num_cols);
-        } catch (const std::runtime_error& e) {
-            throw pybind11::value_error("Invalid dtype for custom face attribute "+ std::string(key) + ".");
-        }
-    }
-
     if (has_v_positions) {
         plyf.add_properties_to_element(
                 "vertex", { "x", "y", "z" }, ply_type_f, num_vertices,
@@ -531,6 +471,67 @@ void save_mesh_ply(std::string filename,
             throw pybind11::value_error("Invalid dtype for custom vertex attribute "+ std::string(key) + ".");
         }
     }
+
+
+    if (has_f_vertex_ids) {
+        plyf.add_properties_to_element(
+                "face", { "vertex_indices" }, ply_type_i, num_faces,
+                reinterpret_cast<std::uint8_t*>(f_vertex_ids.mutable_data()), tinyply::Type::UINT8, 3);
+    }
+    if (has_f_normals) {
+        plyf.add_properties_to_element(
+                "face", { "nx", "ny", "z" }, ply_type_f, num_faces,
+                reinterpret_cast<std::uint8_t*>(f_normals.mutable_data()), tinyply::Type::INVALID, 0);
+    }
+    if (has_f_colors) {
+        plyf.add_properties_to_element(
+                "face", { "red", "green", "blue", "alpha" }, ply_type_f, num_faces,
+                reinterpret_cast<std::uint8_t*>(f_colors.mutable_data()), tinyply::Type::INVALID, 0);
+    }
+    if (has_f_quality) {
+        plyf.add_properties_to_element(
+                "face", { "quality" }, ply_type_f, num_faces,
+                reinterpret_cast<std::uint8_t*>(f_quality.mutable_data()), tinyply::Type::INVALID, 0);
+    }
+    if (has_f_flags) {
+        plyf.add_properties_to_element(
+                "face", { "flags" }, ply_type_i, num_faces,
+                reinterpret_cast<std::uint8_t*>(f_flags.mutable_data()), tinyply::Type::INVALID, 0);
+    }
+    for (auto kv = custom_f_attribs.begin(); kv != custom_f_attribs.end(); kv++) {
+        pybind11::str key = (pybind11::str) kv->first;
+        pybind11::array value = pybind11::array::ensure(kv->second);
+        if (value.shape(0) != num_faces) {
+            throw pybind11::value_error("Invalid face attribute " + std::string(key) + ". Must have same number of rows as faces.");
+        }
+        size_t num_cols = 1;
+        for (int i = 1; i < value.ndim(); i += 1) {
+            num_cols *= value.shape(i);
+        }
+        if (num_cols == 0) {
+            throw pybind11::value_error("Invalid face attribute " + std::string(key) + " has zero elements.");
+        }
+        try {
+            tinyply::Type ply_dtype = dtype_to_ply_type(value.dtype());
+            plyf.add_properties_to_element(
+                    "face", { key }, ply_dtype, num_vertices,
+                    reinterpret_cast<std::uint8_t*>(value.mutable_data()), tinyply::Type::UINT8, num_cols);
+        } catch (const std::runtime_error& e) {
+            throw pybind11::value_error("Invalid dtype for custom face attribute "+ std::string(key) + ".");
+        }
+    }
+
+    if (has_w_texcoords) {
+        plyf.add_properties_to_element(
+                "face", { "texcoords" }, ply_type_f, num_faces,
+                reinterpret_cast<std::uint8_t*>(w_texcoords.mutable_data()), tinyply::Type::UINT8, 6);
+    }
+    if (has_w_texids) {
+        plyf.add_properties_to_element(
+                "face", { "texnumber" }, ply_type_i, num_faces,
+                reinterpret_cast<std::uint8_t*>(w_texcoords.mutable_data()), tinyply::Type::INVALID, 0);
+    }
+
 
 
     std::filebuf fb_binary;
