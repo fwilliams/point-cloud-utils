@@ -537,6 +537,13 @@
         show_source: false
 
 
+----------------
+
+::: point_cloud_utils.remove_mesh_vertices
+    handler: python
+    options:
+        show_root_heading: true
+        show_source: false
 
 ----------------
 
