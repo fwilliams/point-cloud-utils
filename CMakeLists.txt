@@ -189,6 +189,7 @@ set(PCU_BINDING_SOURCES
   ${CMAKE_CURRENT_SOURCE_DIR}/src/mesh_for_voxels.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/flood_fill_3d.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/voxelize_triangle_mesh.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/remove_mesh_vertices.cpp
   )
 
   set(PCU_BINDING_SOURCES ${PCU_BINDING_SOURCES} ${CMAKE_CURRENT_SOURCE_DIR}/src/lloyd.cpp)
