@@ -17,8 +17,7 @@ Args:
 Returns:
     v_out : (\#v, 3)-shaped array of mesh vertices with the mask applied
     f_out : (\#f, 3)-shaped array of mesh faces corresponding to mesh with removed vertices
-See also:
-    deduplicate_point_cloud
+
 )igl_Qu8mg5v7";
 npe_function(remove_mesh_vertices)
 npe_doc(remove_mesh_vertices_doc)

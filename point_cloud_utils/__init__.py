@@ -13,7 +13,7 @@ from ._pcu_internal import sample_mesh_poisson_disk, sample_mesh_random, \
     morton_add, morton_subtract, point_cloud_fast_winding_number, \
     sparse_voxel_grid_boundary, marching_cubes_sparse_voxel_grid, decimate_triangle_mesh, \
     remove_unreferenced_mesh_vertices, mesh_face_areas, triangle_soup_fast_winding_number, \
-    _voxel_mesh_internal, remove_mesh_vertices
+    _voxel_mesh_internal, remove_mesh_vertices, adjacency_list
     # mesh_principal_curvatures, \
 
 from ._sinkhorn import *
