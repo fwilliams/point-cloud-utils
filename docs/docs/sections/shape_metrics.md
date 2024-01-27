@@ -5,7 +5,7 @@ Point Cloud Utils has functions to compute a number of commonly used metrics bet
 ## Chamfer Distance
 The Chamfer distance between two point clouds $P_1 = \{x_i \in \mathbb{R}^3\}_{i=1}^n$ and $P_2 = \{x_j \in \mathbb{R}^3\}_{j=1}^m$ is defined as the average distance between pairs of nearest neighbors between $P_1$ and $P_2$ *i.e.*
 $$
-\text{chamfer}(P_1, P_2) = \frac{1}{2n} \sum_{i=1}^n \|x_i - \text{NN}(x_i, P_2)\| + \frac{1}{2m} \sum_{j=1}^n \|x_j - \text{NN}(x_j, P_1)\|
+\text{chamfer}(P_1, P_2) = \frac{1}{2n} \sum_{x \in P_1} \|x - \text{NN}(x, P_2)\| + \frac{1}{2m} \sum_{x \in P_2} \|x - \text{NN}(x, P_1)\|
 $$
 and $\text{NN}(x, P) = \text{argmin}_{x' \in P} \|x - x'\|$ is the nearest neighbor function.
 
