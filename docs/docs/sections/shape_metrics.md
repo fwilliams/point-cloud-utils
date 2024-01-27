@@ -40,7 +40,7 @@ p1 = pcu.load_mesh_v("point_cloud_1.ply")
 # p2 is an (m, 3)-shaped numpy array containing one point per row
 p2 = pcu.load_mesh_v("point_cloud_2.ply")
 
-# Compute the chamfer distance between p1 and p2
+# Compute the hausdorff distance between p1 and p2
 hd = pcu.hausdorff_distance(p1, p2)
 ```
 
@@ -61,7 +61,7 @@ p1 = pcu.load_mesh_v("point_cloud_1.ply")
 # p2 is an (m, 3)-shaped numpy array containing one point per row
 p2 = pcu.load_mesh_v("point_cloud_2.ply")
 
-# Compute the chamfer distance between p1 and p2
+# Compute the one sided hausdorff distance between p1 and p2
 hd_p1_to_p2 = pcu.one_sided_hausdorff_distance(p1, p2)
 ```
 
@@ -85,6 +85,6 @@ p1 = pcu.load_mesh_v("point_cloud_1.ply")
 # p2 is an (m, 3)-shaped numpy array containing one point per row
 p2 = pcu.load_mesh_v("point_cloud_2.ply")
 
-# Compute the chamfer distance between p1 and p2
+# Compute the earth-mover's distance between p1 and p2
 emd, pi = pcu.earth_movers_distance(p1, p2)
 ```
