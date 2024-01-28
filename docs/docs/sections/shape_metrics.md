@@ -5,7 +5,7 @@ Point Cloud Utils has functions to compute a number of commonly used metrics bet
 ## Chamfer Distance
 The Chamfer distance between two point clouds $P_1 = \{x_i \in \mathbb{R}^3\}_{i=1}^n$ and $P_2 = \{x_j \in \mathbb{R}^3\}_{j=1}^m$ is defined as the average distance between pairs of nearest neighbors between $P_1$ and $P_2$ *i.e.*
 $$
-\text{chamfer}(P_1, P_2) = \frac{1}{2n} \sum_{i=1}^n \|x_i - \text{NN}(x_i, P_2)\| + \frac{1}{2m} \sum_{j=1}^n \|x_j - \text{NN}(x_j, P_1)\|
+\text{chamfer}(P_1, P_2) = \frac{1}{2n} \sum_{x \in P_1} \|x - \text{NN}(x, P_2)\| + \frac{1}{2m} \sum_{x \in P_2} \|x - \text{NN}(x, P_1)\|
 $$
 and $\text{NN}(x, P) = \text{argmin}_{x' \in P} \|x - x'\|$ is the nearest neighbor function.
 
@@ -40,7 +40,7 @@ p1 = pcu.load_mesh_v("point_cloud_1.ply")
 # p2 is an (m, 3)-shaped numpy array containing one point per row
 p2 = pcu.load_mesh_v("point_cloud_2.ply")
 
-# Compute the chamfer distance between p1 and p2
+# Compute the hausdorff distance between p1 and p2
 hd = pcu.hausdorff_distance(p1, p2)
 ```
 
@@ -61,7 +61,7 @@ p1 = pcu.load_mesh_v("point_cloud_1.ply")
 # p2 is an (m, 3)-shaped numpy array containing one point per row
 p2 = pcu.load_mesh_v("point_cloud_2.ply")
 
-# Compute the chamfer distance between p1 and p2
+# Compute the one sided hausdorff distance between p1 and p2
 hd_p1_to_p2 = pcu.one_sided_hausdorff_distance(p1, p2)
 ```
 
@@ -85,6 +85,6 @@ p1 = pcu.load_mesh_v("point_cloud_1.ply")
 # p2 is an (m, 3)-shaped numpy array containing one point per row
 p2 = pcu.load_mesh_v("point_cloud_2.ply")
 
-# Compute the chamfer distance between p1 and p2
+# Compute the earth-mover's distance between p1 and p2
 emd, pi = pcu.earth_movers_distance(p1, p2)
 ```
