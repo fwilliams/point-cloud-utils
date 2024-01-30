@@ -10,10 +10,12 @@ option(EIGEN_WITH_MKL      "Whether to build Eigen with intel MKL or not"      O
 
 
 if(${CMAKE_SYSTEM_PROCESSOR} MATCHES "(arm64)|(ARM64)")
+  message( FATAL_ERROR "USING ARM." )
   set(NOT_USING_ARM OFF)
 else()
   set(NOT_USING_ARM ON)
 endif()
+message( FATAL_ERROR "USING ARM? $ENV{CIBW_ARCHS}" )
 
 # Turn this off if you want to build on Arm.
 # option(NATIVE_SSE          "Whether to use the default optimization setup"     ${USING_ARM})
