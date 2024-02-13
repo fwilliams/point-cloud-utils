@@ -110,6 +110,7 @@ std::unordered_map<std::string, pybind11::object> load_mesh_obj(const std::strin
         }
         f.resize(total_faces, 3);
         mat_ids.resize(total_mat_ids, 1);
+        bool normals_present = attrib.normals.size() > 0;
 
         size_t f_offset = 0;
         for (size_t sidx = 0; sidx < shapes.size(); sidx += 1) {  // Loop over shapes
@@ -125,9 +126,11 @@ std::unordered_map<std::string, pybind11::object> load_mesh_obj(const std::strin
                 for (size_t vidx = 0; vidx < num_vertices_in_face; vidx += 1) {
                     tinyobj::index_t idx = shapes[sidx].mesh.indices[index_offset + vidx];
                     f(f_offset, vidx) = size_t(idx.vertex_index);
-                    n(idx.vertex_index, 0) = attrib.normals[3*idx.normal_index+0];
-                    n(idx.vertex_index, 1) = attrib.normals[3*idx.normal_index+1];
-                    n(idx.vertex_index, 2) = attrib.normals[3*idx.normal_index+2];
+                    if (normals_present) {
+                        n(idx.vertex_index, 0) = attrib.normals[3*idx.normal_index+0];
+                        n(idx.vertex_index, 1) = attrib.normals[3*idx.normal_index+1];
+                        n(idx.vertex_index, 2) = attrib.normals[3*idx.normal_index+2];
+                    }
                 }
 
                 if (shapes[sidx].mesh.material_ids.size() > 0) {
