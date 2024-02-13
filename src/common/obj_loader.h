@@ -73,12 +73,6 @@ std::unordered_map<std::string, pybind11::object> load_mesh_obj(const std::strin
             v(i, 1) = attrib.vertices[3*i+1];
             v(i, 2) = attrib.vertices[3*i+2];
 
-            if (attrib.normals.size() > 0) {
-                n(i, 0) = attrib.normals[3*i+0];
-                n(i, 1) = attrib.normals[3*i+1];
-                n(i, 2) = attrib.normals[3*i+2];
-            }
-
             if (attrib.texcoords.size() > 0) {
                 tc(i, 0) = attrib.texcoords[2*i+0];
                 tc(i, 1) = attrib.texcoords[2*i+1];
@@ -131,6 +125,9 @@ std::unordered_map<std::string, pybind11::object> load_mesh_obj(const std::strin
                 for (size_t vidx = 0; vidx < num_vertices_in_face; vidx += 1) {
                     tinyobj::index_t idx = shapes[sidx].mesh.indices[index_offset + vidx];
                     f(f_offset, vidx) = size_t(idx.vertex_index);
+                    n(idx.vertex_index, 0) = attrib.normals[3*idx.normal_index+0];
+                    n(idx.vertex_index, 1) = attrib.normals[3*idx.normal_index+1];
+                    n(idx.vertex_index, 2) = attrib.normals[3*idx.normal_index+2];
                 }
 
                 if (shapes[sidx].mesh.material_ids.size() > 0) {
