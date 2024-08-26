@@ -1,8 +1,91 @@
 #include <npe.h>
 
-#include <igl/remove_duplicate_vertices.h>
+#include <igl/round.h>
+#include <igl/unique_rows.h>
+#include <igl/colon.h>
 
 #include "common/common.h"
+
+namespace {
+
+template <
+    typename DerivedV, 
+    typename DerivedSV, 
+    typename DerivedSVI, 
+    typename DerivedSVJ>
+inline void remove_duplicate_vertices(
+    const Eigen::MatrixBase<DerivedV>& V,
+    const double epsilon,
+    Eigen::PlainObjectBase<DerivedSV>& SV,
+    Eigen::PlainObjectBase<DerivedSVI>& SVI,
+    Eigen::PlainObjectBase<DerivedSVJ>& SVJ) {
+
+    static_assert(
+        (DerivedSVI::RowsAtCompileTime == 1 || DerivedSVI::ColsAtCompileTime == 1) &&
+        (DerivedSVJ::RowsAtCompileTime == 1 || DerivedSVJ::ColsAtCompileTime == 1),
+        "SVI and SVJ need to have RowsAtCompileTime == 1 or ColsAtCompileTime == 1");
+    if(epsilon > 0) {
+        DerivedV rV,rSV;
+        igl::round((V/(epsilon)).eval(),rV);
+        igl::unique_rows(rV,rSV,SVI,SVJ);
+        SV = V(SVI.derived(),Eigen::all);
+    } else {
+        igl::unique_rows(V,SV,SVI,SVJ);
+    }
+}
+
+template <
+    typename DerivedV, 
+    typename DerivedF,
+    typename DerivedSV, 
+    typename DerivedSVI, 
+    typename DerivedSVJ,
+    typename DerivedSF>
+inline void remove_duplicate_vertices(
+    const Eigen::MatrixBase<DerivedV>& V,
+    const Eigen::MatrixBase<DerivedF>& F,
+    const double epsilon,
+    Eigen::PlainObjectBase<DerivedSV>& SV,
+    Eigen::PlainObjectBase<DerivedSVI>& SVI,
+    Eigen::PlainObjectBase<DerivedSVJ>& SVJ,
+    Eigen::PlainObjectBase<DerivedSF>& SF) {
+    // SVI and SVJ need to have RowsAtCompileTime == 1 or ColsAtCompileTime == 1
+    static_assert(
+        (DerivedSVI::RowsAtCompileTime == 1 || DerivedSVI::ColsAtCompileTime == 1) &&
+        (DerivedSVJ::RowsAtCompileTime == 1 || DerivedSVJ::ColsAtCompileTime == 1),
+        "SVI and SVJ need to have RowsAtCompileTime == 1 or ColsAtCompileTime == 1");
+    using namespace Eigen;
+    using namespace std;
+    remove_duplicate_vertices(V,epsilon,SV,SVI,SVJ);
+    SF.resizeLike(F);
+    int64_t fcount = 0;
+    for(int f = 0; f < F.rows(); f++) {
+        bool is_degen = false;
+        for(int c = 0; c < F.cols(); c++) {
+            for (int c2 = c + 1; c2 < F.cols(); c2++) {
+                if (SVJ(F(f,c)) == SVJ(F(f,c2))) {
+                    is_degen = true;
+                    break;
+                }
+            }
+            if (is_degen) {
+                break;
+            }
+            SF(fcount,c) = SVJ(F(f,c));
+        }
+        if (!is_degen) {
+            fcount++;
+        }
+    }
+    SF.conservativeResize(fcount, F.cols());
+}
+
+
+}
+
+
+
+
 
 const char* remove_duplicate_points_doc = R"igl_Qu8mg5v7(
 Removes duplicated points from a point cloud where two points are considered the same if their distance is below
@@ -35,7 +118,7 @@ npe_begin_code()
     Eigen::Matrix<int32_t, Eigen::Dynamic, 1> svj;
     Eigen::Matrix<int32_t, Eigen::Dynamic, 1> svi;
 
-    igl::remove_duplicate_vertices(x_copy, epsilon, x_out, svi, svj);
+    remove_duplicate_vertices(x_copy, epsilon, x_out, svi, svj);
 
     if (return_index) {
         return pybind11::cast(std::make_tuple(npe::move(x_out), npe::move(svi), npe::move(svj)));
@@ -82,7 +165,7 @@ npe_begin_code()
     Eigen::Matrix<int32_t, Eigen::Dynamic, 1> svi;
     Eigen::Matrix<int32_t, Eigen::Dynamic, 1> svj;
 
-    igl::remove_duplicate_vertices(v_copy, f_copy, epsilon, v_out, svi, svj, f_out);
+    remove_duplicate_vertices(v_copy, f_copy, epsilon, v_out, svi, svj, f_out);
 
     if (return_index) {
         return pybind11::cast(std::make_tuple(npe::move(v_out), npe::move(f_out), npe::move(svi), npe::move(svj)));
