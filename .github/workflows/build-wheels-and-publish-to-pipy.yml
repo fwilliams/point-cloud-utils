@@ -35,8 +35,7 @@ jobs:
           CIBW_BEFORE_BUILD_LINUX: yum -y install gcc-gfortran lapack-devel blas-devel
           CIBW_ARCHS_LINUX: "auto"
           CIBW_ARCHS_MACOS: "x86_64 universal2 arm64"
-        uses: pypa/cibuildwheel@v2.11.4
-
+        uses: pypa/cibuildwheel@v2.20.0
       - uses: actions/upload-artifact@v3
         with:
           path: ./wheelhouse/*.whl
