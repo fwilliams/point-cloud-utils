@@ -70,7 +70,7 @@ class CMakeBuild(build_ext):
             os.makedirs(self.build_temp)
             
         if platform.processor() == 'arm':
-            cmake_args += ['-DCMAKE_OSX_ARCHITECTURES:STRING="arm64"']
+            cmake_args += ['-DCMAKE_OSX_ARCHITECTURES:STRING=arm64']
         subprocess.check_call(['cmake'] + cmake_args + [ext.sourcedir], cwd=self.build_temp, env=env)
         subprocess.check_call(['cmake', '--build', '.'] + build_args, cwd=self.build_temp)
         print()  # Add an empty line for cleaner output
