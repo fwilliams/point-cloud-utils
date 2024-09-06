@@ -358,5 +358,4 @@ void save_mesh_obj(std::string filename,
             outstream << std::endl;
         }
     }
-   
 }
