@@ -373,7 +373,7 @@ void save_mesh_ply(std::string filename,
     bool has_v_positions = assert_shape_and_dtype(v_positions, "v_positions", dtype_f, {-num_vertices, 3});
     bool has_v_normals = assert_shape_and_dtype(v_normals, "v_normals", dtype_f, {-num_vertices, 3});
     bool has_v_texcoords = assert_shape_and_dtype(v_texcoords, "v_texcoords", dtype_f, {-num_vertices, 2});
-    bool has_v_colors = assert_shape_and_dtype(v_colors, "v_colors", dtype_f, {-num_vertices, 4});
+    bool has_v_colors = assert_shape_and_dtype(v_colors, "v_colors", pybind11::dtype::of<std::uint8_t>(), {-num_vertices, 4});
     bool has_v_quality = assert_shape_and_dtype(v_quality, "v_quality", dtype_f, {-num_vertices});
     bool has_v_radius = assert_shape_and_dtype(v_radius, "v_radius", dtype_f, {-num_vertices});
     bool has_v_texids = assert_shape_and_dtype(v_texids, "v_texids", dtype_i, {-num_vertices});
@@ -381,7 +381,7 @@ void save_mesh_ply(std::string filename,
 
     bool has_f_vertex_ids = assert_shape_and_dtype(f_vertex_ids, "f_vertex_ids", dtype_i, {-num_faces, 3});
     bool has_f_normals = assert_shape_and_dtype(f_normals, "f_normals", dtype_f, {-num_faces, 3});
-    bool has_f_colors = assert_shape_and_dtype(f_colors, "f_colors", dtype_f, {-num_faces, 4});
+    bool has_f_colors = assert_shape_and_dtype(f_colors, "f_colors", pybind11::dtype::of<std::uint8_t>(), {-num_faces, 4});
     bool has_f_quality = assert_shape_and_dtype(f_quality, "f_quality", dtype_f, {-num_faces});
     bool has_f_flags = assert_shape_and_dtype(f_flags, "f_flags", dtype_i, {-num_faces});
 
@@ -417,7 +417,7 @@ void save_mesh_ply(std::string filename,
     }
     if (has_v_colors) {
         plyf.add_properties_to_element(
-                "vertex", { "red", "green", "blue", "alpha" }, ply_type_f, num_vertices,
+                "vertex", { "red", "green", "blue", "alpha" }, tinyply::Type::UINT8, num_vertices,
                 reinterpret_cast<std::uint8_t*>(v_colors.mutable_data()), tinyply::Type::INVALID, 0);
     }
     if (has_v_quality) {
@@ -485,7 +485,7 @@ void save_mesh_ply(std::string filename,
     }
     if (has_f_colors) {
         plyf.add_properties_to_element(
-                "face", { "red", "green", "blue", "alpha" }, ply_type_f, num_faces,
+                "face", { "red", "green", "blue", "alpha" }, tinyply::Type::UINT8, num_faces,
                 reinterpret_cast<std::uint8_t*>(f_colors.mutable_data()), tinyply::Type::INVALID, 0);
     }
     if (has_f_quality) {

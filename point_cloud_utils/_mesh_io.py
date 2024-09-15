@@ -250,8 +250,11 @@ class TriangleMesh:
         # Handle RBG colors by just concatenating alpha=1
         vcolors = self.vertex_data.colors
         if vcolors.shape[-1] == 3 and len(vcolors.shape) == 2:
-            vcolors = np.concatenate([np.ascontiguousarray(self.vertex_data.colors),
-                                      np.ones([vcolors.shape[0], 1], dtype=vcolors.dtype)], axis=-1)
+            if vcolors.dtype == np.uint8 or vcolors.dtype == np.int8:
+                alphas = np.full([vcolors.shape[0], 1], 255, dtype=vcolors.dtype)
+            else:
+                alphas = np.ones([vcolors.shape[0], 1], dtype=vcolors.dtype)
+            vcolors = np.concatenate([np.ascontiguousarray(self.vertex_data.colors), alphas], axis=-1)
 
         fcolors = self.face_data.colors
         if fcolors.shape[-1] == 3 and len(fcolors.shape) == 2:
@@ -263,8 +266,11 @@ class TriangleMesh:
 
         wcolors = self.face_data.wedge_colors
         if wcolors.shape[-1] == 3 and len(wcolors.shape) == 3:
-            wcolors = np.concatenate([np.ascontiguousarray(wcolors),
-                                      np.ones([wcolors.shape[0], wcolors.shape[1], 1], dtype=wcolors.dtype)], axis=-1)
+            if wcolors.dtype == np.uint8 or wcolors.dtype == np.int8:
+                alphas = np.full([wcolors.shape[0], wcolors.shape[1], 1], 255, dtype=wcolors.dtype)
+            else:
+                alphas = np.ones([wcolors.shape[0], wcolors.shape[1], 1], dtype=wcolors.dtype)
+            wcolors = np.concatenate([np.ascontiguousarray(wcolors), alphas], axis=-1)
 
         if fcolors.shape[0] > 0:
             if fcolors.dtype == np.uint8:
@@ -286,7 +292,7 @@ class TriangleMesh:
                            np.ascontiguousarray(self.vertex_data.positions.astype(dtype)),
                            np.ascontiguousarray(self.vertex_data.normals.astype(dtype)),
                            np.ascontiguousarray(self.vertex_data.texcoords.astype(dtype)),
-                           np.ascontiguousarray(vcolors.astype(dtype)),
+                           np.ascontiguousarray((vcolors * 255.0).astype(np.uint8)),
                            np.ascontiguousarray(self.vertex_data.quality.astype(dtype)),
                            np.ascontiguousarray(self.vertex_data.radius.astype(dtype)),
                            np.ascontiguousarray(self.vertex_data.tex_ids.astype(np.int32)),
@@ -294,11 +300,11 @@ class TriangleMesh:
 
                            np.ascontiguousarray(self.face_data.vertex_ids.astype(np.int32)),
                            np.ascontiguousarray(self.face_data.normals.astype(dtype)),
-                           np.ascontiguousarray(fcolors.astype(dtype)),
+                           np.ascontiguousarray((fcolors * 255.0).astype(np.uint8)),
                            np.ascontiguousarray(self.face_data.quality.astype(dtype)),
                            np.ascontiguousarray(self.face_data.flags.astype(np.int32)),
 
-                           np.ascontiguousarray(wcolors.astype(dtype)),
+                           np.ascontiguousarray((wcolors * 255.0).astype(np.uint8)),
                            np.ascontiguousarray(self.face_data.wedge_normals.astype(dtype)),
                            np.ascontiguousarray(self.face_data.wedge_texcoords.astype(dtype)),
                            np.ascontiguousarray(self.face_data.wedge_tex_ids.astype(np.int32)),
