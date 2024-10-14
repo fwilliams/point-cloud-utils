@@ -762,5 +762,31 @@ class TestDenseBindings(unittest.TestCase):
         self.assertTrue(np.all(f_oriented == f))
         self.assertTrue(np.all(f_comp_ids == 0))
 
+    def test_obj_loading(self):
+        import point_cloud_utils as pcu
+        import numpy as np
+
+        mesh_path = os.path.join(self.test_path, "simple.obj")
+        mesh = pcu.load_triangle_mesh(mesh_path)
+        vn_true = np.array([
+            [0,0,1],
+            [0,0,1],
+            [0,0,1]], dtype=np.float32)
+        uv_true = np.array([
+            [1,0,0],
+            [1,0,0],
+            [1,0,0]], dtype=np.float32)
+        colors_true = np.array([
+            [1,0,0,1],
+            [0,1,0,1],
+            [0,0,1,1]], dtype=np.float32)
+
+        self.assertEqual(mesh.v.shape, (3, 3))
+        self.assertEqual(mesh.f.shape, (3,))
+        self.assertEqual(mesh.vn.shape, (3, 3))
+        self.assertTrue(np.allclose(mesh.vn, vn_true))
+        self.assertTrue(np.allclose(mesh.vertex_data.texcoords, uv_true))
+        self.assertTrue(np.allclose(mesh.vc, colors_true))
+
 if __name__ == '__main__':
     unittest.main()
