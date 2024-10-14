@@ -73,16 +73,6 @@ std::unordered_map<std::string, pybind11::object> load_mesh_obj(const std::strin
             v(i, 1) = attrib.vertices[3*i+1];
             v(i, 2) = attrib.vertices[3*i+2];
 
-            if (attrib.texcoords.size() > 0) {
-                tc(i, 0) = attrib.texcoords[2*i+0];
-                tc(i, 1) = attrib.texcoords[2*i+1];
-                if (attrib.texcoord_ws.size() > 0) {
-                    tc(i, 2) = attrib.texcoord_ws[i];
-                } else {
-                    tc(i, 2) = 0;
-                }
-            }
-
             if (attrib.colors.size() > 0) {
                 c(i, 0) = attrib.colors[3*i+0];
                 c(i, 1) = attrib.colors[3*i+1];
@@ -111,6 +101,8 @@ std::unordered_map<std::string, pybind11::object> load_mesh_obj(const std::strin
         f.resize(total_faces, 3);
         mat_ids.resize(total_mat_ids, 1);
         bool normals_present = attrib.normals.size() > 0;
+        bool texcoords_present = attrib.texcoords.size() > 0;
+        bool texcoord_ws_present = attrib.texcoord_ws.size() > 0;
 
         size_t f_offset = 0;
         for (size_t sidx = 0; sidx < shapes.size(); sidx += 1) {  // Loop over shapes
@@ -130,6 +122,15 @@ std::unordered_map<std::string, pybind11::object> load_mesh_obj(const std::strin
                         n(idx.vertex_index, 0) = attrib.normals[3*idx.normal_index+0];
                         n(idx.vertex_index, 1) = attrib.normals[3*idx.normal_index+1];
                         n(idx.vertex_index, 2) = attrib.normals[3*idx.normal_index+2];
+                    }
+                    if (texcoords_present) {
+                        tc(idx.vertex_index, 0) = attrib.texcoords[2*idx.texcoord_index+0];
+                        tc(idx.vertex_index, 1) = attrib.texcoords[2*idx.texcoord_index+1];
+                        if (texcoord_ws_present) {
+                            tc(idx.vertex_index, 2) = attrib.texcoord_ws[idx.texcoord_index];
+                        } else {
+                            tc(idx.vertex_index, 2) = 0;
+                        }
                     }
                 }
 
