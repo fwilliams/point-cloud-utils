@@ -8,7 +8,7 @@ option(GEOGRAM_WITH_HLBFGS "Non-linear solver (Yang Liu's HLBFGS)"             O
 # option(NPE_WITH_EIGEN      "Whether to use the bundled version of Eigen"       ON)
 option(EIGEN_WITH_MKL      "Whether to build Eigen with intel MKL or not"      OFF)
 
-if(${CMAKE_SYSTEM_PROCESSOR} MATCHES "(arm64)|(ARM64)")
+if(${CMAKE_SYSTEM_PROCESSOR} MATCHES "(arm64)|(ARM64)|(aarch64)|(AARCH64)")
   set(NOT_USING_ARM OFF)
 else()
   set(NOT_USING_ARM ON)
