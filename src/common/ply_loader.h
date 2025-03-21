@@ -74,7 +74,7 @@ pybind11::array ply_data_to_array(std::shared_ptr<tinyply::PlyData> attrib) {
     if (attrib->count == 0) {
         return pybind11::array(attrib_dtype, std::vector<size_t>({0, 0}));
     }
-    size_t bytes_per_scalar = attrib_dtype.elsize();
+    size_t bytes_per_scalar = static_cast<size_t>(attrib_dtype.itemsize());
     if (bytes_per_scalar <= 0) {
         throw std::runtime_error("Internal PLY loading error. Type has no defined byte size.");
     }
