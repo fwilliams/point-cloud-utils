@@ -35,10 +35,12 @@ jobs:
           CIBW_BEFORE_BUILD_LINUX: yum -y install gcc-gfortran lapack-devel blas-devel
           CIBW_ARCHS_LINUX: "auto"
           CIBW_REPAIR_WHEEL_COMMAND_MACOS: "" # delocate-listdeps --all {wheel} && delocate-wheel --require-archs {delocate_archs} -w {dest_dir} -v {wheel}
+          CIBW_BUILD_VERBOSITY: 1
           # CIBW_ARCHS_MACOS: "x86_64 universal2 arm64"
         uses: pypa/cibuildwheel@v2.23.2
       - uses: actions/upload-artifact@v4
         with:
+          name: cibw-wheels-${{ matrix.os }}-${{ matrix.cibw_archs }}-${{ strategy.job-index }}
           path: ./wheelhouse/*.whl
 
   build_sdist:
@@ -52,6 +54,7 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
+          name: cibw-sdist
           path: dist/*.tar.gz
 
   upload_pypi:
@@ -64,8 +67,9 @@ jobs:
     steps:
       - uses: actions/download-artifact@v4.1.7
         with:
-          name: artifact
+          name: cibw-*
           path: dist
+          merge-multiple: true
 
       - uses: pypa/gh-action-pypi-publish@v1.4.2
         with:
