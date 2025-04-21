@@ -288,11 +288,21 @@ class TriangleMesh:
             if wcolors.max() > 1.0 or wcolors.min() < 0.0:
                 raise ValueError("Invalid values for wedge colors, must be between 0 and 1 (inclusive)")
 
+        # Meshlab expects colors to be uint8 for PLY files
+        if filename.endswith(".ply"):
+            vcolors = (vcolors * 255.0).astype(np.uint8)
+            fcolors = (fcolors * 255.0).astype(np.uint8)
+            wcolors = (wcolors * 255.0).astype(np.uint8)
+        else:
+            vcolors = vcolors.astype(dtype)
+            fcolors = fcolors.astype(dtype)
+            wcolors = wcolors.astype(dtype)
+
         save_mesh_internal(filename,
                            np.ascontiguousarray(self.vertex_data.positions.astype(dtype)),
                            np.ascontiguousarray(self.vertex_data.normals.astype(dtype)),
                            np.ascontiguousarray(self.vertex_data.texcoords.astype(dtype)),
-                           np.ascontiguousarray((vcolors * 255.0).astype(np.uint8)),
+                           np.ascontiguousarray(vcolors),
                            np.ascontiguousarray(self.vertex_data.quality.astype(dtype)),
                            np.ascontiguousarray(self.vertex_data.radius.astype(dtype)),
                            np.ascontiguousarray(self.vertex_data.tex_ids.astype(np.int32)),
@@ -300,11 +310,11 @@ class TriangleMesh:
 
                            np.ascontiguousarray(self.face_data.vertex_ids.astype(np.int32)),
                            np.ascontiguousarray(self.face_data.normals.astype(dtype)),
-                           np.ascontiguousarray((fcolors * 255.0).astype(np.uint8)),
+                           np.ascontiguousarray(fcolors),
                            np.ascontiguousarray(self.face_data.quality.astype(dtype)),
                            np.ascontiguousarray(self.face_data.flags.astype(np.int32)),
 
-                           np.ascontiguousarray((wcolors * 255.0).astype(np.uint8)),
+                           np.ascontiguousarray(wcolors),
                            np.ascontiguousarray(self.face_data.wedge_normals.astype(dtype)),
                            np.ascontiguousarray(self.face_data.wedge_texcoords.astype(dtype)),
                            np.ascontiguousarray(self.face_data.wedge_tex_ids.astype(np.int32)),

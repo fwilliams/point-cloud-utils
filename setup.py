@@ -91,7 +91,7 @@ def main():
 
     setuptools.setup(
         name="point-cloud-utils",
-        version="0.34.0",
+        version="0.35.0",
         author="Francis Williams",
         author_email="francis@fwilliams.info",
         description="A Python library for common tasks on 3D point clouds and meshes",
