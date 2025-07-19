@@ -26,3 +26,5 @@ prune external/tinyply
 prune external/numpyeigen
 prune external/igl
 prune external/geogram
+prune external/tinyobjloader
+prune external/.cache
