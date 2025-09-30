@@ -1,0 +1,30 @@
+# Include essential top-level files
+include CMakeLists.txt
+include LICENSE
+include MANIFEST.in
+include README.md
+include pyproject.toml
+include setup.py
+
+# Include the cmake and source directories
+recursive-include cmake *
+recursive-include src *
+
+# Include the entire external directory first
+recursive-include external *
+
+# Exclude common unwanted file patterns from .gitignore
+global-exclude *.obj *.off *.so *.pyc *.ini
+global-exclude *.creator* *.includes *.files *.config
+exclude test.ply
+
+# Prune external libraries listed in .gitignore
+prune external/embree
+prune external/manifold
+prune external/simde
+prune external/tinyply
+prune external/numpyeigen
+prune external/igl
+prune external/geogram
+prune external/tinyobjloader
+prune external/.cache

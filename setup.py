@@ -111,7 +111,8 @@ def main():
             'numpy',
             'scipy'
         ],
-        test_suite="tests"
+        test_suite="tests",
+        include_package_data = True,
     )
 
 
