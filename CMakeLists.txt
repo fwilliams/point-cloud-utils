@@ -83,9 +83,9 @@ set_target_properties(manifold PROPERTIES LINKER_LANGUAGE CXX)
 target_include_directories(manifold PUBLIC ${MANIFOLD_SRC_DIR})
 target_include_directories(manifold PRIVATE ${EXTERNAL_DEP_DIR}/manifold/3rd)
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
-    target_compile_options(manifold PRIVATE "${CMAKE_CXX_FLAGS} -Wall -pthread -DWITH_OMP  -Wno-int-in-bool-context -Wsign-compare -fsanitize=address")
+    target_compile_options(manifold PRIVATE -Wall -pthread -DWITH_OMP -Wno-int-in-bool-context -Wsign-compare -fsanitize=address)
 else()
-    target_compile_options(manifold PRIVATE "${CMAKE_CXX_FLAGS} -DWITH_OMP ")
+    target_compile_options(manifold PRIVATE -DWITH_OMP)
 endif()
 
 
