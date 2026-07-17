@@ -35,7 +35,15 @@ IGL_INLINE void blue_noise_downsample(const Eigen::MatrixBase<DerivedV> & X,
   
     // Make a uniform random sampling with 30*expected_number_of_points.
     const int nx = X.rows();
-  
+
+    // An empty input has nothing to sample. Return early before computing the
+    // grid bounds, since colwise().minCoeff()/maxCoeff() are undefined on a
+    // zero-row matrix and would otherwise crash.
+    if (nx == 0) {
+        XI.resize(0);
+        return;
+    }
+
     // Rescale so that s = 1
     Eigen::Matrix<int,Eigen::Dynamic,3,Eigen::RowMajor> Xs = ((X.rowwise()-X.colwise().minCoeff())/s).template cast<int>();
     const int w = Xs.maxCoeff() + 1;

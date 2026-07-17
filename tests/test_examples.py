@@ -81,6 +81,14 @@ class TestDenseBindings(unittest.TestCase):
         if bc1.shape == bc3.shape:
             self.assertFalse(np.all(bc1 == bc3))
 
+    def test_poisson_disk_downsample_empty(self):
+        import point_cloud_utils as pcu
+        import numpy as np
+
+        empty = np.zeros((0, 3), dtype=np.float64)
+        s_idx = pcu.downsample_point_cloud_poisson_disk(empty, 0.1, random_seed=1234567)
+        self.assertEqual(s_idx.shape[0], 0)
+
     def test_downsample_point_cloud_on_voxel_grid(self):
         import point_cloud_utils as pcu
         import numpy as np
