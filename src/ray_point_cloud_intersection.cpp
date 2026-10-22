@@ -1,5 +1,5 @@
 #include <npe.h>
-#include <igl/embree/EmbreeIntersector.h>
+#include <common/embree_intersector.h>
 #include <tuple>
 #include <numeric>
 
@@ -240,7 +240,7 @@ namespace {
     void trace_rays_point_cloud(const TRO& ray_o, const TRD& ray_d, double ray_near, double ray_far,
                                 bool use_single_ray_origin,
                                 int num_faces_per_geometry,
-                                const igl::embree::EmbreeIntersector& isector,
+                                const EmbreeIntersector& isector,
                                 Eigen::Matrix<typename TRO::Scalar, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>& out_t,
                                 Eigen::Matrix<int, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>& out_pid) {
         for (int i = 0; i < ray_d.rows(); i++) {
@@ -251,7 +251,7 @@ namespace {
                 o_i = Eigen::RowVector3f((float) ray_o(i, 0), (float) ray_o(i, 1), (float) ray_o(i, 2));
             }
             Eigen::RowVector3f d_i((float) ray_d(i, 0), (float) ray_d(i, 1), (float) ray_d(i, 2));
-            igl::Hit hit;
+            Hit hit;
 
             bool is_hit = isector.intersectRay(o_i, d_i, hit, ray_near, ray_far);
             if (is_hit) {
@@ -272,7 +272,7 @@ npe_arg(geometry_type, std::string)
 npe_arg(geometry_radius, npe_matches(v))
 npe_default_arg(geometry_subdivisions_1, int, 4)
 npe_default_arg(geometry_subdivisions_2, int, 4)
-npe_arg(isector, std::shared_ptr<igl::embree::EmbreeIntersector>)
+npe_arg(isector, std::shared_ptr<EmbreeIntersector>)
 npe_begin_code()
     using MatrixI = Eigen::Matrix<int, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>;
     using MatrixF = Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>;
@@ -295,7 +295,7 @@ npe_end_code()
 npe_function(_intersect_ray_point_cloud_intersector_internal)
 npe_arg(ray_o, dense_float, dense_double)
 npe_arg(ray_d, npe_matches(ray_o))
-npe_arg(isector, std::shared_ptr<igl::embree::EmbreeIntersector>)
+npe_arg(isector, std::shared_ptr<EmbreeIntersector>)
 npe_arg(num_faces_per_geometry, int)
 npe_default_arg(ray_near, double, 0.0)
 npe_default_arg(ray_far, double, std::numeric_limits<double>::infinity())
@@ -369,7 +369,7 @@ npe_begin_code()
         int num_faces_per_geometry = generate_splat_geometry(geom_type, geometry_subdivisions_1, geometry_subdivisions_2,
                                                              v, n, geometry_radius, geom_vertices, geom_faces);
 
-        igl::embree::EmbreeIntersector isector;
+        EmbreeIntersector isector;
         isector.init(geom_vertices, geom_faces, true /*is_static*/);
 
         MatrixI ret_pid(ray_d.rows(), 1);

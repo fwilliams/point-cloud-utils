@@ -2,7 +2,7 @@
 #include "embree_intersector.h"
 
 // Implementation
-#include <igl/EPS.h>
+// #include <igl/EPS.h>
 
 EmbreeIntersector::EmbreeIntersector()
         :
@@ -160,9 +160,7 @@ bool EmbreeIntersector::intersectRay(
 
     // shot ray
     {
-        RTCIntersectContext context;
-        rtcInitIntersectContext(&context);
-        rtcIntersect1(scene,&context,&ray);
+        rtcIntersect1(scene,&ray);
         ray.hit.Ng_x = -ray.hit.Ng_x; // EMBREE_FIXME: only correct for triangles,quads, and subdivision surfaces
         ray.hit.Ng_y = -ray.hit.Ng_y;
         ray.hit.Ng_z = -ray.hit.Ng_z;
@@ -255,7 +253,7 @@ EmbreeIntersector
     // This epsilon is directly correleated to the number of missed hits, smaller
     // means more accurate and slower
     //const double eps = DOUBLE_EPS;
-    const double eps = igl::FLOAT_EPS;
+    const double eps = 1.0e-7;
     double min_t = tnear;
     bool large_hits_warned = false;
     RTCRayHit ray; // EMBREE_FIXME: use RTCRay for occlusion rays
@@ -271,9 +269,7 @@ EmbreeIntersector
         ray.hit.instID[0] = RTC_INVALID_GEOMETRY_ID;
         num_rays++;
         {
-            RTCIntersectContext context;
-            rtcInitIntersectContext(&context);
-            rtcIntersect1(scene,&context,&ray);
+            rtcIntersect1(scene,&ray);
             ray.hit.Ng_x = -ray.hit.Ng_x; // EMBREE_FIXME: only correct for triangles,quads, and subdivision surfaces
             ray.hit.Ng_y = -ray.hit.Ng_y;
             ray.hit.Ng_z = -ray.hit.Ng_z;
@@ -353,9 +349,7 @@ EmbreeIntersector
     createRay(ray,a,ab,0,1.0,mask);
 
     {
-        RTCIntersectContext context;
-        rtcInitIntersectContext(&context);
-        rtcIntersect1(scene,&context,&ray);
+        rtcIntersect1(scene,&ray);
         ray.hit.Ng_x = -ray.hit.Ng_x; // EMBREE_FIXME: only correct for triangles,quads, and subdivision surfaces
         ray.hit.Ng_y = -ray.hit.Ng_y;
         ray.hit.Ng_z = -ray.hit.Ng_z;

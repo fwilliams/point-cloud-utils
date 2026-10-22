@@ -4,8 +4,8 @@
 #include <Eigen/Geometry>
 #include <Eigen/Core>
 
-#include <embree3/rtcore.h>
-#include <embree3/rtcore_ray.h>
+#include <embree4/rtcore.h>
+#include <embree4/rtcore_ray.h>
 #include <iostream>
 #include <vector>
 

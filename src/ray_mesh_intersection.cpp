@@ -1,5 +1,5 @@
 #include <npe.h>
-#include <igl/embree/EmbreeIntersector.h>
+#include <common/embree_intersector.h>
 #include <tuple>
 #include <numeric>
 
@@ -7,11 +7,11 @@
 
 namespace py = pybind11;
 
-using Intersector = igl::embree::EmbreeIntersector;
+using Intersector = EmbreeIntersector;
 void hack_extra_ray_mesh_bindings(pybind11::module& m) {
     py::class_<Intersector, std::shared_ptr<Intersector>>(m, "_RayMeshIntersectorInternal")
     .def(py::init([]() {
-        return std::shared_ptr<Intersector>(new igl::embree::EmbreeIntersector());
+        return std::shared_ptr<Intersector>(new EmbreeIntersector());
     }));
 }
 
@@ -19,10 +19,10 @@ void hack_extra_ray_mesh_bindings(pybind11::module& m) {
 npe_function(_populate_ray_intersector_internal)
 npe_arg(v, dense_float, dense_double)
 npe_arg(f, dense_int32, dense_int64, dense_uint32, dense_uint64)
-npe_arg(isector, std::shared_ptr<igl::embree::EmbreeIntersector>)
+npe_arg(isector, std::shared_ptr<EmbreeIntersector>)
 npe_begin_code()
-    igl::embree::EmbreeIntersector::PointMatrixType v_copy = v.template cast<float>();
-    igl::embree::EmbreeIntersector::FaceMatrixType f_copy = f.template cast<int>();
+    EmbreeIntersector::PointMatrixType v_copy = v.template cast<float>();
+    EmbreeIntersector::FaceMatrixType f_copy = f.template cast<int>();
     isector->init(v_copy, f_copy, true /*is_static*/);
 npe_end_code()
 
@@ -64,7 +64,7 @@ npe_begin_code()
             o_i = Eigen::RowVector3f((float)ray_o(i, 0), (float)ray_o(i, 1), (float)ray_o(i, 2));
         }
         Eigen::RowVector3f d_i((float)ray_d(i, 0), (float)ray_d(i, 1), (float)ray_d(i, 2));
-        igl::Hit hit;
+        Hit hit;
 
         bool is_hit = isector->intersectRay(o_i, d_i, hit, ray_near, ray_far);
         if (is_hit) {
@@ -135,10 +135,10 @@ npe_begin_code()
     validate_mesh(v, f);
 
 
-    igl::embree::EmbreeIntersector isector;
+    EmbreeIntersector isector;
 
-    igl::embree::EmbreeIntersector::PointMatrixType v_copy = v.template cast<float>();
-    igl::embree::EmbreeIntersector::FaceMatrixType f_copy = f.template cast<int>();
+    EmbreeIntersector::PointMatrixType v_copy = v.template cast<float>();
+    EmbreeIntersector::FaceMatrixType f_copy = f.template cast<int>();
     isector.init(v_copy, f_copy, true /*is_static*/);
 
     npe_Matrix_f ret_fid(ray_d.rows(), 1);
@@ -152,7 +152,7 @@ npe_begin_code()
             o_i = Eigen::RowVector3f((float)ray_o(i, 0), (float)ray_o(i, 1), (float)ray_o(i, 2));
         }
         Eigen::RowVector3f d_i((float)ray_d(i, 0), (float)ray_d(i, 1), (float)ray_d(i, 2));
-        igl::Hit hit;
+        Hit hit;
 
         bool is_hit = isector.intersectRay(o_i, d_i, hit, ray_near, ray_far);
         if (is_hit) {

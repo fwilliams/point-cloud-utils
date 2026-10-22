@@ -17,10 +17,10 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-20.04, windows-2019, macos-13, macos-14]
+        os: [ubuntu-22.04, windows-2019, macos-13, macos-14]
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Set up QEMU
         if: runner.os == 'Linux'
@@ -31,27 +31,30 @@ jobs:
       - name: Build wheels
         env:
           # Skip 32-bit builds, MUSL libc, and pypy
-          CIBW_SKIP: "*-win32 *-manylinux_i686 pp* *-musllinux*"
+          CIBW_SKIP: "*-win32 *-manylinux_i686 pp* *-musllinux* cp36-* cp37-*"
           CIBW_BEFORE_BUILD_LINUX: yum -y install gcc-gfortran lapack-devel blas-devel
           CIBW_ARCHS_LINUX: "auto"
           CIBW_REPAIR_WHEEL_COMMAND_MACOS: "" # delocate-listdeps --all {wheel} && delocate-wheel --require-archs {delocate_archs} -w {dest_dir} -v {wheel}
+          CIBW_BUILD_VERBOSITY: 1
           # CIBW_ARCHS_MACOS: "x86_64 universal2 arm64"
-        uses: pypa/cibuildwheel@v2.20.0
-      - uses: actions/upload-artifact@v3
+        uses: pypa/cibuildwheel@v2.23.2
+      - uses: actions/upload-artifact@v4
         with:
+          name: cibw-wheels-${{ matrix.os }}-${{ matrix.cibw_archs }}-${{ strategy.job-index }}
           path: ./wheelhouse/*.whl
 
   build_sdist:
     name: Build source distribution
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       - name: Build sdist
         run: pipx run build --sdist
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v4
         with:
+          name: cibw-sdist
           path: dist/*.tar.gz
 
   upload_pypi:
@@ -62,12 +65,13 @@ jobs:
     # alternatively, to publish when a GitHub Release is created, use the following rule:
     # if: github.event_name == 'release' && github.event.action == 'published'
     steps:
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v4
         with:
-          name: artifact
+          pattern: cibw-*
           path: dist
+          merge-multiple: true
 
-      - uses: pypa/gh-action-pypi-publish@v1.4.2
+      - uses: pypa/gh-action-pypi-publish@v1.13.0
         with:
           user: __token__
           password: ${{ secrets.PYPI_API_TOKEN }}
